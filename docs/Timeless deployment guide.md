@@ -328,7 +328,7 @@ WITH CHECK (bucket_id IN ('avatars', 'portfolios', 'event-media') AND auth.role(
 -- Allow users to update their own files
 CREATE POLICY "Users can update own files"
 ON storage.objects FOR UPDATE
-USING (auth.uid()::text = owner);
+USING (auth.uid()::text = (storage.foldername(name))[1]);
 ```
 
 ---
