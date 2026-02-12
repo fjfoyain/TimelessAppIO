@@ -89,7 +89,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(({ label, id, ...p
         <input
         id={id}
         ref={ref}
-        className="w-full px-4 py-3 bg-day-surface/50 dark:bg-night-surface/30 border border-day-border dark:border-night-border rounded-xl focus:outline-none focus:ring-2 focus:ring-day-accent/50 dark:focus:ring-night-accent/50 focus:border-day-accent dark:focus:border-night-accent transition-all duration-300 placeholder:text-day-text-secondary/50 dark:placeholder:text-night-text-secondary/50 text-base backdrop-blur-sm shadow-inner-light"
+        className="w-full px-4 py-3 bg-day-surface/50 dark:bg-night-surface/30 border border-day-border dark:border-night-border rounded-xl focus:outline-none focus:ring-2 focus:ring-day-accent/50 dark:focus:ring-night-accent/50 focus:border-day-accent dark:focus:border-night-accent transition-all duration-300 placeholder:text-day-text-secondary/50 dark:placeholder:text-night-text-secondary/50 text-base text-black backdrop-blur-sm shadow-inner-light"
         {...props}
         />
         {/* Subtle bottom glow on focus */}
