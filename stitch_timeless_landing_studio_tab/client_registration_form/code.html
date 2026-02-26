@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Client Registration - Timeless</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "primary-dark": "#5e0eb0",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                        "surface-dark": "#231630",
+                        "surface-light": "#ffffff",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for dark theme feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #191022; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3c2a52; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7f13ec; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-white font-display antialiased h-screen overflow-hidden flex flex-col md:flex-row">
+<!-- Left Panel: Visual/Hero -->
+<div class="relative hidden md:flex w-1/2 lg:w-5/12 flex-col justify-end p-12 overflow-hidden bg-surface-dark">
+<!-- Background Image -->
+<div class="absolute inset-0 w-full h-full">
+<img alt="Concert stage with purple lighting and silhouettes" class="w-full h-full object-cover opacity-60 mix-blend-overlay" data-alt="Concert stage with purple lighting and silhouettes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuLB9WRBjHfwwSkIjPwD1qNNTTVgKq3ZBJtdThR17er5pgI-iuYGhlXIL5CVe1VlhJUBH9cGLlmc4URrqrZFLvt4D3AF9DVB2YHyObF5wFCyEJhmHGvmkXpvlLMHr47CgDXJ3AmaPnbEx1zaqSmzSaMpgAh-G23f19TP1fSuB07GCiL4MJaFMbdzAbcXu1kVsMxbcqc5Z3PbwNY_G4M7haKZeO_JeZxDWYn9aXI8SNJj7_zaSy0Spot96_ZRNWUEEtx6Ks1fg79rwU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-primary/20 to-transparent mix-blend-multiply"></div>
+<div class="absolute inset-0 bg-gradient-to-tr from-primary/40 to-transparent opacity-60"></div>
+</div>
+<!-- Content Overlay -->
+<div class="relative z-10 max-w-lg mb-8">
+<div class="inline-flex items-center space-x-2 bg-primary/20 backdrop-blur-md border border-primary/30 rounded-full px-4 py-1.5 mb-6">
+<span class="material-icons text-primary text-sm">auto_awesome</span>
+<span class="text-xs font-semibold uppercase tracking-wider text-white">Client Portal</span>
+</div>
+<h2 class="text-4xl md:text-5xl font-bold leading-tight mb-4 text-white">
+                Curate unforgettable <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">experiences</span>.
+            </h2>
+<p class="text-lg text-slate-300 max-w-md">
+                Timeless connects visionary organizers with world-class talent and production resources. Scale your events with precision.
+            </p>
+<div class="mt-12 flex items-center gap-4 text-sm text-slate-400">
+<div class="flex -space-x-3">
+<img alt="User avatar 1" class="w-10 h-10 rounded-full border-2 border-surface-dark" data-alt="Portrait of a female user" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdFBI-kX2y5wJXy0mfFCSeP-xpTBTUo-Dcmj_Ksm4Cb6FKoMKmYHuWjuo3GVR-gqJKpI5fGLAiTTlb2p7o9raRU1z6qWK_sS9OynZu5eg8m2ihpgxzHdi2-_CmG1a6qAyOimjqtVura-WunJHTmJNqY6InWGKWIl2snECofAoiu2qeL14ra1_v-Ixpxfl_yP7Rfjhv6vhV7Xi-8X7U8r6DwQ-UNK2ohpNNO81zLjr95KO0B7EEXGjTJDO-jjccsJqVe4KbaJyu2W9m"/>
+<img alt="User avatar 2" class="w-10 h-10 rounded-full border-2 border-surface-dark" data-alt="Portrait of a male user" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbWCGsg1jsK5jbgnuCyAzDP7pBclXlwTUKD3tUDu-c0D0mi8ljwEgGgR0k1Etq77vLOJAwlIizadZPfC7yUlI4d_7Qdgl0_vfYbPGikQgvqWBSU6zi-pC9YSiX3iSrtQe9u4oNjkP3yV0kNRszUHlaLtfAC1F1WYbfRyl0oghDIckz6b92y6e11ML5tLlkGf-u6elu8jj1qmM-eYgQhtiNQZ7ZJE0GtVK9osWyUa6TzJHwHCNed2MC_tcwdo4oFyPvwpaq9xiUzMIZ"/>
+<img alt="User avatar 3" class="w-10 h-10 rounded-full border-2 border-surface-dark" data-alt="Portrait of a male user" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCam6B4SELdGe9LGZJw0ksSoF6gd4HT-XtqY0dvYxemNwD_ERQ2yC4cmSO22EUaykdvsIn3zSOClmWFpg1mzvZniMWe_k2UwsSZBXy9sJmqNtE6RdTqPTA90ewFoYv_mEUCkTfoaPF1u2OJPElQbZEnJa2puEnWU19Yn7ydNdrYUGk_vSAE7RoMsMnOq7nValtSua406qvVQ-9cdhDAG9gkwETLSsXc9TTYsGZ3BW5HrGBjy0d6PzTh9cO8s5Bp2UgWqMEyEhl1SUK5"/>
+<div class="w-10 h-10 rounded-full border-2 border-surface-dark bg-surface-dark flex items-center justify-center text-xs font-bold text-white">+2k</div>
+</div>
+<p>Trusted by top organizers worldwide.</p>
+</div>
+</div>
+<!-- Subtle decorative element -->
+<div class="absolute -bottom-24 -left-24 w-96 h-96 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+</div>
+<!-- Right Panel: Form -->
+<div class="w-full md:w-1/2 lg:w-7/12 h-full overflow-y-auto bg-background-light dark:bg-background-dark relative">
+<!-- Mobile Header (Visible only on mobile) -->
+<div class="md:hidden p-6 pb-0 flex justify-between items-center">
+<span class="text-2xl font-bold tracking-tight text-primary">Timeless.</span>
+</div>
+<div class="min-h-full flex flex-col justify-center px-6 py-12 md:px-12 lg:px-24">
+<!-- Form Header -->
+<div class="mb-10">
+<span class="hidden md:block text-2xl font-bold tracking-tight text-primary mb-8">Timeless.</span>
+<h1 class="text-3xl font-extrabold text-slate-900 dark:text-white mb-2">Join as a Client</h1>
+<p class="text-slate-600 dark:text-slate-400">
+                    Create an account to start booking talent and managing productions.
+                </p>
+</div>
+<form action="#" class="space-y-6">
+<!-- Organization Details Section -->
+<div class="space-y-5">
+<h3 class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-500 mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">Organization Details</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<!-- Company Name -->
+<div class="col-span-1">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="company">Company / Organization</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+<span class="material-icons text-sm">business</span>
+</span>
+<input class="block w-full pl-10 pr-3 py-2.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow duration-200 shadow-sm" id="company" name="company" placeholder="e.g. Live Nation, Indie Collective" required="" type="text"/>
+</div>
+</div>
+<!-- Role -->
+<div class="col-span-1">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="role">Your Role</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+<span class="material-icons text-sm">badge</span>
+</span>
+<input class="block w-full pl-10 pr-3 py-2.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow duration-200 shadow-sm" id="role" name="role" placeholder="e.g. Talent Buyer, Event Manager" required="" type="text"/>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<!-- Interest Area Dropdown -->
+<div class="col-span-1">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="interest">Primary Interest</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+<span class="material-icons text-sm">interests</span>
+</span>
+<select class="block w-full pl-10 pr-10 py-2.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow duration-200 shadow-sm appearance-none" id="interest" name="interest">
+<option disabled="" selected="" value="">Select an area</option>
+<option value="hiring">Hiring Talent</option>
+<option value="venues">Booking Venues</option>
+<option value="production">Event Production</option>
+</select>
+<span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
+<span class="material-icons text-sm">expand_more</span>
+</span>
+</div>
+</div>
+<!-- Budget Range Dropdown -->
+<div class="col-span-1">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="budget">Estimated Budget</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+<span class="material-icons text-sm">attach_money</span>
+</span>
+<select class="block w-full pl-10 pr-10 py-2.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow duration-200 shadow-sm appearance-none" id="budget" name="budget">
+<option disabled="" selected="" value="">Select range</option>
+<option value="low">&lt; $5,000</option>
+<option value="medium">$5,000 - $20,000</option>
+<option value="high">$20,000 - $50,000</option>
+<option value="enterprise">$50,000+</option>
+</select>
+<span class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
+<span class="material-icons text-sm">expand_more</span>
+</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Contact Info Section -->
+<div class="space-y-5 pt-4">
+<h3 class="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-500 mb-4 border-b border-slate-200 dark:border-slate-800 pb-2">Contact Information</h3>
+<div class="space-y-5">
+<!-- Email -->
+<div>
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="email">Work Email</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+<span class="material-icons text-sm">email</span>
+</span>
+<input class="block w-full pl-10 pr-3 py-2.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow duration-200 shadow-sm" id="email" name="email" placeholder="name@company.com" required="" type="email"/>
+</div>
+</div>
+<!-- Phone & Password row -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<div>
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="phone">Phone Number</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+<span class="material-icons text-sm">phone</span>
+</span>
+<input class="block w-full pl-10 pr-3 py-2.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow duration-200 shadow-sm" id="phone" name="phone" placeholder="+1 (555) 000-0000" type="tel"/>
+</div>
+</div>
+<!-- Password - simplified for UI -->
+<div>
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5" for="password">Create Password</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+<span class="material-icons text-sm">lock</span>
+</span>
+<input class="block w-full pl-10 pr-3 py-2.5 bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow duration-200 shadow-sm" id="password" name="password" placeholder="••••••••" type="password"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Terms -->
+<div class="flex items-start">
+<div class="flex h-5 items-center">
+<input class="h-4 w-4 rounded border-slate-300 dark:border-slate-600 bg-white dark:bg-surface-dark text-primary focus:ring-primary" id="terms" name="terms" type="checkbox"/>
+</div>
+<div class="ml-3 text-sm">
+<label class="font-medium text-slate-700 dark:text-slate-300" for="terms">I agree to the <a class="text-primary hover:text-primary-dark hover:underline" href="#">Terms of Service</a> and <a class="text-primary hover:text-primary-dark hover:underline" href="#">Privacy Policy</a>.</label>
+</div>
+</div>
+<!-- Action Button -->
+<button class="group relative w-full flex justify-center py-3.5 px-4 border border-transparent rounded-lg text-sm font-bold text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-background-dark transition-all duration-200 shadow-lg shadow-primary/25" type="submit">
+<span class="absolute right-0 inset-y-0 flex items-center pr-3">
+<span class="material-icons text-white/50 group-hover:text-white transition-colors">arrow_forward</span>
+</span>
+                    Create Account
+                </button>
+</form>
+<div class="mt-8 text-center">
+<p class="text-sm text-slate-600 dark:text-slate-400">
+                    Already have an account? 
+                    <a class="font-bold text-primary hover:text-primary-dark transition-colors" href="#">Log in</a>
+</p>
+</div>
+<!-- Trust Badge / Footer Note -->
+<div class="mt-12 pt-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-center gap-2 opacity-50 hover:opacity-100 transition-opacity">
+<span class="material-icons text-xs text-slate-500">lock</span>
+<span class="text-xs text-slate-500">Secure 256-bit SSL encrypted registration</span>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,367 @@
+import { Talent, User, UserRole, UserStatus } from "@/types";
+
+export interface TalentWithUser {
+  talent: Talent;
+  user: User;
+}
+
+export const mockTalents: TalentWithUser[] = [
+  {
+    user: {
+      id: "talent-1",
+      name: "Alex Rivera",
+      email: "alex@example.com",
+      role: UserRole.TALENT,
+      avatar: "/images/avatar-producer.jpg",
+      status: UserStatus.ACTIVE,
+    },
+    talent: {
+      id: "talent-1",
+      userId: "talent-1",
+      category: "Sound Engineer",
+      city: "Los Angeles",
+      bio: "Grammy-nominated sound engineer with 10+ years of experience in mixing, mastering, and live sound. Worked with top-tier artists across hip-hop, R&B, and electronic genres. Passionate about pushing sonic boundaries and delivering pristine audio quality.",
+      tags: ["Mixing", "Mastering", "Live Sound", "Recording"],
+      portfolio: [
+        { type: "image", url: "/images/studio-card.jpg", caption: "Studio A mixing session" },
+        { type: "image", url: "/images/live-room-bg.jpg", caption: "Live room setup" },
+        { type: "image", url: "/images/hero-studio.jpg", caption: "Analog console work" },
+      ],
+      reviews: [
+        { id: "r1", author: "Sarah Jenkins", clientId: "c1", rating: 5, comment: "Incredible attention to detail. Best mix I've ever had. Alex really knows how to bring out the emotion in a track.", timestamp: "2024-12-15" },
+        { id: "r2", author: "Marcus Cole", clientId: "c2", rating: 5, comment: "Delivered ahead of schedule with studio-quality mastering. Will definitely work together again.", timestamp: "2024-11-20" },
+        { id: "r3", author: "Luna Park", clientId: "c3", rating: 4, comment: "Great ear for detail. The live sound setup for our event was flawless.", timestamp: "2024-10-05" },
+      ],
+      servicePlans: [
+        { id: "sp1", title: "Basic Mix", description: "Stereo mix of up to 24 tracks", price: 500, includes: ["Stereo mixdown", "3 revision rounds", "48h delivery"] },
+        { id: "sp2", title: "Premium Package", description: "Full mix + master for release-ready audio", price: 1200, includes: ["Stem mixing", "Mastering", "5 revisions", "Dolby Atmos option"] },
+      ],
+      isVerified: true,
+      hourlyRate: 150,
+      jobsCompleted: 87,
+      responseRate: 98,
+      availability: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+    },
+  },
+  {
+    user: {
+      id: "talent-2",
+      name: "Mia Chen",
+      email: "mia@example.com",
+      role: UserRole.TALENT,
+      avatar: "/images/testimonial-sarah.jpg",
+      status: UserStatus.ACTIVE,
+    },
+    talent: {
+      id: "talent-2",
+      userId: "talent-2",
+      category: "Concert Photographer",
+      city: "New York",
+      bio: "Award-winning concert and event photographer capturing the raw energy of live performances. My work has been featured in Rolling Stone, Billboard, and Pitchfork. I specialize in low-light photography and creating visual stories that capture the spirit of the moment.",
+      tags: ["Concert Photography", "Event Coverage", "Portraits", "Low-Light"],
+      portfolio: [
+        { type: "image", url: "/images/hero-concert.jpg", caption: "Festival main stage" },
+        { type: "image", url: "/images/community-card.jpg", caption: "Intimate venue shoot" },
+      ],
+      reviews: [
+        { id: "r4", author: "DJ Phantom", clientId: "c4", rating: 5, comment: "Mia captured the energy of our festival perfectly. The photos were stunning and delivered within 24 hours.", timestamp: "2025-01-10" },
+        { id: "r5", author: "The Velvet Room", clientId: "c5", rating: 5, comment: "Best concert photographer we've ever hired. She moves through the crowd like a ghost and gets impossible shots.", timestamp: "2024-12-28" },
+      ],
+      servicePlans: [
+        { id: "sp3", title: "Event Coverage", description: "Full event photo coverage", price: 800, includes: ["4-hour coverage", "200+ edited photos", "Online gallery", "Print rights"] },
+        { id: "sp4", title: "Premium Event", description: "Extended coverage with extras", price: 1500, includes: ["8-hour coverage", "500+ edited photos", "Same-day previews", "Video highlights"] },
+      ],
+      isVerified: true,
+      hourlyRate: 200,
+      jobsCompleted: 124,
+      responseRate: 95,
+      availability: ["Thu", "Fri", "Sat", "Sun"],
+    },
+  },
+  {
+    user: {
+      id: "talent-3",
+      name: "Jordan Blake",
+      email: "jordan@example.com",
+      role: UserRole.TALENT,
+      avatar: "/images/avatar-dj.jpg",
+      status: UserStatus.ACTIVE,
+    },
+    talent: {
+      id: "talent-3",
+      userId: "talent-3",
+      category: "DJ",
+      city: "Miami",
+      bio: "Resident DJ at some of Miami's hottest clubs with a style that blends house, techno, and Afrobeats. Known for reading the crowd and creating unforgettable dance floor experiences. Available for clubs, festivals, private events, and corporate functions.",
+      tags: ["House", "Techno", "Afrobeats", "Club DJ", "Festivals"],
+      portfolio: [
+        { type: "image", url: "/images/dj-profile.jpg", caption: "Club residency" },
+        { type: "image", url: "/images/hero-concert.jpg", caption: "Festival set" },
+      ],
+      reviews: [
+        { id: "r6", author: "Club Neon", clientId: "c6", rating: 5, comment: "Jordan kept the dance floor packed all night. Absolutely incredible energy and track selection.", timestamp: "2025-01-15" },
+        { id: "r7", author: "Elena Voss", clientId: "c7", rating: 4, comment: "Great DJ for our corporate event. Professional, on time, and knew exactly how to set the mood.", timestamp: "2024-11-30" },
+      ],
+      servicePlans: [
+        { id: "sp5", title: "Club Set", description: "3-hour DJ set for clubs and bars", price: 600, includes: ["3-hour set", "Own equipment", "Custom playlist", "Sound check"] },
+        { id: "sp6", title: "Full Night", description: "Extended set for festivals and major events", price: 2000, includes: ["6-hour set", "Full PA system", "Lighting sync", "MC services"] },
+      ],
+      isVerified: true,
+      hourlyRate: 250,
+      jobsCompleted: 203,
+      responseRate: 92,
+      availability: ["Thu", "Fri", "Sat"],
+    },
+  },
+  {
+    user: {
+      id: "talent-4",
+      name: "Kai Nakamura",
+      email: "kai@example.com",
+      role: UserRole.TALENT,
+      avatar: "/images/avatar-engineer.jpg",
+      status: UserStatus.ACTIVE,
+    },
+    talent: {
+      id: "talent-4",
+      userId: "talent-4",
+      category: "Videographer/Editor",
+      city: "London",
+      bio: "Cinematic videographer and editor specializing in music videos, live concert films, and artist documentaries. I bring a film-school eye to every project, with expertise in color grading, storytelling, and cutting-edge post-production techniques.",
+      tags: ["Music Videos", "Concert Films", "Color Grading", "Documentaries"],
+      portfolio: [
+        { type: "image", url: "/images/studio-card.jpg", caption: "BTS music video shoot" },
+        { type: "image", url: "/images/academy-card.jpg", caption: "Documentary work" },
+      ],
+      reviews: [
+        { id: "r8", author: "Aria Sound", clientId: "c8", rating: 5, comment: "Kai turned our live show into a cinematic experience. The final edit was breathtaking.", timestamp: "2025-01-05" },
+        { id: "r9", author: "Fresh Beats Records", clientId: "c9", rating: 4, comment: "Professional and creative. Delivered our music video on time with stunning color grading.", timestamp: "2024-12-10" },
+      ],
+      servicePlans: [
+        { id: "sp7", title: "Music Video", description: "Full music video production", price: 3000, includes: ["Pre-production planning", "1-day shoot", "Professional editing", "Color grading", "2 revision rounds"] },
+        { id: "sp8", title: "Event Recap", description: "Short-form event highlight video", price: 1000, includes: ["Event coverage", "2-3 min edit", "Licensed music", "Social-ready formats"] },
+      ],
+      isVerified: true,
+      hourlyRate: 175,
+      jobsCompleted: 56,
+      responseRate: 97,
+      availability: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+    },
+  },
+  {
+    user: {
+      id: "talent-5",
+      name: "Destiny Wright",
+      email: "destiny@example.com",
+      role: UserRole.TALENT,
+      avatar: "/images/testimonial-sarah.jpg",
+      status: UserStatus.ACTIVE,
+    },
+    talent: {
+      id: "talent-5",
+      userId: "talent-5",
+      category: "Lighting Technician",
+      city: "Los Angeles",
+      bio: "Creative lighting designer and technician with experience in concerts, theater, and corporate events. I transform spaces with light, creating immersive atmospheres that complement the music and elevate the audience experience.",
+      tags: ["Stage Lighting", "LED Design", "DMX Programming", "Festival Rigs"],
+      portfolio: [
+        { type: "image", url: "/images/hero-concert.jpg", caption: "Festival stage design" },
+        { type: "image", url: "/images/community-card.jpg", caption: "Club lighting setup" },
+      ],
+      reviews: [
+        { id: "r10", author: "Event Horizon Inc", clientId: "c10", rating: 5, comment: "Destiny's lighting design was the highlight of our show — literally. The crowd was mesmerized.", timestamp: "2024-12-20" },
+        { id: "r11", author: "Marcus Cole", clientId: "c2", rating: 4, comment: "Professional, creative, and easy to work with. Brought our stage vision to life.", timestamp: "2024-10-15" },
+      ],
+      servicePlans: [
+        { id: "sp9", title: "Basic Lighting", description: "Standard lighting setup for small venues", price: 400, includes: ["LED par cans", "Basic programming", "Setup & teardown", "3-hour operation"] },
+        { id: "sp10", title: "Full Production", description: "Complete lighting design and operation", price: 2500, includes: ["Custom design", "Moving heads", "DMX programming", "Full show operation", "Haze machines"] },
+      ],
+      isVerified: false,
+      hourlyRate: 100,
+      jobsCompleted: 34,
+      responseRate: 90,
+      availability: ["Wed", "Thu", "Fri", "Sat", "Sun"],
+    },
+  },
+  {
+    user: {
+      id: "talent-6",
+      name: "Theo Martinez",
+      email: "theo@example.com",
+      role: UserRole.TALENT,
+      avatar: "/images/avatar-producer.jpg",
+      status: UserStatus.ACTIVE,
+    },
+    talent: {
+      id: "talent-6",
+      userId: "talent-6",
+      category: "Producer",
+      city: "Berlin",
+      bio: "Multi-genre music producer with a signature sound that blends electronic, hip-hop, and world music influences. Platinum-certified with credits on major label releases. My studio is a creative playground where ideas become timeless tracks.",
+      tags: ["Beat Making", "Arrangement", "Electronic", "Hip-Hop", "Vocals"],
+      portfolio: [
+        { type: "image", url: "/images/studio-card.jpg", caption: "Production suite" },
+        { type: "image", url: "/images/live-room-bg.jpg", caption: "Recording session" },
+        { type: "image", url: "/images/hero-studio.jpg", caption: "Mixing desk" },
+      ],
+      reviews: [
+        { id: "r12", author: "Skyline Records", clientId: "c11", rating: 5, comment: "Theo's production is next level. He understood our vision immediately and delivered a track that exceeded all expectations.", timestamp: "2025-01-20" },
+        { id: "r13", author: "Maya Banks", clientId: "c12", rating: 5, comment: "Working with Theo was like a masterclass. He pushed my sound in directions I never imagined.", timestamp: "2024-11-25" },
+        { id: "r14", author: "DJ Phantom", clientId: "c4", rating: 4, comment: "Solid beats and great communication throughout the project.", timestamp: "2024-09-15" },
+      ],
+      servicePlans: [
+        { id: "sp11", title: "Beat Lease", description: "Exclusive beat with stems", price: 500, includes: ["Custom beat", "Full stems", "Mix-ready", "Commercial license"] },
+        { id: "sp12", title: "Full Production", description: "Complete song production from scratch", price: 3500, includes: ["Custom production", "Arrangement", "Mix & master", "Unlimited revisions", "Publishing split negotiable"] },
+      ],
+      isVerified: true,
+      hourlyRate: 300,
+      jobsCompleted: 142,
+      responseRate: 94,
+      availability: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    },
+  },
+  {
+    user: {
+      id: "talent-7",
+      name: "Nia Okafor",
+      email: "nia@example.com",
+      role: UserRole.TALENT,
+      avatar: "/images/testimonial-sarah.jpg",
+      status: UserStatus.ACTIVE,
+    },
+    talent: {
+      id: "talent-7",
+      userId: "talent-7",
+      category: "Event Promoter",
+      city: "New York",
+      bio: "Full-service event promoter with a decade of experience filling venues across the East Coast. I specialize in hip-hop, R&B, and Afrobeats events. My network spans influencers, radio DJs, and media outlets to guarantee maximum reach.",
+      tags: ["Event Marketing", "Social Media", "PR", "Nightlife", "Influencer Network"],
+      portfolio: [
+        { type: "image", url: "/images/community-card.jpg", caption: "Sold-out event" },
+        { type: "image", url: "/images/hero-concert.jpg", caption: "Festival promotion" },
+      ],
+      reviews: [
+        { id: "r15", author: "Club Neon", clientId: "c6", rating: 5, comment: "Nia sold out our venue in 48 hours. Her marketing strategy and network are unmatched.", timestamp: "2025-01-12" },
+        { id: "r16", author: "Rashid Ahmed", clientId: "c13", rating: 4, comment: "Great promoter. Brought the right crowd and handled all marketing flawlessly.", timestamp: "2024-12-01" },
+      ],
+      servicePlans: [
+        { id: "sp13", title: "Basic Promo", description: "Social media and flyer promotion", price: 300, includes: ["Flyer design", "Social media campaign", "Email blast", "2-week timeline"] },
+        { id: "sp14", title: "Full Campaign", description: "End-to-end event marketing", price: 1500, includes: ["Multi-channel strategy", "Influencer outreach", "Press coverage", "Day-of street team", "Post-event report"] },
+      ],
+      isVerified: true,
+      hourlyRate: 80,
+      jobsCompleted: 67,
+      responseRate: 99,
+      availability: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+    },
+  },
+  {
+    user: {
+      id: "talent-8",
+      name: "Luca Fontaine",
+      email: "luca@example.com",
+      role: UserRole.TALENT,
+      avatar: "/images/avatar-dj.jpg",
+      status: UserStatus.ACTIVE,
+    },
+    talent: {
+      id: "talent-8",
+      userId: "talent-8",
+      category: "Session Musician",
+      city: "Los Angeles",
+      bio: "Versatile session guitarist and multi-instrumentalist with credits spanning jazz, funk, R&B, and pop. Berklee College of Music graduate. Available for studio sessions, live performances, and touring. I bring feel, precision, and musicality to every project.",
+      tags: ["Guitar", "Bass", "Keys", "Studio Sessions", "Live Performance"],
+      portfolio: [
+        { type: "image", url: "/images/live-room-bg.jpg", caption: "Studio session" },
+        { type: "image", url: "/images/studio-card.jpg", caption: "Guitar rig" },
+      ],
+      reviews: [
+        { id: "r17", author: "Fresh Beats Records", clientId: "c9", rating: 5, comment: "Luca is a monster on guitar. Nailed the vibe on the first take and added magic we didn't know we needed.", timestamp: "2025-01-18" },
+        { id: "r18", author: "Aria Sound", clientId: "c8", rating: 5, comment: "The most professional session musician I've worked with. Always prepared, always tasteful.", timestamp: "2024-11-10" },
+      ],
+      servicePlans: [
+        { id: "sp15", title: "Studio Session", description: "4-hour recording session", price: 400, includes: ["4-hour session", "Own instruments", "Multiple takes", "DI + amp tracks"] },
+        { id: "sp16", title: "Remote Session", description: "Record parts from my home studio", price: 200, includes: ["Professional recording", "Up to 3 parts", "48h turnaround", "Stems delivered"] },
+      ],
+      isVerified: false,
+      hourlyRate: 120,
+      jobsCompleted: 91,
+      responseRate: 96,
+      availability: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    },
+  },
+  {
+    user: {
+      id: "talent-9",
+      name: "Zara Kim",
+      email: "zara@example.com",
+      role: UserRole.TALENT,
+      avatar: "/images/testimonial-sarah.jpg",
+      status: UserStatus.ACTIVE,
+    },
+    talent: {
+      id: "talent-9",
+      userId: "talent-9",
+      category: "Sound Engineer",
+      city: "Berlin",
+      bio: "Specializing in live sound engineering for electronic music events and immersive audio experiences. Expert in Funktion-One and d&b Audiotechnik systems. I make sure every seat in the house feels the bass.",
+      tags: ["Live Sound", "PA Systems", "Electronic Music", "Festival Audio"],
+      portfolio: [
+        { type: "image", url: "/images/hero-concert.jpg", caption: "Festival FOH" },
+        { type: "image", url: "/images/live-room-bg.jpg", caption: "Sound check" },
+      ],
+      reviews: [
+        { id: "r19", author: "Berlin Bass Collective", clientId: "c14", rating: 5, comment: "Zara is the best live sound engineer in Berlin. Period. The system she designed for our warehouse event was mind-blowing.", timestamp: "2025-01-08" },
+        { id: "r20", author: "Event Horizon Inc", clientId: "c10", rating: 4, comment: "Excellent work on our outdoor festival. Clean sound at high volumes with zero feedback issues.", timestamp: "2024-11-20" },
+      ],
+      servicePlans: [
+        { id: "sp17", title: "Live Sound", description: "Full FOH engineering for events", price: 600, includes: ["Sound check", "Live mixing", "System optimization", "8-hour operation"] },
+        { id: "sp18", title: "System Design", description: "PA design and consulting", price: 1000, includes: ["Venue analysis", "System specification", "Setup supervision", "Tuning & optimization"] },
+      ],
+      isVerified: true,
+      hourlyRate: 130,
+      jobsCompleted: 72,
+      responseRate: 93,
+      availability: ["Wed", "Thu", "Fri", "Sat", "Sun"],
+    },
+  },
+  {
+    user: {
+      id: "talent-10",
+      name: "Diego Santos",
+      email: "diego@example.com",
+      role: UserRole.TALENT,
+      avatar: "/images/avatar-engineer.jpg",
+      status: UserStatus.ACTIVE,
+    },
+    talent: {
+      id: "talent-10",
+      userId: "talent-10",
+      category: "Videographer/Editor",
+      city: "Miami",
+      bio: "Visual storyteller specializing in Latin music videos, brand content, and event documentation. Fluent in English and Spanish. Drone-certified pilot with 4K cinema camera equipment. I turn moments into movements.",
+      tags: ["Music Videos", "Drone", "Brand Content", "Latin Music", "4K Cinema"],
+      portfolio: [
+        { type: "image", url: "/images/hero-concert.jpg", caption: "Aerial concert shot" },
+        { type: "image", url: "/images/community-card.jpg", caption: "Event recap" },
+        { type: "image", url: "/images/academy-card.jpg", caption: "BTS brand shoot" },
+      ],
+      reviews: [
+        { id: "r21", author: "Reggaeton Stars", clientId: "c15", rating: 5, comment: "Diego is a genius behind the camera. Our music video went viral with 2M views in the first week.", timestamp: "2025-01-22" },
+        { id: "r22", author: "Elena Voss", clientId: "c7", rating: 5, comment: "The drone footage of our rooftop event was absolutely cinematic. Diego exceeded every expectation.", timestamp: "2024-12-15" },
+      ],
+      servicePlans: [
+        { id: "sp19", title: "Event Recap", description: "Short highlight video with drone footage", price: 800, includes: ["Ground + drone coverage", "60-90s edit", "Licensed music", "Instagram-ready"] },
+        { id: "sp20", title: "Music Video", description: "Full music video with drone + cinema cameras", price: 4000, includes: ["2-day shoot", "Drone footage", "Cinema cameras", "Full post-production", "3 revisions"] },
+      ],
+      isVerified: true,
+      hourlyRate: 200,
+      jobsCompleted: 45,
+      responseRate: 91,
+      availability: ["Mon", "Tue", "Wed", "Fri", "Sat"],
+    },
+  },
+];
+
+export const talentCategories = Array.from(new Set(mockTalents.map((t) => t.talent.category)));
+export const talentCities = Array.from(new Set(mockTalents.map((t) => t.talent.city)));
