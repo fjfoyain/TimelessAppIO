@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Timeless - Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#8b5cf6", // Vibrant purple based on request for "vibrant purple" despite config block hint, usually we follow config block but explicit request for "vibrant purple and electric violet" overrides the desaturated #524253 if it conflicts with visual design intent of "neon glow". Let's try to mix them or stick to the vibrant one for accents and use the config for base. 
+              // Actually, looking at the "Theme Configuration" section, it says "The design MUST use the following Tailwind CSS theme configuration... This configuration defines the primary color...".
+              // The config says primary is #524253.
+              // The user request says "Align... with vibrant purple and electric violet accents".
+              // This is a conflict. Usually, the explicit user edit request overrides the generic context. However, the system prompt says "The design MUST use the following Tailwind CSS theme configuration".
+              // Let's use #524253 as the base "primary" class, but introduce specific accent colors for the "vibrant purple" requirements to satisfy the visual description.
+              // Let's redefine the palette to honor the "vibrant" request while keeping the structure.
+              "primary": "#7c3aed", // Reverting to a vibrant purple as per "Edit request: vibrant purple and electric violet accents" to match the visual vibe described. The provided config #524253 is likely a base theme but the specific request asks for "electric violet". I will map primary to a vibrant violet to satisfy the user request.
+              "primary-dark": "#6d28d9",
+              "background-light": "#0f0e13", // Keeping dark theme per request
+              "background-dark": "#050408",
+              "surface-dark": "#13111a",
+              "accent": "#d946ef", // Electric violet/fuchsia
+              "whatsapp": "#25D366",
+            },
+            fontFamily: {
+              "display": ["Montserrat", "sans-serif"]
+            },
+            backgroundImage: {
+              'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+              'hero-glow': 'conic-gradient(from 180deg at 50% 50%, #2a2236 0deg, #0f0e13 180deg, #2a2236 360deg)',
+            },
+            animation: {
+                'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .text-glow {
+            text-shadow: 0 0 30px rgba(139, 92, 246, 0.6);
+        }
+        .text-glow-sm {
+            text-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
+        }
+        .bg-glow {
+            box-shadow: 0 0 80px rgba(139, 92, 246, 0.15);
+        }
+        .btn-glow {
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+        }
+        .whatsapp-glow {
+            box-shadow: 0 0 20px rgba(37, 211, 102, 0.4);
+        }
+        .whatsapp-glow:hover {
+            box-shadow: 0 0 30px rgba(37, 211, 102, 0.6);
+        }
+        .card-hover:hover {
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.1);
+        }
+        .glass-panel {
+            background: rgba(19, 17, 26, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+<body class="bg-background-dark font-display text-gray-100 min-h-screen flex flex-col selection:bg-primary selection:text-white">
+<nav class="fixed top-0 w-full z-50 bg-background-dark/80 backdrop-blur-xl border-b border-white/5">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-24 items-center">
+<div class="flex-shrink-0 flex items-center gap-2 cursor-pointer group">
+<div class="relative">
+<span class="material-symbols-outlined text-primary text-3xl relative z-10">hourglass_empty</span>
+<div class="absolute inset-0 bg-primary/50 blur-lg rounded-full opacity-0 group-hover:opacity-100 transition-opacity"></div>
+</div>
+<span class="font-bold text-2xl tracking-tighter text-white">TIMELESS</span>
+</div>
+<div class="hidden md:flex bg-surface-dark p-1.5 rounded-full border border-white/10 shadow-lg shadow-black/50">
+<a class="px-8 py-2.5 rounded-full text-sm font-medium text-gray-400 hover:text-white transition-all duration-300" href="#">App</a>
+<a class="px-8 py-2.5 rounded-full text-sm font-medium bg-gradient-to-r from-primary to-primary-dark text-white shadow-lg shadow-primary/20 ring-1 ring-white/10" href="#">Studio</a>
+</div>
+<div class="hidden md:flex items-center space-x-8">
+<a class="text-sm font-medium text-gray-300 hover:text-white hover:text-glow-sm transition-all" href="#">About</a>
+<a class="text-sm font-medium text-gray-300 hover:text-white hover:text-glow-sm transition-all" href="#">Contact</a>
+<button class="text-sm font-bold bg-white/5 hover:bg-white/10 border border-white/10 hover:border-primary/50 text-white px-6 py-2.5 rounded-lg transition-all shadow-lg hover:shadow-primary/10">Login</button>
+</div>
+<div class="flex items-center md:hidden">
+<button class="text-gray-400 hover:text-white focus:outline-none">
+<span class="material-symbols-outlined text-3xl">menu</span>
+</button>
+</div>
+</div>
+</div>
+</nav>
+<div class="md:hidden pt-28 pb-6 px-4 bg-background-dark border-b border-white/5 sticky top-0 z-40">
+<div class="flex bg-surface-dark p-1 rounded-xl border border-white/10 w-full">
+<a class="flex-1 text-center py-3 rounded-lg text-sm font-medium text-gray-400" href="#">App</a>
+<a class="flex-1 text-center py-3 rounded-lg text-sm font-medium bg-gradient-to-r from-primary to-primary-dark text-white shadow-md" href="#">Studio</a>
+</div>
+</div>
+<header class="relative pt-32 md:pt-48 pb-20 lg:pb-32 overflow-hidden min-h-screen flex items-center">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] bg-primary/20 blur-[120px] rounded-full pointer-events-none opacity-40"></div>
+<div class="absolute bottom-0 right-0 w-[600px] h-[600px] bg-accent/10 blur-[100px] rounded-full pointer-events-none opacity-30"></div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+<div class="lg:col-span-7 space-y-10 relative">
+<div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-md shadow-[0_0_15px_rgba(124,58,237,0.2)]">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+<span class="text-xs font-bold uppercase tracking-widest text-primary-300 text-purple-200">New Studio Spaces Open</span>
+</div>
+<h1 class="text-6xl md:text-7xl lg:text-8xl font-bold leading-none tracking-tighter text-white drop-shadow-xl">
+                        Craft Your <br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-purple-300 to-accent animate-pulse-slow">Legacy.</span>
+</h1>
+<p class="text-xl text-gray-400 max-w-xl leading-relaxed font-light">
+                        Step away from the screen into a sanctuary of analog warmth and digital precision. Where sound meets soul in the heart of the city.
+                    </p>
+<div class="flex flex-col sm:flex-row gap-5 pt-4">
+<button class="relative bg-white text-black font-bold py-4 px-10 rounded-full shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:shadow-[0_0_50px_rgba(255,255,255,0.5)] hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3 group overflow-hidden">
+<span class="absolute inset-0 bg-gradient-to-r from-gray-100 to-white opacity-0 group-hover:opacity-100 transition-opacity"></span>
+<span class="relative z-10">Book a Session</span>
+<span class="material-symbols-outlined text-lg relative z-10 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<button class="bg-surface-dark border border-white/10 hover:border-primary/50 text-white font-medium py-4 px-8 rounded-full transition-all flex items-center justify-center gap-2 hover:bg-white/5 backdrop-blur-sm">
+                            Explore Gear
+                        </button>
+</div>
+<div class="pt-8 flex items-center gap-5 border-t border-white/5 mt-4">
+<div class="flex -space-x-4">
+<img alt="Profile picture of a female producer" class="w-12 h-12 rounded-full border-2 border-background-dark object-cover ring-2 ring-white/5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCS4WsRZIsnK3COUNzNTdNofbBF72e212_nv-Q-zHAj2mhoZNn4u4kL46fRTCz7eOfM4whbYP6z2toH1eVTNXZOgaqFIHquDQO2WIFweCg68e3aPh7PHBxqpC5XXXNE1siTs-FXvhlvswz8GCBMRkWDl5CnPVfRzYUFWBxC-TVbpdV9tGlSoVvKZpTC7FKNcJFIpcxtSG4OqOpW1_XMWKv3BC-w2SboiedbTQDBvsH6d_ua9jGR1lGTfhltyac4qe8H1uPlFO6_Aqvj"/>
+<img alt="Profile picture of a male DJ" class="w-12 h-12 rounded-full border-2 border-background-dark object-cover ring-2 ring-white/5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCi10751Llb0pseko5e7706prOf86I78J3HqwArGE_vxeNPEosEIrRrnq8u_gNDggSD1zRt3008IM-82DIIrwuk1J80KbS6qqe_Zj-tM72trmy4-GeLcKQn4uO7tllnl9_M6Z1Qwrdp5AQL7ZfGo3ZwkOaxVl8F5s1d5PFDuz4khyJdBH0uTNf_w9t6b2j6oB728OKNTM00cWNJ-iEph0_ttRZDzBbryJWkfTAakgOgSlV5U2_MMqAqm4YdweVGgoCrD5BvW-iYhsT5"/>
+<img alt="Profile picture of a sound engineer" class="w-12 h-12 rounded-full border-2 border-background-dark object-cover ring-2 ring-white/5" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxEf_NvTQmhnhNZZaQ-DhV50pgnbt3yO4FqQPeslr7AaVP1hJgwaZ2PASmSPwGKqg7GX0OF-DUKZlC5NrguaM_tpr2Bf9vxngK9eS9SiJXzPpUn-1UqzcdH1QwD6-wYZ2eX4m0Iwj4Fgx6xzKCdAdjMAx1R6uIOCM1M8iXBYamqugDA_Fn1ngNE4M0tbXHxxB1vWzLTCiwHupCbTIJG9kCRPMrwOtJfpGDj_J5XMzRXUklws364Yzn_L9q_q5M4S69kzGaemru-Hdn"/>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1 text-yellow-400 text-sm">
+<span class="material-symbols-outlined text-sm filled">star</span>
+<span class="material-symbols-outlined text-sm filled">star</span>
+<span class="material-symbols-outlined text-sm filled">star</span>
+<span class="material-symbols-outlined text-sm filled">star</span>
+<span class="material-symbols-outlined text-sm filled">star</span>
+</div>
+<p class="text-sm text-gray-400">Trusted by <span class="text-white font-semibold">500+</span> artists</p>
+</div>
+</div>
+</div>
+<div class="lg:col-span-5 relative mt-12 lg:mt-0 perspective-1000">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] border border-white/5 rounded-full animate-[spin_20s_linear_infinite]"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] border border-white/5 rounded-full animate-[spin_30s_linear_infinite_reverse]"></div>
+<div class="relative rounded-3xl overflow-hidden shadow-2xl border border-white/10 group transform transition-transform hover:scale-[1.02] duration-500 hover:shadow-primary/20">
+<img alt="Close up of a professional audio mixing console in a dimly lit studio with purple ambient lighting" class="w-full h-[600px] object-cover filter brightness-110 contrast-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHyHW4V2Mzjcbi7aI7Ud-gNmiiCz5E-SeUQJVojV6Lieq7UxxMFDfJUAgSQI5CHEJyslq4xybzT03cxRkof0e9mXtjccjFhHsjHX5iycFqTGGm5lkZwP7hDhSMK7jdtKf2GSJ65vghjS80fdxFpCWvSWeqHC3e-c6cvmHxdHDjFAC4UKw0lwWlBkyyeI3PKebEK-y5x9QLWEYl_G2UiByOv70T8T1NvzBc8yxATP5sDchK5tBLgcR-8oN3ek7ddIbAo-tqAWsH9CKc"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent opacity-90"></div>
+<div class="absolute inset-0 bg-primary/10 mix-blend-overlay"></div>
+<div class="absolute bottom-8 left-8 right-8 glass-panel p-6 rounded-2xl shadow-2xl transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>
+<span class="text-xs font-bold uppercase tracking-wide text-gray-300">Live Status</span>
+</div>
+<p class="text-white font-bold text-lg leading-tight">Studio A is Available</p>
+<p class="text-gray-400 text-sm mt-1">Neve 8068 Console • Genelec Monitoring</p>
+</div>
+<div class="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-white">graphic_eq</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<section class="py-32 relative bg-surface-dark/30 border-t border-white/5">
+<div class="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+<div class="text-center max-w-3xl mx-auto mb-20">
+<h2 class="text-4xl md:text-5xl font-bold mb-6 text-white tracking-tight">The <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Creative Ecosystem</span></h2>
+<p class="text-gray-400 text-lg leading-relaxed">Whether you're mastering the craft, connecting with the scene, or recording your next hit, we've built the perfect environment.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+<div class="group relative bg-[#13111a] rounded-3xl p-1 overflow-hidden transition-all duration-500 hover:-translate-y-2">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<div class="relative bg-background-dark h-full rounded-[20px] p-8 border border-white/5 hover:border-white/10 flex flex-col">
+<div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-surface-dark to-black border border-white/10 flex items-center justify-center mb-8 group-hover:shadow-[0_0_30px_rgba(124,58,237,0.3)] transition-all duration-500">
+<span class="material-symbols-outlined text-3xl text-primary group-hover:scale-110 transition-transform duration-300">school</span>
+</div>
+<h3 class="text-2xl font-bold mb-3 text-white">Academy</h3>
+<p class="text-gray-400 mb-8 leading-relaxed text-sm flex-grow">
+                            Master DJing &amp; Production. Learn from industry pros on club-standard gear in small, hands-on groups.
+                        </p>
+<div class="relative h-56 w-full rounded-xl overflow-hidden mb-6 group-hover:shadow-lg transition-shadow">
+<div class="absolute inset-0 bg-primary/20 mix-blend-color z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<img alt="DJ hands mixing on a turntable during a lesson" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 grayscale group-hover:grayscale-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCwMtp2aocMEsX2E_ilslMVg9i5guqQboOeZAgrPbxBe4hpxQaMkApou9lr6DEbX5RQSOZoVc4_k_3kkIAdsW0QQXgzu8_E3Yv_Y2OAqmMwk4drvMZSeqXk-mTBA0YFBmjXgbYRCFmuW1HsHpmW1sWnYoWmbE8cl0Pp7Vd0E-IwqXGDhU3cFQ2q_3mlqVQBM2gHVZbBlVgpttugQgv4bXvs7NfUBQ32DtPyoMtYzsB1K4qkkOVKeYKDD5yOtfIpoUTVZoAbmyjzHSm4"/>
+</div>
+<a class="inline-flex items-center text-white font-medium text-sm group-hover:text-primary transition-colors mt-auto" href="#">
+                            Browse Curriculum <span class="material-symbols-outlined text-sm ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+</div>
+<div class="group relative bg-[#13111a] rounded-3xl p-1 overflow-hidden transition-all duration-500 hover:-translate-y-2">
+<div class="absolute inset-0 bg-gradient-to-br from-accent/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<div class="relative bg-background-dark h-full rounded-[20px] p-8 border border-white/5 hover:border-white/10 flex flex-col">
+<div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-surface-dark to-black border border-white/10 flex items-center justify-center mb-8 group-hover:shadow-[0_0_30px_rgba(217,70,239,0.3)] transition-all duration-500">
+<span class="material-symbols-outlined text-3xl text-accent group-hover:scale-110 transition-transform duration-300">theater_comedy</span>
+</div>
+<h3 class="text-2xl font-bold mb-3 text-white">Community Events</h3>
+<p class="text-gray-400 mb-8 leading-relaxed text-sm flex-grow">
+                            Intimate showcases and networking nights. Connect with the local scene in a space designed for sound.
+                        </p>
+<div class="relative h-56 w-full rounded-xl overflow-hidden mb-6 group-hover:shadow-lg transition-shadow">
+<div class="absolute inset-0 bg-accent/20 mix-blend-color z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<img alt="Crowd silhouette at a music event with stage lighting" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 grayscale group-hover:grayscale-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNqNNZDTJdniouepX49zjm_LmrT3OqWVuaORbKR72Ewktf2bT7y50vvgJk3ibVaqJwRqY-132zwDIaEUIpoby9Y9jDdI3y7V3KslhpqUuUFyRrI-SS5Lz1XaTTYJt9gIjQ-X-ajvLV5i4ypRkS7fa_e1LCud0IynYwz0-eWCDWf90QKO9bxEst8RtXTjo9iUaSQifIrRk6wUYYpR4E3H3hKqoCMH-M3a66gC1ils4IRzIygcyki35YpEhb2n6EhT8WzoetRDGrGfgY"/>
+</div>
+<a class="inline-flex items-center text-white font-medium text-sm group-hover:text-accent transition-colors mt-auto" href="#">
+                            View Calendar <span class="material-symbols-outlined text-sm ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+</div>
+<div class="group relative bg-[#13111a] rounded-3xl p-1 overflow-hidden transition-all duration-500 hover:-translate-y-2">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<div class="relative bg-background-dark h-full rounded-[20px] p-8 border border-white/5 hover:border-white/10 flex flex-col">
+<div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-surface-dark to-black border border-white/10 flex items-center justify-center mb-8 group-hover:shadow-[0_0_30px_rgba(168,85,247,0.3)] transition-all duration-500">
+<span class="material-symbols-outlined text-3xl text-primary group-hover:scale-110 transition-transform duration-300">mic</span>
+</div>
+<h3 class="text-2xl font-bold mb-3 text-white">Professional Studio</h3>
+<p class="text-gray-400 mb-8 leading-relaxed text-sm flex-grow">
+                            Acoustically treated vocal booths and mixing suites. Capture your best take with top-tier microphones.
+                        </p>
+<div class="relative h-56 w-full rounded-xl overflow-hidden mb-6 group-hover:shadow-lg transition-shadow">
+<div class="absolute inset-0 bg-primary/20 mix-blend-color z-10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<img alt="Guitar being played in a recording studio setting" class="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700 grayscale group-hover:grayscale-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA12eLFPYg9NDKE85rqNp2hJmZM5ZMtQW53ULBM1zUjjby7mDC4_cGEg2sShYy7z_S6Gl64KjQTsTqiMXpsykde_UcYMQo5deCKhTeJFVSIBX7L4DGtjRLE2ftmvN5oKXdHD-fKVcZWTssnlE4WHrJobLVgFAWxKN1tD67r777BDClx2f4qoXPyXcUviBZ57yE0LgurfBYlwKWtccnOl7EMA6mXKSg-wsNQp49qw70IlhKEVILwQ25-ETIFnaFrr9YA9UuAlhevLbGF"/>
+</div>
+<a class="inline-flex items-center text-white font-medium text-sm group-hover:text-primary transition-colors mt-auto" href="#">
+                            Book a Room <span class="material-symbols-outlined text-sm ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-32 relative overflow-hidden group">
+<div class="absolute inset-0 z-0 transform scale-100 group-hover:scale-105 transition-transform duration-[2s]">
+<img alt="Wide angle view of a dark, modern recording studio control room with purple LED lights" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAi2SOXKW98P2ZulquBUc86rI0c_pkbyt7lRFExD2HIHteoMWKAEfTFOJ-ZVb1exGnTi8OVtTRNZxJDNJXKlbXCiOZFssjhLK5Bk4v78PWv5C1Y834w-KvNwPgmTvCS7q1sW1_W7dThL1epJPJ47nVE1L1oji01ziqpNVcv6LrCxnkNqok-Xzj5MW37ew2BWR2T_rL0Cs2iXZXWwCrVf7dEkxeJCkMEhlkgY7YCFwIxyUvjAGi5kgnZQSlTvijw7V8-qQoL46GpE7sc"/>
+<div class="absolute inset-0 bg-background-dark/90 mix-blend-multiply"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/80 to-transparent"></div>
+<div class="absolute inset-0 bg-gradient-to-r from-background-dark via-transparent to-background-dark opacity-80"></div>
+</div>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+<div class="inline-block p-[1px] rounded-full bg-gradient-to-r from-transparent via-white/20 to-transparent mb-8">
+<div class="py-1.5 px-6 rounded-full bg-black/50 backdrop-blur-md">
+<span class="text-white text-xs font-bold uppercase tracking-[0.2em]">Premium Facility</span>
+</div>
+</div>
+<h2 class="text-5xl md:text-7xl font-bold text-white mb-8 tracking-tighter">The Live Room</h2>
+<p class="text-xl text-gray-300 max-w-2xl mx-auto mb-16 font-light leading-relaxed">
+                Experience sound isolation perfection. Our main live room features floating floors, variable acoustics, and a vibe that inspires.
+            </p>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+<div class="p-6 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm hover:bg-white/10 transition-colors group/stat">
+<div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-500 mb-2 group-hover/stat:text-white transition-colors">24/7</div>
+<div class="text-xs uppercase tracking-widest text-gray-400 font-semibold">Access</div>
+</div>
+<div class="p-6 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm hover:bg-white/10 transition-colors group/stat">
+<div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-500 mb-2 group-hover/stat:text-white transition-colors">A+</div>
+<div class="text-xs uppercase tracking-widest text-gray-400 font-semibold">Acoustics</div>
+</div>
+<div class="p-6 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm hover:bg-white/10 transition-colors group/stat">
+<div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-500 mb-2 group-hover/stat:text-white transition-colors">4</div>
+<div class="text-xs uppercase tracking-widest text-gray-400 font-semibold">Iso Booths</div>
+</div>
+<div class="p-6 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-sm hover:bg-white/10 transition-colors group/stat">
+<div class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-white to-gray-500 mb-2 group-hover/stat:text-white transition-colors">Top</div>
+<div class="text-xs uppercase tracking-widest text-gray-400 font-semibold">Engineers</div>
+</div>
+</div>
+</div>
+</section>
+<section class="py-24 bg-background-dark relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-b from-background-dark to-[#0a0a10]"></div>
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+<div class="relative bg-surface-dark border border-white/10 rounded-[2.5rem] p-12 md:p-20 overflow-hidden shadow-2xl group">
+<div class="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary-dark/10 to-accent/10 opacity-50 group-hover:opacity-70 transition-opacity duration-1000"></div>
+<div class="absolute -top-40 -right-40 w-96 h-96 bg-primary/20 rounded-full blur-[100px] animate-pulse"></div>
+<div class="absolute -bottom-40 -left-40 w-96 h-96 bg-accent/10 rounded-full blur-[100px]"></div>
+<div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12 text-center lg:text-left">
+<div class="max-w-xl">
+<h2 class="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">Ready to Step Inside?</h2>
+<p class="text-gray-400 text-lg mb-8">Book a tour of the studio or reserve your first session today. Your sound is waiting to be discovered.</p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+<div class="flex items-center gap-2 text-sm text-gray-500">
+<span class="material-symbols-outlined text-green-500 text-base">check_circle</span>
+<span>Free cancellation</span>
+</div>
+<div class="flex items-center gap-2 text-sm text-gray-500">
+<span class="material-symbols-outlined text-green-500 text-base">check_circle</span>
+<span>Instant confirmation</span>
+</div>
+</div>
+</div>
+<div class="flex-shrink-0">
+<button class="relative group/btn inline-flex items-center justify-center px-10 py-5 font-bold text-white transition-all duration-200 bg-primary font-display rounded-2xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary hover:scale-105 btn-glow">
+<div class="absolute inset-0 w-full h-full rounded-2xl opacity-0 group-hover/btn:opacity-100 bg-gradient-to-r from-primary via-primary-dark to-primary background-animate transition-opacity"></div>
+<span class="relative flex items-center gap-3">
+                                Book a Class or Visit
+                                <span class="material-symbols-outlined group-hover/btn:translate-x-1 transition-transform">arrow_forward</span>
+</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<footer class="bg-[#050408] border-t border-white/5 pt-20 pb-10">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+<div class="col-span-1 md:col-span-1 space-y-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl">hourglass_empty</span>
+<span class="font-bold text-xl tracking-tighter text-white">TIMELESS</span>
+</div>
+<p class="text-gray-500 text-sm leading-relaxed">
+                        Bridging the gap between digital networking and physical creation. The future of music is here.
+                    </p>
+<div class="flex space-x-5">
+<a class="text-gray-500 hover:text-white transition-colors" href="#"><span class="sr-only">Instagram</span><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg></a>
+<a class="text-gray-500 hover:text-white transition-colors" href="#"><span class="sr-only">Twitter</span><svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"></path></svg></a>
+</div>
+</div>
+<div class="md:col-span-1">
+<h3 class="font-bold text-white mb-6 text-sm uppercase tracking-wider">Platform</h3>
+<ul class="space-y-4 text-sm text-gray-400">
+<li><a class="hover:text-primary transition-colors" href="#">Download App</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Find Collaborators</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Pricing</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Success Stories</a></li>
+</ul>
+</div>
+<div class="md:col-span-1">
+<h3 class="font-bold text-white mb-6 text-sm uppercase tracking-wider">Studio</h3>
+<ul class="space-y-4 text-sm text-gray-400">
+<li><a class="hover:text-primary transition-colors" href="#">Book a Class</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Rent Studio Time</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Events Calendar</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Gear List</a></li>
+</ul>
+</div>
+<div class="md:col-span-1">
+<h3 class="font-bold text-white mb-6 text-sm uppercase tracking-wider">Stay in the Loop</h3>
+<p class="text-sm text-gray-500 mb-4">Get the latest on workshops and studio availability.</p>
+<form class="flex gap-2">
+<input class="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-sm focus:ring-1 focus:ring-primary focus:border-primary outline-none text-white placeholder-gray-600 transition-all" placeholder="Enter your email" type="email"/>
+<button class="bg-primary hover:bg-primary-dark text-white rounded-lg px-4 py-2.5 text-sm font-medium transition-colors shadow-lg shadow-primary/20" type="submit">Join</button>
+</form>
+</div>
+</div>
+<div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-sm text-gray-600">© 2023 Timeless. All rights reserved.</p>
+<div class="flex gap-6 text-sm text-gray-500">
+<a class="hover:text-white transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-white transition-colors" href="#">Terms of Service</a>
+</div>
+</div>
+</div>
+</footer>
+<a aria-label="Chat on WhatsApp" class="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 bg-whatsapp rounded-full hover:scale-110 transition-all duration-300 whatsapp-glow group" href="#" target="_blank">
+<i class="fab fa-whatsapp text-white text-3xl"></i>
+<span class="absolute right-full mr-4 bg-surface-dark text-white text-xs font-medium px-3 py-1.5 rounded-lg border border-white/10 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none shadow-xl">
+            Book a visit
+        </span>
+</a>
+
+</body></html>

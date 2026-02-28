@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Help &amp; Support Center - Timeless</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#625063",
+                        "primary-hover": "#7a637b",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#1a181a",
+                        "surface-dark": "#222022",
+                        "border-dark": "#312f31",
+                        "text-muted": "#aca9ad",
+                    },
+                    fontFamily: {
+                        "display": ["Montserrat", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex flex-col overflow-x-hidden">
+<!-- Navbar -->
+<header class="sticky top-0 z-50 w-full border-b border-border-dark bg-background-dark/95 backdrop-blur-sm">
+<div class="px-6 md:px-10 py-3 flex items-center justify-between mx-auto max-w-[1440px]">
+<div class="flex items-center gap-4 text-slate-100">
+<div class="size-8 text-primary">
+<svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z"></path>
+</svg>
+</div>
+<h2 class="text-xl font-bold leading-tight tracking-tight">Timeless</h2>
+</div>
+<nav class="hidden md:flex flex-1 justify-end gap-8 items-center">
+<div class="flex items-center gap-6">
+<a class="text-slate-100 text-sm font-medium hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-slate-100 text-sm font-medium hover:text-primary transition-colors" href="#">Services</a>
+<a class="text-slate-100 text-sm font-medium hover:text-primary transition-colors" href="#">Bookings</a>
+<a class="text-slate-100 text-sm font-medium hover:text-primary transition-colors" href="#">Community</a>
+<a class="text-primary text-sm font-bold border-b-2 border-primary pb-0.5" href="#">Help Center</a>
+</div>
+<div class="h-10 w-10 bg-center bg-no-repeat bg-cover rounded-full ring-2 ring-primary/30" data-alt="User profile avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAVYuCVmGjmjxM_RFQQd3HF0-Aa5ZTRdLt5fr0Z4aF50c-Lz223EpZpp3HdnocLeyPRYATkUJVUhG8Pe4eN457d7qggGAMsUeBUplhTBHR1A-grGlyJjH0cDMMWFePOSsKx73MNss7riuisZIo-pdU6NGNvtapAwxbSqQnFz7FsNCXTZxncwpW0JZriVjj5le32bha10qCbcZvSELxikZwX_iUMyMXICGGynHgg8JDMGNBXE_zBYh6ctG2bIwfiQ7H0o9U2JL2RhNI");'></div>
+</nav>
+<!-- Mobile Menu Icon (Placeholder) -->
+<div class="md:hidden text-slate-100">
+<span class="material-symbols-outlined">menu</span>
+</div>
+</div>
+</header>
+<main class="flex-grow flex flex-col items-center w-full">
+<!-- Hero Search Section -->
+<section class="w-full bg-cover bg-center bg-no-repeat relative" data-alt="Abstract dark geometric background pattern" style='background-image: linear-gradient(rgba(26, 24, 26, 0.8) 0%, rgba(26, 24, 26, 0.95) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuByiHOc6V-QGSKUBor4qa8_YrVTtoKMMBtEWjGkvDxypwc6MUFWaZamV4bfgBfuPvbSk_xgaKYxWiSCYTnJo58y9GTsstSakV6ZOAEMD6DIC9eHjEsNie9H--0kypYmKJPGAfmOf24aGupVoopNHe70oTQ8i1CBMxzqY24jlT9pwo7Sc_GW03QrmISlqnyvxnABogfxuYd5bXYo2bCuiMZ3RQSZNUkv5DxabJd-9fgZ8zmKLifv_0NrBT4SIfP_3EvZxeLlgZWQy0U");'>
+<div class="layout-content-container max-w-[960px] mx-auto px-6 py-20 flex flex-col items-center text-center gap-8">
+<div class="flex flex-col gap-4 animate-fade-in">
+<h1 class="text-slate-100 text-4xl md:text-5xl font-black leading-tight tracking-tight">
+                        How can we help you today?
+                    </h1>
+<p class="text-text-muted text-lg font-normal max-w-2xl mx-auto">
+                        Search our knowledge base or browse the topics below to find answers about your account, bookings, and payments.
+                    </p>
+</div>
+<div class="w-full max-w-[560px]">
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-text-muted group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="block w-full rounded-xl border-border-dark bg-surface-dark py-4 pl-12 pr-32 text-slate-100 placeholder:text-text-muted focus:border-primary focus:ring-1 focus:ring-primary sm:text-base shadow-lg transition-all" placeholder="Ask a question (e.g. 'How to reset password')" type="text"/>
+<div class="absolute inset-y-0 right-1.5 flex py-1.5">
+<button class="px-4 py-1 bg-primary hover:bg-primary-hover text-slate-100 text-sm font-bold rounded-lg transition-colors shadow-md">
+                                Search
+                            </button>
+</div>
+</div>
+</div>
+<div class="flex gap-4 text-sm text-text-muted flex-wrap justify-center">
+<span>Popular:</span>
+<a class="underline hover:text-primary decoration-primary/50" href="#">Reset Password</a>
+<a class="underline hover:text-primary decoration-primary/50" href="#">Refund Policy</a>
+<a class="underline hover:text-primary decoration-primary/50" href="#">Verify Account</a>
+</div>
+</div>
+</section>
+<!-- Main Content Area -->
+<div class="w-full max-w-[1200px] px-6 py-12 flex flex-col gap-16">
+<!-- Quick Access / Categories Grid -->
+<section>
+<div class="flex items-center justify-between mb-8">
+<h2 class="text-slate-100 text-2xl font-bold tracking-tight">Browse by Topic</h2>
+<a class="text-primary text-sm font-semibold hover:text-primary-hover flex items-center gap-1" href="#">
+                        View all topics <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<div class="bg-surface-dark border border-border-dark rounded-xl p-6 hover:border-primary/50 transition-all group flex flex-col gap-4 shadow-sm">
+<div class="h-12 w-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl">manage_accounts</span>
+</div>
+<div>
+<h3 class="text-slate-100 text-lg font-bold mb-2">Account &amp; Security</h3>
+<p class="text-text-muted text-sm leading-relaxed mb-4">Manage your profile settings, password, 2FA, and account verification status.</p>
+<ul class="space-y-2">
+<li><a class="text-sm text-slate-300 hover:text-primary flex items-center gap-2" href="#"><span class="material-symbols-outlined text-base opacity-50">article</span> Reset Password</a></li>
+<li><a class="text-sm text-slate-300 hover:text-primary flex items-center gap-2" href="#"><span class="material-symbols-outlined text-base opacity-50">article</span> Enable 2FA</a></li>
+</ul>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-dark border border-border-dark rounded-xl p-6 hover:border-primary/50 transition-all group flex flex-col gap-4 shadow-sm">
+<div class="h-12 w-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl">payments</span>
+</div>
+<div>
+<h3 class="text-slate-100 text-lg font-bold mb-2">Payments &amp; Billing</h3>
+<p class="text-text-muted text-sm leading-relaxed mb-4">Everything about invoices, payment methods, refunds and transaction history.</p>
+<ul class="space-y-2">
+<li><a class="text-sm text-slate-300 hover:text-primary flex items-center gap-2" href="#"><span class="material-symbols-outlined text-base opacity-50">article</span> Download Invoice</a></li>
+<li><a class="text-sm text-slate-300 hover:text-primary flex items-center gap-2" href="#"><span class="material-symbols-outlined text-base opacity-50">article</span> Update Card</a></li>
+</ul>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-dark border border-border-dark rounded-xl p-6 hover:border-primary/50 transition-all group flex flex-col gap-4 shadow-sm">
+<div class="h-12 w-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl">event</span>
+</div>
+<div>
+<h3 class="text-slate-100 text-lg font-bold mb-2">Bookings &amp; Reservations</h3>
+<p class="text-text-muted text-sm leading-relaxed mb-4">How to book services, modify existing reservations, and cancellation policies.</p>
+<ul class="space-y-2">
+<li><a class="text-sm text-slate-300 hover:text-primary flex items-center gap-2" href="#"><span class="material-symbols-outlined text-base opacity-50">article</span> Cancel Booking</a></li>
+<li><a class="text-sm text-slate-300 hover:text-primary flex items-center gap-2" href="#"><span class="material-symbols-outlined text-base opacity-50">article</span> Reschedule</a></li>
+</ul>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-dark border border-border-dark rounded-xl p-6 hover:border-primary/50 transition-all group flex flex-col gap-4 shadow-sm">
+<div class="h-12 w-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl">groups</span>
+</div>
+<div>
+<h3 class="text-slate-100 text-lg font-bold mb-2">Community Guidelines</h3>
+<p class="text-text-muted text-sm leading-relaxed mb-4">Rules for interacting with others, reporting abuse, and content policies.</p>
+<ul class="space-y-2">
+<li><a class="text-sm text-slate-300 hover:text-primary flex items-center gap-2" href="#"><span class="material-symbols-outlined text-base opacity-50">article</span> Code of Conduct</a></li>
+</ul>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="bg-surface-dark border border-border-dark rounded-xl p-6 hover:border-primary/50 transition-all group flex flex-col gap-4 shadow-sm">
+<div class="h-12 w-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl">verified_user</span>
+</div>
+<div>
+<h3 class="text-slate-100 text-lg font-bold mb-2">Trust &amp; Safety</h3>
+<p class="text-text-muted text-sm leading-relaxed mb-4">Learn how we keep your data safe and our commitment to privacy.</p>
+<ul class="space-y-2">
+<li><a class="text-sm text-slate-300 hover:text-primary flex items-center gap-2" href="#"><span class="material-symbols-outlined text-base opacity-50">article</span> Privacy Policy</a></li>
+</ul>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="bg-surface-dark border border-border-dark rounded-xl p-6 hover:border-primary/50 transition-all group flex flex-col gap-4 shadow-sm">
+<div class="h-12 w-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-2xl">api</span>
+</div>
+<div>
+<h3 class="text-slate-100 text-lg font-bold mb-2">API &amp; Integrations</h3>
+<p class="text-text-muted text-sm leading-relaxed mb-4">Developer documentation, API keys, and third-party integrations.</p>
+<ul class="space-y-2">
+<li><a class="text-sm text-slate-300 hover:text-primary flex items-center gap-2" href="#"><span class="material-symbols-outlined text-base opacity-50">article</span> API Docs</a></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<!-- Video Tutorials Section -->
+<section class="bg-gradient-to-br from-surface-dark to-background-dark border border-border-dark rounded-2xl p-8 overflow-hidden relative">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+<div class="flex flex-col md:flex-row justify-between items-end mb-8 relative z-10">
+<div>
+<h2 class="text-slate-100 text-2xl font-bold tracking-tight mb-2">Platform Tutorials</h2>
+<p class="text-text-muted">Step-by-step video guides for every user role.</p>
+</div>
+<!-- Role Switcher -->
+<div class="mt-4 md:mt-0 flex p-1 bg-background-dark border border-border-dark rounded-lg">
+<button class="px-4 py-2 text-sm font-medium rounded-md bg-primary text-white shadow-sm">Providers</button>
+<button class="px-4 py-2 text-sm font-medium rounded-md text-text-muted hover:text-slate-100">Customers</button>
+<button class="px-4 py-2 text-sm font-medium rounded-md text-text-muted hover:text-slate-100">Admins</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+<!-- Tutorial 1 -->
+<div class="group cursor-pointer">
+<div class="relative aspect-video rounded-xl overflow-hidden mb-3 border border-border-dark group-hover:border-primary/50 transition-all">
+<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all z-10"></div>
+<div class="absolute inset-0 flex items-center justify-center z-20">
+<div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-white text-3xl">play_arrow</span>
+</div>
+</div>
+<div class="w-full h-full bg-cover bg-center" data-alt="Video thumbnail showing a dashboard interface" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDDWnJjypDu6QU6QBkJDjL44ecXhQxt97hF8DEs5W14OnLaIfvSUOUHJvdqhdq66xdkavgc4NINvjt7xgmx1kSFO9ZJIhO9Fg_Xa6lwPJyAXL7LOAQeoqDZjC8uHErMEXtG9YqFO_a5eE_xiR8EiwnjGeDOpviTCrsN-tJMCsNjbaBToPFXec3pGQoBcBt6VtGJIhqZip1_VSmcOQ3pEEQS3vr-jFdqTdvIXjINpEvlZ9DrCK8-8lTQLLydaHHGK00gbl8l0hrrD_s");'></div>
+<div class="absolute bottom-2 right-2 bg-black/80 px-2 py-0.5 rounded text-xs font-bold text-white z-20">4:20</div>
+</div>
+<h4 class="text-slate-100 font-bold text-lg group-hover:text-primary transition-colors">Setting up your profile</h4>
+<p class="text-text-muted text-sm mt-1">Learn how to customize your public profile and add services.</p>
+</div>
+<!-- Tutorial 2 -->
+<div class="group cursor-pointer">
+<div class="relative aspect-video rounded-xl overflow-hidden mb-3 border border-border-dark group-hover:border-primary/50 transition-all">
+<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all z-10"></div>
+<div class="absolute inset-0 flex items-center justify-center z-20">
+<div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-white text-3xl">play_arrow</span>
+</div>
+</div>
+<div class="w-full h-full bg-cover bg-center" data-alt="Video thumbnail showing calendar management" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCa6C32PGLNdNaZ3rxLGWRm-p1HwPHbmSE9iPMWk70hhz09YrUuI2Sv5_qb0hvzWxVMVzAMhDTo0wfrSN9hx78EPhMpT44whC0gtXQy4nTsCA9JDrw0zXwBRDzKyXwMPonXP5sY1FNtIp8FjrbiYb9WXVI0TVGACG1_06Xypq1JbKArYyHcpRD4MBG22R6rybfvnSfAKX0ZXMirPhRNNd6DVkcGE1PHoYY9edXOu9B9d5jT0q0402nH6qY53GjSDZr65GpDDldNzlU");'></div>
+<div class="absolute bottom-2 right-2 bg-black/80 px-2 py-0.5 rounded text-xs font-bold text-white z-20">2:15</div>
+</div>
+<h4 class="text-slate-100 font-bold text-lg group-hover:text-primary transition-colors">Managing availability</h4>
+<p class="text-text-muted text-sm mt-1">Sync your calendar and set your working hours efficiently.</p>
+</div>
+<!-- Tutorial 3 -->
+<div class="group cursor-pointer">
+<div class="relative aspect-video rounded-xl overflow-hidden mb-3 border border-border-dark group-hover:border-primary/50 transition-all">
+<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all z-10"></div>
+<div class="absolute inset-0 flex items-center justify-center z-20">
+<div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-white text-3xl">play_arrow</span>
+</div>
+</div>
+<div class="w-full h-full bg-cover bg-center" data-alt="Video thumbnail showing payment settings" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBlSZWyJiolN9GGMWkSuFd9oB9yU301bd-vrvyMt8mi65nCwKQuSNeFZY87oLt-7kCCXejHiuTsAE49z8UxxqSBbvt-E-hKZUaJIUMVQKqew2QtQm_mbFVrYPR2T7-Yz82eTYw19AVQZeQYAIRQHUUdh2azgA89W0n-Lu48VM4MgvPySlR1sWf91Vx9RdMyr6shGpbaTb2eNUS3lQjRaeJPPVKWkl1m-gfQsPWAcqLar_-LHdhZ86i060rSmG52dzoymAOQ42KfvwE");'></div>
+<div class="absolute bottom-2 right-2 bg-black/80 px-2 py-0.5 rounded text-xs font-bold text-white z-20">5:45</div>
+</div>
+<h4 class="text-slate-100 font-bold text-lg group-hover:text-primary transition-colors">Getting paid</h4>
+<p class="text-text-muted text-sm mt-1">Connect your bank account and understand payout schedules.</p>
+</div>
+</div>
+</section>
+<!-- CTA Section (Still need help?) -->
+<section class="flex flex-col md:flex-row gap-6 items-stretch">
+<!-- Live Chat Card -->
+<div class="flex-1 bg-[#25D366]/10 border border-[#25D366]/30 rounded-xl p-8 flex flex-col items-start justify-center relative overflow-hidden">
+<div class="absolute top-0 right-0 p-8 opacity-10">
+<svg class="text-[#25D366]" fill="currentColor" height="100" viewbox="0 0 24 24" width="100"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.592 2.654-.698c.93.509 1.693.803 2.808.803 3.182 0 5.768-2.586 5.769-5.766.001-3.182-2.585-5.783-5.767-5.783zm0-2.316c4.442 0 8.085 3.642 8.084 8.099-.001 4.456-3.606 8.086-8.038 8.086-1.31 0-2.502-.346-3.633-.923l-4.14 1.091 1.111-4.025c-.71-1.221-1.125-2.531-1.124-4.229.001-4.457 3.666-8.099 8.118-8.099zm.506 9.805c-.156-.078-.918-.452-1.06-.504-.143-.052-.247-.078-.351.078-.104.156-.403.504-.494.609-.091.104-.182.117-.338.039-.156-.078-.657-.242-1.252-.771-.462-.411-.774-.919-.865-1.074-.091-.156-.01-.24.068-.317.072-.072.156-.182.234-.273.078-.091.104-.156.156-.26.052-.104.026-.195-.013-.273-.039-.078-.351-.845-.481-1.157-.126-.303-.254-.262-.351-.266-.091-.004-.195-.004-.299-.004-.104 0-.273.039-.416.195-.143.156-.546.533-.546 1.301s.559 1.509.637 1.613c.078.104 2.2 3.359 5.33 4.708.745.321 1.326.513 1.777.657.747.239 1.428.204 1.968.124.602-.089 1.233-.504 1.408-.991.175-.487.175-.904.123-.991-.052-.087-.195-.139-.351-.217z"></path></svg>
+</div>
+<div class="z-10">
+<h3 class="text-white text-xl font-bold mb-2">Need immediate help?</h3>
+<p class="text-slate-300 mb-6 max-w-sm">Chat with our support team directly via WhatsApp for quick resolutions to urgent issues.</p>
+<button class="bg-[#25D366] hover:bg-[#20bd5a] text-white px-6 py-3 rounded-lg font-bold flex items-center gap-2 transition-all shadow-lg transform hover:-translate-y-0.5">
+<span class="material-symbols-outlined">chat</span>
+                            Start WhatsApp Chat
+                        </button>
+</div>
+</div>
+<!-- Email Support Card -->
+<div class="flex-1 bg-surface-dark border border-border-dark rounded-xl p-8 flex flex-col items-start justify-center">
+<h3 class="text-slate-100 text-xl font-bold mb-2">Submit a ticket</h3>
+<p class="text-text-muted mb-6 max-w-sm">For complex inquiries or non-urgent matters, send us a detailed request and we'll reply within 24h.</p>
+<button class="bg-primary hover:bg-primary-hover text-white px-6 py-3 rounded-lg font-bold flex items-center gap-2 transition-all shadow-lg">
+<span class="material-symbols-outlined">mail</span>
+                        Contact Support
+                    </button>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="border-t border-border-dark bg-background-dark py-12">
+<div class="layout-content-container max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex flex-col gap-2 items-center md:items-start">
+<div class="flex items-center gap-2 text-slate-100">
+<div class="size-6 text-primary">
+<svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z"></path>
+</svg>
+</div>
+<span class="text-lg font-bold">Timeless</span>
+</div>
+<p class="text-text-muted text-sm">© 2024 Timeless Platform. All rights reserved.</p>
+</div>
+<div class="flex gap-8 text-sm text-text-muted">
+<a class="hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms</a>
+<a class="hover:text-primary transition-colors" href="#">Cookies</a>
+<a class="hover:text-primary transition-colors" href="#">Status</a>
+</div>
+</div>
+</footer>
+</body></html>

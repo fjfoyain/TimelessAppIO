@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Artist Registration - Timeless</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#8b5cf6", // Vibrant purple override for actions based on request description, staying within theme logic
+                        "primary-dark": "#7c3aed",
+                        "primary-glow": "#a78bfa",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#1a181a", // Deep charcoal as requested
+                        "surface-dark": "#262326", // Slightly lighter charcoal for inputs/cards
+                        "surface-input": "#332f33",
+                    },
+                    fontFamily: {
+                        "display": ["Montserrat", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        'glow': '0 0 15px rgba(139, 92, 246, 0.5)',
+                        'glow-focus': '0 0 20px rgba(139, 92, 246, 0.6)',
+                    }
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .text-glow {
+                text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+            }
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-gray-900 dark:text-gray-200 min-h-screen flex items-center justify-center p-0 m-0">
+<div class="flex w-full min-h-screen">
+<div class="hidden lg:flex lg:w-1/2 relative bg-black items-end">
+<img alt="DJ producer working in a dark studio with neon lights" class="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-overlay" data-alt="Moody DJ or music producer in a studio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBWEsab-kPmnxmRCy09hb-WvYbPYHRcLVttvBb-2CBpdHfa4Ac4-vXRwYvnd-VSfj9_Nwo8kdQc5vW9vNxhXlh3sg3cBvFGxpde4QQUxRXWKZQuDsEsJre1rd6CSaXfMUMPhRUJhPLm2TJqUWyjytk_YjvkO9L_xR0TT8P8H-DDzq1Q-HkUYhLgABNdbNzkD0Po_7JYqpyosyVX-pwTTywBOiZB3XSi_-BljhTHK17El6zeeZFVqrXcyIxrDmwkwwDnLQudz5D5rIvj"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/80 to-primary/20"></div>
+<div class="relative z-10 p-16 w-full">
+<div class="mb-8">
+<div class="flex items-center gap-3 text-white mb-6">
+<div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center shadow-glow">
+<span class="material-symbols-outlined text-white text-3xl">graphic_eq</span>
+</div>
+<span class="text-3xl font-bold tracking-tight text-white drop-shadow-md">Timeless</span>
+</div>
+</div>
+<blockquote class="text-2xl font-medium text-white/90 leading-snug mb-8 border-l-4 border-primary pl-6">
+                "Timeless connects the dots between raw talent and world-class production. It's where my sound found its home."
+            </blockquote>
+<div class="flex items-center gap-4 mt-6 bg-surface-dark/50 backdrop-blur-sm p-4 rounded-xl border border-white/10 w-fit">
+<img alt="Portrait of artist Sarah Jenkins" class="w-12 h-12 rounded-full border-2 border-primary object-cover shadow-glow" data-alt="Portrait of a female artist" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAg8LLDhFrKjHGN-bax_ldDavte5pJtqGUzn3m-9J9CnjlP6isUxuZpFv_dGbSBz46_e-UKulsMGfnV1dO9PJi6aalL3IEIlK2yOa1PvqkAjMWGK9xx4Bx_TjV66njCGGRBy9b1epNOmV8jxTujgf8nLgKUC94HS0F6zEsmT8YIKDQ7tKqkoz0D87OXCDnUCM_k2uf8NJmdAfztKzx8XGAI931HJXQ1Rzvgb-8zIsvzeigO5IgnBAJkHzVmiNln2eW7eN5LL-ID9kR"/>
+<div>
+<p class="text-white font-semibold">Sarah Jenkins</p>
+<p class="text-primary-glow text-sm font-medium">Electronic Producer</p>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full lg:w-1/2 flex flex-col justify-center px-6 py-12 lg:px-20 xl:px-32 bg-background-light dark:bg-background-dark overflow-y-auto h-screen relative">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none transform translate-x-1/3 -translate-y-1/3"></div>
+<div class="lg:hidden flex items-center gap-2 text-primary mb-8">
+<span class="material-symbols-outlined text-3xl">graphic_eq</span>
+<span class="text-xl font-bold text-gray-900 dark:text-white">Timeless</span>
+</div>
+<div class="w-full max-w-lg mx-auto relative z-10">
+<div class="mb-10">
+<h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Artist Registration</h1>
+<p class="text-gray-500 dark:text-gray-400 text-lg">Connect with the world's best studios and producers.</p>
+</div>
+<form class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2 group">
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 group-focus-within:text-primary transition-colors" for="stage-name">Stage Name</label>
+<input class="w-full rounded-lg bg-white dark:bg-surface-input border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all placeholder-gray-400 dark:placeholder-gray-600 focus:shadow-glow-focus" id="stage-name" placeholder="e.g. DJ Shadow" type="text"/>
+</div>
+<div class="space-y-2 group">
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 group-focus-within:text-primary transition-colors" for="genre">Primary Genre</label>
+<div class="relative">
+<select class="w-full appearance-none rounded-lg bg-white dark:bg-surface-input border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all focus:shadow-glow-focus cursor-pointer" id="genre">
+<option disabled="" selected="" value="">Select a genre...</option>
+<option value="techno">Techno</option>
+<option value="house">House</option>
+<option value="hiphop">Hip Hop</option>
+<option value="rnb">R&amp;B</option>
+<option value="pop">Pop</option>
+<option value="jazz">Jazz</option>
+<option value="classical">Classical</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-primary">
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-2 group">
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 group-focus-within:text-primary transition-colors" for="bio">Bio / Description</label>
+<textarea class="w-full rounded-lg bg-white dark:bg-surface-input border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all placeholder-gray-400 dark:placeholder-gray-600 resize-none focus:shadow-glow-focus" id="bio" placeholder="Tell us about your sound, influences, and what you're looking for..." rows="4"></textarea>
+</div>
+<div class="pt-2">
+<h3 class="text-xs font-bold text-primary uppercase tracking-wider mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">share</span>
+                        Social Presence
+                    </h3>
+<div class="space-y-4">
+<div class="flex rounded-lg shadow-sm group focus-within:ring-2 focus-within:ring-primary focus-within:shadow-glow-focus transition-all">
+<span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-surface-dark text-gray-500 dark:text-gray-400 group-focus-within:border-primary group-focus-within:text-primary transition-colors">
+<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
+</span>
+<input class="flex-1 min-w-0 block w-full px-4 py-3 rounded-none rounded-r-lg bg-white dark:bg-surface-input border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white group-focus-within:border-primary placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none border-l-0 transition-colors" placeholder="Instagram Username" type="text"/>
+</div>
+<div class="flex rounded-lg shadow-sm group focus-within:ring-2 focus-within:ring-primary focus-within:shadow-glow-focus transition-all">
+<span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-surface-dark text-gray-500 dark:text-gray-400 group-focus-within:border-primary group-focus-within:text-primary transition-colors">
+<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-3.352 16.65c-.183.293-.566.379-.87.188-2.381-1.451-5.38-1.777-8.914-.972-.336.076-.669-.136-.745-.472-.077-.334.136-.667.472-.745 3.876-.884 7.226-.499 9.869 1.13.305.188.39.576.188.871zm1.196-2.66c-.235.378-.732.495-1.109.255-2.771-1.696-6.995-2.185-10.272-1.192-.417.126-.855-.11-.979-.526-.125-.417.108-.854.526-.979 3.758-1.137 8.448-.58 11.579 1.332.378.239.495.736.255 1.11zm.149-2.773c-3.315-1.961-8.784-2.143-11.948-1.183-.496.151-1.019-.13-1.17-.625-.152-.495.129-1.018.625-1.17 3.696-1.119 9.752-.904 13.593 1.364.461.275.611.874.337 1.334-.275.46-.874.61-1.337.336z"></path></svg>
+</span>
+<input class="flex-1 min-w-0 block w-full px-4 py-3 rounded-none rounded-r-lg bg-white dark:bg-surface-input border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white group-focus-within:border-primary placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none border-l-0 transition-colors" placeholder="Spotify Artist URL" type="text"/>
+</div>
+<div class="flex rounded-lg shadow-sm group focus-within:ring-2 focus-within:ring-primary focus-within:shadow-glow-focus transition-all">
+<span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-surface-dark text-gray-500 dark:text-gray-400 group-focus-within:border-primary group-focus-within:text-primary transition-colors">
+<svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M11.56 8.87V17h8.76c1.48 0 2.68-1.2 2.68-2.68 0-1.43-1.12-2.59-2.53-2.67.14-.36.22-.76.22-1.18 0-1.78-1.45-3.23-3.23-3.23-1.57 0-2.88 1.12-3.17 2.61-.41-.12-.84-.18-1.29-.18-1.28 0-2.42.54-3.23 1.4L7.54 9.17c-.89-.9-2.12-1.46-3.48-1.46C1.82 7.71 0 9.53 0 11.77s1.82 4.06 4.06 4.06h.47v-6.96h-.52C2.3 8.87 1.05 10.12 1.05 11.77c0 1.66 1.25 2.91 2.91 2.91h.47v-5.81H4.43ZM17.47 12.28c.4 0 .73.33.73.73 0 .4-.33.73-.73.73-.4 0-.73-.33-.73-.73 0-.4.33-.73.73-.73Z"></path></svg>
+</span>
+<input class="flex-1 min-w-0 block w-full px-4 py-3 rounded-none rounded-r-lg bg-white dark:bg-surface-input border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white group-focus-within:border-primary placeholder-gray-400 dark:placeholder-gray-600 focus:outline-none border-l-0 transition-colors" placeholder="SoundCloud URL" type="text"/>
+</div>
+</div>
+</div>
+<div class="space-y-2 group">
+<label class="block text-sm font-medium text-gray-700 dark:text-gray-300 group-focus-within:text-primary transition-colors">Portfolio / Demo</label>
+<div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-700 border-dashed rounded-xl bg-white dark:bg-surface-dark hover:bg-gray-50 dark:hover:bg-surface-input transition-all cursor-pointer group-hover:border-primary group-hover:shadow-glow">
+<div class="space-y-1 text-center">
+<div class="mx-auto h-12 w-12 text-gray-400 flex items-center justify-center rounded-full bg-gray-100 dark:bg-surface-input group-hover:text-primary group-hover:bg-primary/20 transition-all duration-300">
+<span class="material-symbols-outlined text-3xl">cloud_upload</span>
+</div>
+<div class="flex text-sm text-gray-600 dark:text-gray-400 justify-center">
+<label class="relative cursor-pointer rounded-md font-medium text-primary hover:text-primary-dark focus-within:outline-none" for="file-upload">
+<span>Upload a file</span>
+<input class="sr-only" id="file-upload" name="file-upload" type="file"/>
+</label>
+<p class="pl-1">or drag and drop</p>
+</div>
+<p class="text-xs text-gray-500 dark:text-gray-500">MP3, WAV up to 50MB</p>
+</div>
+</div>
+</div>
+<div class="pt-4">
+<button class="w-full flex justify-center items-center py-4 px-4 border border-transparent rounded-lg shadow-lg text-sm font-bold text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all uppercase tracking-wide transform hover:scale-[1.01] hover:shadow-glow" type="submit">
+<span class="mr-2">Complete Registration</span>
+<span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+</div>
+<div class="text-center">
+<p class="text-sm text-gray-600 dark:text-gray-400">
+                        Already have an account? 
+                        <a class="font-bold text-primary hover:text-primary-glow hover:underline transition-all" href="#">Log in</a>
+</p>
+</div>
+</form>
+</div>
+</div>
+</div>
+
+</body></html>

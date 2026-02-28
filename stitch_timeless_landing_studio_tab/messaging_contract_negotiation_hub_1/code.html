@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Timeless - Messaging &amp; Contract Hub</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                        "surface-dark": "#251b2e", // Slightly lighter than bg-dark
+                        "border-dark": "#362348",
+                        "text-subtle": "#ad92c9",
+                    },
+                    fontFamily: {
+                        display: ["Manrope", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        "2xl": "1rem",
+                        full: "9999px",
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #191022; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #362348; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #55356e; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 overflow-hidden h-screen flex flex-col">
+<!-- Top Navigation -->
+<header class="flex shrink-0 items-center justify-between whitespace-nowrap border-b border-solid border-border-dark bg-background-dark px-6 py-3 z-20">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 text-primary">
+<svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z"></path>
+</svg>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-[-0.015em]">Timeless</h2>
+</div>
+<label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-surface-dark group focus-within:ring-1 focus-within:ring-primary">
+<div class="text-text-subtle flex border-none items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-transparent focus:border-none h-full placeholder:text-text-subtle px-3 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal" placeholder="Search" value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<nav class="hidden lg:flex items-center gap-9">
+<a class="text-text-subtle hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Dashboard</a>
+<a class="text-white text-sm font-medium leading-normal border-b-2 border-primary py-1" href="#">Messages</a>
+<a class="text-text-subtle hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Contracts</a>
+<a class="text-text-subtle hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Network</a>
+</nav>
+<div class="flex gap-3 items-center">
+<button class="flex items-center justify-center rounded-lg size-10 bg-surface-dark text-white hover:bg-[#362348] transition-colors relative">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-primary rounded-full"></span>
+</button>
+<button class="flex items-center justify-center rounded-lg size-10 bg-surface-dark text-white hover:bg-[#362348] transition-colors">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border border-border-dark cursor-pointer ml-2" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDIZ1LmUgxG5B-B2pP10VUyyaPPJUyk6fgxT7QmyRfg7Lsgw_tDwhvp675MDACkjfuBKrRJo9ihbakpgNj9ph3H-zEVoqFdhrTT3yEWSOXp6qT-N6VK-cErWYi4iC-Vb9Uw6CSjflBuwbCB4A12RwyxDm-WUatYDB9hvTKNyE8JlL_JGsfZSblzOG4nw6pXK8dtAOzS0MpHawkMfgYyGF-k3bzkDgdgvEGAHXNHKk0Gy6iEUJzUm5Mln68NS5ouXh_HRudLWp9dCaw");'></div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex flex-1 overflow-hidden">
+<!-- Column 1: Conversation List -->
+<aside class="w-80 flex flex-col border-r border-border-dark bg-background-dark shrink-0 z-10">
+<div class="p-4 border-b border-border-dark">
+<h3 class="text-lg font-bold text-white mb-4">Messages</h3>
+<div class="flex gap-2">
+<button class="px-4 py-1.5 rounded-full bg-primary text-white text-xs font-bold">All</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-dark text-text-subtle hover:text-white hover:bg-[#362348] transition-colors text-xs font-bold">Unread</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-dark text-text-subtle hover:text-white hover:bg-[#362348] transition-colors text-xs font-bold">Archived</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto">
+<!-- Active Chat Item -->
+<div class="flex items-center gap-4 bg-[#2a1d3a] border-l-4 border-primary px-4 py-4 cursor-pointer hover:bg-[#2a1d3a] transition-colors group">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-12 w-12" data-alt="Alice profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD6ILkTaxwtC8fumFaJaj2eYyUZReVXmUCF8ccRmuUGuggw0bCissp1LQ3kVrA1XsFD9Bp7YjMPUv88oaZ1ZZdJH5VHGYc9yU3i3RP2SoJQQsaJoS_zEhqHbqvnl7IBhkq-zhNc4ZLA1s2T9lP5WtBJgJHqOiDB5rXyt1x81NWtZBo-ONI-8VH6tkUZ2k20viYAGA5ZUfGaGUQjqPcqrq8MXPihJBbdZ51Tp-UFAvG8x2Ix7FSFHUk9d41cV9K3tVg6Ku44ZCepAj4");'></div>
+<div class="absolute bottom-0 right-0 size-3 rounded-full bg-[#0bda73] border-2 border-background-dark"></div>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<p class="text-white text-sm font-bold truncate">Alice (Booking Agent)</p>
+<p class="text-text-subtle text-[11px]">Now</p>
+</div>
+<p class="text-white text-xs truncate">I've attached the initial rider...</p>
+</div>
+</div>
+<!-- List Item -->
+<div class="flex items-center gap-4 px-4 py-4 cursor-pointer hover:bg-surface-dark transition-colors group border-b border-border-dark/30">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-12 w-12" data-alt="Bob profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAhPO49msAWX4JCdfp_XR9Z4w_vsWzmzMcdB36SSx3bzolrow6ZaK97Ukg2PaKFh5fEfYdfRe6PFNyysa75NOQ-WQUmgJu_Q3hgqQy5nTMTgRUc_zN2_9ECeVOn4KkYqK9cU6FPEGpVwEtVaQ0os7MXNEpOki9LFqyL-AONKi6kRyHJ2ap-cU3cv21dGeVE4fMcUaKLXhkWOc6zdCltEtxBqlvwDYP0TbMIqlwMVqgbNnZhS4tDU2rPr_UcrqqhKhuRWDUVGXYIwP0");'></div>
+<div class="absolute bottom-0 right-0 size-3 rounded-full bg-yellow-500 border-2 border-background-dark"></div>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<p class="text-slate-200 text-sm font-medium truncate">Club Promoter - Bob</p>
+<p class="text-text-subtle text-[11px]">2h ago</p>
+</div>
+<p class="text-text-subtle text-xs truncate">Are we confirmed for the 24th?</p>
+</div>
+</div>
+<!-- List Item -->
+<div class="flex items-center gap-4 px-4 py-4 cursor-pointer hover:bg-surface-dark transition-colors group border-b border-border-dark/30">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-12 w-12" data-alt="Charlie profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBqiSrG2tXdHb1Uv-MPmmk05ebpe2hPJcxtWfGEJshKiZPd2BAFUH9aSjyt8WoQ-gWBtWzpt2RzUNVTqZ2OL_m2LRABjFE18VcWnr8AgsVWNwJQchkmUlm6dNwdai7j21lkEGdlhnpdX0M6PxsOF5FJBk-WmRwwlZLdqL4U_xRtavBIlrSl2EtDqpburN-4aGnCgE9AtPmv1_dWmAipBmlwLmcMPyajEW81wZRPC5BhnXQOW7GKZ3GN8r5z2QFkPa6YMA4hfypHcbw");'></div>
+<div class="absolute bottom-0 right-0 size-3 rounded-full bg-text-subtle border-2 border-background-dark"></div>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<p class="text-slate-200 text-sm font-medium truncate">Tech Manager - Charlie</p>
+<p class="text-text-subtle text-[11px]">Yesterday</p>
+</div>
+<p class="text-text-subtle text-xs truncate">Sound check is at 4 PM sharp.</p>
+</div>
+</div>
+<!-- List Item -->
+<div class="flex items-center gap-4 px-4 py-4 cursor-pointer hover:bg-surface-dark transition-colors group border-b border-border-dark/30">
+<div class="relative shrink-0">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-12 w-12" data-alt="Sarah profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBmfYQzKzQQPodXpH7C769YP32lpuR2j2CVH1I-qDdua8z15VZvNbdIMjVE_FoYgDhXzzFDeywlXrilqmC0mxNRG6_SDqUCSS7wmbFbaXbgPI0lKa2tAx80aghVEjN32xvF2XlzBqgoSQZnXXojMdlZ51g_fzMrZOwlfEcuuQohnROWooJdTPmrN2KXqmKwfFxv9PDnmZFP_wvyZE80qUBeufPPTj6-_PDOPHPz9bl_3WXtVEr9MvOoe81s2y2EzHrxQ9Riko4naXI");'></div>
+<div class="absolute bottom-0 right-0 size-3 rounded-full bg-[#0bda73] border-2 border-background-dark"></div>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-1">
+<p class="text-slate-200 text-sm font-medium truncate">Sarah - Legal</p>
+<p class="text-text-subtle text-[11px]">Mon</p>
+</div>
+<p class="text-text-subtle text-xs truncate">Contract revision #3 is ready.</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Column 2: Central Chat Area -->
+<section class="flex-1 flex flex-col bg-background-dark min-w-0 relative">
+<!-- Chat Header -->
+<div class="flex items-center justify-between px-6 py-4 border-b border-border-dark bg-background-dark/95 backdrop-blur z-10 sticky top-0">
+<div class="flex items-center gap-4">
+<div class="relative">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-10 w-10" data-alt="Alice profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBZSsCbaR1Um6oYwevGgHoqoHX9vIRtvAMhLcOi8UiJzNM2tRneHOd8-ZuHj_qwFMumzJkmeqgQ-Wx3S7SFgP93ZuGp0h2bR_JfYQXs9cqzdxvVo3ffJlSQBs3zKTsBuvDm8n-Fsqqi_-5E4oRUWUJIxnZTjwWJQN000zGiuv3u1LHqn-pP-gxIlJxeB02FWNp3TJAdtpG9WZomsgmrzewutMMf9raM5tBnN4f5d0PV39MNpMnbCM5JB4VFjy_XnHCmR8MSHAtwxwU");'></div>
+<div class="absolute bottom-0 right-0 size-2.5 rounded-full bg-[#0bda73] border-2 border-background-dark"></div>
+</div>
+<div>
+<h2 class="text-white text-base font-bold leading-tight">Alice (Booking Agent)</h2>
+<p class="text-primary text-xs font-medium">Online</p>
+</div>
+</div>
+<div class="flex gap-2 text-text-subtle">
+<button class="p-2 hover:bg-surface-dark rounded-full transition-colors"><span class="material-symbols-outlined text-[20px]">call</span></button>
+<button class="p-2 hover:bg-surface-dark rounded-full transition-colors"><span class="material-symbols-outlined text-[20px]">videocam</span></button>
+<button class="p-2 hover:bg-surface-dark rounded-full transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
+</div>
+</div>
+<!-- Chat Messages -->
+<div class="flex-1 overflow-y-auto p-6 space-y-6 flex flex-col-reverse">
+<!-- Latest Message (Right/Self) -->
+<!-- Placeholder for future messages -->
+<!-- Message (Left/Other) -->
+<div class="flex items-end gap-3 group">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-8 shrink-0 mb-1" data-alt="Alice profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuALC2zILECM7rONnLdvQvPIZRbBvMnP9Qnovz_rgRoJ60AKxGPDppdgjWb3oHapQ-aixGYE4INn8q7fEZMVJHo8yO2kg7QqB2-JsZQRmLmE49smM3vnseZu6WlU1Dpd7ujHYaYFJcK0EJq3EU_1J_emRmLBYAkStG8fJHXQyJwbKoDLUK8OYi5OTTjI6yPgr0Kl9PfVlH0gyPsTPXhqtJ6pcoia19H2rvtaq0Z34fvkD6VHCYf8lv7dmeIIWj1M18xzGsqNf8mM7ps");'></div>
+<div class="flex flex-col gap-1 items-start max-w-[80%]">
+<div class="bg-surface-dark border border-border-dark text-white rounded-2xl rounded-bl-none px-4 py-3 shadow-lg shadow-black/20">
+<p class="text-sm leading-relaxed">Hi! I've attached the initial rider for the show. Let me know if the tech specs work for you.</p>
+</div>
+<!-- Attachment Card -->
+<div class="flex items-center gap-3 bg-surface-dark border border-border-dark rounded-xl p-3 mt-1 hover:bg-[#362348] transition-colors cursor-pointer w-72 group/attachment">
+<div class="size-10 rounded-lg bg-primary/20 flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-white text-sm font-medium truncate">Technical_Rider_v2.pdf</p>
+<p class="text-text-subtle text-xs">2.4 MB • PDF</p>
+</div>
+<span class="material-symbols-outlined text-text-subtle group-hover/attachment:text-primary">download</span>
+</div>
+<span class="text-[11px] text-text-subtle ml-2 opacity-0 group-hover:opacity-100 transition-opacity">10:42 AM</span>
+</div>
+</div>
+<!-- Message (Right/Self) -->
+<div class="flex items-end gap-3 flex-row-reverse group">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-8 shrink-0 mb-1" data-alt="My profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCKb-TDrWU6R-2bkbQ-zEtYH5VfcoJHWm8aIxDq-j1js2owSJmqOBNQcP3gUvl6bnyJR7gUy0IWasi7ia_JwmfIgbhzstOghCN9aeg6SbFbLT7aAOsbPiGp37q0HvlGekdpo0gbli23aVbqjtXQZDf1ZEV23kAGj3TJqW8N7xrSz4pMvBddWOF02V3tp7Fuh8sokIokzhEdAav3BO7JMNTNj1WNPF3PF_6mOZoR6-bt8bGliXzy3k2rMetxKLevkn15eRq42CkrUo4");'></div>
+<div class="flex flex-col gap-1 items-end max-w-[80%]">
+<div class="bg-primary/90 text-white rounded-2xl rounded-br-none px-4 py-3 shadow-[0_0_15px_rgba(127,19,236,0.3)]">
+<p class="text-sm leading-relaxed">Hey Alice, great to hear from you. I'm reviewing the previous draft now. I had a question about the lighting requirements.</p>
+</div>
+<span class="text-[11px] text-text-subtle mr-2 opacity-0 group-hover:opacity-100 transition-opacity">10:40 AM</span>
+</div>
+</div>
+<!-- Message (Left/Other) -->
+<div class="flex items-end gap-3 group">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-8 shrink-0 mb-1" data-alt="Alice profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCRAYEE9DzS3ERZKdlCy-KdeJ_shtHmFbfNbuXFtR-PLIZcOBvaNQ5VaTUycMOJUNnvZs5cJv9xoMfHLtnN5NkahbVUzx8S-DfVi0tfMtOez6w8vzu2fd1levRSZuik-VZTYvt_3qbZQNM1PvA6NfGqnE37ev_k4zHFVR4ZSXmkk2IyV0DqkDXhRUyEvBdL9jASO-akwlQsZgcR-TpI3yWlnnw-RgFn7w7nYzNra--52HQmHinX-RbKIPYmfvfQ8x4aFi8bSKYU7q0");'></div>
+<div class="flex flex-col gap-1 items-start max-w-[80%]">
+<div class="bg-surface-dark border border-border-dark text-white rounded-2xl rounded-bl-none px-4 py-3 shadow-lg shadow-black/20">
+<p class="text-sm leading-relaxed">Just checking in on the contract status for the Summer Festival gig.</p>
+</div>
+<span class="text-[11px] text-text-subtle ml-2 opacity-0 group-hover:opacity-100 transition-opacity">10:38 AM</span>
+</div>
+</div>
+</div>
+<!-- Input Area -->
+<div class="p-4 bg-background-dark border-t border-border-dark">
+<div class="flex items-end gap-3 bg-surface-dark p-2 rounded-xl border border-border-dark focus-within:border-primary/50 focus-within:ring-1 focus-within:ring-primary/50 transition-all">
+<button class="p-2 text-text-subtle hover:text-white rounded-full hover:bg-background-dark transition-colors shrink-0">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+</button>
+<textarea class="w-full bg-transparent border-none text-white placeholder-text-subtle focus:ring-0 resize-none py-2 text-sm max-h-32" placeholder="Type a message..." rows="1"></textarea>
+<button class="p-2 text-primary hover:text-white hover:bg-primary rounded-full transition-colors shrink-0 mb-0.5">
+<span class="material-symbols-outlined text-[20px] filled">send</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Column 3: Contract Details Panel -->
+<aside class="w-[400px] border-l border-border-dark bg-surface-dark flex flex-col shrink-0 z-10 hidden xl:flex">
+<!-- Panel Header -->
+<div class="p-6 border-b border-border-dark flex justify-between items-center">
+<div>
+<h3 class="text-white font-bold text-lg">Contract Details</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="size-2 bg-yellow-500 rounded-full animate-pulse"></span>
+<p class="text-yellow-500 text-xs font-semibold uppercase tracking-wider">Draft in Review</p>
+</div>
+</div>
+<button class="text-text-subtle hover:text-white">
+<span class="material-symbols-outlined">fullscreen</span>
+</button>
+</div>
+<!-- Contract Content -->
+<div class="flex-1 overflow-y-auto p-6 space-y-6">
+<!-- Contract Preview Card -->
+<div class="bg-background-dark border border-border-dark rounded-xl p-4 shadow-inner">
+<div class="flex items-center justify-between mb-4 pb-4 border-b border-border-dark border-dashed">
+<div class="flex items-center gap-3">
+<div class="bg-primary/20 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div>
+<p class="text-white text-sm font-bold">Summer Festival 2024</p>
+<p class="text-text-subtle text-xs">ID: #CN-2948-X</p>
+</div>
+</div>
+</div>
+<!-- Editable Fields -->
+<div class="space-y-4">
+<div class="group">
+<label class="text-text-subtle text-xs font-semibold uppercase mb-1 block">Event Date</label>
+<div class="flex items-center justify-between bg-surface-dark rounded-lg px-3 py-2 border border-border-dark group-hover:border-primary/50 transition-colors cursor-text">
+<span class="text-white text-sm">August 24, 2024</span>
+<span class="material-symbols-outlined text-[16px] text-text-subtle">edit_calendar</span>
+</div>
+</div>
+<div class="group">
+<label class="text-text-subtle text-xs font-semibold uppercase mb-1 block">Performance Fee</label>
+<div class="flex items-center justify-between bg-surface-dark rounded-lg px-3 py-2 border border-border-dark group-hover:border-primary/50 transition-colors cursor-text">
+<span class="text-white text-sm font-bold">$12,500.00 USD</span>
+<span class="material-symbols-outlined text-[16px] text-text-subtle">edit</span>
+</div>
+</div>
+<div class="group">
+<label class="text-text-subtle text-xs font-semibold uppercase mb-1 block">Venue Location</label>
+<div class="flex items-center gap-2 mb-2">
+<div class="h-24 w-full bg-cover bg-center rounded-lg relative overflow-hidden group/map cursor-pointer" data-alt="Map view of venue location" data-location="Los Angeles" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuADZXxe0HoZbGKEVLsQTWsLQCGTaFG3ufWcj722GhHjUOTW8DutMfXInl3IhQfh5_Q1s8FBveiWVoDnJkNG--hne61CVj6fMtTpeWfDwiB75JmiV11HgdO3Saa4sqXBko5YqzFvI8VE9UQ-ghINHEpCZZ-_SKoLUl_KN9t1Q27MCg2KKHKnKth_DDd6vBGBunAnVbno9dSdg7Mcq2elJQ7yu83juKdSkYb0gyQyBRdylWmX_VWFMhcs_b_r64fY9mRr6uTJSUtXvz8");'>
+<div class="absolute inset-0 bg-black/40 group-hover/map:bg-black/20 transition-colors flex items-center justify-center">
+<span class="text-white text-xs font-bold flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> View Map</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between bg-surface-dark rounded-lg px-3 py-2 border border-border-dark group-hover:border-primary/50 transition-colors cursor-text">
+<span class="text-white text-sm">The Palladium, Los Angeles</span>
+</div>
+</div>
+<div class="group">
+<label class="text-text-subtle text-xs font-semibold uppercase mb-1 block">Deliverables</label>
+<div class="space-y-2">
+<div class="flex items-start gap-2 text-sm text-slate-300">
+<span class="material-symbols-outlined text-primary text-[18px] mt-0.5">check_circle</span>
+<span>90 min DJ Set</span>
+</div>
+<div class="flex items-start gap-2 text-sm text-slate-300">
+<span class="material-symbols-outlined text-primary text-[18px] mt-0.5">check_circle</span>
+<span>Social Media Promotion (3 posts)</span>
+</div>
+<div class="flex items-start gap-2 text-sm text-slate-300">
+<span class="material-symbols-outlined text-primary text-[18px] mt-0.5">check_circle</span>
+<span>Meet &amp; Greet (30 mins)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Terms Snippet -->
+<div class="bg-background-dark/50 rounded-lg p-4 border border-border-dark">
+<p class="text-xs text-text-subtle leading-relaxed">
+<strong class="text-white">Cancellation Policy:</strong> In the event of cancellation by the Promoter less than 30 days prior to the event, 50% of the fee shall be payable immediately...
+                    </p>
+<button class="text-primary text-xs font-bold mt-2 hover:underline">Read Full Contract</button>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="p-6 border-t border-border-dark bg-surface-dark space-y-3">
+<button class="w-full flex items-center justify-center gap-2 py-3 rounded-lg border border-primary text-primary hover:bg-primary/10 transition-all font-bold text-sm shadow-[0_0_10px_rgba(127,19,236,0.15)] hover:shadow-[0_0_15px_rgba(127,19,236,0.3)]">
+<span class="material-symbols-outlined text-[20px]">edit_note</span>
+                    Propose Changes
+                </button>
+<button class="w-full flex items-center justify-center gap-2 py-3 rounded-lg bg-primary text-white hover:bg-primary/90 transition-all font-bold text-sm shadow-[0_0_20px_rgba(127,19,236,0.4)] hover:shadow-[0_0_30px_rgba(127,19,236,0.6)]">
+<span class="material-symbols-outlined text-[20px]">signature</span>
+                    Sign &amp; Accept
+                </button>
+</div>
+</aside>
+</main>
+</body></html>

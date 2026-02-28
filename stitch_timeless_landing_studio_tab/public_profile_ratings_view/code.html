@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Timeless - Venue Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#625063",
+                        "primary-dark": "#4a3b4b",
+                        "primary-light": "#7e6980",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#151415",
+                        "surface-dark": "#1e1c1e",
+                        "surface-light": "#ffffff",
+                    },
+                    fontFamily: {
+                        "display": ["Montserrat", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .glow-border {
+            box-shadow: 0 0 15px rgba(98, 80, 99, 0.4);
+        }
+        .neon-text {
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-x-hidden font-display">
+<!-- Header -->
+<div class="relative w-full z-20 border-b border-[#312f31] bg-surface-dark/95 backdrop-blur-sm sticky top-0">
+<header class="flex items-center justify-between whitespace-nowrap px-6 lg:px-10 py-3 max-w-[1200px] mx-auto w-full">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 dark:text-white text-slate-900">
+<div class="size-6 text-primary">
+<span class="material-symbols-outlined text-[32px] !leading-none">hourglass_top</span>
+</div>
+<h2 class="dark:text-white text-slate-900 text-lg font-bold leading-tight tracking-[-0.015em]">Timeless</h2>
+</div>
+<label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-[#aca9ad] flex border-none bg-[#312f31] items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg dark:text-white text-slate-900 focus:outline-0 focus:ring-0 border-none bg-[#312f31] focus:border-none h-full placeholder:text-[#aca9ad] px-4 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal" placeholder="Search venues, artists..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="hidden lg:flex items-center gap-9">
+<a class="dark:text-white text-slate-900 text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Discover</a>
+<a class="dark:text-white text-slate-900 text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Artists</a>
+<a class="dark:text-white text-slate-900 text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Venues</a>
+<a class="dark:text-white text-slate-900 text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Providers</a>
+</div>
+<div class="flex gap-3">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary hover:bg-primary-light transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Login</span>
+</button>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#312f31] hover:bg-[#413f41] transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Sign Up</span>
+</button>
+</div>
+</div>
+</header>
+</div>
+<!-- Main Content -->
+<main class="flex-1 w-full max-w-[1200px] mx-auto px-4 lg:px-10 pb-12">
+<!-- Hero Cover -->
+<div class="relative w-full mt-6 rounded-2xl overflow-hidden h-[320px] shadow-2xl group">
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark/90 via-transparent to-transparent z-10"></div>
+<div class="w-full h-full bg-center bg-cover bg-no-repeat transform group-hover:scale-105 transition-transform duration-700" data-alt="Cinematic concert hall stage with dramatic lighting" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBfO5WgoZEgeUK7pU4MTgGBdIO6D8J8Q6B2v1C1f34zlU4gUnQlo-b9faZhS6z6ZLynPOqzV7CCZ7cAnnfJEzHyV6dsGRRCmsUJKtgoL_w-1bEJmwZ4d9nSdmitriiIRC0xl_CFJyxgSvL2IW719PauqEMd8tHl0qbCT9ViTCdkjHuvqbjXKbtKnkU9-T_OmwUnl0EQaDF7DzpXykSGl_YKkk76zjNFyecULwTc5AafYfVZn6fxJBinUBmfDOtAdr1fTLDShhgBWdg");'>
+</div>
+<div class="absolute bottom-4 right-4 z-20 flex gap-2">
+<button class="bg-black/50 backdrop-blur-md text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-primary/80 transition flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">photo_camera</span>
+                    View Photos
+                 </button>
+<button class="bg-black/50 backdrop-blur-md text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-primary/80 transition flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">share</span>
+                    Share
+                 </button>
+</div>
+</div>
+<!-- Profile Header Info -->
+<div class="relative px-4 sm:px-8 -mt-16 z-20 flex flex-col md:flex-row items-end md:items-center justify-between gap-6">
+<div class="flex flex-col md:flex-row items-end md:items-center gap-6 w-full">
+<!-- Profile Image -->
+<div class="relative">
+<div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-background-dark bg-surface-dark overflow-hidden glow-border shadow-xl">
+<div class="w-full h-full bg-cover bg-center" data-alt="Modern building facade at night" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDjPVt44yRj0WYS_J9MZMzzFF4DsQwG6XRGtc1ZT_MRYLi6aJ6qzHIR-EUTUubhjCH4-9uoHjaGJfb0hhqBa9JB3sV7q98SHwp-olUUIf6nzVIQ2uOcn-EylJ2tM1JPPHJF7QJ5p8xQuWlDgQjR63F2TGcynOLe99_MdSrOLhd7G6sE8DtpWsh16vqvPzuss9i0L4Zx7qUgTyUUSphsxzqVjt3ByEY-NsojG5TJ8HLf8tbsRlj6QHy8OUCTZFNB1NlgVzacpMGbfiA");'>
+</div>
+</div>
+<div class="absolute bottom-2 right-2 bg-green-500 w-5 h-5 rounded-full border-4 border-surface-dark" title="Online now"></div>
+</div>
+<!-- Text Info -->
+<div class="flex-1 pb-2">
+<div class="flex flex-col md:flex-row md:items-center gap-2 mb-1">
+<h1 class="text-3xl md:text-4xl font-bold text-white neon-text tracking-tight">The Grand Hall</h1>
+<span class="px-2 py-0.5 rounded text-xs font-bold bg-primary/30 text-primary-light border border-primary/20 uppercase tracking-wider">Premium Venue</span>
+</div>
+<div class="flex items-center gap-1 text-slate-400 text-sm mb-2">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span>Downtown District, New York, NY</span>
+<span class="mx-2">•</span>
+<span class="text-green-400 text-xs font-semibold">Responds in ~1hr</span>
+</div>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1 rounded-full bg-surface-dark border border-white/10 text-xs text-slate-300">Concerts</span>
+<span class="px-3 py-1 rounded-full bg-surface-dark border border-white/10 text-xs text-slate-300">Corporate</span>
+<span class="px-3 py-1 rounded-full bg-surface-dark border border-white/10 text-xs text-slate-300">Weddings</span>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex gap-3 pb-2 w-full md:w-auto">
+<button class="flex-1 md:flex-none h-11 px-6 bg-primary hover:bg-primary-light text-white font-bold rounded-lg transition-all shadow-[0_0_15px_rgba(98,80,99,0.5)] hover:shadow-[0_0_20px_rgba(98,80,99,0.7)] flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]">calendar_add_on</span>
+                        Hire / Book
+                    </button>
+<button class="flex-1 md:flex-none h-11 px-6 bg-surface-dark border border-white/10 hover:border-primary/50 text-white font-semibold rounded-lg transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]">mail</span>
+                        Message
+                    </button>
+</div>
+</div>
+</div>
+<!-- Stats Row -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 mb-10">
+<div class="bg-surface-dark border border-white/5 p-5 rounded-xl flex flex-col gap-1 shadow-lg">
+<span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Overall Rating</span>
+<div class="flex items-center gap-2">
+<span class="text-2xl font-bold text-white">4.9</span>
+<div class="flex text-yellow-500">
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+<span class="material-symbols-outlined text-[20px] fill-current">star</span>
+<span class="material-symbols-outlined text-[20px] fill-current">star_half</span>
+</div>
+</div>
+<span class="text-xs text-slate-500">Based on 84 reviews</span>
+</div>
+<div class="bg-surface-dark border border-white/5 p-5 rounded-xl flex flex-col gap-1 shadow-lg">
+<span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Completed Events</span>
+<span class="text-2xl font-bold text-white">120+</span>
+<span class="text-xs text-green-400 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> 12 this month
+                </span>
+</div>
+<div class="bg-surface-dark border border-white/5 p-5 rounded-xl flex flex-col gap-1 shadow-lg">
+<span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Followers</span>
+<span class="text-2xl font-bold text-white">5.4k</span>
+<span class="text-xs text-slate-500">Growing community</span>
+</div>
+<div class="bg-surface-dark border border-white/5 p-5 rounded-xl flex flex-col gap-1 shadow-lg">
+<span class="text-slate-400 text-xs font-semibold uppercase tracking-wider">Starting Price</span>
+<span class="text-2xl font-bold text-white">$2,500</span>
+<span class="text-xs text-slate-500">Per event day</span>
+</div>
+</div>
+<!-- Content Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Left Column: Details -->
+<div class="lg:col-span-2 space-y-8">
+<!-- About Section -->
+<section>
+<h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">info</span> About The Venue
+                    </h3>
+<div class="bg-surface-dark border border-white/5 rounded-xl p-6">
+<p class="text-slate-300 leading-relaxed mb-4">
+                            The Grand Hall is a premier destination for concerts, corporate events, and private galas. Featuring state-of-the-art acoustics and a capacity of 2,000, we provide an unforgettable experience for every guest. Our team is dedicated to bringing your vision to life with precision and flair.
+                        </p>
+<p class="text-slate-300 leading-relaxed">
+                            Located in the heart of the city, we offer easy access to public transportation and ample parking. The venue includes a main hall, VIP lounges, and full backstage amenities for artists and crew.
+                        </p>
+</div>
+</section>
+<!-- Technical Specs -->
+<section>
+<h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">settings_input_component</span> Technical Specs
+                    </h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="bg-surface-dark border border-white/5 rounded-xl p-4 flex items-start gap-3">
+<div class="bg-primary/20 p-2 rounded-lg text-primary-light">
+<span class="material-symbols-outlined">speaker</span>
+</div>
+<div>
+<h4 class="text-white font-semibold">Sound System</h4>
+<p class="text-sm text-slate-400">L-Acoustics K2 Line Array, DiGiCo SD10 Console</p>
+</div>
+</div>
+<div class="bg-surface-dark border border-white/5 rounded-xl p-4 flex items-start gap-3">
+<div class="bg-primary/20 p-2 rounded-lg text-primary-light">
+<span class="material-symbols-outlined">lightbulb</span>
+</div>
+<div>
+<h4 class="text-white font-semibold">Lighting</h4>
+<p class="text-sm text-slate-400">GrandMA3 Full Size, 40x Moving Heads</p>
+</div>
+</div>
+<div class="bg-surface-dark border border-white/5 rounded-xl p-4 flex items-start gap-3">
+<div class="bg-primary/20 p-2 rounded-lg text-primary-light">
+<span class="material-symbols-outlined">straighten</span>
+</div>
+<div>
+<h4 class="text-white font-semibold">Stage Dimensions</h4>
+<p class="text-sm text-slate-400">40ft Width x 30ft Depth x 4ft Height</p>
+</div>
+</div>
+<div class="bg-surface-dark border border-white/5 rounded-xl p-4 flex items-start gap-3">
+<div class="bg-primary/20 p-2 rounded-lg text-primary-light">
+<span class="material-symbols-outlined">wifi</span>
+</div>
+<div>
+<h4 class="text-white font-semibold">Connectivity</h4>
+<p class="text-sm text-slate-400">10Gbps Fiber Internet, Dedicated Streaming Line</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Gallery -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-xl font-bold text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">collections</span> Gallery
+                        </h3>
+<a class="text-sm text-primary-light hover:text-white transition-colors" href="#">View All (24)</a>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+<div class="aspect-square rounded-lg overflow-hidden bg-surface-dark cursor-pointer group">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-110 transition-transform duration-500" data-alt="Concert crowd with colorful stage lights" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDgKjzy81PYxhgZ09GhcyPOOX1TzGPDmFEmNYNJ0DVpreUSR28G9l3iw29r2Kf0X5Dhk-zEMkSNmtSzaiXs2WAmtQ5r7hfwNDVMk2_7zgrKlFSQDgsfsLvbEy84_bM17vcwdjNrRk99itiqxtCqsJGqCiQzLLexTqBwxzDLcs2DKHN0Y6j5Awfh7-ijfa6ks1-xjgBof31um_Rj1xbTLR0D-FCmDbgf9R2tnrO6BxmBpv24APvSn5EaeIp8wgCv-xNoJNa4tdGXMTk");'></div>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden bg-surface-dark cursor-pointer group">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-110 transition-transform duration-500" data-alt="Empty elegant event hall with round tables" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA945o3bLFXyDhlWFdZmtoudGDhC5o_8Gr_CPjEu7_C28jvyGy2M9YyY4lA37_bcJMYpXWeG9NoGTc_9nlZ-zLJCI7e3ecHta-qpZHYSBoNumuqw_FW1UsbkqWeudAbSci-LHKbOXmgdEKO6ehBCjV_gPLBPvxf15NBOog_OHyG0nM5UuMZUMjgNCE5zVgpNRZcQA1MoMyQbcM82GGpgeiXXvdTMhOiO2LmfvoyP1KnQprxrs1xmlhJtuKZWBc5TIdSo9FVsqq7aas");'></div>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden bg-surface-dark cursor-pointer group">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-110 transition-transform duration-500" data-alt="Detailed shot of mixing console faders" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCL1QEspT2W_iV6hGLpllL7U66PkklSRDN8cDWhKVSeFk4BTFXaUEMJ4QynfrildtFh1L0mblD2T3EdkzTD-JcksczU6b-7bR5jblFazoUkZuUm8GyalV1agK1YSM5WBoH1BcQhPx2d3m-jG9sOqNNALNn5ih4U0V1ajhUjlq9rPywyC7vb2x5eKq0r5lGucdOG9eEIrcWTL3J8HeMmRejWwJxoD3lHHvu6c_xx7XZeFGB7oZpQVd48hNLng5tje_DTSVY0gF4lmQw");'></div>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden bg-surface-dark cursor-pointer group">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-110 transition-transform duration-500" data-alt="Wedding setup with flowers and candles" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBoWywKBy4idIlN3puL7x5qrd9ldNmqGT_JJpVuFpKTmmji82urS3vbbvn5LrL6eBBLmLUH5LOKPYP46JSj6e9GmjBvVBW4cJgE5reXFNBVgYUkICXIJ63t3U8AsRMM1mr6SUiYOoaaay2pHcmtkT9irkhnphmDNrujvke1REM6GR733Z0D-xejuCzdZ--Be2_cGqll7dakOACEf92Gte4l3hMVu9pp5pc-af3B7c_9kGie0niEwOTkO0AqKW2zdUhYsiBzDbGbrzY");'></div>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden bg-surface-dark cursor-pointer group">
+<div class="w-full h-full bg-cover bg-center group-hover:scale-110 transition-transform duration-500" data-alt="Corporate conference room setup" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC-lb2mSFWCGogYEkUKFX5Mvqa5tFInUINHMefCZDrm4JOlEix25oUM8-I-xlNRjCI8PB6DLzMADaaqAXEvkh7OvpparlmEdlVLOcm21DhinOUCA82ZDp7FWnW7jhkmcBwN5V2xw1ccVmRY9LGv7VSvHcCMJ3ddk6qxuo_OSPgEzetW3YiA3G70nrP99sKvZ6Y8Tmhfveq7Aiw_t5424mvHZ5E6FNU_QFDuVlxHOmOaCQPQasFLedtlpPoh7SJlsJ_y5dR2nglS6FU");'></div>
+</div>
+<div class="aspect-square rounded-lg overflow-hidden bg-surface-dark cursor-pointer group relative">
+<div class="w-full h-full bg-cover bg-center opacity-50 group-hover:scale-110 transition-transform duration-500" data-alt="Crowd cheering at a live event" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAxtH-6nV4WNZcNJUpwn4pGNooObflolZE48AJqeeFl4xmF89Xx7vLwMGTLQ7F65aBzsjwdIiJ3Xm4qu5MntrezyGZeh1_GhOUNKtSF-_Rvr-4xdVaxRxn5uBRw9eTt9C2OypzShm3UcJPt6eUAY70s4OgH7kdJrhXTvJA1ULc5Bm5PXEsvq7ACvS1MCtk1EyHnMGb4_umsF4oReJ3sMwXMeX7kNFXcG82-bKze-4oh4cNJVKwmc-qOH7zHLtLggKVsAF7Ei0vRgT4");'></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="text-white font-bold text-lg">+19</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Ratings & Sticky Sidebar -->
+<div class="lg:col-span-1 space-y-8">
+<!-- Availability / Quick Action (Sticky on desktop if needed, but keeping simple flow here) -->
+<div class="bg-surface-dark border border-white/5 rounded-xl p-6 shadow-lg">
+<h3 class="text-lg font-bold text-white mb-4">Availability</h3>
+<div class="flex justify-between items-center mb-4 text-sm text-slate-300">
+<span>Next Available Date:</span>
+<span class="text-green-400 font-semibold">Oct 14, 2023</span>
+</div>
+<div class="w-full h-1 bg-white/10 rounded-full overflow-hidden mb-6">
+<div class="h-full bg-green-500 w-3/4" title="75% booked this month"></div>
+</div>
+<button class="w-full py-3 rounded-lg bg-primary/20 text-primary-light hover:bg-primary/30 hover:text-white transition-colors font-semibold border border-primary/30 mb-2">
+                        Check Full Calendar
+                    </button>
+<p class="text-xs text-center text-slate-500">Free cancellation up to 30 days before event.</p>
+</div>
+<!-- Reviews Section -->
+<section class="flex flex-col h-full max-h-[600px]">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-xl font-bold text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">reviews</span> Reviews
+                        </h3>
+<div class="flex gap-1">
+<button class="w-8 h-8 flex items-center justify-center rounded bg-surface-dark hover:bg-white/5 text-slate-400">
+<span class="material-symbols-outlined text-[20px]">sort</span>
+</button>
+</div>
+</div>
+<div class="bg-surface-dark border border-white/5 rounded-xl p-1 overflow-hidden flex flex-col">
+<div class="p-4 border-b border-white/5 bg-white/5">
+<div class="flex items-center justify-between">
+<span class="text-sm font-semibold text-white">Latest Reviews</span>
+<span class="text-xs text-primary-light font-medium cursor-pointer hover:underline">Write a Review</span>
+</div>
+</div>
+<div class="overflow-y-auto custom-scrollbar p-4 space-y-4 max-h-[500px]">
+<!-- Review Item 1 -->
+<div class="border-b border-white/5 pb-4 last:border-0 last:pb-0">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-slate-700 bg-cover bg-center" data-alt="User avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCUVKLgqavbLbRvsdCLJKtfb_NMP23nNoLeX8l3xD_ybzOSZzAJL6FVGHW57hWgMlVaHI8hlXUUW1ohcM2YsCyti1x9BtPu3AjaE_cwDngt_oHQQK_qdiSKRD4Ys4yXLWNL645w2C8QT7IARoD_AX4RmBzcI5G5Kzmu5hGpCa-HkZcBaBjl42-CPcauYk6PXIaAYEqibiputUbJsamkM35Fa7EBciv1ruYLIzoAOoo8ayz4gXDcoqGhpdVlQpLFZ9Ps7QxlXvj97JI");'></div>
+<div>
+<p class="text-sm font-bold text-white leading-none">James K.</p>
+<p class="text-[10px] text-slate-500">Event Planner</p>
+</div>
+</div>
+<span class="text-[10px] text-slate-500">2 days ago</span>
+</div>
+<div class="flex text-yellow-500 text-[12px] mb-2 gap-0.5">
+<span class="material-symbols-outlined text-[14px] fill-current">star</span>
+<span class="material-symbols-outlined text-[14px] fill-current">star</span>
+<span class="material-symbols-outlined text-[14px] fill-current">star</span>
+<span class="material-symbols-outlined text-[14px] fill-current">star</span>
+<span class="material-symbols-outlined text-[14px] fill-current">star</span>
+</div>
+<p class="text-sm text-slate-300 leading-snug">
+                                    Absolutely stunning venue. The lighting crew was top notch and made our gala look incredible. Highly recommend!
+                                </p>
+</div>
+<!-- Review Item 2 -->
+<div class="border-b border-white/5 pb-4 last:border-0 last:pb-0">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-slate-700 bg-cover bg-center" data-alt="User avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDTOCy5iQ6QmERdOQf4lQmhcXUqVVFIefLiloJ09kLJOzY3sOrJEheR3h9gFBPMlNivrpsBV4F-fii1S0hsZ5MqIvllw3nmWR7Y7wV22OYLvavKAukSzVLvSYn5--3Wrr4txQLnZIJ0Us5DX91hFw0lroWs2LJFgyFiGUwn7KLoykyiszcIlMn7AU9V961UYJFbhNxLf-QpP1Eh2FyErRtVUriU2LiQwt9Wk8NmRhSuY96O1EXtI5aXFsJdosIUxWs2icOeia7VkYU");'></div>
+<div>
+<p class="text-sm font-bold text-white leading-none">Sarah M.</p>
+<p class="text-[10px] text-slate-500">Artist Manager</p>
+</div>
+</div>
+<span class="text-[10px] text-slate-500">1 week ago</span>
+</div>
+<div class="flex text-yellow-500 text-[12px] mb-2 gap-0.5">
+<span class="material-symbols-outlined text-[14px] fill-current">star</span>
+<span class="material-symbols-outlined text-[14px] fill-current">star</span>
+<span class="material-symbols-outlined text-[14px] fill-current">star</span>
+<span class="material-symbols-outlined text-[14px] fill-current">star</span>
+<span class="material-symbols-outlined text-[14px] text-slate-600">star</span>
+</div>
+<p class="text-sm text-slate-300 leading-snug">
+                                    Great acoustics. Backstage area is spacious. Loading dock access was a bit tight for our truck, but staff was helpful.
+                                </p>
+</div>
+<!-- Review Item 3 -->
+<div class="border-b border-white/5 pb-4 last:border-0 last:pb-0">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-slate-700 bg-cover bg-center" data-alt="User avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCZimC3WV2rjtCY_Ie7oiIjmZP5XlQUfq6e1Rkox-sfJs3GbRjsnSHbjr9mho61eoMUqhnGUsK087qkI3CezcGGD7liOhCzqHzf026maZ-Z-7Dzh_nvXFuhudJ1GYQLoVwu4vwJUnlHQYWy84Wc1G5VUE634XskGYmXWCiqIJM86eZAOokaKvoW-fT9vn23EDxkM392p7seACBgR-gakr_EPrtaeXdg_MMEWVJku-ZK0awMNwvk5NZd4-2GBrKER2xleCLXktds9ho");'></div>
+<div>
+<p class="text-sm font-bold text-white leading-none">Mike R.</p>
+<p class="text-[10px] text-slate-500">Concert Goer</p>
+</div>
+</div>
+<span class="text-[10px] text-slate-500">3 weeks ago</span>
+</div>
+<div class="flex text-yellow-500 text-[12px] mb-2 gap-0.5">
+<span class="material-symbols-outlined text-[14px] fill-current">star</span>
+<span class="material-symbols-outlined text-[14px] fill-current">star</span>
+<span class="material-symbols-outlined text-[14px] fill-current">star</span>
+<span class="material-symbols-outlined text-[14px] fill-current">star</span>
+<span class="material-symbols-outlined text-[14px] fill-current">star_half</span>
+</div>
+<p class="text-sm text-slate-300 leading-snug">
+                                    Attended the jazz festival here. The ambiance is unmatched in the city.
+                                </p>
+</div>
+</div>
+<div class="p-4 border-t border-white/5 bg-white/5">
+<button class="w-full text-xs font-semibold text-slate-400 hover:text-white transition-colors">Load More Reviews</button>
+</div>
+</div>
+</section>
+<!-- Location Map -->
+<section>
+<h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">map</span> Location
+                    </h3>
+<div class="rounded-xl overflow-hidden h-48 w-full relative">
+<div class="w-full h-full bg-cover bg-center" data-alt="Map view of city streets" data-location="New York City" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCehpdom1SDip9gMs669oHznq9fgpQrFw5I-Y1D1mj9Qx4eYiC6uZaynYXpJJZ3hYmAnrD4pqIpqigS66G_2iTGBRghSo8vYTLyVUmdxVfPwryjKnj_b32j84MffBFi2ueRgFhdn6O8dfb8RbLg-MtM4riDIqUnxta3os_BuIAT2S10Xp4V44JMsG4OVkCHKExNe_D9NublR8LDwrugmV7USBNv2axAp3crt_ZifKkEPEI0kmta0lSZ9ZR7X-KI5cVC7AroqCReO7A");'>
+</div>
+<div class="absolute inset-0 bg-black/20 flex items-center justify-center">
+<button class="bg-white text-slate-900 px-4 py-2 rounded-lg font-bold shadow-lg hover:bg-slate-100 transition text-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[18px]">near_me</span>
+                                Get Directions
+                            </button>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="border-t border-[#312f31] bg-surface-dark py-12 mt-12">
+<div class="max-w-[1200px] mx-auto px-10 flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-2 text-white">
+<div class="size-6 text-primary">
+<span class="material-symbols-outlined text-[24px]">hourglass_top</span>
+</div>
+<h2 class="text-lg font-bold">Timeless</h2>
+</div>
+<div class="text-slate-500 text-sm">
+                © 2023 Timeless Inc. All rights reserved.
+            </div>
+<div class="flex gap-6">
+<a class="text-slate-400 hover:text-white transition-colors" href="#"><span class="material-symbols-outlined">social_leaderboard</span></a>
+<a class="text-slate-400 hover:text-white transition-colors" href="#"><span class="material-symbols-outlined">photo_camera</span></a> <!-- Instagram alt icon -->
+<a class="text-slate-400 hover:text-white transition-colors" href="#"><span class="material-symbols-outlined">alternate_email</span></a> <!-- Twitter alt icon -->
+</div>
+</div>
+</footer>
+</body></html>

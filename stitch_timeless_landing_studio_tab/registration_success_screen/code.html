@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Registration Success - Timeless</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#7f13ec",
+                "background-light": "#f7f6f8",
+                "background-dark": "#191022",
+              },
+              fontFamily: {
+                "display": ["Manrope", "sans-serif"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+              backgroundImage: {
+                'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex flex-col overflow-x-hidden">
+<div class="relative flex min-h-screen w-full flex-col group/design-root">
+<!-- Background Gradients -->
+<div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+<div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-primary/20 blur-[100px] mix-blend-screen opacity-50"></div>
+<div class="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-primary/10 blur-[120px] mix-blend-screen opacity-50"></div>
+<div class="absolute top-[40%] left-[60%] w-[300px] h-[300px] rounded-full bg-purple-900/20 blur-[80px] mix-blend-screen"></div>
+</div>
+<div class="layout-container flex h-full grow flex-col relative z-10">
+<!-- Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-10 py-4 backdrop-blur-sm bg-background-light/80 dark:bg-background-dark/80 sticky top-0 z-50">
+<div class="flex items-center gap-3">
+<div class="size-8 flex items-center justify-center text-primary rounded-lg bg-primary/10">
+<span class="material-symbols-outlined text-2xl">hourglass_top</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-tight">Timeless</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8 hidden md:flex">
+<nav class="flex items-center gap-9">
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white text-sm font-medium transition-colors" href="#">Home</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white text-sm font-medium transition-colors" href="#">About</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white text-sm font-medium transition-colors" href="#">Contact</a>
+</nav>
+</div>
+<div class="md:hidden flex items-center">
+<button class="text-slate-900 dark:text-white">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex flex-1 flex-col items-center justify-center px-4 py-12 md:py-20 w-full max-w-[960px] mx-auto">
+<div class="flex flex-col items-center max-w-[640px] text-center gap-8 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/5 dark:bg-white/5 backdrop-blur-sm shadow-xl">
+<!-- Glowing Checkmark Icon -->
+<div class="relative flex items-center justify-center">
+<div class="absolute inset-0 bg-primary/30 rounded-full blur-xl"></div>
+<div class="relative size-24 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center shadow-lg shadow-primary/25 border-4 border-background-light dark:border-background-dark">
+<span class="material-symbols-outlined text-white text-5xl font-bold">check</span>
+</div>
+</div>
+<!-- Text Content -->
+<div class="flex flex-col gap-4">
+<p class="text-primary text-sm font-bold uppercase tracking-wider">Success!</p>
+<h1 class="text-slate-900 dark:text-white text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
+                            Welcome to the <br/>
+<span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">Timeless Community!</span>
+</h1>
+<p class="text-slate-500 dark:text-slate-400 text-lg font-medium leading-relaxed max-w-[480px] mx-auto">
+                            You have successfully registered. Your journey towards mastering time management starts now.
+                        </p>
+</div>
+<!-- Actions -->
+<div class="flex flex-col sm:flex-row gap-4 w-full max-w-[480px] justify-center mt-4">
+<button class="flex-1 cursor-pointer items-center justify-center rounded-xl h-12 px-6 bg-primary hover:bg-primary/90 text-white text-base font-bold transition-all shadow-lg shadow-primary/20 hover:shadow-primary/40 focus:ring-4 focus:ring-primary/30">
+                            Go to Dashboard
+                        </button>
+<button class="flex-1 cursor-pointer items-center justify-center rounded-xl h-12 px-6 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white text-base font-bold transition-all border border-slate-200 dark:border-slate-700">
+                            Complete Profile
+                        </button>
+</div>
+<!-- Decorative Divider -->
+<div class="w-full flex items-center gap-4 mt-2">
+<div class="h-px bg-slate-200 dark:bg-slate-800 flex-1"></div>
+<span class="text-xs text-slate-400 dark:text-slate-600 font-medium">NEXT STEPS</span>
+<div class="h-px bg-slate-200 dark:bg-slate-800 flex-1"></div>
+</div>
+<!-- Additional Info Cards (Optional context) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full text-left">
+<div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-1">mail</span>
+<div>
+<h4 class="text-sm font-bold text-slate-900 dark:text-white">Check Email</h4>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Verify your address to unlock all features.</p>
+</div>
+</div>
+<div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-1">settings_account_box</span>
+<div>
+<h4 class="text-sm font-bold text-slate-900 dark:text-white">Setup Profile</h4>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Add a photo and bio to get discovered.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="flex flex-col gap-6 px-5 py-8 text-center border-t border-slate-200 dark:border-slate-800 mt-auto bg-background-light/50 dark:bg-background-dark/50">
+<div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4">
+<a class="text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm transition-colors" href="#">Privacy Policy</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm transition-colors" href="#">Terms of Service</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm transition-colors" href="#">Support</a>
+</div>
+<p class="text-slate-400 dark:text-slate-600 text-sm">© 2023 Timeless Community. All rights reserved.</p>
+</footer>
+</div>
+</div>
+</body></html>

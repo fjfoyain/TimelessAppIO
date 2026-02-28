@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Interactive Empty State System</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#625063",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#1a181a",
+                        // Deriving neutrals from primary hue (285)
+                        "neutral-50": "#fbfafb",
+                        "neutral-100": "#f5f3f5",
+                        "neutral-200": "#eceaec",
+                        "neutral-300": "#dbd8db",
+                        "neutral-400": "#a6a0a7",
+                        "neutral-500": "#857e86",
+                        "neutral-600": "#625063", // primary
+                        "neutral-700": "#4f4050",
+                        "neutral-800": "#3a2f3b",
+                        "neutral-900": "#251e25",
+                    },
+                    fontFamily: {
+                        "display": ["Montserrat", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for better aesthetic in dark mode */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a181a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3a2f3b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4f4050;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased min-h-screen flex flex-col">
+<!-- Navbar for context -->
+<nav class="border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1f1d1f] px-6 py-4 sticky top-0 z-50">
+<div class="max-w-[1200px] mx-auto flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-xl">hourglass_empty</span>
+</div>
+<span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Timeless</span>
+</div>
+<div class="flex gap-6 text-sm font-medium text-neutral-500 dark:text-neutral-400">
+<a class="hover:text-primary dark:hover:text-white transition-colors" href="#">Dashboard</a>
+<a class="text-primary dark:text-white transition-colors" href="#">Inbox</a>
+<a class="hover:text-primary dark:hover:text-white transition-colors" href="#">Contracts</a>
+<a class="hover:text-primary dark:hover:text-white transition-colors" href="#">Talent</a>
+</div>
+<div class="w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-800 bg-cover bg-center" data-alt="User profile avatar placeholder" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBQxEt2tEYQOR9mBJH1_O9ZvWGilTm--CJSpqMVQC4UPGYdIHP0lQ0EE_m0p8BnJdLtP7n3bJ47ys3JkKQo0cfLKWqtFs7SaGJUStxXJDT0HhDvFWE8k04b76kwIytc7gRcwuY5lFQsKWkzTuA70WVPKY4NHRskJHjllP0am833nX32xJWpROlmBuuXp6i88SYV3_fQsejguRhjhIDmuMl2rRZLnsXnQ3uywhcuOXhYtF79pTXst_LYRcWfNG1NLWOBXo1ga1i8Jj8');"></div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col items-center justify-center w-full px-4 py-12 md:px-8">
+<div class="max-w-[960px] w-full flex flex-col gap-16">
+<!-- Section Header -->
+<div class="flex flex-col gap-2 text-center mb-4">
+<h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">System Status</h1>
+<p class="text-neutral-500 dark:text-neutral-400">Current view of your workspace activity.</p>
+</div>
+<!-- Empty State Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- Empty State 1: Inbox -->
+<div class="bg-white dark:bg-[#232023] border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden flex flex-col shadow-lg transition-all hover:shadow-xl hover:border-primary/30 group">
+<div class="p-6 md:p-8 flex flex-col flex-1 items-center text-center">
+<div class="w-full aspect-[4/3] rounded-lg bg-neutral-100 dark:bg-neutral-900 mb-6 overflow-hidden relative group-hover:scale-[1.02] transition-transform duration-500">
+<!-- Artistic Illustration Placeholder -->
+<div class="absolute inset-0 bg-cover bg-center opacity-80" data-alt="Empty dimly lit concert stage with microphone" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAwv3ja_FbhIvF7zuxy9jgwh3OTk_lYZ6mmxOPvWN5YUMkf83Gd8cbk1kKFBsRObkCEAGS7VPW3V_R9H7r7c1EubBM8GvRvEVPl-PpHg12muFm7YwsGPRoZd1O3XFZmqKR-6B3MdmQvBUDbdTEg6c7TnpOASbFc193c2u3QZpRYgvsg__v2sX6mzRj76tGMVy76TK5bjWm0JBl8SHGUa4xtoGoSaX48efsPP0CTu1DEH6385VIDx8Jqj_ko23-uQ0HFoWWm7tcZVfg');">
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-[#232023] via-transparent to-transparent"></div>
+<!-- Icon Overlay -->
+<div class="absolute bottom-4 right-4 w-12 h-12 bg-primary/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white shadow-lg">
+<span class="material-symbols-outlined">mark_email_unread</span>
+</div>
+</div>
+<h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">No messages yet</h3>
+<p class="text-neutral-500 dark:text-neutral-400 mb-8 max-w-sm">
+                            Your inbox is quiet. The stage is set, but the performers haven't arrived. Start a conversation with talent or venues to get things moving.
+                        </p>
+<div class="mt-auto w-full">
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-6 rounded-lg transition-all flex items-center justify-center gap-2 group-hover:bg-primary group-hover:shadow-[0_0_15px_rgba(98,80,99,0.5)]">
+<span class="material-symbols-outlined text-lg">search</span>
+<span>Find Talent</span>
+</button>
+<button class="w-full mt-3 text-sm text-neutral-500 dark:text-neutral-400 hover:text-primary dark:hover:text-white transition-colors">
+                                View archived messages
+                            </button>
+</div>
+</div>
+</div>
+<!-- Empty State 2: Contracts -->
+<div class="bg-white dark:bg-[#232023] border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden flex flex-col shadow-lg transition-all hover:shadow-xl hover:border-primary/30 group">
+<div class="p-6 md:p-8 flex flex-col flex-1 items-center text-center">
+<div class="w-full aspect-[4/3] rounded-lg bg-neutral-100 dark:bg-neutral-900 mb-6 overflow-hidden relative group-hover:scale-[1.02] transition-transform duration-500">
+<!-- Artistic Illustration Placeholder -->
+<div class="absolute inset-0 bg-cover bg-center opacity-80" data-alt="Empty DJ mixer desk in dark club setting" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA7IMwxHQ2thONvH4cd59A80qi5A2PfUG1Pcohd88lYc53a-yTyId0Xhs8bnxvygTsSdMxMlghMUtyPcdz9i-TGdCitO8EYzQY_mxkbckn4V-yW2SXfPe2V03ZuoG0UlBy570LXp3OYluZhZHxTKHfsSlI8Z0bZlBgbp7OAX1_zK-zmO95p9_T14JT4WYaf5Gfz8Qhn7D6kE0wtcUcP51jegxCA7-aXnTt5kytNqN9YxrVv7zMGXYFfo8mgupmB1_aOWWk_UozNGZU');">
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-[#232023] via-transparent to-transparent"></div>
+<!-- Icon Overlay -->
+<div class="absolute bottom-4 right-4 w-12 h-12 bg-primary/90 backdrop-blur-sm rounded-full flex items-center justify-center text-white shadow-lg">
+<span class="material-symbols-outlined">description</span>
+</div>
+</div>
+<h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">No active contracts</h3>
+<p class="text-neutral-500 dark:text-neutral-400 mb-8 max-w-sm">
+                            The booth is empty. You don't have any gigs booked at the moment. Ready to get the party started?
+                        </p>
+<div class="mt-auto w-full">
+<button class="w-full bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-slate-900 dark:text-white font-semibold py-3 px-6 rounded-lg transition-all flex items-center justify-center gap-2 border border-transparent dark:border-neutral-700">
+<span class="material-symbols-outlined text-lg">add_circle</span>
+<span>Post a Service</span>
+</button>
+<button class="w-full mt-3 text-sm text-neutral-500 dark:text-neutral-400 hover:text-primary dark:hover:text-white transition-colors">
+                                Browse open gigs
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Alternative Small Empty State (List Item) -->
+<div class="mt-12">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white">Recent Notifications</h2>
+<button class="text-sm text-primary dark:text-primary hover:underline">Mark all read</button>
+</div>
+<div class="w-full bg-white dark:bg-[#232023] border border-neutral-200 dark:border-neutral-800 rounded-xl p-8 flex flex-col md:flex-row items-center justify-center gap-6 text-center md:text-left">
+<div class="w-16 h-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-3xl text-neutral-400">notifications_off</span>
+</div>
+<div class="flex flex-col gap-1 max-w-md">
+<p class="text-lg font-semibold text-slate-900 dark:text-white">All caught up!</p>
+<p class="text-neutral-500 dark:text-neutral-400 text-sm">You have no new notifications. Enjoy the silence while it lasts.</p>
+</div>
+<div class="md:ml-auto">
+<button class="text-sm font-medium text-primary hover:text-primary/80 dark:text-white dark:hover:text-neutral-300 transition-colors">
+                            Notification Settings
+                        </button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer for context -->
+<footer class="border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1f1d1f] py-8 mt-12">
+<div class="max-w-[1200px] mx-auto px-6 text-center text-neutral-500 dark:text-neutral-400 text-sm">
+            © 2023 Timeless. All rights reserved.
+        </div>
+</footer>
+</body></html>

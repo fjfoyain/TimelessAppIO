@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Timeless - See You Soon</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#625063",
+                        "primary-hover": "#7a637b",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#1a181a",
+                        "surface-dark": "#242224",
+                    },
+                    fontFamily: {
+                        "display": ["Montserrat", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-white/10 px-10 py-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="size-6 text-primary dark:text-white">
+<span class="material-symbols-outlined text-2xl">hourglass_empty</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Timeless</h2>
+</div>
+<div class="hidden md:flex flex-1 justify-end gap-8">
+<div class="flex items-center gap-9">
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Home</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Events</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Community</a>
+</div>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-6 bg-primary hover:bg-primary-hover text-white text-sm font-bold leading-normal tracking-[0.015em] transition-colors shadow-lg shadow-primary/20">
+<span class="truncate">Log In</span>
+</button>
+</div>
+<!-- Mobile Menu Icon -->
+<button class="md:hidden text-slate-900 dark:text-white">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<!-- Main Content Area with Gradient Background -->
+<main class="flex-grow flex flex-col items-center justify-center relative w-full">
+<!-- Subtle Dark Gradient Background -->
+<div class="absolute inset-0 bg-gradient-to-br from-background-dark via-[#2a242a] to-[#151215] -z-10"></div>
+<div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 -z-10 mix-blend-overlay"></div>
+<div class="layout-container flex h-full w-full flex-col px-4 md:px-10 py-10 max-w-7xl mx-auto">
+<div class="@container w-full">
+<div class="flex flex-col-reverse lg:flex-row gap-10 lg:gap-16 items-center justify-center min-h-[600px]">
+<!-- Text Content -->
+<div class="flex flex-col gap-8 lg:w-1/2 max-w-xl text-center lg:text-left z-10">
+<div class="flex flex-col gap-4">
+<span class="text-primary font-bold tracking-widest uppercase text-sm">Session Ended</span>
+<h1 class="text-slate-900 dark:text-white text-5xl md:text-6xl font-black leading-tight tracking-tight">
+                                    See You Soon
+                                </h1>
+<p class="text-slate-600 dark:text-slate-300 text-lg md:text-xl font-normal leading-relaxed">
+                                    Thank you for being part of the Timeless community. We hope you enjoyed the experience and made some lasting memories.
+                                </p>
+</div>
+<div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+<button class="group flex min-w-[160px] cursor-pointer items-center justify-center rounded-xl h-14 px-8 bg-primary hover:bg-primary-hover text-white text-base font-bold transition-all shadow-xl shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-0.5">
+<span class="truncate">Log Back In</span>
+<span class="material-symbols-outlined ml-2 text-xl group-hover:translate-x-1 transition-transform">login</span>
+</button>
+<button class="flex min-w-[160px] cursor-pointer items-center justify-center rounded-xl h-14 px-8 bg-surface-dark/50 hover:bg-surface-dark border border-white/10 hover:border-white/20 text-white text-base font-medium backdrop-blur-sm transition-all">
+<span class="truncate">Return Home</span>
+</button>
+</div>
+<!-- Social Proof / Visit Socials -->
+<div class="mt-8 pt-8 border-t border-white/5 flex flex-col gap-4">
+<p class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Stay Connected</p>
+<div class="flex gap-6 justify-center lg:justify-start">
+<a class="group relative flex items-center justify-center size-12 rounded-full bg-surface-dark border border-white/5 hover:border-primary/50 hover:bg-primary/10 transition-all duration-300" href="#">
+<div class="absolute inset-0 rounded-full bg-primary/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined relative z-10 text-slate-400 group-hover:text-primary transition-colors">public</span> <!-- Twitter replacement -->
+</a>
+<a class="group relative flex items-center justify-center size-12 rounded-full bg-surface-dark border border-white/5 hover:border-pink-500/50 hover:bg-pink-500/10 transition-all duration-300" href="#">
+<div class="absolute inset-0 rounded-full bg-pink-500/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined relative z-10 text-slate-400 group-hover:text-pink-400 transition-colors">photo_camera</span> <!-- Instagram replacement -->
+</a>
+<a class="group relative flex items-center justify-center size-12 rounded-full bg-surface-dark border border-white/5 hover:border-blue-600/50 hover:bg-blue-600/10 transition-all duration-300" href="#">
+<div class="absolute inset-0 rounded-full bg-blue-600/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined relative z-10 text-slate-400 group-hover:text-blue-500 transition-colors">thumb_up</span> <!-- Facebook replacement -->
+</a>
+<a class="group relative flex items-center justify-center size-12 rounded-full bg-surface-dark border border-white/5 hover:border-red-600/50 hover:bg-red-600/10 transition-all duration-300" href="#">
+<div class="absolute inset-0 rounded-full bg-red-600/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined relative z-10 text-slate-400 group-hover:text-red-500 transition-colors">play_circle</span> <!-- Youtube replacement -->
+</a>
+</div>
+</div>
+</div>
+<!-- Image Section -->
+<div class="relative w-full lg:w-1/2 flex justify-center lg:justify-end">
+<div class="relative w-full max-w-[600px] aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl shadow-black/50 ring-1 ring-white/10 group">
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark/80 via-transparent to-transparent z-10"></div>
+<div class="w-full h-full bg-cover bg-center transform transition-transform duration-700 group-hover:scale-105" data-alt="Moody concert crowd silhouette with stage lights in background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBXfo9LbFpLIUteolwyId4gSH8-1YbWCLb1QzSCJ3UpvesthlGY3S7AWtanIeeqZmyreNU8HxrJTbJ7ZkXPbkVsD7iIESmraZpnFDVfp3ENYddBU7rY1bHJfEwaW-7gnRH7L4SLsswpSwtXrEoP7dYrTsSxJ6V6yYY9x9pzignDpwUOTV4j5HuS7WKbpfhMN5YKDknpPvI6Y4gzsljggEwGmF_d_rUCNAJ0etevdm11mcot_fpwqhKwKm6Mppbvdr4kMxJ44LwlXHk');"></div>
+<!-- Overlay Card on Image -->
+<div class="absolute bottom-6 left-6 right-6 z-20">
+<div class="bg-surface-dark/90 backdrop-blur-md p-4 rounded-xl border border-white/10 flex items-center gap-4">
+<div class="size-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">music_note</span>
+</div>
+<div class="flex-1">
+<p class="text-white text-sm font-bold">Upcoming: The Midnight Tour</p>
+<p class="text-slate-400 text-xs">Tickets on sale next Friday</p>
+</div>
+<button class="text-white hover:text-primary transition-colors">
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Decorative Elements -->
+<div class="absolute -top-10 -right-10 size-64 bg-primary/20 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="absolute -bottom-10 -left-10 size-64 bg-purple-900/20 rounded-full blur-[100px] pointer-events-none"></div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full border-t border-slate-200 dark:border-white/10 bg-background-light dark:bg-background-dark py-8">
+<div class="layout-container px-10 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">© 2023 Timeless. All rights reserved.</p>
+<div class="flex gap-6 text-slate-500 dark:text-slate-400 text-sm">
+<a class="hover:text-primary dark:hover:text-white transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary dark:hover:text-white transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary dark:hover:text-white transition-colors" href="#">Help Center</a>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

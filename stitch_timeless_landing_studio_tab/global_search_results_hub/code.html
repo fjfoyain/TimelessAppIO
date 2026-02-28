@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Timeless - Global Search</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#625063",
+                        "primary-hover": "#7a637b",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#1a181a",
+                        "surface-dark": "#252325",
+                        "surface-dark-hover": "#312f31",
+                        "text-main": "#e8e6e8",
+                        "text-muted": "#aca9ad"
+                    },
+                    fontFamily: {
+                        display: ["Montserrat", "sans-serif"],
+                        body: ["Montserrat", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+        /* Custom scrollbar for sidebar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1a181a;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #312f31;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #4a484a;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-text-main min-h-screen flex flex-col font-display antialiased selection:bg-primary selection:text-white">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-b-surface-dark-hover bg-background-dark/95 backdrop-blur px-10 py-3">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 rounded bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[20px]">hourglass_empty</span>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-[-0.015em]">Timeless</h2>
+</div>
+<label class="flex flex-col min-w-40 !h-10 w-96">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full group focus-within:ring-2 focus-within:ring-primary/50 transition-all">
+<div class="text-text-muted flex border-none bg-surface-dark items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border-none bg-surface-dark focus:border-none h-full placeholder:text-text-muted px-4 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal" placeholder="Search artists, venues, events..." value="Live Jazz Band"/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<nav class="flex items-center gap-6 hidden lg:flex">
+<a class="text-text-muted hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Explore</a>
+<a class="text-text-muted hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Bookings</a>
+<a class="text-text-muted hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Community</a>
+</nav>
+<div class="flex gap-3 items-center border-l border-surface-dark-hover pl-6">
+<button class="flex items-center justify-center overflow-hidden rounded-lg size-10 hover:bg-surface-dark-hover text-text-muted hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[24px]">notifications</span>
+</button>
+<div class="h-8 w-[1px] bg-surface-dark-hover mx-1"></div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-surface-dark cursor-pointer hover:border-primary transition-colors" data-alt="User profile avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD2PdyJ4V16XxtYEVzUP3-V4d77JMVtUZ4EeFckGo8iVWpt7ofHAgrWyksMrhNMyp4OqthlU-jz8mEJFeFSXIKnTQWqgVL1i9V0uYgGWXkOnW0aUU1t87-O1A_fTCar2twTY45Eeyey33bq6auZq2UeI2VIMDHU3nOSB_9icGtm53_rqgeeJ3H9yk283ze1xTeTsWUoLrrOeDwRhkldsPUhZWJdzpNw6UGTtK6S5ymM_vLw6BVTphv70yMgIvXdXwvHyvEv6MKzmDI");'></div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden h-[calc(100vh-65px)]">
+<!-- Sidebar Filters -->
+<aside class="w-80 border-r border-surface-dark-hover flex flex-col bg-background-dark h-full overflow-y-auto custom-scrollbar shrink-0 hidden md:flex">
+<div class="p-6 space-y-8">
+<div class="flex items-center justify-between">
+<h2 class="text-lg font-bold text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">tune</span>
+                        Filters
+                    </h2>
+<button class="text-xs text-primary hover:text-primary-hover font-medium">Reset all</button>
+</div>
+<!-- Price Range -->
+<div class="space-y-3">
+<h3 class="text-sm font-semibold text-text-muted uppercase tracking-wider">Price Range</h3>
+<div class="space-y-2">
+<label class="flex items-center space-x-3 cursor-pointer group">
+<input class="form-checkbox rounded border-surface-dark-hover bg-surface-dark text-primary focus:ring-primary focus:ring-offset-background-dark size-4" type="checkbox"/>
+<span class="text-sm text-text-main group-hover:text-white transition-colors">Under $50</span>
+</label>
+<label class="flex items-center space-x-3 cursor-pointer group">
+<input checked="" class="form-checkbox rounded border-surface-dark-hover bg-surface-dark text-primary focus:ring-primary focus:ring-offset-background-dark size-4" type="checkbox"/>
+<span class="text-sm text-text-main group-hover:text-white transition-colors">$50 - $150</span>
+</label>
+<label class="flex items-center space-x-3 cursor-pointer group">
+<input class="form-checkbox rounded border-surface-dark-hover bg-surface-dark text-primary focus:ring-primary focus:ring-offset-background-dark size-4" type="checkbox"/>
+<span class="text-sm text-text-main group-hover:text-white transition-colors">$150 - $300</span>
+</label>
+<label class="flex items-center space-x-3 cursor-pointer group">
+<input class="form-checkbox rounded border-surface-dark-hover bg-surface-dark text-primary focus:ring-primary focus:ring-offset-background-dark size-4" type="checkbox"/>
+<span class="text-sm text-text-main group-hover:text-white transition-colors">$300+</span>
+</label>
+</div>
+</div>
+<!-- Rating -->
+<div class="space-y-3">
+<h3 class="text-sm font-semibold text-text-muted uppercase tracking-wider">Rating</h3>
+<div class="space-y-2">
+<label class="flex items-center space-x-3 cursor-pointer group">
+<input class="form-radio border-surface-dark-hover bg-surface-dark text-primary focus:ring-primary focus:ring-offset-background-dark size-4" name="rating" type="radio"/>
+<div class="flex items-center text-yellow-500">
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="ml-2 text-sm text-text-main group-hover:text-white transition-colors">5.0 only</span>
+</div>
+</label>
+<label class="flex items-center space-x-3 cursor-pointer group">
+<input checked="" class="form-radio border-surface-dark-hover bg-surface-dark text-primary focus:ring-primary focus:ring-offset-background-dark size-4" name="rating" type="radio"/>
+<div class="flex items-center text-yellow-500">
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] text-surface-dark-hover">star</span>
+<span class="ml-2 text-sm text-text-main group-hover:text-white transition-colors">4.0 &amp; up</span>
+</div>
+</label>
+<label class="flex items-center space-x-3 cursor-pointer group">
+<input class="form-radio border-surface-dark-hover bg-surface-dark text-primary focus:ring-primary focus:ring-offset-background-dark size-4" name="rating" type="radio"/>
+<div class="flex items-center text-yellow-500">
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] text-surface-dark-hover">star</span>
+<span class="material-symbols-outlined text-[16px] text-surface-dark-hover">star</span>
+<span class="ml-2 text-sm text-text-main group-hover:text-white transition-colors">3.0 &amp; up</span>
+</div>
+</label>
+</div>
+</div>
+<!-- Genre -->
+<div class="space-y-3">
+<h3 class="text-sm font-semibold text-text-muted uppercase tracking-wider">Genre</h3>
+<div class="flex flex-wrap gap-2">
+<button class="px-3 py-1.5 rounded-full bg-primary text-white text-xs font-medium border border-transparent transition-all">Jazz</button>
+<button class="px-3 py-1.5 rounded-full bg-surface-dark text-text-muted hover:text-white hover:bg-surface-dark-hover text-xs font-medium border border-surface-dark-hover transition-all">Blues</button>
+<button class="px-3 py-1.5 rounded-full bg-surface-dark text-text-muted hover:text-white hover:bg-surface-dark-hover text-xs font-medium border border-surface-dark-hover transition-all">Soul</button>
+<button class="px-3 py-1.5 rounded-full bg-primary/20 text-primary border border-primary/20 hover:bg-primary/30 text-xs font-medium transition-all">R&amp;B</button>
+<button class="px-3 py-1.5 rounded-full bg-surface-dark text-text-muted hover:text-white hover:bg-surface-dark-hover text-xs font-medium border border-surface-dark-hover transition-all">Classical</button>
+<button class="px-3 py-1.5 rounded-full bg-surface-dark text-text-muted hover:text-white hover:bg-surface-dark-hover text-xs font-medium border border-surface-dark-hover transition-all">Funk</button>
+</div>
+</div>
+<!-- Equipment -->
+<div class="space-y-3">
+<h3 class="text-sm font-semibold text-text-muted uppercase tracking-wider">Equipment</h3>
+<div class="space-y-2">
+<label class="flex items-center space-x-3 cursor-pointer group">
+<input class="form-checkbox rounded border-surface-dark-hover bg-surface-dark text-primary focus:ring-primary focus:ring-offset-background-dark size-4" type="checkbox"/>
+<span class="text-sm text-text-main group-hover:text-white transition-colors">Sound System Included</span>
+</label>
+<label class="flex items-center space-x-3 cursor-pointer group">
+<input class="form-checkbox rounded border-surface-dark-hover bg-surface-dark text-primary focus:ring-primary focus:ring-offset-background-dark size-4" type="checkbox"/>
+<span class="text-sm text-text-main group-hover:text-white transition-colors">Instruments Provided</span>
+</label>
+<label class="flex items-center space-x-3 cursor-pointer group">
+<input class="form-checkbox rounded border-surface-dark-hover bg-surface-dark text-primary focus:ring-primary focus:ring-offset-background-dark size-4" type="checkbox"/>
+<span class="text-sm text-text-main group-hover:text-white transition-colors">Lighting Rig</span>
+</label>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto custom-scrollbar p-6 lg:p-10 scroll-smooth">
+<div class="max-w-[1200px] mx-auto flex flex-col gap-10">
+<!-- Search Summary Header -->
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-end">
+<div>
+<h1 class="text-white text-3xl font-bold leading-tight">Search Results for "Live Jazz Band"</h1>
+<p class="text-text-muted mt-2">Found 128 results across all categories</p>
+</div>
+<div class="hidden sm:flex gap-2">
+<span class="px-3 py-1 rounded bg-surface-dark border border-surface-dark-hover text-sm text-text-muted">Sort by: <span class="text-white font-medium">Relevance</span></span>
+</div>
+</div>
+<!-- Quick Categories -->
+<div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-sm font-bold whitespace-nowrap">
+<span class="material-symbols-outlined text-[20px]">grid_view</span> All
+                        </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-dark hover:bg-surface-dark-hover text-text-muted hover:text-white text-sm font-medium transition-colors whitespace-nowrap">
+<span class="material-symbols-outlined text-[20px]">mic_external_on</span> Artists
+                        </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-dark hover:bg-surface-dark-hover text-text-muted hover:text-white text-sm font-medium transition-colors whitespace-nowrap">
+<span class="material-symbols-outlined text-[20px]">stadium</span> Venues
+                        </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-dark hover:bg-surface-dark-hover text-text-muted hover:text-white text-sm font-medium transition-colors whitespace-nowrap">
+<span class="material-symbols-outlined text-[20px]">event</span> Events
+                        </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-surface-dark hover:bg-surface-dark-hover text-text-muted hover:text-white text-sm font-medium transition-colors whitespace-nowrap">
+<span class="material-symbols-outlined text-[20px]">handshake</span> Providers
+                        </button>
+</div>
+</div>
+<!-- Artists Section -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-xl font-bold text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">mic_external_on</span>
+                            Artists
+                        </h2>
+<a class="text-sm font-medium text-primary hover:text-white transition-colors flex items-center gap-1" href="#">View All <span class="material-symbols-outlined text-[16px]">arrow_forward</span></a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- Artist Card 1 -->
+<div class="group bg-surface-dark rounded-xl overflow-hidden hover:shadow-lg hover:shadow-primary/10 transition-all border border-transparent hover:border-surface-dark-hover flex flex-col">
+<div class="h-48 bg-cover bg-center relative" data-alt="Jazz band performing on stage" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAYFYW8F2__EiTJEf5nFfEgPfXNRQce6Jaq-h-94Fs_uWpec48IyOpu6LulvPm4j7zJsC5YNqV3SExzzcXiCMC2DBH7kBIF8Jlhy2u1Ih8nQTpD0peU3SFdPbS52s8_1F5yUHV6b7dzPz_AI0M4wMeR2rzk3HlrrDgXDRR5Xjo9WEBTm-VHllk5LKdIO95nzwOSymCXyiTJSAE93lBzXB6qXumegKR-_hwzbqd_8iidvzbF19B8Mqvk68hygqWF8708QVCHcdo1uqU');">
+<div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-white text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-yellow-400 fill-current">star</span> 4.9
+                                </div>
+</div>
+<div class="p-4 flex flex-col flex-1">
+<h3 class="text-white font-bold text-lg mb-1 group-hover:text-primary transition-colors">The Midnight Quartet</h3>
+<p class="text-text-muted text-sm mb-3 line-clamp-2">Smooth jazz and classic standards for elegant evenings.</p>
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="px-2 py-0.5 rounded bg-surface-dark-hover text-xs text-text-muted">Jazz</span>
+<span class="px-2 py-0.5 rounded bg-surface-dark-hover text-xs text-text-muted">Blues</span>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<span class="text-white font-bold text-sm">$200<span class="text-text-muted font-normal">/hr</span></span>
+<button class="bg-primary hover:bg-primary-hover text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">View Profile</button>
+</div>
+</div>
+</div>
+<!-- Artist Card 2 -->
+<div class="group bg-surface-dark rounded-xl overflow-hidden hover:shadow-lg hover:shadow-primary/10 transition-all border border-transparent hover:border-surface-dark-hover flex flex-col">
+<div class="h-48 bg-cover bg-center relative" data-alt="Solo pianist performing" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCO9i4czvTsoMlP-VHbOIWrZ8kNM7AbPL9BshJfWJGPNDf9UgVO5Nc9vdZB3nQCpOIgizr8CZzxo0enULKlab19y14xZrsRJZ6HblxD05FNPi2JoiOtO7W3pOwUiYlewL4jiMUwoJIiZeCi4iiCcW1BoxUTS4RNUbnX24vCvSPHYhG--vtEULuaLuKvfgKMYC3dx3Ah8a-YawepanShhprL4jGwAzabekl8514Am0YaxDxX45UJkuV_jb5yTUrt0PBwIksyEPQd6eE');">
+<div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-white text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-yellow-400 fill-current">star</span> 5.0
+                                </div>
+</div>
+<div class="p-4 flex flex-col flex-1">
+<h3 class="text-white font-bold text-lg mb-1 group-hover:text-primary transition-colors">Elena Keys</h3>
+<p class="text-text-muted text-sm mb-3 line-clamp-2">Award-winning solo pianist specializing in contemporary jazz.</p>
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="px-2 py-0.5 rounded bg-surface-dark-hover text-xs text-text-muted">Piano</span>
+<span class="px-2 py-0.5 rounded bg-surface-dark-hover text-xs text-text-muted">Solo</span>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<span class="text-white font-bold text-sm">$150<span class="text-text-muted font-normal">/hr</span></span>
+<button class="bg-surface-dark-hover hover:bg-primary hover:text-white text-text-main text-sm font-medium px-4 py-2 rounded-lg transition-colors border border-surface-dark-hover">Book</button>
+</div>
+</div>
+</div>
+<!-- Artist Card 3 -->
+<div class="group bg-surface-dark rounded-xl overflow-hidden hover:shadow-lg hover:shadow-primary/10 transition-all border border-transparent hover:border-surface-dark-hover flex flex-col">
+<div class="h-48 bg-cover bg-center relative" data-alt="Saxophone player performing" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuABH15vV98GvIjisBwhA5aDxSk3j7uLAnjia90OuARhO0O6U2cFghTTtei6GS63EhyDSmwdbOHSzkbeVCTqUOpEbpytQAaxTjCJfR1E_HDBE9H-goNnk7QadFfwkXNjYME8Tl_HP1Cjboz0mrF1gMckDCP9nbiqM2xD_hg8Wc4tLJezXcB6s45vtvMAULrVRqprwLqQNs-j_asADNc3huqlTjQzu7FbM7FJ4-hIVO1Go4Q65llUYaBAIwfuNF1p_mP1VMYPk5vNU6A');">
+<div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-white text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-yellow-400 fill-current">star</span> 4.7
+                                </div>
+</div>
+<div class="p-4 flex flex-col flex-1">
+<h3 class="text-white font-bold text-lg mb-1 group-hover:text-primary transition-colors">Sax Appeal</h3>
+<p class="text-text-muted text-sm mb-3 line-clamp-2">High energy saxophone performances for lively events.</p>
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="px-2 py-0.5 rounded bg-surface-dark-hover text-xs text-text-muted">Sax</span>
+<span class="px-2 py-0.5 rounded bg-surface-dark-hover text-xs text-text-muted">Funk</span>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<span class="text-white font-bold text-sm">$180<span class="text-text-muted font-normal">/hr</span></span>
+<button class="bg-surface-dark-hover hover:bg-primary hover:text-white text-text-main text-sm font-medium px-4 py-2 rounded-lg transition-colors border border-surface-dark-hover">Book</button>
+</div>
+</div>
+</div>
+<!-- Artist Card 4 -->
+<div class="group bg-surface-dark rounded-xl overflow-hidden hover:shadow-lg hover:shadow-primary/10 transition-all border border-transparent hover:border-surface-dark-hover flex flex-col">
+<div class="h-48 bg-cover bg-center relative" data-alt="Female jazz singer with microphone" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAyFfqz5ieiwVCEUSQfDHqMzSdqE7HM9DkSzh6OZXbXOwSUMXTeSIV_ISIaEDwLjcl_j8ASMinWxlAF3BP1705Z7oeirDQgjGinss3bqdjTbzQeIx5WnlJYtTN1S2--kt6I38xSsT2t9tJQgMeXWY57Fg-KyXQC56fodiCuWo2Miu-w5enen5fMLtWlFUCUkLG61I0kcchmZrKFRTIckMPhLWwWTzVq2-re57YNOOOEmh-rsQ-OkMwwyMJsb7Nzb7n-g4zAySa51wI');">
+<div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded text-white text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-yellow-400 fill-current">star</span> 4.8
+                                </div>
+</div>
+<div class="p-4 flex flex-col flex-1">
+<h3 class="text-white font-bold text-lg mb-1 group-hover:text-primary transition-colors">Sarah Vocalist</h3>
+<p class="text-text-muted text-sm mb-3 line-clamp-2">Soulful voice perfect for intimate gatherings and weddings.</p>
+<div class="flex flex-wrap gap-2 mb-4">
+<span class="px-2 py-0.5 rounded bg-surface-dark-hover text-xs text-text-muted">Vocal</span>
+<span class="px-2 py-0.5 rounded bg-surface-dark-hover text-xs text-text-muted">Soul</span>
+</div>
+<div class="mt-auto flex items-center justify-between">
+<span class="text-white font-bold text-sm">$250<span class="text-text-muted font-normal">/hr</span></span>
+<button class="bg-surface-dark-hover hover:bg-primary hover:text-white text-text-main text-sm font-medium px-4 py-2 rounded-lg transition-colors border border-surface-dark-hover">Book</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Venues Section -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-xl font-bold text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">stadium</span>
+                            Venues
+                        </h2>
+<a class="text-sm font-medium text-primary hover:text-white transition-colors flex items-center gap-1" href="#">View All <span class="material-symbols-outlined text-[16px]">arrow_forward</span></a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Venue Card 1 -->
+<div class="group bg-surface-dark rounded-xl overflow-hidden hover:shadow-lg hover:shadow-primary/10 transition-all border border-transparent hover:border-surface-dark-hover flex flex-col">
+<div class="h-56 bg-cover bg-center relative" data-alt="Interior of a jazz club with dim lighting" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBkffyu_-2S0ZaRZ4aYQLQjy6hnPEStl18b9L8Y6k9xgnY0-s5ihXm3kaziAP8wqluE-AeMzjkseSe2hr11ihKYRYWisqcD6XbAf4T9jKRj0Fh9nDmYCZ_roQ7WM-XgVaU9mcpgc9Inb1wViyacKjyPUQndqXzUM-77zfgO2gukFqZIAHkDWFvwohZ4Fu7rvT_3xJeRLwQKCahIRs1lvZjZnFnVy3gLFZysp-gZxncKYkFnUCsepYa08nZeRddkb6A3w0Yy9NxXgFY');">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<h3 class="text-white font-bold text-xl group-hover:text-primary transition-colors">The Blue Note</h3>
+<p class="text-gray-300 text-sm flex items-center gap-1 mt-1"><span class="material-symbols-outlined text-[16px]">location_on</span> Downtown, NY</p>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-2 text-sm text-text-muted">
+<span class="material-symbols-outlined text-[18px]">groups</span> Capacity: 150
+                                    </div>
+<div class="flex items-center gap-1 text-yellow-400 text-sm font-bold">
+<span class="material-symbols-outlined text-[16px] fill-current">star</span> 4.8
+                                    </div>
+</div>
+<p class="text-text-muted text-sm mb-4 line-clamp-2">Historic jazz club with intimate seating and world-class acoustics.</p>
+<button class="w-full mt-auto bg-surface-dark-hover hover:bg-primary hover:text-white text-text-main text-sm font-bold py-2.5 rounded-lg transition-colors border border-surface-dark-hover">View Venue</button>
+</div>
+</div>
+<!-- Venue Card 2 -->
+<div class="group bg-surface-dark rounded-xl overflow-hidden hover:shadow-lg hover:shadow-primary/10 transition-all border border-transparent hover:border-surface-dark-hover flex flex-col">
+<div class="h-56 bg-cover bg-center relative" data-alt="Rooftop lounge at night" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDtTYjAwhql8a6SUJjkD6jIInKS0JICNNmhLzWRFwsklbhneOr2Zd-onoYZXglCSyzhGH4z5pQOpAbbz2AyJASKm1FT79kEDfD055p4jK07PURgKpAWFjY6ZzLvzBJcEoIYDSzrUWVlWeageJpWnEfYmYIMPsh-Ue5GD-Fg4VjcktiOymvhsbf3YgXzq0sc3CMkptA24YOlRO4t661s-HbKjhOjsmypN3dQJWMJQSttPVALCYTw918EqvGJbjL8fh0qPo6Krf5WHEI');">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<h3 class="text-white font-bold text-xl group-hover:text-primary transition-colors">Skyline Lounge</h3>
+<p class="text-gray-300 text-sm flex items-center gap-1 mt-1"><span class="material-symbols-outlined text-[16px]">location_on</span> Manhattan, NY</p>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-2 text-sm text-text-muted">
+<span class="material-symbols-outlined text-[18px]">groups</span> Capacity: 300
+                                    </div>
+<div class="flex items-center gap-1 text-yellow-400 text-sm font-bold">
+<span class="material-symbols-outlined text-[16px] fill-current">star</span> 4.5
+                                    </div>
+</div>
+<p class="text-text-muted text-sm mb-4 line-clamp-2">Modern rooftop venue with panoramic city views and outdoor stage.</p>
+<button class="w-full mt-auto bg-surface-dark-hover hover:bg-primary hover:text-white text-text-main text-sm font-bold py-2.5 rounded-lg transition-colors border border-surface-dark-hover">View Venue</button>
+</div>
+</div>
+<!-- Venue Card 3 -->
+<div class="group bg-surface-dark rounded-xl overflow-hidden hover:shadow-lg hover:shadow-primary/10 transition-all border border-transparent hover:border-surface-dark-hover flex flex-col">
+<div class="h-56 bg-cover bg-center relative" data-alt="Elegant ballroom interior" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAqTlbFdtfdJnyK4iaNRcBjr7HOo7MfpL-ZDUZzAAcDWkdzDHtk_mG_PPZctMsYDHbNWtSzOk5fPn4Za9Aldr1cEQ7P5FTubNh2jl3687oSTDvgGwGnU4TcMRy5WsssI1_TKfwdIR6cw3_dSHn0Yq7vXlmISgj3QrofuLRon9jQ0EzLGuG33pYo0NNtjjoUs-Q9QJQV1z9unQaRDgK-dTEjjw-n1WRWJmbyDHvzZNknoHbxM7ASFePNtk-T4BsI9w21Tge49l3wWMg');">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<h3 class="text-white font-bold text-xl group-hover:text-primary transition-colors">Grand Hall</h3>
+<p class="text-gray-300 text-sm flex items-center gap-1 mt-1"><span class="material-symbols-outlined text-[16px]">location_on</span> Brooklyn, NY</p>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-2 text-sm text-text-muted">
+<span class="material-symbols-outlined text-[18px]">groups</span> Capacity: 800
+                                    </div>
+<div class="flex items-center gap-1 text-yellow-400 text-sm font-bold">
+<span class="material-symbols-outlined text-[16px] fill-current">star</span> 4.9
+                                    </div>
+</div>
+<p class="text-text-muted text-sm mb-4 line-clamp-2">Spacious ballroom perfect for large events, weddings, and galas.</p>
+<button class="w-full mt-auto bg-surface-dark-hover hover:bg-primary hover:text-white text-text-main text-sm font-bold py-2.5 rounded-lg transition-colors border border-surface-dark-hover">View Venue</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Events Section -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-xl font-bold text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">event</span>
+                            Upcoming Events
+                        </h2>
+<a class="text-sm font-medium text-primary hover:text-white transition-colors flex items-center gap-1" href="#">View All <span class="material-symbols-outlined text-[16px]">arrow_forward</span></a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Event Card 1 -->
+<div class="bg-surface-dark rounded-xl p-4 flex gap-4 hover:bg-surface-dark-hover transition-colors group cursor-pointer border border-transparent hover:border-surface-dark-hover">
+<div class="w-24 h-24 shrink-0 rounded-lg bg-cover bg-center" data-alt="Concert crowd with stage lights" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB4JWaKBpAs5l-7mwOjYBvvmHqlbInaMyGMZ-Ltg-cY_BNWshw3Nj_Mlib8GP05BIFYJiksv1slu_B4iFKqvnsWDgzYajycvI7HI9XsmdZTBeHGTbfSmWwm4OXlvX-pV3fYdjiBE847cJobNXQUVt3jm2WbOrdb9ZqenFOnD4792Zit-pWVJJnBchfef_pR7UG2EB1QO6DCBOoV5ebR5s3pRmBJPA8LLnRTxEuZv2fT4QNgYnRvp4SBx3zPqddzxrgM1f3PhAEQ6ZE');"></div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<p class="text-primary font-bold text-xs uppercase tracking-wide mb-1">Fri, Oct 24 • 8:00 PM</p>
+<h3 class="text-white font-bold text-lg leading-tight group-hover:text-primary transition-colors">Jazz in the Park 2023</h3>
+<p class="text-text-muted text-sm mt-1">Central Park, NY</p>
+</div>
+<div class="flex items-center justify-between mt-2">
+<span class="text-text-muted text-xs">Starting at $45</span>
+<button class="text-white text-sm font-medium hover:underline">Get Tickets</button>
+</div>
+</div>
+</div>
+<!-- Event Card 2 -->
+<div class="bg-surface-dark rounded-xl p-4 flex gap-4 hover:bg-surface-dark-hover transition-colors group cursor-pointer border border-transparent hover:border-surface-dark-hover">
+<div class="w-24 h-24 shrink-0 rounded-lg bg-cover bg-center" data-alt="Abstract music notes background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAVaYBYGLpjM-pQXABTBst3sAxvlVwjJhrwiSirNhzSVZOAOHCRibalss8cPzPQIcwYvJ1GeEZxxZd8S0p0VDkvOHPCwgkrZSebBwjSoYdMcCoggAwibdRF7aE0IuTLBIxODwdTVMPAv4F7fwoE6tUvRxAwXMiqvYcZnGzZGDYhpR6-FEgqDapL_bKtlmtSpEoqu4TCFL8LKSok8Vd51URVGWbtsIILCPIS3t_KoiK5N8Mr8hSiDHpt_DVAym-ShjhdycF8I2ZwNno');"></div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<p class="text-primary font-bold text-xs uppercase tracking-wide mb-1">Sat, Nov 02 • 9:30 PM</p>
+<h3 class="text-white font-bold text-lg leading-tight group-hover:text-primary transition-colors">Late Night Sax Session</h3>
+<p class="text-text-muted text-sm mt-1">The Blue Note, NY</p>
+</div>
+<div class="flex items-center justify-between mt-2">
+<span class="text-text-muted text-xs">Starting at $25</span>
+<button class="text-white text-sm font-medium hover:underline">Get Tickets</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Providers Section (Horizontal Scroll/Grid) -->
+<section class="pb-10">
+<div class="flex items-center justify-between mb-6">
+<h2 class="text-xl font-bold text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">handshake</span>
+                            Service Providers
+                        </h2>
+<a class="text-sm font-medium text-primary hover:text-white transition-colors flex items-center gap-1" href="#">View All <span class="material-symbols-outlined text-[16px]">arrow_forward</span></a>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+<!-- Provider 1 -->
+<div class="bg-surface-dark rounded-xl p-4 text-center hover:bg-surface-dark-hover transition-all cursor-pointer group border border-transparent hover:border-primary/30">
+<div class="size-16 mx-auto rounded-full bg-surface-dark-hover flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl text-primary">speaker</span>
+</div>
+<h3 class="text-white font-medium text-sm">Audio Techs</h3>
+<p class="text-text-muted text-xs mt-1">24 available</p>
+</div>
+<!-- Provider 2 -->
+<div class="bg-surface-dark rounded-xl p-4 text-center hover:bg-surface-dark-hover transition-all cursor-pointer group border border-transparent hover:border-primary/30">
+<div class="size-16 mx-auto rounded-full bg-surface-dark-hover flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl text-primary">light_mode</span>
+</div>
+<h3 class="text-white font-medium text-sm">Lighting</h3>
+<p class="text-text-muted text-xs mt-1">12 available</p>
+</div>
+<!-- Provider 3 -->
+<div class="bg-surface-dark rounded-xl p-4 text-center hover:bg-surface-dark-hover transition-all cursor-pointer group border border-transparent hover:border-primary/30">
+<div class="size-16 mx-auto rounded-full bg-surface-dark-hover flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl text-primary">camera_alt</span>
+</div>
+<h3 class="text-white font-medium text-sm">Photographers</h3>
+<p class="text-text-muted text-xs mt-1">36 available</p>
+</div>
+<!-- Provider 4 -->
+<div class="bg-surface-dark rounded-xl p-4 text-center hover:bg-surface-dark-hover transition-all cursor-pointer group border border-transparent hover:border-primary/30">
+<div class="size-16 mx-auto rounded-full bg-surface-dark-hover flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl text-primary">security</span>
+</div>
+<h3 class="text-white font-medium text-sm">Security</h3>
+<p class="text-text-muted text-xs mt-1">8 available</p>
+</div>
+<!-- Provider 5 -->
+<div class="bg-surface-dark rounded-xl p-4 text-center hover:bg-surface-dark-hover transition-all cursor-pointer group border border-transparent hover:border-primary/30">
+<div class="size-16 mx-auto rounded-full bg-surface-dark-hover flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl text-primary">restaurant</span>
+</div>
+<h3 class="text-white font-medium text-sm">Catering</h3>
+<p class="text-text-muted text-xs mt-1">15 available</p>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Timeless Admin Analytics Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#7f13ec",
+                        "primary-content": "#ffffff",
+                        "primary-dark": "#5e0eb0",
+                        "primary-light": "#a55eea",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#130e1a", 
+                        "surface-dark": "#1e1629",
+                        "surface-darker": "#161020",
+                        "accent-cyan": "#00d4ff",
+                        "accent-green": "#0bda73",
+                    },
+                    fontFamily: {
+                        display: ["Manrope", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px",
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex overflow-hidden">
+<!-- Sidebar -->
+<aside class="w-64 flex-shrink-0 bg-surface-darker border-r border-white/5 flex flex-col h-screen fixed left-0 top-0 z-50">
+<div class="p-6 pb-2">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat bg-cover rounded-full h-10 w-10 relative overflow-hidden ring-2 ring-primary/30" data-alt="Timeless logo placeholder" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCwioU5sIO6Ewf4DlwnKVDtsDrkQPUlTwlCxEs4hOj2lVmGlOUnskUdiXDmMzv_cvMqTuu99eOEDN2iAPZDjinO1MaxPK5Mk0lh5wDy7COxuXP8KYRRsvZa5RTGviv3Wg223-J3RHCAgGGAx9Mk69SoEOwDOLQF_71aNHdK80-SGX245ClBN0-hdg57CKxNvPeewTEoTZK0Y_AFteeQPvACpaWW0qNT1pOI8LAJqruwzen9IGjbYvSzyFCSVsYcku7g8lFryMvt20o");'></div>
+<div class="flex flex-col">
+<h1 class="text-white text-base font-bold leading-tight">Timeless</h1>
+<p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Admin Console</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-3 py-6 flex flex-col gap-1 overflow-y-auto">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary border border-primary/20 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px] fill-1">analytics</span>
+<span class="text-sm font-bold">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">group</span>
+<span class="text-sm font-medium">Users</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">calendar_month</span>
+<span class="text-sm font-medium">Events</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">confirmation_number</span>
+<span class="text-sm font-medium">Tickets</span>
+</a>
+<div class="my-2 border-t border-white/5 mx-3"></div>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-white/5 hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">help</span>
+<span class="text-sm font-medium">Support</span>
+</a>
+</nav>
+<div class="p-4 border-t border-white/5">
+<div class="bg-surface-dark rounded-xl p-3 flex items-center gap-3 border border-white/5">
+<div class="h-8 w-8 rounded-full bg-gradient-to-tr from-primary to-accent-cyan flex items-center justify-center text-white text-xs font-bold">
+                    AD
+                </div>
+<div class="flex flex-col">
+<p class="text-sm font-medium text-white">Admin User</p>
+<p class="text-xs text-slate-400">admin@timeless.co</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 ml-64 p-8 overflow-y-auto h-screen">
+<div class="max-w-7xl mx-auto flex flex-col gap-8">
+<!-- Header -->
+<div class="flex flex-col gap-1">
+<h2 class="text-3xl font-bold text-white tracking-tight">Analytics Overview</h2>
+<p class="text-slate-400 text-sm">Real-time platform performance metrics for the last 30 days.</p>
+</div>
+<!-- KPIs Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- KPI Card 1 -->
+<div class="bg-surface-dark rounded-xl p-5 border border-white/5 flex flex-col justify-between relative overflow-hidden group hover:border-primary/30 transition-all duration-300">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div class="p-2 rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<span class="flex items-center text-accent-green text-xs font-bold bg-accent-green/10 px-2 py-1 rounded-full gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> +12.5%
+                        </span>
+</div>
+<div class="relative z-10">
+<p class="text-slate-400 text-sm font-medium mb-1">Total Revenue</p>
+<h3 class="text-2xl font-bold text-white">$1,245,300</h3>
+</div>
+</div>
+<!-- KPI Card 2 -->
+<div class="bg-surface-dark rounded-xl p-5 border border-white/5 flex flex-col justify-between relative overflow-hidden group hover:border-accent-cyan/30 transition-all duration-300">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-accent-cyan/10 rounded-full blur-2xl group-hover:bg-accent-cyan/20 transition-all"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div class="p-2 rounded-lg bg-accent-cyan/10 text-accent-cyan">
+<span class="material-symbols-outlined">group_add</span>
+</div>
+<span class="flex items-center text-accent-green text-xs font-bold bg-accent-green/10 px-2 py-1 rounded-full gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> +8.2%
+                        </span>
+</div>
+<div class="relative z-10">
+<p class="text-slate-400 text-sm font-medium mb-1">New User Growth</p>
+<h3 class="text-2xl font-bold text-white">4,293</h3>
+<p class="text-xs text-slate-500 mt-1">Artists, Venues, Talents</p>
+</div>
+</div>
+<!-- KPI Card 3 -->
+<div class="bg-surface-dark rounded-xl p-5 border border-white/5 flex flex-col justify-between relative overflow-hidden group hover:border-purple-500/30 transition-all duration-300">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-all"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div class="p-2 rounded-lg bg-purple-500/10 text-purple-400">
+<span class="material-symbols-outlined">event_available</span>
+</div>
+<span class="flex items-center text-accent-green text-xs font-bold bg-accent-green/10 px-2 py-1 rounded-full gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_up</span> +5.1%
+                        </span>
+</div>
+<div class="relative z-10">
+<p class="text-slate-400 text-sm font-medium mb-1">Active Events</p>
+<h3 class="text-2xl font-bold text-white">842</h3>
+</div>
+</div>
+<!-- KPI Card 4 -->
+<div class="bg-surface-dark rounded-xl p-5 border border-white/5 flex flex-col justify-between relative overflow-hidden group hover:border-pink-500/30 transition-all duration-300">
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-pink-500/10 rounded-full blur-2xl group-hover:bg-pink-500/20 transition-all"></div>
+<div class="flex justify-between items-start mb-4 relative z-10">
+<div class="p-2 rounded-lg bg-pink-500/10 text-pink-400">
+<span class="material-symbols-outlined">confirmation_number</span>
+</div>
+<span class="flex items-center text-red-400 text-xs font-bold bg-red-400/10 px-2 py-1 rounded-full gap-1">
+<span class="material-symbols-outlined text-[14px]">trending_down</span> -2.4%
+                        </span>
+</div>
+<div class="relative z-10">
+<p class="text-slate-400 text-sm font-medium mb-1">Tickets Sold</p>
+<h3 class="text-2xl font-bold text-white">12,504</h3>
+</div>
+</div>
+</div>
+<!-- Main Chart Area -->
+<div class="bg-surface-dark rounded-xl border border-white/5 p-6 flex flex-col gap-6">
+<div class="flex flex-wrap justify-between items-center gap-4">
+<div>
+<h3 class="text-xl font-bold text-white">Platform Activity</h3>
+<p class="text-sm text-slate-400">User sessions and engagement over time</p>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 text-xs font-semibold rounded-lg bg-primary/20 text-primary border border-primary/30 hover:bg-primary/30 transition">Weekly</button>
+<button class="px-4 py-2 text-xs font-semibold rounded-lg bg-surface-darker text-slate-400 border border-white/5 hover:bg-white/5 transition">Monthly</button>
+<button class="px-4 py-2 text-xs font-semibold rounded-lg bg-surface-darker text-slate-400 border border-white/5 hover:bg-white/5 transition">Yearly</button>
+</div>
+</div>
+<div class="relative h-64 w-full">
+<!-- Custom SVG Line Chart representation -->
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 800 200">
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#7f13ec" stop-opacity="0.4"></stop>
+<stop offset="100%" stop-color="#7f13ec" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<!-- Grid Lines -->
+<line stroke="#ffffff" stroke-opacity="0.1" stroke-width="1" x1="0" x2="800" y1="199" y2="199"></line>
+<line stroke="#ffffff" stroke-dasharray="4 4" stroke-opacity="0.05" stroke-width="1" x1="0" x2="800" y1="150" y2="150"></line>
+<line stroke="#ffffff" stroke-dasharray="4 4" stroke-opacity="0.05" stroke-width="1" x1="0" x2="800" y1="100" y2="100"></line>
+<line stroke="#ffffff" stroke-dasharray="4 4" stroke-opacity="0.05" stroke-width="1" x1="0" x2="800" y1="50" y2="50"></line>
+<!-- Area -->
+<path d="M0,150 C50,140 80,100 120,110 S200,160 250,130 S320,60 380,80 S450,120 500,100 S580,40 650,60 S750,90 800,70 V200 H0 Z" fill="url(#chartGradient)"></path>
+<!-- Line -->
+<path d="M0,150 C50,140 80,100 120,110 S200,160 250,130 S320,60 380,80 S450,120 500,100 S580,40 650,60 S750,90 800,70" fill="none" stroke="#7f13ec" stroke-linecap="round" stroke-width="3"></path>
+<!-- Active Point -->
+<circle cx="650" cy="60" fill="#ffffff" r="5" stroke="#7f13ec" stroke-width="2"></circle>
+</svg>
+<!-- Tooltip approximation -->
+<div class="absolute top-[20%] right-[18%] bg-surface-darker border border-primary/30 p-2 rounded-lg shadow-xl shadow-black/50 pointer-events-none">
+<p class="text-xs text-slate-400">Nov 24</p>
+<p class="text-sm font-bold text-white">12,450 Sessions</p>
+</div>
+</div>
+<div class="flex justify-between text-xs text-slate-500 px-2">
+<span>Nov 01</span>
+<span>Nov 05</span>
+<span>Nov 10</span>
+<span>Nov 15</span>
+<span>Nov 20</span>
+<span>Nov 25</span>
+<span>Nov 30</span>
+</div>
+</div>
+<!-- Bottom Widgets -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Category Breakdown -->
+<div class="bg-surface-dark rounded-xl border border-white/5 p-6 flex flex-col gap-4">
+<h3 class="text-lg font-bold text-white">Popular Categories</h3>
+<div class="flex flex-col items-center justify-center py-4 relative">
+<!-- Doughnut Chart representation using CSS conic-gradient -->
+<div class="w-48 h-48 rounded-full relative" style="background: conic-gradient(#7f13ec 0% 45%, #00d4ff 45% 75%, #2a2136 75% 100%);">
+<div class="absolute inset-4 bg-surface-dark rounded-full flex items-center justify-center flex-col">
+<span class="text-3xl font-bold text-white">45%</span>
+<span class="text-xs text-slate-400">Techno</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-3 mt-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-sm text-slate-300">Techno</span>
+</div>
+<span class="text-sm font-medium text-white">45%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-accent-cyan"></span>
+<span class="text-sm text-slate-300">DJ Sets</span>
+</div>
+<span class="text-sm font-medium text-white">30%</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-slate-700"></span>
+<span class="text-sm text-slate-300">Lighting</span>
+</div>
+<span class="text-sm font-medium text-white">25%</span>
+</div>
+</div>
+</div>
+<!-- Top Performing Venues -->
+<div class="lg:col-span-2 bg-surface-dark rounded-xl border border-white/5 p-6 flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<h3 class="text-lg font-bold text-white">Top Performing Venues</h3>
+<a class="text-primary text-sm font-medium hover:text-primary-light" href="#">View All</a>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-white/5 text-xs text-slate-400 uppercase tracking-wider">
+<th class="py-3 font-medium">Venue Name</th>
+<th class="py-3 font-medium">Location</th>
+<th class="py-3 font-medium text-center">Rating</th>
+<th class="py-3 font-medium text-right">Tickets Sold</th>
+<th class="py-3 font-medium text-right">Revenue</th>
+</tr>
+</thead>
+<tbody class="text-sm">
+<tr class="group hover:bg-white/5 transition-colors border-b border-white/5">
+<td class="py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-cover bg-center" data-alt="Venue thumbnail abstract pattern" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBP-lrgoxoBvBTbhy_-Y7K5EbdxT2JhHdf_BQvutNsc2A657SMvzfz4VSrA4hRuURT6URxPkDUu2oV_kanC2ezAPEHNTn4ZZfJ0ygIISejrQbqMiYrl_XLg1heS6Bu0aLbT_1z2J5yLW6y6DztM53HfUNhV-laFfLz2_ujH1ZLqrozNFhZ6KVwIgsq_KS84T1Jra7nA3duuGcudK5r6Y_kjcK4OsXTbeYvcTY7wuBL2BoM1FHcE_diVqmcTNRvQbJNQVF0FGr9tv7A');"></div>
+<span class="font-medium text-white">The Warehouse Project</span>
+</div>
+</td>
+<td class="py-4 text-slate-400">Manchester, UK</td>
+<td class="py-4 text-center">
+<span class="inline-flex items-center gap-1 bg-yellow-500/10 text-yellow-500 px-2 py-0.5 rounded text-xs font-bold">
+<span class="material-symbols-outlined text-[12px] fill-1">star</span> 4.9
+                                        </span>
+</td>
+<td class="py-4 text-right text-white">12,402</td>
+<td class="py-4 text-right font-medium text-accent-green">$450k</td>
+</tr>
+<tr class="group hover:bg-white/5 transition-colors border-b border-white/5">
+<td class="py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-cover bg-center" data-alt="Venue thumbnail abstract pattern" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuALdHoLSlO9oXh4YMN2FTBis1JF0_0fb66KdBjOwUtPVayJEQhDkTWLfqeQSnkV-ft0uEkrahEQUnOPjm1rLMZyDIzyveiacLC2KKyazDuriIu7huG5KEKcAw9nPrFLaMv0XpPvNAMbg_p6R8SDDtytswjNN3Q1kDgeMFMWhl73KJXmlFKu9gnn6P0uI-LDxr6xKgju10uKLYtNhhTRQrFs4aqDSzQlaO1fUOUv9y2-FlmYjw49_Z1CvubZTz_DoUK101I0gggm8pU');"></div>
+<span class="font-medium text-white">Berghain</span>
+</div>
+</td>
+<td class="py-4 text-slate-400">Berlin, DE</td>
+<td class="py-4 text-center">
+<span class="inline-flex items-center gap-1 bg-yellow-500/10 text-yellow-500 px-2 py-0.5 rounded text-xs font-bold">
+<span class="material-symbols-outlined text-[12px] fill-1">star</span> 4.8
+                                        </span>
+</td>
+<td class="py-4 text-right text-white">8,320</td>
+<td class="py-4 text-right font-medium text-accent-green">$320k</td>
+</tr>
+<tr class="group hover:bg-white/5 transition-colors border-b border-white/5">
+<td class="py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-cover bg-center" data-alt="Venue thumbnail abstract pattern" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBht1KkmVn81-STfyy8J0sXNzaMzGvpBZ852GK_KtFbmn25i23Yh2G-dLw9F63CbOqWD5umTCfPgPWaOgRlJphX9WH9YQa4xEW3b3L52je8Wa4WGjkKlkXcBkbNeKANJNA1FNDWu-cmPvhm_T-koReqmyZ12KzelFSveFJGNpxnqiyT8WYyywpZswW91TT9sOR-xyH7oP28kFpMg8028ICZe7pOMfMsaZrUawqxo-UJaizZLgdHzfk1jfPYBkZ5HyRyoZaoPS_ckR4');"></div>
+<span class="font-medium text-white">Fabric</span>
+</div>
+</td>
+<td class="py-4 text-slate-400">London, UK</td>
+<td class="py-4 text-center">
+<span class="inline-flex items-center gap-1 bg-yellow-500/10 text-yellow-500 px-2 py-0.5 rounded text-xs font-bold">
+<span class="material-symbols-outlined text-[12px] fill-1">star</span> 4.7
+                                        </span>
+</td>
+<td class="py-4 text-right text-white">6,150</td>
+<td class="py-4 text-right font-medium text-accent-green">$210k</td>
+</tr>
+<tr class="group hover:bg-white/5 transition-colors">
+<td class="py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-cover bg-center" data-alt="Venue thumbnail abstract pattern" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAk9WCcmQaSiydUD_V18DFGAiwhnV_qgHcQdrE1A8qcyt4-93BneOcPBsxuDcjwxAE2J3VpFx8EccF9jlefZ4qVYKIcWDDQJuFkT0sNqc00WXReD8YiUTn6CnSKONspc5ld_lMnfbiw4Vi1drn03LhLfPOzzLlBTVBDWK_-ES61dgV3KQP6wIlQIhrUcuI7OeU6eeL2gCcUhrDufzHUZfD2yYA4_NjxZ1481uttTnBjmYB7gO5FyLRdAutENp0fR8ep8w8gWcpdYcc');"></div>
+<span class="font-medium text-white">Output</span>
+</div>
+</td>
+<td class="py-4 text-slate-400">Brooklyn, NY</td>
+<td class="py-4 text-center">
+<span class="inline-flex items-center gap-1 bg-yellow-500/10 text-yellow-500 px-2 py-0.5 rounded text-xs font-bold">
+<span class="material-symbols-outlined text-[12px] fill-1">star</span> 4.6
+                                        </span>
+</td>
+<td class="py-4 text-right text-white">5,900</td>
+<td class="py-4 text-right font-medium text-accent-green">$195k</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

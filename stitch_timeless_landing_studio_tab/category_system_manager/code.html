@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Category &amp; System Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#625063",
+                        "primary-hover": "#7a637b",
+                        "primary-light": "#947b95",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#1a181a",
+                        "surface-dark": "#252325",
+                        "surface-highlight": "#312f31",
+                        "text-main": "#e2e0e2",
+                        "text-muted": "#aca9ad",
+                    },
+                    fontFamily: {
+                        "display": ["Montserrat", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                    boxShadow: {
+                        "glow": "0 0 15px rgba(98, 80, 99, 0.5), 0 0 30px rgba(98, 80, 99, 0.3)",
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-text-main font-display antialiased min-h-screen flex flex-col overflow-hidden">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-surface-highlight bg-surface-dark px-6 py-3 shrink-0 z-20">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 dark:text-white">
+<div class="size-8 flex items-center justify-center bg-primary rounded-lg">
+<span class="material-symbols-outlined text-white text-[20px]">admin_panel_settings</span>
+</div>
+<h2 class="dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Timeless Admin</h2>
+</div>
+<div class="hidden lg:flex items-center gap-9">
+<a class="dark:text-text-muted hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Dashboard</a>
+<a class="dark:text-text-muted hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Users</a>
+<a class="dark:text-white text-sm font-bold leading-normal relative after:content-[''] after:absolute after:-bottom-[22px] after:left-0 after:w-full after:h-[2px] after:bg-primary" href="#">Categories</a>
+<a class="dark:text-text-muted hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Reports</a>
+<a class="dark:text-text-muted hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Settings</a>
+</div>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full group">
+<div class="dark:text-text-muted flex border-none bg-surface-highlight items-center justify-center pl-4 rounded-l-lg border-r-0 group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg dark:text-white focus:outline-0 focus:ring-0 border-none bg-surface-highlight focus:border-none h-full placeholder:text-text-muted px-4 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal" placeholder="Search system..." value=""/>
+</div>
+</label>
+<div class="flex items-center gap-3">
+<button class="size-10 rounded-full bg-surface-highlight hover:bg-primary/20 flex items-center justify-center text-text-muted hover:text-white transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-surface-highlight cursor-pointer" data-alt="Admin user profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBe0ud39376L0IJrlJwUTU1zUp0NL1UQIcVNJNO6lDZDlAOSPYt9zRPlF5F7enYIyXXYd2gOyznjISKoRBdJqBmf0xewFxkOTQOuhSSCRW2pIWQFpSRr1rCRVk_DsCrTxRBsgw-VCajZ95ce6ASQTo-QlfUMPfJQT1MayFryGT4__vXKy_OiE0mcj44_PJ7ik4-e7vIEpQOQdLZ0RFbxC1wukNVWREmgAgwe_bgiCCHE2ck0OjBCGImTYXbIcBlyEsPXES3SM5xCNI");'></div>
+</div>
+</div>
+</header>
+<!-- Main Content Layout -->
+<div class="flex flex-1 overflow-hidden">
+<!-- Main Area -->
+<main class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-6 lg:p-10 scrollbar-hide">
+<div class="max-w-[1400px] mx-auto flex flex-col gap-8">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-surface-highlight">
+<div class="flex flex-col gap-2">
+<h1 class="dark:text-white text-3xl font-black tracking-[-0.033em]">Category &amp; System Manager</h1>
+<p class="dark:text-text-muted text-sm font-medium">Manage artist genres, provider services, and system configurations.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg border border-surface-highlight bg-transparent hover:bg-surface-highlight dark:text-text-muted hover:text-white transition-all text-sm font-medium">
+<span class="material-symbols-outlined text-[18px]">history</span>
+                            History Log
+                        </button>
+<button class="flex items-center gap-2 px-6 py-2 rounded-lg bg-primary hover:bg-primary-hover shadow-glow dark:text-white transition-all text-sm font-bold shadow-lg transform active:scale-95">
+<span class="material-symbols-outlined text-[18px]">save</span>
+                            Save Changes
+                        </button>
+</div>
+</div>
+<!-- Content Grid -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-6 h-full">
+<!-- Left Column: Artist Categories -->
+<div class="xl:col-span-4 flex flex-col gap-4">
+<div class="bg-surface-dark rounded-xl border border-surface-highlight p-5 h-full flex flex-col shadow-sm">
+<div class="flex justify-between items-center mb-6">
+<div>
+<h3 class="dark:text-white text-lg font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">music_note</span>
+                                        Artist Genres
+                                    </h3>
+<p class="text-xs text-text-muted mt-1">Drag to reorder hierarchy</p>
+</div>
+<button class="size-8 rounded hover:bg-surface-highlight flex items-center justify-center text-primary hover:text-white transition-colors" title="Add New Genre">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<div class="flex-1 flex flex-col gap-3 overflow-y-auto pr-2 custom-scrollbar">
+<!-- Draggable Item Active -->
+<div class="group flex items-center gap-3 p-3 rounded-lg bg-surface-highlight/50 border border-surface-highlight hover:border-primary/50 cursor-grab active:cursor-grabbing transition-all">
+<span class="material-symbols-outlined text-text-muted cursor-grab text-[20px]">drag_indicator</span>
+<div class="flex-1">
+<p class="dark:text-white text-sm font-semibold">Techno</p>
+<p class="text-xs text-text-muted">142 Artists</p>
+</div>
+<div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 rounded hover:bg-surface-dark text-text-muted hover:text-white"><span class="material-symbols-outlined text-[16px]">edit</span></button>
+<button class="p-1 rounded hover:bg-surface-dark text-text-muted hover:text-red-400"><span class="material-symbols-outlined text-[16px]">delete</span></button>
+</div>
+</div>
+<!-- Draggable Item -->
+<div class="group flex items-center gap-3 p-3 rounded-lg bg-surface-highlight/20 border border-transparent hover:border-surface-highlight hover:bg-surface-highlight/50 cursor-grab active:cursor-grabbing transition-all">
+<span class="material-symbols-outlined text-text-muted/50 cursor-grab text-[20px]">drag_indicator</span>
+<div class="flex-1">
+<p class="dark:text-white text-sm font-medium">House</p>
+<p class="text-xs text-text-muted">89 Artists</p>
+</div>
+<div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 rounded hover:bg-surface-dark text-text-muted hover:text-white"><span class="material-symbols-outlined text-[16px]">edit</span></button>
+</div>
+</div>
+<!-- Draggable Item -->
+<div class="group flex items-center gap-3 p-3 rounded-lg bg-surface-highlight/20 border border-transparent hover:border-surface-highlight hover:bg-surface-highlight/50 cursor-grab active:cursor-grabbing transition-all">
+<span class="material-symbols-outlined text-text-muted/50 cursor-grab text-[20px]">drag_indicator</span>
+<div class="flex-1">
+<p class="dark:text-white text-sm font-medium">Drum &amp; Bass</p>
+<p class="text-xs text-text-muted">64 Artists</p>
+</div>
+<div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 rounded hover:bg-surface-dark text-text-muted hover:text-white"><span class="material-symbols-outlined text-[16px]">edit</span></button>
+</div>
+</div>
+<!-- Draggable Item -->
+<div class="group flex items-center gap-3 p-3 rounded-lg bg-surface-highlight/20 border border-transparent hover:border-surface-highlight hover:bg-surface-highlight/50 cursor-grab active:cursor-grabbing transition-all">
+<span class="material-symbols-outlined text-text-muted/50 cursor-grab text-[20px]">drag_indicator</span>
+<div class="flex-1">
+<p class="dark:text-white text-sm font-medium">Trance</p>
+<p class="text-xs text-text-muted">31 Artists</p>
+</div>
+<div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 rounded hover:bg-surface-dark text-text-muted hover:text-white"><span class="material-symbols-outlined text-[16px]">edit</span></button>
+</div>
+</div>
+<!-- Draggable Item -->
+<div class="group flex items-center gap-3 p-3 rounded-lg bg-surface-highlight/20 border border-transparent hover:border-surface-highlight hover:bg-surface-highlight/50 cursor-grab active:cursor-grabbing transition-all">
+<span class="material-symbols-outlined text-text-muted/50 cursor-grab text-[20px]">drag_indicator</span>
+<div class="flex-1">
+<p class="dark:text-white text-sm font-medium">Ambient / Chillout</p>
+<p class="text-xs text-text-muted">12 Artists</p>
+</div>
+<div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 rounded hover:bg-surface-dark text-text-muted hover:text-white"><span class="material-symbols-outlined text-[16px]">edit</span></button>
+</div>
+</div>
+<!-- Add New Placeholder -->
+<div class="mt-2 border-2 border-dashed border-surface-highlight rounded-lg p-3 flex items-center justify-center cursor-pointer hover:border-primary/50 hover:bg-surface-highlight/30 transition-all text-text-muted hover:text-white">
+<span class="text-sm font-medium flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">add_circle</span> Add New Genre</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Middle Column: Provider Categories -->
+<div class="xl:col-span-4 flex flex-col gap-4">
+<div class="bg-surface-dark rounded-xl border border-surface-highlight p-5 h-full flex flex-col shadow-sm">
+<div class="flex justify-between items-center mb-6">
+<div>
+<h3 class="dark:text-white text-lg font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">inventory_2</span>
+                                        Provider Services
+                                    </h3>
+<p class="text-xs text-text-muted mt-1">Manage equipment &amp; logistics types</p>
+</div>
+<button class="size-8 rounded hover:bg-surface-highlight flex items-center justify-center text-primary hover:text-white transition-colors" title="Add New Service">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<div class="flex-1 flex flex-col gap-3 overflow-y-auto pr-2 custom-scrollbar">
+<!-- Service Item -->
+<div class="group flex items-center gap-3 p-3 rounded-lg bg-surface-highlight/20 border border-transparent hover:border-surface-highlight hover:bg-surface-highlight/50 cursor-pointer transition-all">
+<div class="size-8 rounded bg-background-dark flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">lightbulb</span>
+</div>
+<div class="flex-1">
+<p class="dark:text-white text-sm font-medium">Stage Lighting</p>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="text-[10px] bg-green-900/30 text-green-400 px-1.5 py-0.5 rounded border border-green-900/50">Active</span>
+<span class="text-xs text-text-muted">12 Providers</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-text-muted group-hover:text-white">chevron_right</span>
+</div>
+<!-- Service Item -->
+<div class="group flex items-center gap-3 p-3 rounded-lg bg-surface-highlight/20 border border-transparent hover:border-surface-highlight hover:bg-surface-highlight/50 cursor-pointer transition-all">
+<div class="size-8 rounded bg-background-dark flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">speaker_group</span>
+</div>
+<div class="flex-1">
+<p class="dark:text-white text-sm font-medium">Sound Systems</p>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="text-[10px] bg-green-900/30 text-green-400 px-1.5 py-0.5 rounded border border-green-900/50">Active</span>
+<span class="text-xs text-text-muted">8 Providers</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-text-muted group-hover:text-white">chevron_right</span>
+</div>
+<!-- Service Item -->
+<div class="group flex items-center gap-3 p-3 rounded-lg bg-surface-highlight/20 border border-transparent hover:border-surface-highlight hover:bg-surface-highlight/50 cursor-pointer transition-all">
+<div class="size-8 rounded bg-background-dark flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">videocam</span>
+</div>
+<div class="flex-1">
+<p class="dark:text-white text-sm font-medium">LED Screens &amp; Visuals</p>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="text-[10px] bg-yellow-900/30 text-yellow-500 px-1.5 py-0.5 rounded border border-yellow-900/50">Review</span>
+<span class="text-xs text-text-muted">5 Providers</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-text-muted group-hover:text-white">chevron_right</span>
+</div>
+<!-- Service Item -->
+<div class="group flex items-center gap-3 p-3 rounded-lg bg-surface-highlight/20 border border-transparent hover:border-surface-highlight hover:bg-surface-highlight/50 cursor-pointer transition-all">
+<div class="size-8 rounded bg-background-dark flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">security</span>
+</div>
+<div class="flex-1">
+<p class="dark:text-white text-sm font-medium">Event Security</p>
+<div class="flex items-center gap-2 mt-0.5">
+<span class="text-[10px] bg-red-900/30 text-red-400 px-1.5 py-0.5 rounded border border-red-900/50">Inactive</span>
+<span class="text-xs text-text-muted">2 Providers</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-text-muted group-hover:text-white">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Edit Panel -->
+<div class="xl:col-span-4 flex flex-col gap-4">
+<div class="bg-surface-dark rounded-xl border border-surface-highlight p-6 h-full flex flex-col shadow-sm relative overflow-hidden">
+<!-- Abstract Background decoration -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-0 pointer-events-none"></div>
+<div class="relative z-10 flex flex-col h-full">
+<h3 class="dark:text-white text-lg font-bold mb-6 pb-4 border-b border-surface-highlight">Category Details</h3>
+<div class="flex flex-col gap-5">
+<!-- Input Field -->
+<div class="flex flex-col gap-1.5">
+<label class="text-xs font-semibold text-text-muted uppercase tracking-wider">Category Name</label>
+<input class="w-full bg-surface-highlight border border-transparent focus:border-primary focus:ring-1 focus:ring-primary rounded-lg px-4 py-2.5 text-sm text-white placeholder-text-muted/50 transition-all outline-none" type="text" value="Techno"/>
+</div>
+<!-- Description -->
+<div class="flex flex-col gap-1.5">
+<label class="text-xs font-semibold text-text-muted uppercase tracking-wider">Description</label>
+<textarea class="w-full bg-surface-highlight border border-transparent focus:border-primary focus:ring-1 focus:ring-primary rounded-lg px-4 py-2.5 text-sm text-white placeholder-text-muted/50 transition-all outline-none resize-none" rows="3">Electronic dance music characterised by a repetitive four-on-the-floor beat.</textarea>
+</div>
+<!-- Color Picker -->
+<div class="flex flex-col gap-1.5">
+<label class="text-xs font-semibold text-text-muted uppercase tracking-wider">Label Color</label>
+<div class="flex gap-2">
+<button class="size-8 rounded-full bg-[#625063] ring-2 ring-offset-2 ring-offset-surface-dark ring-white"></button>
+<button class="size-8 rounded-full bg-[#8b5cf6] hover:ring-2 hover:ring-offset-2 hover:ring-offset-surface-dark hover:ring-[#8b5cf6]/50 transition-all"></button>
+<button class="size-8 rounded-full bg-[#06b6d4] hover:ring-2 hover:ring-offset-2 hover:ring-offset-surface-dark hover:ring-[#06b6d4]/50 transition-all"></button>
+<button class="size-8 rounded-full bg-[#f43f5e] hover:ring-2 hover:ring-offset-2 hover:ring-offset-surface-dark hover:ring-[#f43f5e]/50 transition-all"></button>
+<button class="size-8 rounded-full bg-surface-highlight border border-dashed border-text-muted flex items-center justify-center text-text-muted hover:text-white hover:border-white transition-all">
+<span class="material-symbols-outlined text-[16px]">add</span>
+</button>
+</div>
+</div>
+<!-- Toggles -->
+<div class="flex flex-col gap-3 mt-2">
+<label class="flex items-center justify-between p-3 rounded-lg bg-surface-highlight/30 hover:bg-surface-highlight/50 cursor-pointer transition-colors">
+<div class="flex flex-col">
+<span class="text-sm font-medium text-white">Public Visibility</span>
+<span class="text-xs text-text-muted">Show this category on the frontend</span>
+</div>
+<div class="relative inline-block w-10 h-5 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer checked:right-0 right-5 checked:border-primary" id="toggle" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-surface-highlight cursor-pointer checked:bg-primary" for="toggle"></label>
+</div>
+</label>
+<label class="flex items-center justify-between p-3 rounded-lg bg-surface-highlight/30 hover:bg-surface-highlight/50 cursor-pointer transition-colors">
+<div class="flex flex-col">
+<span class="text-sm font-medium text-white">Allow Sub-categories</span>
+<span class="text-xs text-text-muted">Enable nesting for this genre</span>
+</div>
+<div class="relative inline-block w-10 h-5 align-middle select-none transition duration-200 ease-in">
+<input class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-text-muted border-4 appearance-none cursor-pointer right-5 checked:right-0 checked:bg-white checked:border-primary" id="toggle2" name="toggle2" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-5 rounded-full bg-surface-highlight cursor-pointer" for="toggle2"></label>
+</div>
+</label>
+</div>
+</div>
+<div class="mt-auto pt-6 flex justify-between gap-3">
+<button class="flex-1 py-2.5 rounded-lg border border-red-900/50 text-red-400 hover:bg-red-900/20 transition-colors text-sm font-bold">
+                                        Delete
+                                    </button>
+<button class="flex-1 py-2.5 rounded-lg bg-white text-surface-dark hover:bg-gray-200 transition-colors text-sm font-bold shadow-lg">
+                                        Update Details
+                                    </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<style>
+        /* Custom scrollbar for better aesthetics in dark mode */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Toggle Switch CSS logic */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #625063;
+        }
+        .toggle-checkbox {
+            transition: all 0.3s ease;
+        }
+    </style>
+</body></html>

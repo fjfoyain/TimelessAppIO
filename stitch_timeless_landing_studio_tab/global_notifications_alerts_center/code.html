@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Global Notifications &amp; Alerts Center - Timeless</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#7f13ec",
+                        "primary-content": "#ffffff",
+                        "primary-dark": "#5e0eb0",
+                        "primary-light": "#9e4af1",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#1a1122",
+                        "surface-dark": "#2a1e35",
+                        "surface-light": "#ffffff",
+                        "border-dark": "#362348",
+                        "text-secondary": "#ad92c9",
+                    },
+                    fontFamily: {
+                        display: ["Manrope", "sans-serif"],
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Subtle geometric background pattern */
+        .bg-pattern {
+            background-color: #1a1122;
+            background-image: radial-gradient(#2a1e35 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white antialiased overflow-hidden flex flex-col h-screen">
+<!-- Top Navigation -->
+<header class="flex-none flex items-center justify-between whitespace-nowrap border-b border-solid border-border-dark px-10 py-3 bg-surface-dark/50 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 flex items-center justify-center bg-primary rounded-lg text-white">
+<span class="material-symbols-outlined">hourglass_top</span>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">Timeless</h2>
+</div>
+<div class="hidden md:flex items-center gap-9">
+<a class="text-text-secondary hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Dashboard</a>
+<a class="text-white text-sm font-medium leading-normal" href="#">Projects</a>
+<a class="text-text-secondary hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Clients</a>
+<a class="text-text-secondary hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Finances</a>
+</div>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<label class="hidden lg:flex flex-col min-w-40 !h-10 max-w-64 group">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full border border-border-dark group-focus-within:border-primary transition-colors">
+<div class="text-text-secondary flex bg-surface-dark items-center justify-center pl-4 rounded-l-lg">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-none focus:ring-0 border-none bg-surface-dark placeholder:text-text-secondary px-4 rounded-l-none pl-2 text-sm font-normal leading-normal" placeholder="Search" value=""/>
+</div>
+</label>
+<button class="flex items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary hover:bg-primary-light transition-colors text-white text-sm font-bold leading-normal tracking-[0.015em] shadow-[0_0_15px_rgba(127,19,236,0.4)]">
+<span class="truncate">Create New</span>
+</button>
+<div class="relative group cursor-pointer">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-primary/30 group-hover:border-primary transition-colors" data-alt="User profile picture of a woman" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBXaIBSF2FVm60M6RoNyFNf8ojvLdmvmRwdAQTxlPg10a0rtzHsx-F_hpmV9yJtUIpN7sc4xx0AgL4_a76PyhP0F_r76e-6iQQG42Y9UC1iRvQe0hK_j5n6FNHRtb5T4ylxRa6C0cDCje07k2hscSmnHOq36XnBcxwmHcymw7ZMLNfVn1RJJi8h2Mv-KoWnMPBQGvIoaRL235SfVupjs79wCXKshLp37h7HNYHyQ8g-I8NxFrZ-sCvSqPc68vdpm0mS8VJHNJo0Ouo");'></div>
+<div class="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full border-2 border-background-dark"></div>
+</div>
+</div>
+</header>
+<!-- Main Content Area with Split View -->
+<main class="flex-1 flex overflow-hidden bg-pattern relative">
+<!-- Background decorative blobs -->
+<div class="absolute top-[-10%] left-[-5%] w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] pointer-events-none"></div>
+<div class="absolute bottom-[-10%] right-[-5%] w-[600px] h-[600px] bg-blue-900/10 rounded-full blur-[120px] pointer-events-none"></div>
+<div class="flex-1 w-full max-w-[1400px] mx-auto flex flex-col md:flex-row h-full">
+<!-- Left Panel (Sidebar/Filters) -->
+<aside class="w-full md:w-80 lg:w-96 flex-none border-r border-border-dark bg-background-dark/80 backdrop-blur-sm p-6 flex flex-col gap-6 overflow-y-auto">
+<div>
+<h1 class="text-3xl font-black text-white mb-2 tracking-tight">Inbox</h1>
+<p class="text-text-secondary text-sm">Stay updated with your latest contract activities and messages.</p>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center justify-between p-3 rounded-xl bg-surface-dark border border-primary/30 shadow-[0_0_10px_rgba(127,19,236,0.15)] group" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary group-hover:scale-110 transition-transform">inbox</span>
+<span class="text-white font-bold">All Notifications</span>
+</div>
+<span class="bg-primary text-white text-xs font-bold px-2 py-0.5 rounded-full">12</span>
+</a>
+<a class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-dark/50 border border-transparent hover:border-border-dark transition-all group text-text-secondary hover:text-white" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">edit_document</span>
+<span class="font-medium">Contracts</span>
+</div>
+<span class="bg-surface-dark border border-border-dark text-text-secondary text-xs font-bold px-2 py-0.5 rounded-full">3</span>
+</a>
+<a class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-dark/50 border border-transparent hover:border-border-dark transition-all group text-text-secondary hover:text-white" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">chat_bubble</span>
+<span class="font-medium">Messages</span>
+</div>
+<span class="bg-surface-dark border border-border-dark text-text-secondary text-xs font-bold px-2 py-0.5 rounded-full">8</span>
+</a>
+<a class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-dark/50 border border-transparent hover:border-border-dark transition-all group text-text-secondary hover:text-white" href="#">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">account_balance_wallet</span>
+<span class="font-medium">Payments</span>
+</div>
+<span class="bg-surface-dark border border-border-dark text-text-secondary text-xs font-bold px-2 py-0.5 rounded-full">1</span>
+</a>
+</nav>
+<div class="mt-auto p-4 rounded-2xl bg-gradient-to-br from-surface-dark to-background-dark border border-border-dark">
+<div class="flex items-center gap-3 mb-3">
+<div class="p-2 bg-primary/20 rounded-lg text-primary">
+<span class="material-symbols-outlined">auto_awesome</span>
+</div>
+<span class="font-bold text-white text-sm">Pro Tip</span>
+</div>
+<p class="text-xs text-text-secondary mb-3">You can automate your notification settings in the preferences panel to prioritize contract alerts.</p>
+<button class="text-xs text-primary hover:text-primary-light font-bold">Configure Settings →</button>
+</div>
+</aside>
+<!-- Right Panel (Notification Feed) -->
+<section class="flex-1 flex flex-col min-w-0 overflow-y-auto p-4 md:p-8">
+<div class="flex justify-between items-end mb-6">
+<h3 class="text-white font-bold text-xl">Today</h3>
+<button class="text-text-secondary hover:text-primary text-sm transition-colors">Mark all as read</button>
+</div>
+<div class="flex flex-col gap-4 max-w-4xl">
+<!-- Unread Contract Notification -->
+<div class="relative group">
+<div class="absolute inset-0 bg-primary/20 blur-md rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<div class="relative flex flex-col sm:flex-row gap-4 bg-surface-dark p-5 rounded-xl border border-primary/50 shadow-[0_0_20px_rgba(127,19,236,0.1)]">
+<!-- Indicator -->
+<div class="absolute top-4 right-4 size-2.5 bg-primary rounded-full shadow-[0_0_8px_#7f13ec]"></div>
+<!-- Icon -->
+<div class="shrink-0">
+<div class="size-12 rounded-full bg-primary/20 text-primary flex items-center justify-center border border-primary/30">
+<span class="material-symbols-outlined">edit_document</span>
+</div>
+</div>
+<!-- Content -->
+<div class="flex-1">
+<div class="flex justify-between items-start pr-6">
+<h4 class="text-white font-bold text-lg">Contract Signed: Project Alpha</h4>
+<span class="text-text-secondary text-xs whitespace-nowrap ml-2">2m ago</span>
+</div>
+<p class="text-text-secondary text-sm mt-1 leading-relaxed">
+<span class="text-white font-medium">Acme Corp</span> marked the contract as signed. The document is ready for your countersignature to finalize the deal.
+                                </p>
+<div class="mt-4 flex gap-3">
+<button class="flex items-center justify-center h-9 px-5 bg-primary hover:bg-primary-light text-white text-sm font-semibold rounded-lg transition-colors shadow-lg shadow-primary/20">
+                                        View Contract
+                                    </button>
+<button class="flex items-center justify-center h-9 px-5 bg-background-dark hover:bg-border-dark border border-border-dark text-white text-sm font-medium rounded-lg transition-colors">
+                                        Download PDF
+                                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Unread Message Notification -->
+<div class="relative group">
+<div class="relative flex flex-col sm:flex-row gap-4 bg-surface-dark p-5 rounded-xl border-l-4 border-l-primary border-t border-r border-b border-surface-dark hover:border-border-dark transition-colors">
+<!-- Indicator -->
+<div class="absolute top-4 right-4 size-2.5 bg-primary rounded-full shadow-[0_0_8px_#7f13ec]"></div>
+<div class="shrink-0">
+<div class="relative">
+<div class="size-12 rounded-full bg-cover bg-center border border-border-dark" data-alt="Portrait of Sarah from Client Team" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCD5bBcWmlR28cUYgCyXUlqqpxmGDTVIwORJtkd3zzU8rTON5tXpYjKeMx25q7FuWvGprFh1IEB9Q1sDif88-6iayQQRaECYIVsjI49vcA4gsOYzdNTgRLiI2FGmkZENUZ37oVlTf0WlvecxNceIArs55bQ1xfAmv0WqkOUHxSwSH_fMDggM3H8WAHZRV6v1uHJKFJmCobaKrwmDgDgyPj7b0uetH8zRa3cIOemep84Hsg3Scz1gkE8QRKTsT54zDxV-6kyj2_O6nk');"></div>
+<div class="absolute -bottom-1 -right-1 bg-surface-dark p-0.5 rounded-full">
+<div class="bg-blue-500 rounded-full p-1 text-white flex items-center justify-center size-5">
+<span class="material-symbols-outlined text-[12px]">chat</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start pr-6">
+<h4 class="text-white font-bold text-lg">New Message from Sarah</h4>
+<span class="text-text-secondary text-xs whitespace-nowrap ml-2">15m ago</span>
+</div>
+<p class="text-text-secondary text-sm mt-1 leading-relaxed">
+                                    "Hey, just wanted to check on the timeline for the new designs. Are we still on track for Friday's delivery?"
+                                </p>
+<div class="mt-4 flex gap-3">
+<button class="flex items-center gap-2 justify-center h-9 px-5 bg-background-dark hover:bg-border-dark border border-border-dark text-white text-sm font-medium rounded-lg transition-colors">
+<span class="material-symbols-outlined text-[16px]">reply</span> Reply Now
+                                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Payment Notification -->
+<div class="relative group opacity-80 hover:opacity-100 transition-opacity">
+<div class="relative flex flex-col sm:flex-row gap-4 bg-surface-dark/50 p-5 rounded-xl border border-border-dark hover:border-primary/30 transition-colors">
+<div class="shrink-0">
+<div class="size-12 rounded-full bg-green-500/10 text-green-400 flex items-center justify-center border border-green-500/20">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start pr-6">
+<h4 class="text-white/90 font-bold text-lg">Payment Received</h4>
+<span class="text-text-secondary text-xs whitespace-nowrap ml-2">2h ago</span>
+</div>
+<p class="text-text-secondary text-sm mt-1 leading-relaxed">
+                                    You received <span class="text-green-400 font-bold">$4,500.00</span> from <span class="text-white">Global Tech Solutions</span>. Invoice #INV-2024-001 is now marked as paid.
+                                </p>
+<div class="mt-4 flex gap-3">
+<button class="text-primary hover:text-white text-sm font-medium transition-colors flex items-center gap-1">
+                                        View Details <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="flex justify-between items-end mb-4 mt-8">
+<h3 class="text-white font-bold text-xl">Yesterday</h3>
+</div>
+<!-- System Notification (Read) -->
+<div class="relative group opacity-60 hover:opacity-100 transition-opacity">
+<div class="relative flex flex-col sm:flex-row gap-4 bg-surface-dark/30 p-5 rounded-xl border border-border-dark hover:border-border-dark/80 transition-colors">
+<div class="shrink-0">
+<div class="size-12 rounded-full bg-orange-500/10 text-orange-400 flex items-center justify-center border border-orange-500/20">
+<span class="material-symbols-outlined">security</span>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start pr-6">
+<h4 class="text-white/80 font-bold text-lg">Security Alert: New Login</h4>
+<span class="text-text-secondary text-xs whitespace-nowrap ml-2">Yesterday, 4:23 PM</span>
+</div>
+<p class="text-text-secondary text-sm mt-1 leading-relaxed">
+                                    New login detected from a new device (MacBook Pro) in London, UK. If this wasn't you, please secure your account.
+                                </p>
+</div>
+</div>
+</div>
+<!-- Contract (Read) -->
+<div class="relative group opacity-60 hover:opacity-100 transition-opacity">
+<div class="relative flex flex-col sm:flex-row gap-4 bg-surface-dark/30 p-5 rounded-xl border border-border-dark hover:border-border-dark/80 transition-colors">
+<div class="shrink-0">
+<div class="size-12 rounded-full bg-surface-dark text-text-secondary flex items-center justify-center border border-border-dark">
+<span class="material-symbols-outlined">edit_document</span>
+</div>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start pr-6">
+<h4 class="text-white/80 font-bold text-lg">Draft Created: Website Redesign</h4>
+<span class="text-text-secondary text-xs whitespace-nowrap ml-2">Yesterday, 9:00 AM</span>
+</div>
+<p class="text-text-secondary text-sm mt-1 leading-relaxed">
+                                    You created a new contract draft for Client "EcoFriendly Co".
+                                </p>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-8 text-center pb-8">
+<button class="text-text-secondary hover:text-white text-sm font-medium transition-colors">Load earlier notifications</button>
+</div>
+</section>
+</div>
+</main>
+</body></html>

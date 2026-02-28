@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Timeless App - Music Studio Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "primary-content": "#ffffff",
+                        "primary-dark": "#5e0eb0",
+                        "primary-light": "#9f4bf3",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                        "surface-dark": "#231630",
+                        "surface-light": "#ffffff",
+                        "secondary": "#ad92c9",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "sans-serif"],
+                        "body": ["Spline Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display antialiased overflow-hidden">
+<div class="flex h-screen w-full overflow-hidden">
+<!-- Side Navigation -->
+<aside class="flex w-64 flex-col bg-surface-light dark:bg-[#1a1122] border-r border-slate-200 dark:border-slate-800/50 h-full shrink-0">
+<div class="flex flex-col h-full justify-between p-4">
+<div class="flex flex-col gap-6">
+<!-- App Header -->
+<div class="flex items-center gap-3 px-2">
+<div class="bg-gradient-to-br from-primary to-primary-dark aspect-square rounded-full size-10 flex items-center justify-center shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-white text-xl">graphic_eq</span>
+</div>
+<div class="flex flex-col">
+<h1 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight">Timeless</h1>
+<p class="text-slate-500 dark:text-secondary text-xs font-medium">Music Studio</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 dark:bg-primary text-primary dark:text-white group transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">home</span>
+<span class="text-sm font-medium">Home</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">mic</span>
+<span class="text-sm font-medium">Discover Talent</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">calendar_today</span>
+<span class="text-sm font-medium">Events</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">location_on</span>
+<span class="text-sm font-medium">Venues</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">chat_bubble</span>
+<span class="text-sm font-medium">Messages</span>
+<span class="ml-auto bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">3</span>
+</a>
+</nav>
+<div class="h-px w-full bg-slate-200 dark:bg-white/10 my-1"></div>
+<!-- Secondary Links -->
+<div class="flex flex-col gap-1">
+<p class="px-3 text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">My Library</p>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+<span class="text-sm font-medium">Liked Songs</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">history</span>
+<span class="text-sm font-medium">Recent Activity</span>
+</a>
+</div>
+</div>
+<!-- User Profile -->
+<div class="flex items-center gap-3 px-3 py-3 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 cursor-pointer hover:bg-slate-200 dark:hover:bg-white/10 transition-colors mt-auto">
+<div class="bg-cover bg-center h-9 w-9 rounded-full ring-2 ring-primary/30" data-alt="User profile picture" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDwo3CewPMJF9vMmZtrrrZq85KxoVPrqx2bbY8KI5BHaiBOClO0IpMIRCUgOyJMeZL5v3YQMTxBr7TPXMGebWTyjA2B8kfnQt6qyaIRATB0GHklYPGbFEHorRazqzTqFY_eQH7vGn2B8fLi20bZ3kcjFDEh-XewHJEq2vvOKSZSs09gAlZuWw3DimCKSKPMphNv7MM_LfwI8PzXS8CG3RgKxceg74-TWEzRGIqyr8k7J4_GwJDnk2Y6aAtaUlcsUSH81qAfAeCbWXM');"></div>
+<div class="flex flex-col flex-1 min-w-0">
+<p class="text-sm font-bold text-slate-900 dark:text-white truncate">Alex Morgan</p>
+<p class="text-xs text-slate-500 dark:text-slate-400 truncate">Pro Member</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-lg">settings</span>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-full overflow-hidden bg-background-light dark:bg-background-dark relative">
+<!-- Top Bar / Search -->
+<header class="flex items-center justify-between px-8 py-5 shrink-0 z-10">
+<div class="relative w-full max-w-md">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400 dark:text-secondary">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-2.5 border-none rounded-xl leading-5 bg-white dark:bg-surface-dark text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-secondary/70 focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm" placeholder="Search artists, tracks, or venues..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 rounded-full text-slate-500 dark:text-secondary hover:bg-slate-100 dark:hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 h-2 w-2 rounded-full bg-red-500 ring-2 ring-background-light dark:ring-background-dark"></span>
+</button>
+<button class="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-lg transition-colors shadow-lg shadow-primary/25">
+<span class="material-symbols-outlined text-sm">upload</span>
+<span class="text-sm font-medium">Upload Track</span>
+</button>
+</div>
+</header>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto px-8 pb-8 scrollbar-hide">
+<div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+<!-- Hero Section -->
+<div class="w-full relative rounded-2xl overflow-hidden min-h-[280px] flex items-end p-8 group">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="Concert stage with neon lights" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCHh7r6Jp4SdzBGBSmySN3LQZh_719lWEU_nQWFplWxisRhwrKh5NrZZaCCl2e6OMu4Y4bqJKm06rY-_-07Tzfvy03kupFP08gS90Mgea9BVrqOV7-8HQJIKsP9amX8FHT3ErOsn1UfuBf9EyUNo_MRA1OioZ3EAa6_wlA3hQfkhVCu7961QZ61gKpTNr9DvBsCM6EtvzqOVmFET4RtcMg-jGJTQRBy_LUpaDlstnss3vdNP5FgNty3lRcHLriLNmn5OvOloogTnAs');"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/60 to-transparent"></div>
+<div class="relative z-10 flex flex-col gap-3 max-w-2xl">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 backdrop-blur-sm border border-primary/30 w-fit">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-primary-light text-xs font-bold uppercase tracking-wider">Trending Now</span>
+</div>
+<h2 class="text-4xl font-bold text-white tracking-tight">Electronic Night at The Warehouse</h2>
+<p class="text-slate-300 text-lg line-clamp-2">Join over 5,000 music enthusiasts for the biggest electronic music gathering of the year featuring top artists from around the globe.</p>
+<div class="flex gap-4 mt-2">
+<button class="bg-white text-background-dark px-6 py-2.5 rounded-lg font-bold text-sm hover:bg-slate-200 transition-colors">Get Tickets</button>
+<button class="bg-white/10 backdrop-blur-md text-white border border-white/20 px-6 py-2.5 rounded-lg font-bold text-sm hover:bg-white/20 transition-colors">View Details</button>
+</div>
+</div>
+</div>
+<!-- Top Rated Artists Section -->
+<div class="flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h3 class="text-2xl font-bold text-slate-900 dark:text-white">Top Rated Artists This Week</h3>
+<a class="text-sm font-medium text-primary hover:text-primary-light transition-colors flex items-center gap-1" href="#">
+                                View all <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+<!-- Artist Card 1 -->
+<div class="group bg-white dark:bg-[#261933] rounded-xl p-4 shadow-sm hover:shadow-md transition-all border border-slate-100 dark:border-white/5 flex gap-4 items-center">
+<div class="relative shrink-0">
+<div class="w-20 h-20 rounded-lg bg-cover bg-center" data-alt="Portrait of Luna Ray singer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCfdZCkCESc1gLlqYoaf6V4gyHTZZNXD3mW7LpV0eVCaVtDSc-j1lCcsKM1luFKFeA8rocQaZ5bN0YLP9oGRwCjLLwJrnDAK6_07TO62WKTssbOv16fhjXRAYffismk8fNc1tf4NMEj36EWRMBQG61RZW9H8ZPlWPtnFHO_AVE1zEA1G1CdbxlOU0x36NHaC_xn-5Ii6Gr9yVXqh2E9I9ePRRzAP7xx-YMErO4KaHnkxsJ1G1PinuA02fGcduryQhUqqOIfnqoPCdo');"></div>
+<div class="absolute -bottom-2 -right-2 bg-yellow-400 text-background-dark text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[10px]">star</span> 4.9
+                                    </div>
+</div>
+<div class="flex flex-col flex-1">
+<h4 class="text-slate-900 dark:text-white font-bold text-lg group-hover:text-primary transition-colors">Luna Ray</h4>
+<p class="text-slate-500 dark:text-secondary text-sm">Indie Pop • London</p>
+<div class="flex gap-2 mt-3">
+<button class="text-xs bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-light px-3 py-1.5 rounded-md font-medium hover:bg-primary hover:text-white transition-colors">Follow</button>
+<button class="p-1.5 text-slate-400 hover:text-white rounded-md hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-[18px]">play_circle</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Artist Card 2 -->
+<div class="group bg-white dark:bg-[#261933] rounded-xl p-4 shadow-sm hover:shadow-md transition-all border border-slate-100 dark:border-white/5 flex gap-4 items-center">
+<div class="relative shrink-0">
+<div class="w-20 h-20 rounded-lg bg-cover bg-center" data-alt="Portrait of The Midnight Echo band" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCwZZcrUkP0zzdekTd7p3VkL5cAP3bRlrnebaXVZURipR7kzNPbtgYE68eSbnykYZzLbVyfG0Yq4Ty8Q0YtAmIwZqe3Nl7Cx7kCssn2Wj_QY0tBRpZ1dde6mTjD017TpvQVK0EodjojGFwFHWCOV259snvXCycnFrmYq7drBD-Ke45iCKIMg14PvD3HaqRs_R5L3HVbyNEPCdRoV_BKQppQzFePB4w1MD4bMHZA8d8_oTnkP54hNBDwwoM-bCg50YKVcIlq9YXj4wk');"></div>
+<div class="absolute -bottom-2 -right-2 bg-yellow-400 text-background-dark text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[10px]">star</span> 4.8
+                                    </div>
+</div>
+<div class="flex flex-col flex-1">
+<h4 class="text-slate-900 dark:text-white font-bold text-lg group-hover:text-primary transition-colors">The Midnight Echo</h4>
+<p class="text-slate-500 dark:text-secondary text-sm">Synthwave • LA</p>
+<div class="flex gap-2 mt-3">
+<button class="text-xs bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-light px-3 py-1.5 rounded-md font-medium hover:bg-primary hover:text-white transition-colors">Follow</button>
+<button class="p-1.5 text-slate-400 hover:text-white rounded-md hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-[18px]">play_circle</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Artist Card 3 -->
+<div class="group bg-white dark:bg-[#261933] rounded-xl p-4 shadow-sm hover:shadow-md transition-all border border-slate-100 dark:border-white/5 flex gap-4 items-center">
+<div class="relative shrink-0">
+<div class="w-20 h-20 rounded-lg bg-cover bg-center" data-alt="Portrait of Marcus V DJ" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCRPGNE0LaGe0SEEILKGVBvW1-b3J7wnh5LStDa0_rHk-0Wc6UqMI86G0Amp_pCPOl6FGARvp6QyzlZ_DGunirLq08AwWGY04CTbhkVh03bWO1BC4uJsdqCjfA4vtQmYFNHa3d838XQcVEXIXGl4Ch4vuAQjFTf-_DnkJhSwBc-Biof427Ej0ADIK6JTAr4ok_HvDcxbyFdrSuR0xmG8MO3UxfowmgA5MTPUJVqyd5_2k4W5VPBYdOsHX-mFifp-bkDszN18ISGTRk');"></div>
+<div class="absolute -bottom-2 -right-2 bg-yellow-400 text-background-dark text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[10px]">star</span> 4.7
+                                    </div>
+</div>
+<div class="flex flex-col flex-1">
+<h4 class="text-slate-900 dark:text-white font-bold text-lg group-hover:text-primary transition-colors">Marcus V</h4>
+<p class="text-slate-500 dark:text-secondary text-sm">Deep House • Berlin</p>
+<div class="flex gap-2 mt-3">
+<button class="text-xs bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary-light px-3 py-1.5 rounded-md font-medium hover:bg-primary hover:text-white transition-colors">Follow</button>
+<button class="p-1.5 text-slate-400 hover:text-white rounded-md hover:bg-white/10 transition-colors">
+<span class="material-symbols-outlined text-[18px]">play_circle</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Layout Grid for lower content -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+<!-- Upcoming Events -->
+<div class="lg:col-span-2 flex flex-col gap-4">
+<h3 class="text-2xl font-bold text-slate-900 dark:text-white">Upcoming Events</h3>
+<div class="flex flex-col gap-3">
+<!-- Event Item 1 -->
+<div class="flex items-center gap-4 bg-white dark:bg-[#261933] p-4 rounded-xl border border-slate-100 dark:border-white/5 hover:border-primary/30 transition-colors">
+<div class="flex flex-col items-center justify-center bg-slate-100 dark:bg-white/5 w-14 h-14 rounded-lg shrink-0">
+<span class="text-xs font-bold text-primary uppercase">Nov</span>
+<span class="text-xl font-bold text-slate-900 dark:text-white">12</span>
+</div>
+<div class="flex flex-col flex-1">
+<h4 class="text-base font-bold text-slate-900 dark:text-white">Neon Nights Festival</h4>
+<div class="flex items-center gap-2 text-sm text-slate-500 dark:text-secondary mt-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span>Downtown Arena, NY</span>
+</div>
+</div>
+<div class="flex items-center -space-x-2 hidden sm:flex">
+<div class="w-8 h-8 rounded-full border-2 border-white dark:border-[#261933] bg-cover bg-center" data-alt="Attendee 1" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBxxdHQMny6-1RwBNyEQH4cUbrgwLBhg_ZFIY1uP5F71ez_Rd-RxHfLGMIxXbmm623tquk4NYUu35E8CxWJYOBugJM0DQT0bQLVsZ1zne6UusdFH1Cmkh1XMXihfmvD5n3YaZVQawYSAdeovh5KNfScp6EhIS1aX_OWvsO-nLv_ems9ldy_-oNZBptjLDFTej54mgThLteaXoSzXeR3p2nZzh2-GZ6az9PbW5x7SszI_cIzQ6wMAxx2PLju3U6detXcf__5SNxUI8A');"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white dark:border-[#261933] bg-cover bg-center" data-alt="Attendee 2" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBQOuOyJ797m-eYw4MD57l81m-NTKMCuiumXJu2wbf0yzwSDeocGJcVI_SvBX6RgVqMpsxmmAU9yJoIkIEcfuOnGMBYd1itoSiHgAUu1EpvfgejeYMm6Q14GPZZgDswUvhdhcgZ_IQykaVvVuvCmAW33ThzLvDcQ_oPJzvaHFSzY_6td47oA5z0NE0iSqULPVFYNQJRqiG8j-4yNuc_qYsVyLNhdLSpl7imsJUUqusoh0TZKoNnuWg5DHfU2ENFZlsu5NUelBAZWV8');"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white dark:border-[#261933] bg-cover bg-center" data-alt="Attendee 3" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD5P3VCzHzBQ_n8GY705_O8EtHjfv2sm2g7vEbBGvR6fVBOwFbRonkP6yGh-nou-PmNmeOz5sqUapDfpYr7BQPWqSylGOUqxXqLupy5jPdxyxJbaLdUNv6KksMBKWt3eGHGwekrhVNuaNfqtwrpQdyM3OnccXjt0IwvylbqRiP0Gz_P9F_QRg2jgA_v4BiSIMvjpa5vPz5fzWJo4-Xsx0--nKJRJWCgmcKKquqZumFRr90b4OppnZahpGdunKECFTtax42QyNUoEjI');"></div>
+<div class="w-8 h-8 rounded-full border-2 border-white dark:border-[#261933] bg-slate-200 dark:bg-slate-700 text-[10px] font-bold flex items-center justify-center text-slate-600 dark:text-slate-300">+24</div>
+</div>
+<button class="ml-4 p-2 rounded-lg text-slate-400 hover:text-primary hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">confirmation_number</span>
+</button>
+</div>
+<!-- Event Item 2 -->
+<div class="flex items-center gap-4 bg-white dark:bg-[#261933] p-4 rounded-xl border border-slate-100 dark:border-white/5 hover:border-primary/30 transition-colors">
+<div class="flex flex-col items-center justify-center bg-slate-100 dark:bg-white/5 w-14 h-14 rounded-lg shrink-0">
+<span class="text-xs font-bold text-primary uppercase">Nov</span>
+<span class="text-xl font-bold text-slate-900 dark:text-white">15</span>
+</div>
+<div class="flex flex-col flex-1">
+<h4 class="text-base font-bold text-slate-900 dark:text-white">Jazz &amp; Soul Evening</h4>
+<div class="flex items-center gap-2 text-sm text-slate-500 dark:text-secondary mt-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span>Blue Note Club, Chicago</span>
+</div>
+</div>
+<button class="ml-4 p-2 rounded-lg text-slate-400 hover:text-primary hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">confirmation_number</span>
+</button>
+</div>
+<!-- Event Item 3 -->
+<div class="flex items-center gap-4 bg-white dark:bg-[#261933] p-4 rounded-xl border border-slate-100 dark:border-white/5 hover:border-primary/30 transition-colors">
+<div class="flex flex-col items-center justify-center bg-slate-100 dark:bg-white/5 w-14 h-14 rounded-lg shrink-0">
+<span class="text-xs font-bold text-primary uppercase">Nov</span>
+<span class="text-xl font-bold text-slate-900 dark:text-white">22</span>
+</div>
+<div class="flex flex-col flex-1">
+<h4 class="text-base font-bold text-slate-900 dark:text-white">Underground Beats Workshop</h4>
+<div class="flex items-center gap-2 text-sm text-slate-500 dark:text-secondary mt-1">
+<span class="material-symbols-outlined text-[16px]">videocam</span>
+<span>Online Event</span>
+</div>
+</div>
+<button class="ml-4 p-2 rounded-lg text-slate-400 hover:text-primary hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">confirmation_number</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Mini Stats / Player -->
+<div class="flex flex-col gap-4">
+<h3 class="text-2xl font-bold text-slate-900 dark:text-white">Now Playing</h3>
+<div class="bg-gradient-to-br from-[#261933] to-[#1a1122] border border-white/5 p-5 rounded-xl shadow-lg relative overflow-hidden h-full flex flex-col justify-between">
+<!-- Background Blur Effect -->
+<div class="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl"></div>
+<div class="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-500/10 rounded-full blur-3xl"></div>
+<div class="relative z-10 w-full aspect-square rounded-lg overflow-hidden mb-4 shadow-xl">
+<div class="w-full h-full bg-cover bg-center transform hover:scale-105 transition-transform duration-700" data-alt="Abstract album art with colorful smoke" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAB5GO6h03r4faEC-ho2no1kzmC0hXpQ8RIvPDoZeRY3lNQbbU9BagGVSPnfSaSuquR1XJrmsptw2zY4SBp9TZKRGrpEJB_CSm-0ZLBfZc4y8M0rdbLQyD-tRo4_adxeUmgS7LMUmb6eeUGB8m7MLXhkd7ulI4LoFTF8vXtSiMAy4-bzkelSwIYZdeD785f48s2qemQNB1N-oLPzEK9MYPM1PaBMZTiDjd5WE5kWNJ1XwcqWvDcHJDp3Hq711h7bxMC3LXaczApTZY');"></div>
+</div>
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-2">
+<div>
+<h4 class="text-white font-bold text-lg">Midnight City</h4>
+<p class="text-secondary text-sm">M83</p>
+</div>
+<button class="text-primary hover:text-white transition-colors"><span class="material-symbols-outlined">favorite</span></button>
+</div>
+<!-- Progress Bar -->
+<div class="w-full bg-white/10 rounded-full h-1 mb-2">
+<div class="bg-primary h-1 rounded-full w-2/3"></div>
+</div>
+<div class="flex justify-between text-[10px] text-slate-400 font-medium mb-4">
+<span>2:45</span>
+<span>4:03</span>
+</div>
+<!-- Controls -->
+<div class="flex justify-between items-center px-2">
+<button class="text-slate-400 hover:text-white transition-colors"><span class="material-symbols-outlined text-[20px]">shuffle</span></button>
+<div class="flex items-center gap-4">
+<button class="text-white hover:text-primary transition-colors"><span class="material-symbols-outlined text-[28px]">skip_previous</span></button>
+<button class="bg-white text-background-dark rounded-full p-2 hover:scale-105 transition-transform"><span class="material-symbols-outlined text-[28px] fill-current">play_arrow</span></button>
+<button class="text-white hover:text-primary transition-colors"><span class="material-symbols-outlined text-[28px]">skip_next</span></button>
+</div>
+<button class="text-slate-400 hover:text-white transition-colors"><span class="material-symbols-outlined text-[20px]">repeat</span></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

@@ -37,7 +37,7 @@ const platformLinks = [
   { label: "Discover Events", href: "#events" },
   { label: "Find Artists", href: "#artists" },
   { label: "Browse Venues", href: "#venues" },
-  { label: "For Promoters", href: "#promoters" },
+  { label: "Help Center", href: "/contact" },
 ];
 
 const studioLinks = [

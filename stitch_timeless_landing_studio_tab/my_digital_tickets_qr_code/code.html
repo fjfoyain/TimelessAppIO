@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Digital Tickets &amp; QR Code - Timeless</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#625063",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#1a181a",
+                        "card-dark": "#222022",
+                    },
+                    fontFamily: {
+                        "display": ["Montserrat", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-x-hidden">
+<!-- Main Background with Blur -->
+<div class="fixed inset-0 z-0 w-full h-full pointer-events-none overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center blur-3xl opacity-40 scale-110" data-alt="Blurred concert crowd with colorful lights" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD9eOquIMq2tCKr2z_25o3R7TOk15J3MR-rG5Eq3bsA22cM0EcyMPYMf4tDIXbQ4lSRfvrtHC2D5A4ONtJBYodqm6XF9YT1kNCQUkOIaOjLmOytHSLjvWFhVvHRchGXqDc8maVmJWH78PBKXlOnRZovf1DvA_J_RUoRW5cATZii0c_hh0FbGc_3OXPucW-ve_bkJXy4eeYhJBJbEC1M2m7_rLUVxnuQgOMawBbQNsFg1mkrAXgKAFBjUfdVZIcCBnc8cO6KXbFrIE8");'></div>
+<div class="absolute inset-0 bg-background-dark/80 backdrop-blur-sm"></div>
+</div>
+<!-- Content Wrapper -->
+<div class="relative z-10 flex flex-col min-h-screen">
+<!-- Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-white/10 px-6 py-4 lg:px-10 bg-background-dark/50 backdrop-blur-md">
+<div class="flex items-center gap-4">
+<div class="size-8 text-white flex items-center justify-center">
+<span class="material-symbols-outlined !text-3xl text-primary">hourglass_top</span>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-[-0.015em]">Timeless</h2>
+</div>
+<div class="hidden md:flex flex-1 justify-center gap-8">
+<a class="text-slate-300 hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Home</a>
+<a class="text-slate-300 hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Explore Events</a>
+<a class="text-white text-sm font-bold leading-normal" href="#">My Tickets</a>
+<a class="text-slate-300 hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Profile</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden sm:flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-white/5 hover:bg-white/10 text-white text-sm font-medium leading-normal transition-colors">
+<span class="truncate">Logout</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-primary/50" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCDRvVPX-YXxpmb3faI4TR3UHpCRr9xAFeNhfkoI9KMbiQ1sLIk-BB2sMNyLRo_DAg8guED5lQf5gUWtYvjMPscpEvwSDqGOhRLjr3__53EYx99VaOa2Dd8yVaK73RVsb3aoMqlRZZ8l6AB2NHJFqq3m5BpLBVRsI1F3DbovhyCuYmElwyGihPKfhOfZGSUmtOWL-HElyoCtX8v1yYhLWMMam78pYLgLgniXh7n1nnVYfO66ioq2IF_q5NiL_xYi1ha0M48qUs9VUA");'></div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col items-center justify-center p-4 md:p-8 lg:p-12">
+<div class="w-full max-w-5xl flex flex-col items-center gap-8">
+<!-- Page Title -->
+<div class="text-center space-y-2 mb-4">
+<h1 class="text-3xl md:text-5xl font-black tracking-tight text-white drop-shadow-lg">Neon Nights Festival</h1>
+<p class="text-slate-400 font-medium text-lg">Your access pass is ready</p>
+</div>
+<!-- Ticket Card Container -->
+<div class="w-full max-w-4xl relative group perspective-1000">
+<!-- Glow Effect behind card -->
+<div class="absolute -inset-1 bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-[2rem] blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+<div class="relative flex flex-col md:flex-row bg-card-dark rounded-[1.75rem] overflow-hidden shadow-2xl border border-white/5">
+<!-- Left Side: Visual & Event Info -->
+<div class="w-full md:w-2/5 relative min-h-[300px] md:min-h-full">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Concert stage with neon lights and crowd" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAi12CMRxUIFXnSwWFiAtSU2tOzFwEkyyGOuYMBIbru02jmkfb_PSWXcWlYUMF3Ie_M199xQfnVyOlHQwFTXYUkgkWnjSP3MHE1GTudg9YAzmCraQYRMTokA6ApWaKSw4Evu1hK3T7fVlZ-MZWPWd5SA0mNPxxEdVWT20cBnyCdsGAeBAmTMOomESjs9A-9hbiMnUAL3ozvUuYVrgwJp5rbhFuDz67LR7dKSdaY514ZisXaNqdGgF_32Mwvj_EmWeuLFlP5vLHgQuo");'></div>
+<div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-black/90 via-black/40 to-transparent"></div>
+<div class="relative h-full p-8 flex flex-col justify-between z-10">
+<div class="bg-primary/90 backdrop-blur-md self-start px-3 py-1 rounded-full text-xs font-bold text-white tracking-wider uppercase border border-white/20">
+                                    General Admission
+                                </div>
+<div class="mt-auto space-y-4">
+<div>
+<p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Date &amp; Time</p>
+<p class="text-white text-xl font-bold">Oct 24, 2023</p>
+<p class="text-slate-300">8:00 PM CST</p>
+</div>
+<div>
+<p class="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Venue</p>
+<p class="text-white text-lg font-semibold">Central Park Arena</p>
+<p class="text-slate-300 text-sm">New York, NY</p>
+</div>
+<div class="flex items-center gap-3 pt-4 border-t border-white/10">
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-card-dark bg-slate-700 bg-cover bg-center" data-alt="Friend avatar 1" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBiEZqm3KwSkcKG5p409F87ewBzK3JTaLUTIIU_o0Km3hjdxALkPT-dFJyMos__RiMXqO9307WUc2_6_0AmekNgmChGdZgBeNx_C2dE6ozbvd_h-aYkC8rTg5Oky2Kh_aIK8nhs7q4lYYVqRWXUAriXEi-jvObKvVtWGQTNkOalJ_BoSJPkas9tVoIjERoZtcmgJtDKQw3j48gug1NeK0XljlKvJbGgRNUZLEDXWYjva4-UUdm6tnrPGhg5IFYYLP1u50qXzBeKsJ4")'></div>
+<div class="w-8 h-8 rounded-full border-2 border-card-dark bg-slate-700 bg-cover bg-center" data-alt="Friend avatar 2" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB1SpYMRzzxRXmB933T4QczXcLJ9vb8YT2U9rp9Ph6-skhlE0uhOtV7SACTwafkfg-HUgM_IyXdazSGSWh8-7f7bg_z_YeHv1J58ryLDc2cxjW1CGI97KYEPIVU17kigdUY5DlSMYmZ6yE0Yuk_yiissINCRccOVNi9UmotQG86WpOa3pvEZjPEHoGDs6NQj8UQn6r3lsIGjpmp_WHavNx-abc3vMp28DT23A7DynmolAOLRvhv9aamN413xAb8Y3klUDuU3DeHPow")'></div>
+</div>
+<span class="text-xs text-slate-400 font-medium">+2 friends attending</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Side: QR & Details -->
+<div class="w-full md:w-3/5 bg-[#1a181a] relative flex flex-col">
+<!-- Dashed Line Divider (Visual) -->
+<div class="absolute left-0 top-0 bottom-0 w-[1px] hidden md:block border-l-2 border-dashed border-white/10 h-full">
+<div class="absolute -top-3 -left-[9px] w-4 h-4 rounded-full bg-background-dark shadow-inner"></div>
+<div class="absolute -bottom-3 -left-[9px] w-4 h-4 rounded-full bg-background-dark shadow-inner"></div>
+</div>
+<!-- Mobile Dashed Line -->
+<div class="absolute top-0 left-0 right-0 h-[1px] block md:hidden border-t-2 border-dashed border-white/10 w-full">
+<div class="absolute -left-3 -top-[9px] w-4 h-4 rounded-full bg-background-dark shadow-inner"></div>
+<div class="absolute -right-3 -top-[9px] w-4 h-4 rounded-full bg-background-dark shadow-inner"></div>
+</div>
+<div class="flex-1 p-8 md:p-12 flex flex-col items-center justify-center text-center">
+<div class="bg-white p-4 rounded-2xl shadow-lg mb-6 max-w-[240px] w-full aspect-square flex items-center justify-center relative group/qr">
+<!-- QR Code Placeholder -->
+<img alt="Ticket QR Code" class="w-full h-full object-contain mix-blend-multiply opacity-90 group-hover/qr:opacity-100 transition-opacity" data-alt="QR Code for event entry" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0c2eLY1hvyXA6AvHmsQQLLYvBEfqd2TGXdyZ9Mxv6AMC3y7_qU23zbfSMe3-kcAPi1hMBmCLaILHAu1TPE5KOfNd8gdZjnb-voCazY3qbgjSVbFtM_o4jWf8SvuX7xOOvK0SwZ3uy0UzPlvoMi8FZELujmY7s385z-V0SIOLFUJaqh9Kcobc44fgVNKPDiHhYf01S1N6Y0M1nWHyO-6dVvgMK-H4HMx8ujOO3kiR5RycStuP7lfH5bz25k0uCkV4513eUWpC0Nbs"/>
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover/qr:opacity-100 transition-opacity pointer-events-none">
+<span class="material-symbols-outlined text-4xl text-black font-bold">zoom_in</span>
+</div>
+</div>
+<p class="text-slate-400 text-sm mb-2">Scan this code at the entrance</p>
+<h3 class="text-white text-2xl font-mono tracking-widest font-bold">#8493-2019</h3>
+<div class="mt-2 flex items-center gap-2 text-green-400 text-xs font-bold uppercase tracking-wider bg-green-400/10 px-3 py-1 rounded-full">
+<span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                                    Ticket Active
+                                </div>
+</div>
+<!-- Actions Footer -->
+<div class="p-6 bg-[#262426] border-t border-white/5">
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+<button class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white transition-all duration-300 group/btn border border-white/5">
+<span class="material-symbols-outlined text-xl group-hover/btn:scale-110 transition-transform">ios_share</span>
+<span class="text-sm font-semibold">Share</span>
+</button>
+<button class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-white transition-all duration-300 group/btn border border-white/5">
+<span class="material-symbols-outlined text-xl group-hover/btn:scale-110 transition-transform">picture_as_pdf</span>
+<span class="text-sm font-semibold">PDF</span>
+</button>
+<button class="flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-slate-100 hover:bg-white text-slate-900 transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] group/wallet font-bold">
+<span class="material-symbols-outlined text-xl group-hover/wallet:scale-110 transition-transform">wallet</span>
+<span class="text-sm">Wallet</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Secondary Actions / Info -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-4xl">
+<div class="bg-card-dark/50 backdrop-blur border border-white/5 p-5 rounded-xl flex items-center gap-4 hover:bg-card-dark transition-colors cursor-pointer group">
+<div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
+<span class="material-symbols-outlined text-primary text-2xl">map</span>
+</div>
+<div>
+<h4 class="text-white font-bold text-sm">Getting There</h4>
+<p class="text-slate-400 text-xs mt-1">View venue map and parking info</p>
+</div>
+<span class="material-symbols-outlined text-slate-500 ml-auto group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+<div class="bg-card-dark/50 backdrop-blur border border-white/5 p-5 rounded-xl flex items-center gap-4 hover:bg-card-dark transition-colors cursor-pointer group">
+<div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
+<span class="material-symbols-outlined text-primary text-2xl">info</span>
+</div>
+<div>
+<h4 class="text-white font-bold text-sm">Event Guidelines</h4>
+<p class="text-slate-400 text-xs mt-1">Check allowed items and rules</p>
+</div>
+<span class="material-symbols-outlined text-slate-500 ml-auto group-hover:translate-x-1 transition-transform">chevron_right</span>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

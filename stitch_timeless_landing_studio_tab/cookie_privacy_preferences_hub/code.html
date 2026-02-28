@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cookie Privacy &amp; Preferences Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#625063",
+                "primary-light": "#8e7c8f",
+                "background-light": "#f7f7f7",
+                "background-dark": "#1a181a",
+                "surface-dark": "#2a272a",
+                "surface-dark-hover": "#363336",
+              },
+              fontFamily: {
+                "display": ["Montserrat"]
+              },
+              borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display min-h-screen flex items-center justify-center p-4">
+<!-- Modal Container -->
+<div class="relative w-full max-w-[640px] flex flex-col rounded-xl overflow-hidden bg-white dark:bg-surface-dark shadow-2xl ring-1 ring-white/10">
+<!-- Header Section -->
+<div class="px-8 pt-8 pb-4">
+<h2 class="text-slate-900 dark:text-slate-100 text-[28px] font-bold leading-tight mb-2">Cookie Policy &amp; Preferences</h2>
+<p class="text-slate-500 dark:text-slate-400 text-base font-normal leading-normal">
+                We use cookies to enhance your browsing experience, serve personalized ads or content, and analyze our traffic. Below you can manage your preferences.
+            </p>
+</div>
+<!-- Preferences List -->
+<div class="flex flex-col px-4 pb-4 gap-2">
+<!-- Essential Cookies Item -->
+<div class="flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-[#222022] hover:bg-slate-100 dark:hover:bg-[#252325] transition-colors border border-transparent dark:border-white/5">
+<div class="flex items-center gap-4 grow">
+<div class="text-slate-900 dark:text-white flex items-center justify-center rounded-lg bg-slate-200 dark:bg-[#312f31] shrink-0 size-12">
+<span class="material-symbols-outlined text-[24px]">shield</span>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-slate-900 dark:text-slate-100 text-base font-semibold leading-normal line-clamp-1">Essential Cookies</p>
+<p class="text-slate-500 dark:text-[#aca9ad] text-sm font-normal leading-normal line-clamp-2">Necessary for the website to function properly. Cannot be disabled.</p>
+</div>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[31px] w-[51px] cursor-not-allowed items-center rounded-full border-none bg-primary/40 p-0.5 opacity-60">
+<div class="h-full w-[27px] rounded-full bg-white translate-x-[20px]" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+<input checked="" class="invisible absolute" disabled="" type="checkbox"/>
+</label>
+</div>
+</div>
+<!-- Analytics Cookies Item -->
+<div class="flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-[#222022] hover:bg-slate-100 dark:hover:bg-[#252325] transition-colors border border-transparent dark:border-white/5">
+<div class="flex items-center gap-4 grow">
+<div class="text-slate-900 dark:text-white flex items-center justify-center rounded-lg bg-slate-200 dark:bg-[#312f31] shrink-0 size-12">
+<span class="material-symbols-outlined text-[24px]">bar_chart</span>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-slate-900 dark:text-slate-100 text-base font-semibold leading-normal line-clamp-1">Analytics Cookies</p>
+<p class="text-slate-500 dark:text-[#aca9ad] text-sm font-normal leading-normal line-clamp-2">Help us understand how visitors interact with the website.</p>
+</div>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-slate-300 dark:bg-[#4a474a] p-0.5 has-[:checked]:bg-primary transition-colors duration-300">
+<div class="h-full w-[27px] rounded-full bg-white transition-transform duration-300 transform translate-x-0 has-[:checked]:translate-x-[20px]" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+<input class="invisible absolute peer" type="checkbox"/>
+</label>
+</div>
+</div>
+<!-- Marketing Cookies Item -->
+<div class="flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-[#222022] hover:bg-slate-100 dark:hover:bg-[#252325] transition-colors border border-transparent dark:border-white/5">
+<div class="flex items-center gap-4 grow">
+<div class="text-slate-900 dark:text-white flex items-center justify-center rounded-lg bg-slate-200 dark:bg-[#312f31] shrink-0 size-12">
+<span class="material-symbols-outlined text-[24px]">sell</span>
+</div>
+<div class="flex flex-col justify-center">
+<p class="text-slate-900 dark:text-slate-100 text-base font-semibold leading-normal line-clamp-1">Marketing Cookies</p>
+<p class="text-slate-500 dark:text-[#aca9ad] text-sm font-normal leading-normal line-clamp-2">Used to track visitors across websites to display relevant ads.</p>
+</div>
+</div>
+<div class="shrink-0">
+<label class="relative flex h-[31px] w-[51px] cursor-pointer items-center rounded-full border-none bg-slate-300 dark:bg-[#4a474a] p-0.5 has-[:checked]:bg-primary transition-colors duration-300">
+<div class="h-full w-[27px] rounded-full bg-white transition-transform duration-300 transform translate-x-0 has-[:checked]:translate-x-[20px]" style="box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 8px, rgba(0, 0, 0, 0.06) 0px 3px 1px;"></div>
+<input class="invisible absolute peer" type="checkbox"/>
+</label>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="p-8 pt-4 flex flex-col sm:flex-row gap-4 border-t border-slate-100 dark:border-white/10 bg-slate-50/50 dark:bg-[#222022]/50">
+<button class="w-full sm:w-1/2 rounded-lg bg-transparent border border-primary/30 text-primary dark:text-slate-200 dark:border-white/20 px-6 py-3 text-base font-semibold hover:bg-primary/5 dark:hover:bg-white/5 transition-colors">
+                Save Preferences
+            </button>
+<button class="w-full sm:w-1/2 rounded-lg bg-primary px-6 py-3 text-base font-semibold text-white shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all hover:scale-[1.02]">
+                Accept All
+            </button>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Universal Marketplace Explorer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#625063",
+                        "primary-dark": "#4a3b4b",
+                        "primary-light": "#7e687f",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#151415",
+                        "surface-dark": "#1f1d1f",
+                        "surface-light": "#ffffff",
+                        "border-dark": "#312f31",
+                        "border-light": "#e5e5e5",
+                        "text-muted": "#aca9ad",
+                    },
+                    fontFamily: {
+                        "display": ["Montserrat", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for clean look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #151415; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #312f31; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #625063; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen flex flex-col overflow-x-hidden">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-border-light dark:border-border-dark bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-md px-10 py-3">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-slate-900 dark:text-white">
+<div class="size-8 flex items-center justify-center bg-primary rounded-lg text-white">
+<span class="material-symbols-outlined">event_note</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">EventMarket</h2>
+</div>
+<label class="flex flex-col min-w-40 !h-10 max-w-64 hidden lg:flex">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark overflow-hidden">
+<div class="text-text-muted flex items-center justify-center pl-3 pr-2">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="flex w-full min-w-0 flex-1 resize-none bg-transparent text-slate-900 dark:text-white focus:outline-0 placeholder:text-text-muted px-0 text-sm font-normal leading-normal border-none focus:ring-0" placeholder="Search events..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<div class="hidden md:flex items-center gap-6">
+<a class="text-slate-600 dark:text-gray-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Talent</a>
+<a class="text-slate-600 dark:text-gray-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Providers</a>
+<a class="text-slate-600 dark:text-gray-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">My Events</a>
+<a class="text-slate-600 dark:text-gray-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Messages</a>
+</div>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary hover:bg-primary-dark text-white text-sm font-bold leading-normal tracking-[0.015em] transition-all active:scale-95">
+<span class="truncate">Create Event</span>
+</button>
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border-2 border-primary/20 cursor-pointer" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCcimDqf20KU2d4TNKKck3tcxNUsli2Vj5dyPnqXjDtD6BfZvv3Sn07E70U0wjzijgfk6RWjEa0g24hok-TzII50it3Lttix4cC4S2CvEbFBnTOuCguKKoDX0ct1CGZNBm2fzB61OTtUTMDIM1jfZsgGgPU8p63gXYkVSTq23RxMiFMA5BDI_SNBHUj-zoIZW23w4VPb9uVb1oJM0EH449pnVNVRu8MKuBOn1tJeC2BWp_FVr30pQMSWQvDlutiaYYhzGv5opaSqPo");'></div>
+</div>
+</header>
+<div class="flex flex-1 relative">
+<!-- Sidebar Navigation (Left) -->
+<aside class="hidden lg:flex w-64 flex-col border-r border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark sticky top-[65px] h-[calc(100vh-65px)] overflow-y-auto">
+<div class="p-4 flex flex-col gap-6">
+<div class="flex flex-col">
+<h1 class="text-slate-900 dark:text-white text-sm font-bold uppercase tracking-wider mb-3 px-3">Quick Access</h1>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary dark:text-white font-medium" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span>Explorer</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-text-muted hover:bg-background-light dark:hover:bg-background-dark/50 transition-colors" href="#">
+<span class="material-symbols-outlined">bookmark</span>
+<span>Saved</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-text-muted hover:bg-background-light dark:hover:bg-background-dark/50 transition-colors" href="#">
+<span class="material-symbols-outlined">history</span>
+<span>History</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-text-muted hover:bg-background-light dark:hover:bg-background-dark/50 transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+</div>
+<div class="flex flex-col">
+<h1 class="text-slate-900 dark:text-white text-sm font-bold uppercase tracking-wider mb-3 px-3">Smart Suggestions</h1>
+<p class="text-text-muted text-xs px-3 mb-2">Based on your recent search for "DJs"</p>
+<div class="flex flex-col gap-2">
+<div class="group relative flex gap-3 p-3 rounded-xl bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark hover:border-primary/50 transition-all cursor-pointer">
+<div class="size-10 rounded-lg bg-cover bg-center shrink-0" data-alt="Sound equipment" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCF4U_Dth4OTfmdwm-W8HbSE9As-mKCV1ZdwNLlXZbb6ENBJaRTcGlHY9ZO6nxZ_5jQano0ZX9nWbgSGjhp4xOxfgLWDhy8nO2DY8ws4nUnu36u8MMsGXMT-RQbwBmN-nF5h50PpiCmlCCrI-yfUncGTd0FNbs8Rl6IKJKKi1gd9qPdhPuDVWFoTefzrLyswwwKYtmrR9_wCHbK6ew-hXgqwC4uFXBnSCSEKgDx-SKcqqFsVa55hHaChBzOvTVG6COBPePKhUHC0aA')"></div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-slate-900 dark:text-white">Pro Audio Rent</span>
+<span class="text-xs text-text-muted">Sound Systems</span>
+</div>
+<div class="absolute top-2 right-2 size-2 rounded-full bg-primary"></div>
+</div>
+<div class="group relative flex gap-3 p-3 rounded-xl bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark hover:border-primary/50 transition-all cursor-pointer">
+<div class="size-10 rounded-lg bg-cover bg-center shrink-0" data-alt="Stage lighting" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAWCeH-yqVK_1Up7G9akvVUjKrOb_NaaeayeXBhKeCQPYuk4PhiYIj0-xFiPZyu2446FrX4Lmtpf0rGYBysnb_sT5wYfqN_g3Ryk2t2jaTlXsYtyT2w2rGlHq5a4JHeNx7J4b65AN8x4POqPx8CwhdP_vPD9Yz0SiNzsW8sTGzDXJ1Mb4Kh9ZXzkWtG-PMznthXOznX8CsNBjCRKKurI2VhjNhCcZsfn5zeArckp0GeP2Nr6EFeZw44UPm-zotnrECBCgHuEN2SNQw')"></div>
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-slate-900 dark:text-white">Luminex Lights</span>
+<span class="text-xs text-text-muted">Visual Effects</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Promo Card -->
+<div class="mt-auto rounded-xl bg-gradient-to-br from-primary to-purple-900 p-4 text-white">
+<h3 class="font-bold text-sm mb-1">Premium Plan</h3>
+<p class="text-xs text-white/80 mb-3">Get zero fees on your first 3 bookings.</p>
+<button class="w-full py-1.5 bg-white text-primary text-xs font-bold rounded shadow-sm hover:bg-gray-50 transition-colors">Upgrade Now</button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0">
+<!-- Filter Bar (Sticky) -->
+<div class="sticky top-[65px] z-40 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-sm border-b border-border-light dark:border-border-dark px-6 py-4">
+<div class="flex flex-col gap-4">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<h1 class="text-slate-900 dark:text-white text-2xl font-bold">Marketplace Explorer</h1>
+<div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
+<button class="flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-full border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark hover:border-primary text-sm font-medium transition-all group">
+<span>Genre</span>
+<span class="material-symbols-outlined text-base group-hover:rotate-180 transition-transform">expand_more</span>
+</button>
+<button class="flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-full border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark hover:border-primary text-sm font-medium transition-all group">
+<span>Equipment</span>
+<span class="material-symbols-outlined text-base group-hover:rotate-180 transition-transform">expand_more</span>
+</button>
+<button class="flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-full border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark hover:border-primary text-sm font-medium transition-all group">
+<span>Location</span>
+<span class="material-symbols-outlined text-base group-hover:rotate-180 transition-transform">expand_more</span>
+</button>
+<button class="flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-full border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark hover:border-primary text-sm font-medium transition-all group">
+<span>Budget</span>
+<span class="material-symbols-outlined text-base group-hover:rotate-180 transition-transform">expand_more</span>
+</button>
+<div class="w-px h-6 bg-border-light dark:bg-border-dark mx-1"></div>
+<button class="flex shrink-0 items-center gap-2 px-3 py-1.5 rounded-full text-primary hover:bg-primary/10 text-sm font-medium transition-all">
+<span class="material-symbols-outlined text-base">filter_list</span>
+<span>All Filters</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Content Grid -->
+<div class="p-6">
+<!-- Section: Trending Talent -->
+<div class="mb-8">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-lg font-bold text-slate-900 dark:text-white">Trending Talent</h2>
+<a class="text-sm text-primary hover:text-primary-light font-medium flex items-center gap-1" href="#">
+                            View All <span class="material-symbols-outlined text-base">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Talent Card 1 -->
+<div class="group flex flex-col bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden hover:shadow-lg hover:border-primary/50 transition-all duration-300">
+<div class="relative aspect-[4/3] overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="DJ performing" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCpCipNkjZoJqJAcfJ1zuC46vG2mx1c1Y0c148VRRO7lQKudk5wxwWn5E69-ZNkhs6MeC077FESmdnY_ym9LqX_5ptvdKayqL3ysfYWEWFBtxfqitjx6XdZjp1Wm1XRZt1qei-5HZMWTCnojilrG81RJQvi7h7FtvPH18ySSV1fKBM7yf8VPF0tDZowHAWB1xEE7Z3-2cAa23jbtVAUbpdAzMWSSjN5nVKZlNNmd9TOcxn9qyZJJFVcLYy74L-Qlhhej79A7jJbjh0')"></div>
+<div class="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold text-white flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-yellow-400">star</span> 4.9
+                                </div>
+<div class="absolute bottom-3 left-3 flex gap-2">
+<span class="bg-primary/90 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase tracking-wide">DJ</span>
+<span class="bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase tracking-wide">House</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-bold text-slate-900 dark:text-white truncate">DJ Solstice</h3>
+<span class="text-sm font-semibold text-slate-900 dark:text-white">$150/hr</span>
+</div>
+<p class="text-text-muted text-xs line-clamp-2 mb-4">Experienced house &amp; techno DJ with a modern setup. Perfect for club events and private parties.</p>
+<div class="mt-auto flex items-center justify-between pt-3 border-t border-border-light dark:border-border-dark">
+<div class="flex items-center text-text-muted text-xs gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span> Los Angeles
+                                    </div>
+<button class="size-8 rounded-full bg-slate-100 dark:bg-white/5 hover:bg-primary hover:text-white flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-lg">bookmark</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Talent Card 2 -->
+<div class="group flex flex-col bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden hover:shadow-lg hover:border-primary/50 transition-all duration-300">
+<div class="relative aspect-[4/3] overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Live band guitarist" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCOGBxRC9gsdilnD4KFkiJF44DMDFXGEUnxVh03ePZGdumpm6Fq1ROMpILmirMnoJZpKaYv8i2lwqnjWFY0wOLabdhwpul-xhx-E4c7-2c6Y18VaZfTn4g_bhW1CLbKYmbxp6d2SShk3XuO7sv5g1HMynSKshYtAQpHH_L3Dv3pcXfdY23F-sVFca2hdign5FPqXbOWwr_cuO7764qSVzuYghukMzqotxJCy40SMSikk1TJA0MnvMn8VHgHM_adZjE3Y5dANoFxtZo')"></div>
+<div class="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold text-white flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-yellow-400">star</span> 5.0
+                                </div>
+<div class="absolute bottom-3 left-3 flex gap-2">
+<span class="bg-primary/90 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase tracking-wide">Band</span>
+<span class="bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase tracking-wide">Indie</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-bold text-slate-900 dark:text-white truncate">The Neon Lights</h3>
+<span class="text-sm font-semibold text-slate-900 dark:text-white">$800/gig</span>
+</div>
+<p class="text-text-muted text-xs line-clamp-2 mb-4">High energy indie-pop band bringing festival vibes to your local event.</p>
+<div class="mt-auto flex items-center justify-between pt-3 border-t border-border-light dark:border-border-dark">
+<div class="flex items-center text-text-muted text-xs gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span> Austin, TX
+                                    </div>
+<button class="size-8 rounded-full bg-slate-100 dark:bg-white/5 hover:bg-primary hover:text-white flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-lg">bookmark</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Talent Card 3 -->
+<div class="group flex flex-col bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden hover:shadow-lg hover:border-primary/50 transition-all duration-300">
+<div class="relative aspect-[4/3] overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Camera operator" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCdGxe95JbcjVd6IfhWkOjOlJcQCvtktKAoprQgSEoToYDQBjxCfMJ8dJXb3AtFKP0DlxIk-3T7LqdKuPVEGH2i6Lmg_qLjAnZ0-iID6Vj1Dx4JIMaZhotYAA7F8mOUGPjwvKzO7XBHo27IX_HISwPjxaun-8oai2wKqKTVm3XdBQzi88EYt0r_vKrqc9RJHCX6BR4D4hYospONyduHa_5V3Xaorh1vqUjSS01sBTKgsZYS1PNC6YNYI9i1AtFPY8OVOxjSTadDNSE')"></div>
+<div class="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold text-white flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-yellow-400">star</span> 4.8
+                                </div>
+<div class="absolute bottom-3 left-3 flex gap-2">
+<span class="bg-primary/90 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase tracking-wide">Photo</span>
+<span class="bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase tracking-wide">Events</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-bold text-slate-900 dark:text-white truncate">Lens &amp; Light</h3>
+<span class="text-sm font-semibold text-slate-900 dark:text-white">$200/hr</span>
+</div>
+<p class="text-text-muted text-xs line-clamp-2 mb-4">Capturing moments that last forever. Specializing in low-light event photography.</p>
+<div class="mt-auto flex items-center justify-between pt-3 border-t border-border-light dark:border-border-dark">
+<div class="flex items-center text-text-muted text-xs gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span> New York
+                                    </div>
+<button class="size-8 rounded-full bg-slate-100 dark:bg-white/5 hover:bg-primary hover:text-white flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-lg">bookmark</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Talent Card 4 -->
+<div class="group flex flex-col bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden hover:shadow-lg hover:border-primary/50 transition-all duration-300">
+<div class="relative aspect-[4/3] overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Book shelf" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBrJvNg8fM6DFHIObzXAgynDsHQyET7VGCEbfOLJIfHlWZdkO5FS6L3YnKbtzEy9C5CykpEJYvhukQbUcdgZBxXifRDfvlxz4XfD7Cz9jAeUo2uQq6l4iK-FWXX2dMjVpxpegahFXEKayV2o24gbbSJ_fLaIs-IMeTWNojTj3WFRYh8Z-V6V0p79q4-Q19A7lon0v2Vo5lXDz_dwtdtbBerQZvgKLl6xMpGhuWo-gf-ygJ3GUtowyrsP9uA4CiHC6p_t7P-PSyBmdU')"></div>
+<div class="absolute top-3 right-3 bg-black/60 backdrop-blur-sm px-2 py-1 rounded text-xs font-bold text-white flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-yellow-400">star</span> 5.0
+                                </div>
+<div class="absolute bottom-3 left-3 flex gap-2">
+<span class="bg-primary/90 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase tracking-wide">Speaker</span>
+<span class="bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] font-bold text-white uppercase tracking-wide">Tech</span>
+</div>
+</div>
+<div class="p-4 flex flex-col flex-1">
+<div class="flex justify-between items-start mb-2">
+<h3 class="font-bold text-slate-900 dark:text-white truncate">Elena R.</h3>
+<span class="text-sm font-semibold text-slate-900 dark:text-white">$300/hr</span>
+</div>
+<p class="text-text-muted text-xs line-clamp-2 mb-4">Keynote speaker on future tech trends and AI. Engaging and thought-provoking.</p>
+<div class="mt-auto flex items-center justify-between pt-3 border-t border-border-light dark:border-border-dark">
+<div class="flex items-center text-text-muted text-xs gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span> Remote
+                                    </div>
+<button class="size-8 rounded-full bg-slate-100 dark:bg-white/5 hover:bg-primary hover:text-white flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined text-lg">bookmark</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Section: Essential Providers (Different Style) -->
+<div class="mb-8">
+<div class="flex items-center justify-between mb-4">
+<div class="flex flex-col">
+<h2 class="text-lg font-bold text-slate-900 dark:text-white">Essential Providers</h2>
+<p class="text-sm text-text-muted">Complementary services for your events</p>
+</div>
+<a class="text-sm text-primary hover:text-primary-light font-medium flex items-center gap-1" href="#">
+                            View All <span class="material-symbols-outlined text-base">arrow_forward</span>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Provider Card 1 (Horizontal) -->
+<div class="flex bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden hover:border-primary/50 transition-all cursor-pointer h-36">
+<div class="w-36 h-full bg-cover bg-center shrink-0" data-alt="Audio mixer close up" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB2PcNPC3GVDT-K9F5E6avEDLNvpchdsbSGrk3leNhySuRigxJn56U5X28Z2_aEmyf6xoNz-u059IvHN1vuic_fCEFUVbG33g9UPJI6avDMUdBJcmivIzg-p_aA2WfBzUFFyxev1tFBAItaEtCkrKKM1z1_ADNGVZCJxakjw42FcEhcXEsGVh2GJ7oFgDBz8pGgwdXXhmQsF5glFazrPJHcFk1kqw25viByLYm9V6xGenNWHUwaasxDu6H_A6V41J6VzTZULe7moIM')"></div>
+<div class="p-4 flex flex-col justify-between flex-1 min-w-0">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-slate-900 dark:text-white truncate pr-2">Master Sound Inc.</h3>
+<span class="shrink-0 bg-green-500/20 text-green-500 text-[10px] font-bold px-2 py-0.5 rounded">AVAILABLE</span>
+</div>
+<p class="text-xs text-text-muted mt-1">Full PA systems, monitors, and cabling for venues up to 500 cap.</p>
+</div>
+<div class="flex items-center justify-between mt-2">
+<span class="text-sm font-semibold text-slate-900 dark:text-white">From $400</span>
+<button class="text-xs font-bold text-primary border border-primary/30 px-3 py-1.5 rounded hover:bg-primary hover:text-white transition-colors">Details</button>
+</div>
+</div>
+</div>
+<!-- Provider Card 2 (Horizontal) -->
+<div class="flex bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden hover:border-primary/50 transition-all cursor-pointer h-36">
+<div class="w-36 h-full bg-cover bg-center shrink-0" data-alt="Event furniture" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDdDR_QRfBjvKP9u-hm_TCaNsz4q2PxiQDQDZGktCTydP6j38iRH_oCdUrc0KRfW7GPHa382_CIFsRTRNLg1Rz39b83dfZ6D7cGM56g0X6hVyGjOLqToNnYsTGASVe_Xn0HmrZyM6TZIiX4oh85xwmdpK52-_VOPQiptPOtzDrlIhExZvrSzZ1xpTG9DdpSkVJ8gHfiTKgVAUbn-L5hM2CEju6KGCIvwGZfTLj1i9YmZlo7MV5ukEdg4aTra6qRs9cVFYDuNwP3M50')"></div>
+<div class="p-4 flex flex-col justify-between flex-1 min-w-0">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-slate-900 dark:text-white truncate pr-2">Velvet Lounges</h3>
+<span class="shrink-0 bg-green-500/20 text-green-500 text-[10px] font-bold px-2 py-0.5 rounded">AVAILABLE</span>
+</div>
+<p class="text-xs text-text-muted mt-1">Luxury furniture rentals. Sofas, cocktail tables, and ambient decor.</p>
+</div>
+<div class="flex items-center justify-between mt-2">
+<span class="text-sm font-semibold text-slate-900 dark:text-white">From $250</span>
+<button class="text-xs font-bold text-primary border border-primary/30 px-3 py-1.5 rounded hover:bg-primary hover:text-white transition-colors">Details</button>
+</div>
+</div>
+</div>
+<!-- Provider Card 3 (Horizontal) -->
+<div class="flex bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden hover:border-primary/50 transition-all cursor-pointer h-36">
+<div class="w-36 h-full bg-cover bg-center shrink-0" data-alt="Security staff" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAM-4GG_1xxBHMoTAGwOs48QSfarTXesi6MfWrdoV1kxc72XDy9UqbiHsvuCD8xPrNP0xsdyFBwOmSMqNDaiu7BVKkDJTnkSa1nwsO6SBo8pMg0dYG--nKei328I4Q1x3fzw5LReVOn2yyUOM6UA8b3nGjPDJWchIKZJZbFiyuU3gZZZIwdtBAnLaTt6rlXCbgHPgNlsRTMsmOGI9DQrQnWpoYvxMx084dBDZbPwfP1Xy1UsOpD71dgji8oOgw9okNwzLSu-rSJsOA')"></div>
+<div class="p-4 flex flex-col justify-between flex-1 min-w-0">
+<div>
+<div class="flex justify-between items-start">
+<h3 class="font-bold text-slate-900 dark:text-white truncate pr-2">SafeGuard Events</h3>
+<span class="shrink-0 bg-yellow-500/20 text-yellow-500 text-[10px] font-bold px-2 py-0.5 rounded">LOW STOCK</span>
+</div>
+<p class="text-xs text-text-muted mt-1">Professional security teams for crowd control and VIP protection.</p>
+</div>
+<div class="flex items-center justify-between mt-2">
+<span class="text-sm font-semibold text-slate-900 dark:text-white">Custom Quote</span>
+<button class="text-xs font-bold text-primary border border-primary/30 px-3 py-1.5 rounded hover:bg-primary hover:text-white transition-colors">Details</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Map Teaser -->
+<div class="rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark overflow-hidden relative h-64 flex items-center justify-center">
+<div class="absolute inset-0 bg-cover bg-center opacity-40 dark:opacity-20" data-location="Los Angeles Map" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDOcNwUVllMuHxfaB4xUCZLEvnYyuNDLurJjBIB1A3EyQwFIZoQBp6xkwlkr8pv7OPJ4WXn8VfL6omyckPZn7HWA5ogUu4vx2HpHyMbXY0KoPAAXvvD6fpjEVZ4y0LiO8hSnTiJ8cGy4ksgJDZ5Slj0cWlJXnFpVD0HHxdObmP1oN6_DCiIcFuvStcEveUK5NaBYgUF3e_xnpS8LmmVlK3xm8ggaGZs7vTwfs6kXbEcrmmrUgJikAQ2fCWrgzX-p8RVcdtxjQDfQGQ')"></div>
+<div class="relative z-10 text-center p-6 bg-white/90 dark:bg-black/60 backdrop-blur-md rounded-xl border border-border-light dark:border-border-dark max-w-md mx-4">
+<div class="size-12 mx-auto bg-primary rounded-full flex items-center justify-center text-white mb-3 shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined">map</span>
+</div>
+<h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2">Explore Venue Locations</h3>
+<p class="text-sm text-slate-600 dark:text-gray-300 mb-4">Find the perfect spot for your next event using our interactive map view.</p>
+<button class="px-6 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold rounded-lg hover:bg-slate-800 dark:hover:bg-gray-200 transition-colors">
+                            Open Map View
+                        </button>
+</div>
+</div>
+</div>
+<footer class="mt-auto border-t border-border-light dark:border-border-dark p-6 text-center text-text-muted text-sm">
+<p>© 2023 EventMarket Inc. All rights reserved.</p>
+</footer>
+</main>
+<!-- Right Recommendations Sidebar (Desktop only, complementary context) -->
+<aside class="hidden xl:flex w-80 flex-col border-l border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark sticky top-[65px] h-[calc(100vh-65px)] overflow-y-auto p-6">
+<h2 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white mb-4">Recommended For You</h2>
+<div class="bg-primary/5 rounded-xl p-4 border border-primary/20 mb-6">
+<div class="flex items-start gap-3 mb-3">
+<div class="size-8 rounded-full bg-primary/20 flex items-center justify-center text-primary dark:text-white shrink-0">
+<span class="material-symbols-outlined text-sm">lightbulb</span>
+</div>
+<div>
+<h4 class="text-sm font-bold text-slate-900 dark:text-white">Organizer Tip</h4>
+<p class="text-xs text-text-muted mt-1">Since you're looking at <span class="text-primary font-medium">DJs</span>, don't forget to book a sound engineer!</p>
+</div>
+</div>
+</div>
+<h3 class="text-sm font-bold text-slate-900 dark:text-white mb-3">Top Rated Sound Engineers</h3>
+<div class="flex flex-col gap-4">
+<!-- Small Recommendation Card -->
+<div class="flex gap-3 items-center group cursor-pointer">
+<div class="size-12 rounded-lg bg-cover bg-center" data-alt="Engineer portrait" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAMq8GhmvcMDh-u3j2eSMTa-xOSwCH5vXCCnrjspCRpoA2t-qsO-68YQ7bu5FTB2HxjHT0xrFL9Wv0ynyyyy1lTOVUC-xKF5VohxipsfYqwst_qq7EUV_Gx4lSUJ2gpEwHWgWNeuIOiUPBfC9lRp2AEV28iwTpiudW1_AdiIe4hSrU4Ci16xd3Pm5JRli3-Kl8V9dsT4Zc_TdQx5h9i93GjdfrswYVNsQA_CYeRVaMsqWf4lRPJ1Hy3VEH_G-voOBHd_VsmloEX4jA')"></div>
+<div class="flex flex-col flex-1 min-w-0">
+<h4 class="text-sm font-bold text-slate-900 dark:text-white truncate group-hover:text-primary transition-colors">Mike Chen</h4>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-yellow-400">star</span>
+<span class="text-xs font-medium text-slate-900 dark:text-white">4.9</span>
+<span class="text-xs text-text-muted">• Audio Tech</span>
+</div>
+</div>
+<button class="size-8 rounded-full border border-border-light dark:border-border-dark flex items-center justify-center text-text-muted hover:bg-primary hover:text-white hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-lg">add</span>
+</button>
+</div>
+<!-- Small Recommendation Card -->
+<div class="flex gap-3 items-center group cursor-pointer">
+<div class="size-12 rounded-lg bg-cover bg-center" data-alt="Engineer portrait" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDkpncfY1XP-5Y69detWlLNTtElf4C7-wqokwtXr0fy0T_PUYHZxp_8eF13KCLQMS4AFN7vUE5ToalYeSSO7AjNE1hE-Av_jX4rBL8T-Q3kU48OVFie-iG61XVHAgJEfQtcnfxyrsDyJDQyOzU4P2Z73NleKwOR49wigmvMpBw1lMhvQ818G4trAVALMxGNeg_Wh2Suyil13pYCIOFKNjgW-K38s-b0jPup2T0V9_I1MYdnETCTaxB9JsXDz5PSWe6bodGgLO1RWfE')"></div>
+<div class="flex flex-col flex-1 min-w-0">
+<h4 class="text-sm font-bold text-slate-900 dark:text-white truncate group-hover:text-primary transition-colors">Sarah Jenkins</h4>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-yellow-400">star</span>
+<span class="text-xs font-medium text-slate-900 dark:text-white">5.0</span>
+<span class="text-xs text-text-muted">• Sound Mixer</span>
+</div>
+</div>
+<button class="size-8 rounded-full border border-border-light dark:border-border-dark flex items-center justify-center text-text-muted hover:bg-primary hover:text-white hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-lg">add</span>
+</button>
+</div>
+</div>
+<hr class="border-border-light dark:border-border-dark my-6"/>
+<h3 class="text-sm font-bold text-slate-900 dark:text-white mb-3">Recently Viewed</h3>
+<div class="grid grid-cols-2 gap-2">
+<div class="aspect-square rounded-lg bg-cover bg-center relative group cursor-pointer overflow-hidden" data-alt="Club atmosphere" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAe29WZrdLUDn5JgckTjJUz6ijuDH-LGritr8PCBjpaAXnJKAe-2LQzo1Z2A98ThYAWYyzIDVWp3aqOrWtOr8Fg1Ak92-dKEIfH5Gl2oX1l6zI_f0DBk3sH90ADP6bxPXE0zKP6AWsLqb40Uz5kHqxVsIPTbtOvsnMkERqszRDSKWIVmykUuAcrkipvQ1XITX3R71anFVomVawRtkl4QzXLssUI8AbY0X1Ea9gJ74ReSChnG0_TOSKgNSqNvFTcioa98-5CeYPgeL4')">
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="text-white text-xs font-bold">View</span>
+</div>
+</div>
+<div class="aspect-square rounded-lg bg-cover bg-center relative group cursor-pointer overflow-hidden" data-alt="Microphone close up" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCJpLjzPIrr71CrF5cTqjroyQI0GYmM54HGeuuYmGSBxupEt_b0XCHO2afQ01ZXHWPiB3rJvh_Kdd51MbuUd129-J8pAE4cOmyQKvnwbC5onkp5r5lyzf-OSPMmGXTadtbNpHbzHIM0c8oGwuXO4sB32nQgpiMf6-8REPuLoLh75JQiduFfATBWjf3zGjunc9yKrLgJY-mFMWAUj2RnRpk4TSCthjSVrARGecxqwqbWohh21S3F3eAhO9Xq9hExeqHq9jeo3RzoIoU')">
+<div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="text-white text-xs font-bold">View</span>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</body></html>
