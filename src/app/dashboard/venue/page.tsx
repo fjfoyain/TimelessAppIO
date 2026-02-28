@@ -5,30 +5,8 @@ import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import ProtectedRoute from "@/components/ProtectedRoute";
-
-const stats = [
-  { label: "Total Bookings", value: "156", icon: "calendar_month", color: "text-primary-light", bg: "bg-primary/10" },
-  { label: "This Month", value: "12", icon: "date_range", color: "text-cyan-400", bg: "bg-cyan-400/10" },
-  { label: "Revenue", value: "$45,200", icon: "trending_up", color: "text-green-400", bg: "bg-green-400/10" },
-  { label: "Occupancy", value: "78%", icon: "groups", color: "text-amber-400", bg: "bg-amber-400/10" },
-];
-
-interface Booking {
-  id: string;
-  artist: string;
-  date: string;
-  type: string;
-  status: "Confirmed" | "Pending" | "Tentative";
-  time: string;
-}
-
-const upcomingBookings: Booking[] = [
-  { id: "1", artist: "DJ Neon Pulse", date: "Mar 8, 2026", time: "9:00 PM", type: "Live DJ Set", status: "Confirmed" },
-  { id: "2", artist: "The Velvet Strings", date: "Mar 12, 2026", time: "7:30 PM", type: "Acoustic Night", status: "Confirmed" },
-  { id: "3", artist: "Luna Ray", date: "Mar 18, 2026", time: "8:00 PM", type: "Album Launch", status: "Pending" },
-  { id: "4", artist: "Echo Chamber Collective", date: "Mar 25, 2026", time: "10:00 PM", type: "Electronic Showcase", status: "Tentative" },
-  { id: "5", artist: "Marcus & The Groove", date: "Apr 2, 2026", time: "9:00 PM", type: "Jazz Night", status: "Confirmed" },
-];
+import { useAuth } from "@/contexts/AuthContext";
+import { useBookings } from "@/hooks/useFirestore";
 
 const statusStyles: Record<string, string> = {
   Confirmed: "text-green-400 bg-green-400/10",
@@ -43,6 +21,16 @@ const quickActions = [
 ];
 
 function VenueContent() {
+  const { user } = useAuth();
+  const { bookings, loading } = useBookings(user?.id);
+
+  const stats = [
+    { label: "Total Bookings", value: loading ? "..." : String(bookings.length), icon: "calendar_month", color: "text-primary-light", bg: "bg-primary/10" },
+    { label: "This Month", value: loading ? "..." : String(bookings.filter((b) => { const d = new Date(b.day); const now = new Date(); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); }).length), icon: "date_range", color: "text-cyan-400", bg: "bg-cyan-400/10" },
+    { label: "Revenue", value: "$0", icon: "trending_up", color: "text-green-400", bg: "bg-green-400/10" },
+    { label: "Occupancy", value: "—", icon: "groups", color: "text-amber-400", bg: "bg-amber-400/10" },
+  ];
+
   return (
     <div className="min-h-screen bg-background-dark">
       <AnimatedBackground />
@@ -104,35 +92,55 @@ function VenueContent() {
                     View Calendar
                   </Link>
                 </div>
-                <div className="divide-y divide-white/5">
-                  {upcomingBookings.map((booking) => (
-                    <div key={booking.id} className="flex items-center justify-between px-6 py-4 hover:bg-white/[0.02] transition">
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                          <span className="material-icons text-primary text-sm">mic_external_on</span>
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold text-white">{booking.artist}</p>
-                          <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-xs text-slate-500">{booking.date}</span>
-                            <span className="text-xs text-slate-600">&middot;</span>
-                            <span className="text-xs text-slate-500">{booking.time}</span>
-                            <span className="text-xs text-slate-600">&middot;</span>
-                            <span className="text-xs text-slate-400">{booking.type}</span>
+
+                {loading ? (
+                  <div className="py-12 text-center">
+                    <span className="material-icons text-3xl text-primary animate-spin mb-2 block">hourglass_empty</span>
+                    <p className="text-sm text-slate-500">Loading bookings...</p>
+                  </div>
+                ) : bookings.length === 0 ? (
+                  <div className="py-12 text-center">
+                    <span className="material-icons text-3xl text-slate-700 mb-2 block">event_busy</span>
+                    <p className="text-sm text-slate-500">No bookings yet</p>
+                    <Link
+                      href="/booking"
+                      className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-lg bg-primary/10 text-primary text-sm font-medium hover:bg-primary/20 transition"
+                    >
+                      <span className="material-icons text-sm">add</span>
+                      Create First Booking
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-white/5">
+                    {bookings.map((booking) => (
+                      <div key={booking.id} className="flex items-center justify-between px-6 py-4 hover:bg-white/[0.02] transition">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <span className="material-icons text-primary text-sm">mic_external_on</span>
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold text-white">{booking.title}</p>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              <span className="text-xs text-slate-500">{booking.day}</span>
+                              <span className="text-xs text-slate-600">&middot;</span>
+                              <span className="text-xs text-slate-500">{booking.hour}:00</span>
+                              <span className="text-xs text-slate-600">&middot;</span>
+                              <span className="text-xs text-slate-400">{booking.duration}h</span>
+                            </div>
                           </div>
                         </div>
+                        <div className="flex items-center gap-3">
+                          <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${statusStyles["Confirmed"] || "text-green-400 bg-green-400/10"}`}>
+                            Booked
+                          </span>
+                          <button className="p-2 rounded-lg hover:bg-white/5 transition">
+                            <span className="material-icons text-sm text-slate-400 hover:text-white">more_vert</span>
+                          </button>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${statusStyles[booking.status]}`}>
-                          {booking.status}
-                        </span>
-                        <button className="p-2 rounded-lg hover:bg-white/5 transition">
-                          <span className="material-icons text-sm text-slate-400 hover:text-white">more_vert</span>
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 

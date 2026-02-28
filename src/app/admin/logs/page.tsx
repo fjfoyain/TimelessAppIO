@@ -5,75 +5,8 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
-
-type LogLevel = "Info" | "Warning" | "Error";
-
-interface LogEntry {
-  timestamp: string;
-  user: string;
-  action: string;
-  ipAddress: string;
-  level: LogLevel;
-}
-
-const mockLogs: LogEntry[] = [
-  {
-    timestamp: "2026-02-27 14:32:01",
-    user: "admin@timeless.io",
-    action: "Approved artist profile: Luna Vex",
-    ipAddress: "192.168.1.45",
-    level: "Info",
-  },
-  {
-    timestamp: "2026-02-27 14:28:15",
-    user: "system",
-    action: "Automated backup completed successfully",
-    ipAddress: "10.0.0.1",
-    level: "Info",
-  },
-  {
-    timestamp: "2026-02-27 13:55:42",
-    user: "marcus@cole.com",
-    action: "Failed login attempt (3rd attempt)",
-    ipAddress: "203.0.113.22",
-    level: "Warning",
-  },
-  {
-    timestamp: "2026-02-27 13:12:08",
-    user: "system",
-    action: "Payment gateway timeout - retry initiated",
-    ipAddress: "10.0.0.1",
-    level: "Error",
-  },
-  {
-    timestamp: "2026-02-27 12:45:33",
-    user: "admin@timeless.io",
-    action: "Updated platform settings: max upload size",
-    ipAddress: "192.168.1.45",
-    level: "Info",
-  },
-  {
-    timestamp: "2026-02-26 23:15:09",
-    user: "dj.phantom@mail.com",
-    action: "Reported content: inappropriate venue listing",
-    ipAddress: "198.51.100.77",
-    level: "Warning",
-  },
-  {
-    timestamp: "2026-02-26 21:02:44",
-    user: "system",
-    action: "Database connection pool exhausted",
-    ipAddress: "10.0.0.1",
-    level: "Error",
-  },
-  {
-    timestamp: "2026-02-26 19:30:17",
-    user: "neon.lounge@venues.io",
-    action: "Venue profile updated: capacity changed to 500",
-    ipAddress: "172.16.0.33",
-    level: "Info",
-  },
-];
+import { useAuditLogs } from "@/hooks/useFirestore";
+import type { LogLevel } from "@/types";
 
 function levelBadge(level: LogLevel) {
   const map: Record<LogLevel, string> = {
@@ -97,12 +30,13 @@ export default function AuditLogsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [levelFilter, setLevelFilter] = useState<"All" | LogLevel>("All");
   const [dateFilter, setDateFilter] = useState("all");
+  const { logs, loading } = useAuditLogs(100);
 
-  const filteredLogs = mockLogs.filter((log) => {
+  const filteredLogs = logs.filter((log) => {
     const matchesSearch =
       searchQuery === "" ||
       log.action.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      log.user.toLowerCase().includes(searchQuery.toLowerCase());
+      log.userName.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesLevel =
       levelFilter === "All" || log.level === levelFilter;
     return matchesSearch && matchesLevel;
@@ -168,76 +102,84 @@ export default function AuditLogsPage() {
             </select>
           </div>
 
-          {/* Logs Table */}
-          <div className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-white/5 bg-white/[0.02]">
-                    <th className="text-left py-3.5 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Timestamp
-                    </th>
-                    <th className="text-left py-3.5 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      User
-                    </th>
-                    <th className="text-left py-3.5 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Action
-                    </th>
-                    <th className="text-left py-3.5 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      IP Address
-                    </th>
-                    <th className="text-left py-3.5 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Level
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredLogs.map((log, i) => (
-                    <tr
-                      key={i}
-                      className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors"
-                    >
-                      <td className="py-3.5 px-4 text-gray-500 font-mono text-xs whitespace-nowrap">
-                        {log.timestamp}
-                      </td>
-                      <td className="py-3.5 px-4 text-gray-300 whitespace-nowrap">
-                        {log.user}
-                      </td>
-                      <td className="py-3.5 px-4 text-white">
-                        {log.action}
-                      </td>
-                      <td className="py-3.5 px-4 text-gray-500 font-mono text-xs whitespace-nowrap">
-                        {log.ipAddress}
-                      </td>
-                      <td className="py-3.5 px-4">
-                        <span
-                          className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full border ${levelBadge(
-                            log.level
-                          )}`}
-                        >
-                          <span className="material-icons text-xs">
-                            {levelIcon(log.level)}
-                          </span>
-                          {log.level}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          {/* Loading State */}
+          {loading ? (
+            <div className="py-16 text-center">
+              <span className="material-icons text-4xl text-primary animate-spin mb-3 block">hourglass_empty</span>
+              <p className="text-sm text-gray-500">Loading logs...</p>
             </div>
-
-            {filteredLogs.length === 0 && (
-              <div className="py-12 text-center">
-                <span className="material-icons text-3xl text-gray-700 mb-2 block">
-                  search_off
-                </span>
-                <p className="text-sm text-gray-600">
-                  No logs match your filters
-                </p>
+          ) : (
+            /* Logs Table */
+            <div className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/5 bg-white/[0.02]">
+                      <th className="text-left py-3.5 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Timestamp
+                      </th>
+                      <th className="text-left py-3.5 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        User
+                      </th>
+                      <th className="text-left py-3.5 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Action
+                      </th>
+                      <th className="text-left py-3.5 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        IP Address
+                      </th>
+                      <th className="text-left py-3.5 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Level
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredLogs.map((log) => (
+                      <tr
+                        key={log.id}
+                        className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors"
+                      >
+                        <td className="py-3.5 px-4 text-gray-500 font-mono text-xs whitespace-nowrap">
+                          {log.timestamp}
+                        </td>
+                        <td className="py-3.5 px-4 text-gray-300 whitespace-nowrap">
+                          {log.userName}
+                        </td>
+                        <td className="py-3.5 px-4 text-white">
+                          {log.action}
+                        </td>
+                        <td className="py-3.5 px-4 text-gray-500 font-mono text-xs whitespace-nowrap">
+                          {log.ipAddress}
+                        </td>
+                        <td className="py-3.5 px-4">
+                          <span
+                            className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full border ${levelBadge(
+                              log.level
+                            )}`}
+                          >
+                            <span className="material-icons text-xs">
+                              {levelIcon(log.level)}
+                            </span>
+                            {log.level}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            )}
-          </div>
+
+              {filteredLogs.length === 0 && (
+                <div className="py-12 text-center">
+                  <span className="material-icons text-3xl text-gray-700 mb-2 block">
+                    search_off
+                  </span>
+                  <p className="text-sm text-gray-600">
+                    No logs match your filters
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <Footer />

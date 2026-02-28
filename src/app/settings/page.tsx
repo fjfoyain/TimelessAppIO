@@ -1,20 +1,77 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { sendPasswordResetEmail } from "firebase/auth";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
+import { updateUserProfile } from "@/lib/firestore";
+import { auth } from "@/lib/firebase";
 
 type SectionKey = "profile" | "security" | "notifications" | "legal";
 
 function SettingsContent() {
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const [expandedSection, setExpandedSection] = useState<SectionKey | null>("profile");
   const [twoFAEnabled, setTwoFAEnabled] = useState(false);
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(true);
+
+  // Profile form state
+  const [displayName, setDisplayName] = useState("");
+  const [jobTitle, setJobTitle] = useState("");
+  const [bio, setBio] = useState("");
+  const [portfolioLink, setPortfolioLink] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [profileMsg, setProfileMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [resetMsg, setResetMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [resettingPassword, setResettingPassword] = useState(false);
+
+  // Initialize form from user context
+  useEffect(() => {
+    if (user) {
+      setDisplayName(user.name || "");
+      setJobTitle(user.jobTitle || "");
+      setBio(user.bio || "");
+      setPortfolioLink(user.portfolioLink || "");
+    }
+  }, [user]);
+
+  async function handleSaveProfile() {
+    if (!user) return;
+    setSaving(true);
+    setProfileMsg(null);
+    try {
+      await updateUserProfile(user.id, {
+        name: displayName,
+        jobTitle,
+        bio,
+        portfolioLink,
+      });
+      await refreshUser();
+      setProfileMsg({ type: "success", text: "Profile updated successfully." });
+    } catch {
+      setProfileMsg({ type: "error", text: "Failed to save changes. Please try again." });
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleSendResetEmail() {
+    if (!user?.email) return;
+    setResettingPassword(true);
+    setResetMsg(null);
+    try {
+      await sendPasswordResetEmail(auth, user.email);
+      setResetMsg({ type: "success", text: "Password reset email sent. Check your inbox." });
+    } catch {
+      setResetMsg({ type: "error", text: "Failed to send reset email. Please try again." });
+    } finally {
+      setResettingPassword(false);
+    }
+  }
 
   const toggleSection = (section: SectionKey) => {
     setExpandedSection(expandedSection === section ? null : section);
@@ -85,7 +142,8 @@ function SettingsContent() {
                           </label>
                           <input
                             type="text"
-                            defaultValue={user?.name || ""}
+                            value={displayName}
+                            onChange={(e) => setDisplayName(e.target.value)}
                             placeholder="Your display name"
                             className="w-full rounded-xl bg-surface-input border border-white/10 px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary/50 transition"
                           />
@@ -96,6 +154,8 @@ function SettingsContent() {
                           </label>
                           <input
                             type="text"
+                            value={jobTitle}
+                            onChange={(e) => setJobTitle(e.target.value)}
                             placeholder="e.g. Music Producer, DJ, Sound Engineer"
                             className="w-full rounded-xl bg-surface-input border border-white/10 px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary/50 transition"
                           />
@@ -106,6 +166,8 @@ function SettingsContent() {
                           </label>
                           <textarea
                             rows={4}
+                            value={bio}
+                            onChange={(e) => setBio(e.target.value)}
                             placeholder="Tell others about yourself..."
                             className="w-full rounded-xl bg-surface-input border border-white/10 px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary/50 transition resize-none"
                           />
@@ -116,12 +178,23 @@ function SettingsContent() {
                           </label>
                           <input
                             type="url"
+                            value={portfolioLink}
+                            onChange={(e) => setPortfolioLink(e.target.value)}
                             placeholder="https://your-portfolio.com"
                             className="w-full rounded-xl bg-surface-input border border-white/10 px-4 py-3 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-primary/50 transition"
                           />
                         </div>
-                        <button className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-light text-white text-sm font-semibold hover:shadow-glow transition-all duration-300">
-                          Save Changes
+                        {profileMsg && (
+                          <p className={`text-sm ${profileMsg.type === "success" ? "text-green-400" : "text-red-400"}`}>
+                            {profileMsg.text}
+                          </p>
+                        )}
+                        <button
+                          onClick={handleSaveProfile}
+                          disabled={saving}
+                          className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-light text-white text-sm font-semibold hover:shadow-glow transition-all duration-300 disabled:opacity-50"
+                        >
+                          {saving ? "Saving..." : "Save Changes"}
                         </button>
                       </div>
                     )}
@@ -136,8 +209,17 @@ function SettingsContent() {
                           <p className="text-xs text-slate-500 mb-3">
                             Use the password reset flow to update your password securely via email.
                           </p>
-                          <button className="px-4 py-2 rounded-lg border border-white/10 text-sm text-slate-300 hover:text-white hover:border-white/20 transition">
-                            Send Reset Email
+                          {resetMsg && (
+                            <p className={`text-xs mb-2 ${resetMsg.type === "success" ? "text-green-400" : "text-red-400"}`}>
+                              {resetMsg.text}
+                            </p>
+                          )}
+                          <button
+                            onClick={handleSendResetEmail}
+                            disabled={resettingPassword}
+                            className="px-4 py-2 rounded-lg border border-white/10 text-sm text-slate-300 hover:text-white hover:border-white/20 transition disabled:opacity-50"
+                          >
+                            {resettingPassword ? "Sending..." : "Send Reset Email"}
                           </button>
                         </div>
 

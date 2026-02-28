@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { signOut } from "@/lib/auth";
+import { useNotifications } from "@/hooks/useFirestore";
 
 interface NavbarProps {
   activeTab?: "app" | "studio";
@@ -14,6 +15,7 @@ export default function Navbar({ activeTab }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user } = useAuth();
   const router = useRouter();
+  const { unreadCount } = useNotifications(user?.id);
 
   const handleLogout = async () => {
     await signOut();
@@ -78,8 +80,13 @@ export default function Navbar({ activeTab }: NavbarProps) {
                   <Link href="/messages" className="text-gray-500 hover:text-white transition-colors" title="Messages">
                     <span className="material-icons text-lg">chat</span>
                   </Link>
-                  <Link href="/notifications" className="text-gray-500 hover:text-white transition-colors" title="Notifications">
+                  <Link href="/notifications" className="relative text-gray-500 hover:text-white transition-colors" title="Notifications">
                     <span className="material-icons text-lg">notifications</span>
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-[10px] text-white font-bold flex items-center justify-center">
+                        {unreadCount}
+                      </span>
+                    )}
                   </Link>
                   <Link href="/wallet" className="text-gray-500 hover:text-white transition-colors" title="Wallet">
                     <span className="material-icons text-lg">account_balance_wallet</span>

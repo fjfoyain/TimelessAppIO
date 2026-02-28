@@ -4,93 +4,56 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
-
-const stats = [
-  {
-    label: "Total Users",
-    value: "12,450",
-    change: "+18%",
-    changeType: "positive" as const,
-    icon: "group",
-  },
-  {
-    label: "Active Artists",
-    value: "890",
-    change: "+11%",
-    changeType: "positive" as const,
-    icon: "music_note",
-  },
-  {
-    label: "Venues",
-    value: "342",
-    change: "",
-    changeType: "neutral" as const,
-    icon: "location_on",
-  },
-  {
-    label: "Pending Reviews",
-    value: "15",
-    change: "Action Needed",
-    changeType: "warning" as const,
-    icon: "rate_review",
-  },
-];
-
-const pendingApprovals = [
-  { name: "Luna Vex", type: "Artist", avatar: "L" },
-  { name: "The Velvet Room", type: "Venue", avatar: "V" },
-  { name: "Marcus Cole", type: "Talent", avatar: "M" },
-  { name: "Skyline Studios", type: "Venue", avatar: "S" },
-];
-
-const recentActivity = [
-  {
-    user: "Luna Vex",
-    action: "Registered as Artist",
-    category: "Registration",
-    date: "2026-02-27",
-    status: "Completed",
-  },
-  {
-    user: "Marcus Cole",
-    action: "Submitted profile for review",
-    category: "Profile",
-    date: "2026-02-27",
-    status: "Pending",
-  },
-  {
-    user: "Neon Lounge",
-    action: "Updated venue capacity",
-    category: "Venue",
-    date: "2026-02-26",
-    status: "Completed",
-  },
-  {
-    user: "DJ Phantom",
-    action: "Reported content violation",
-    category: "Moderation",
-    date: "2026-02-26",
-    status: "Pending",
-  },
-  {
-    user: "System",
-    action: "Automated backup completed",
-    category: "System",
-    date: "2026-02-25",
-    status: "Completed",
-  },
-];
+import { useAdminStats, useApprovals, useAuditLogs } from "@/hooks/useFirestore";
 
 function statusBadge(status: string) {
   const map: Record<string, string> = {
     Completed: "bg-green-500/10 text-green-400 border-green-500/20",
     Pending: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
     Error: "bg-red-500/10 text-red-400 border-red-500/20",
+    pending: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
+    approved: "bg-green-500/10 text-green-400 border-green-500/20",
+    rejected: "bg-red-500/10 text-red-400 border-red-500/20",
   };
   return map[status] || map["Pending"];
 }
 
-export default function AdminDashboardPage() {
+function AdminContent() {
+  const { stats: adminStats, loading: statsLoading } = useAdminStats();
+  const { approvals, loading: approvalsLoading, approve, reject } = useApprovals("pending");
+  const { logs, loading: logsLoading } = useAuditLogs(5);
+
+  const stats: { label: string; value: string; change: string; changeType: "positive" | "warning" | "neutral"; icon: string }[] = [
+    {
+      label: "Total Users",
+      value: statsLoading ? "..." : adminStats.totalUsers.toLocaleString(),
+      change: "",
+      changeType: "neutral",
+      icon: "group",
+    },
+    {
+      label: "Active Artists",
+      value: statsLoading ? "..." : adminStats.activeArtists.toLocaleString(),
+      change: "",
+      changeType: "neutral",
+      icon: "music_note",
+    },
+    {
+      label: "Venues",
+      value: statsLoading ? "..." : adminStats.venues.toLocaleString(),
+      change: "",
+      changeType: "neutral",
+      icon: "location_on",
+    },
+    {
+      label: "Pending Reviews",
+      value: statsLoading ? "..." : adminStats.pendingApprovals.toLocaleString(),
+      change: adminStats.pendingApprovals > 0 ? "Action Needed" : "",
+      changeType: adminStats.pendingApprovals > 0 ? "warning" : "neutral",
+      icon: "rate_review",
+    },
+  ];
+
   return (
     <AdminLayout>
       <div className="min-h-screen bg-background-dark relative">
@@ -155,9 +118,11 @@ export default function AdminDashboardPage() {
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl font-bold text-white">2,340</p>
+                  <p className="text-2xl font-bold text-white">
+                    {statsLoading ? "..." : adminStats.totalUsers.toLocaleString()}
+                  </p>
                   <span className="text-xs font-semibold text-green-400">
-                    +11.1%
+                    Total users
                   </span>
                 </div>
               </div>
@@ -186,37 +151,56 @@ export default function AdminDashboardPage() {
                   </p>
                 </div>
                 <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                  {pendingApprovals.length} pending
+                  {approvalsLoading ? "..." : approvals.length} pending
                 </span>
               </div>
-              <div className="space-y-3">
-                {pendingApprovals.map((item) => (
-                  <div
-                    key={item.name}
-                    className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-xs font-bold text-primary-light">
-                        {item.avatar}
+
+              {approvalsLoading ? (
+                <div className="py-8 text-center">
+                  <span className="material-icons text-2xl text-primary animate-spin mb-2 block">hourglass_empty</span>
+                  <p className="text-xs text-gray-500">Loading approvals...</p>
+                </div>
+              ) : approvals.length === 0 ? (
+                <div className="py-8 text-center">
+                  <span className="material-icons text-3xl text-gray-700 mb-2 block">check_circle</span>
+                  <p className="text-xs text-gray-500">No pending approvals</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {approvals.slice(0, 4).map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-xs font-bold text-primary-light">
+                          {item.avatar}
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-white">
+                            {item.name}
+                          </p>
+                          <p className="text-xs text-gray-500">{item.type}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-sm font-medium text-white">
-                          {item.name}
-                        </p>
-                        <p className="text-xs text-gray-500">{item.type}</p>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => approve(item.id)}
+                          className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-green-500/20 transition-colors"
+                        >
+                          Approve
+                        </button>
+                        <button
+                          onClick={() => reject(item.id)}
+                          className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors"
+                        >
+                          Reject
+                        </button>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <button className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-green-500/20 transition-colors">
-                        Approve
-                      </button>
-                      <button className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors">
-                        Reject
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
@@ -237,57 +221,57 @@ export default function AdminDashboardPage() {
               </button>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-white/5">
-                    <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      User
-                    </th>
-                    <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Action
-                    </th>
-                    <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Category
-                    </th>
-                    <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
-                    </th>
-                    <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentActivity.map((row, i) => (
-                    <tr
-                      key={i}
-                      className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors"
-                    >
-                      <td className="py-3 px-4 text-white font-medium">
-                        {row.user}
-                      </td>
-                      <td className="py-3 px-4 text-gray-400">{row.action}</td>
-                      <td className="py-3 px-4">
-                        <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary-light border border-primary/20">
-                          {row.category}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-gray-500">{row.date}</td>
-                      <td className="py-3 px-4">
-                        <span
-                          className={`text-xs px-2 py-1 rounded-full border ${statusBadge(
-                            row.status
-                          )}`}
-                        >
-                          {row.status}
-                        </span>
-                      </td>
+            {logsLoading ? (
+              <div className="py-8 text-center">
+                <span className="material-icons text-2xl text-primary animate-spin mb-2 block">hourglass_empty</span>
+                <p className="text-xs text-gray-500">Loading activity...</p>
+              </div>
+            ) : logs.length === 0 ? (
+              <div className="py-8 text-center">
+                <span className="material-icons text-3xl text-gray-700 mb-2 block">history</span>
+                <p className="text-xs text-gray-500">No recent activity</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/5">
+                      <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        User
+                      </th>
+                      <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Action
+                      </th>
+                      <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Level
+                      </th>
+                      <th className="text-left py-3 px-4 text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Date
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {logs.map((row) => (
+                      <tr
+                        key={row.id}
+                        className="border-b border-white/[0.03] hover:bg-white/[0.02] transition-colors"
+                      >
+                        <td className="py-3 px-4 text-white font-medium">
+                          {row.userName}
+                        </td>
+                        <td className="py-3 px-4 text-gray-400">{row.action}</td>
+                        <td className="py-3 px-4">
+                          <span className={`text-xs px-2 py-1 rounded-full border ${statusBadge(row.level === "Info" ? "Completed" : row.level === "Warning" ? "Pending" : "Error")}`}>
+                            {row.level}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-gray-500">{row.timestamp}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
 
@@ -295,4 +279,8 @@ export default function AdminDashboardPage() {
       </div>
     </AdminLayout>
   );
+}
+
+export default function AdminDashboardPage() {
+  return <AdminContent />;
 }

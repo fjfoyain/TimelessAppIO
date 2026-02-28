@@ -1,23 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { useAuth } from "@/contexts/AuthContext";
+import { getVenues, createEvent } from "@/lib/firestore";
+import type { Venue } from "@/types";
 
 const steps = ["Event Basics", "Venue & Date", "Talent & Services", "Review"];
-
-const mockVenues = [
-  { id: "1", name: "Skyline Lounge", type: "Rooftop", capacity: 200 },
-  { id: "2", name: "The Basement", type: "Underground Club", capacity: 500 },
-  { id: "3", name: "Central Park Arena", type: "Outdoor Arena", capacity: 5000 },
-];
 
 const serviceTypes = ["DJ Spark", "Security", "Photography", "Videography", "Sound Engineer", "Lighting"];
 
 export default function CreateEventPage() {
+  const { user } = useAuth();
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
+  const [venues, setVenues] = useState<Venue[]>([]);
+  const [venuesLoading, setVenuesLoading] = useState(true);
+  const [publishing, setPublishing] = useState(false);
+  const [publishError, setPublishError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -27,6 +31,36 @@ export default function CreateEventPage() {
     selectedServices: [] as string[],
     talentSearch: "",
   });
+
+  // Load venues from Firestore on mount
+  useEffect(() => {
+    getVenues()
+      .then((data) => setVenues(data))
+      .catch(() => setVenues([]))
+      .finally(() => setVenuesLoading(false));
+  }, []);
+
+  async function handlePublish() {
+    if (!user) return;
+    setPublishing(true);
+    setPublishError(null);
+    try {
+      await createEvent({
+        title: formData.name,
+        description: formData.description,
+        date: formData.date,
+        time: formData.time,
+        venueId: formData.venue,
+        organizerId: user.id,
+        organizer: user.name,
+        services: formData.selectedServices,
+      });
+      router.push("/dashboard/events");
+    } catch {
+      setPublishError("Failed to publish event. Please try again.");
+      setPublishing(false);
+    }
+  }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -148,28 +182,34 @@ export default function CreateEventPage() {
                       Venue Selection
                     </h2>
                     <div className="space-y-3">
-                      {mockVenues.map((v) => (
-                        <button
-                          key={v.id}
-                          onClick={() => setFormData((prev) => ({ ...prev, venue: v.id }))}
-                          className={`w-full text-left p-4 rounded-xl border transition flex items-center gap-4 ${
-                            formData.venue === v.id
-                              ? "border-primary/30 bg-primary/5"
-                              : "border-white/5 hover:bg-white/[0.02]"
-                          }`}
-                        >
-                          <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                            <span className="material-icons text-primary">location_city</span>
-                          </div>
-                          <div>
-                            <p className="text-white font-semibold">{v.name}</p>
-                            <p className="text-slate-500 text-xs">{v.type} &middot; Capacity: {v.capacity}</p>
-                          </div>
-                          {formData.venue === v.id && (
-                            <span className="material-icons text-primary ml-auto">check_circle</span>
-                          )}
-                        </button>
-                      ))}
+                      {venuesLoading ? (
+                        <p className="text-slate-500 text-sm py-4 text-center">Loading venues...</p>
+                      ) : venues.length === 0 ? (
+                        <p className="text-slate-500 text-sm py-4 text-center">No venues available yet.</p>
+                      ) : (
+                        venues.map((v) => (
+                          <button
+                            key={v.id}
+                            onClick={() => setFormData((prev) => ({ ...prev, venue: v.id }))}
+                            className={`w-full text-left p-4 rounded-xl border transition flex items-center gap-4 ${
+                              formData.venue === v.id
+                                ? "border-primary/30 bg-primary/5"
+                                : "border-white/5 hover:bg-white/[0.02]"
+                            }`}
+                          >
+                            <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                              <span className="material-icons text-primary">location_city</span>
+                            </div>
+                            <div>
+                              <p className="text-white font-semibold">{v.venueName}</p>
+                              <p className="text-slate-500 text-xs">{v.eventTypes?.join(", ") || "Venue"} &middot; Capacity: {v.capacity}</p>
+                            </div>
+                            {formData.venue === v.id && (
+                              <span className="material-icons text-primary ml-auto">check_circle</span>
+                            )}
+                          </button>
+                        ))
+                      )}
                     </div>
                   </div>
                 )}
@@ -232,7 +272,7 @@ export default function CreateEventPage() {
                       <div className="flex justify-between border-b border-white/5 pb-3">
                         <span className="text-slate-400">Venue</span>
                         <span className="text-white font-medium">
-                          {mockVenues.find((v) => v.id === formData.venue)?.name || "Not selected"}
+                          {venues.find((v) => v.id === formData.venue)?.venueName || "Not selected"}
                         </span>
                       </div>
                       <div className="flex justify-between">
@@ -246,6 +286,9 @@ export default function CreateEventPage() {
                 )}
 
                 {/* Navigation */}
+                {publishError && (
+                  <p className="text-red-400 text-sm">{publishError}</p>
+                )}
                 <div className="flex justify-between">
                   <button
                     onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
@@ -258,11 +301,18 @@ export default function CreateEventPage() {
                     onClick={() => {
                       if (currentStep < steps.length - 1) {
                         setCurrentStep(currentStep + 1);
+                      } else {
+                        handlePublish();
                       }
                     }}
-                    className="px-8 py-3 rounded-lg bg-primary hover:bg-primary-dark text-white font-bold transition btn-glow flex items-center gap-2"
+                    disabled={publishing}
+                    className="px-8 py-3 rounded-lg bg-primary hover:bg-primary-dark text-white font-bold transition btn-glow flex items-center gap-2 disabled:opacity-50"
                   >
-                    {currentStep === steps.length - 1 ? "Publish Event" : "Continue"}
+                    {currentStep === steps.length - 1
+                      ? publishing
+                        ? "Publishing..."
+                        : "Publish Event"
+                      : "Continue"}
                     <span className="material-icons text-sm">
                       {currentStep === steps.length - 1 ? "publish" : "arrow_forward"}
                     </span>

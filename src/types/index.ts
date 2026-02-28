@@ -31,6 +31,9 @@ export interface User {
   role: UserRole;
   avatar: string;
   status: UserStatus;
+  jobTitle?: string;
+  bio?: string;
+  portfolioLink?: string;
   createdAt?: string;
   // Web3-ready (future)
   walletAddress?: string;
@@ -124,10 +127,13 @@ export interface Venue {
   badges?: Badge[];
 }
 
+export type EventStatus = "draft" | "published" | "cancelled" | "completed";
+
 export interface Event {
   id: string;
   title: string;
   date: string;
+  time?: string;
   location: string;
   lat: number;
   lng: number;
@@ -135,9 +141,13 @@ export interface Event {
   organizer: string;
   organizerId: string;
   image: string;
+  venueId?: string;
+  services?: string[];
+  status?: EventStatus;
   ticketTiers: TicketTier[];
   products: EventProduct[];
   reviews?: Review[];
+  createdAt?: string;
   // Web3-ready (future)
   isTokenGated?: boolean;
   requiredTokenAddress?: string;
@@ -183,6 +193,106 @@ export interface Wallet {
   // Web3-ready (future)
   connectedWallets?: ConnectedWallet[];
   cryptoBalances?: CryptoBalance[];
+}
+
+// ─── Firestore Collection Types ───────────────────────────────────
+
+export type NotificationType = "contract" | "message" | "payment" | "security" | "draft";
+
+export interface Booking {
+  id: string;
+  userId: string;
+  title: string;
+  day: string;
+  hour: number;
+  duration: number;
+  color: string;
+  createdAt?: string;
+}
+
+export interface Conversation {
+  id: string;
+  participants: string[];
+  participantNames: Record<string, string>;
+  lastMessage: string;
+  lastMessageTime: string;
+  createdAt?: string;
+}
+
+export interface Message {
+  id: string;
+  senderId: string;
+  text: string;
+  createdAt?: string;
+}
+
+export interface AppNotification {
+  id: string;
+  userId: string;
+  type: NotificationType;
+  title: string;
+  description: string;
+  isNew: boolean;
+  actions?: { label: string; primary?: boolean }[];
+  createdAt?: string;
+}
+
+export interface Service {
+  id: string;
+  userId: string;
+  name: string;
+  category: string;
+  description: string;
+  hourlyRate: number;
+  availability: string[];
+  image?: string;
+  createdAt?: string;
+}
+
+export interface Ticket {
+  id: string;
+  userId: string;
+  eventId: string;
+  eventName: string;
+  date: string;
+  venue: string;
+  type: "VIP" | "General" | "Backstage";
+  status: "ACTIVE" | "USED" | "EXPIRED";
+  createdAt?: string;
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  parent: string;
+  itemCount: number;
+  icon: string;
+}
+
+export type LogLevel = "Info" | "Warning" | "Error";
+
+export interface AuditLog {
+  id: string;
+  userId?: string;
+  userName: string;
+  action: string;
+  ipAddress: string;
+  level: LogLevel;
+  timestamp: string;
+}
+
+export type ApprovalType = "Venue" | "Talent" | "Event";
+export type ApprovalStatus = "pending" | "approved" | "rejected";
+
+export interface Approval {
+  id: string;
+  name: string;
+  type: ApprovalType;
+  submittedDate: string;
+  avatar: string;
+  description: string;
+  status: ApprovalStatus;
+  createdAt?: string;
 }
 
 // Web3 types (future use — not implemented yet)

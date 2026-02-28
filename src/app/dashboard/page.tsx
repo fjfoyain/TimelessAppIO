@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import { useEvents, useBookings } from "@/hooks/useFirestore";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Navbar from "@/components/landing/Navbar";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
@@ -69,12 +70,31 @@ const roleActions: Record<string, { label: string; description: string; icon: st
 
 function DashboardContent() {
   const { user } = useAuth();
+  const { events, loading: eventsLoading } = useEvents(user?.id);
+  const { bookings, loading: bookingsLoading } = useBookings(user?.id);
 
   if (!user) return null;
 
   const role = roleConfig[user.role] || roleConfig[UserRole.TALENT];
-  const stats = roleStats[user.role] || roleStats[UserRole.TALENT];
+  const baseStats = roleStats[user.role] || roleStats[UserRole.TALENT];
   const actions = roleActions[user.role] || roleActions[UserRole.TALENT];
+
+  // Overlay real Firestore counts onto the static stats
+  const realCounts: Record<string, string> = {};
+  if (!eventsLoading) {
+    if (user.role === UserRole.TALENT) realCounts["Jobs Completed"] = String(events.length);
+    if (user.role === UserRole.ARTIST) realCounts["Events"] = String(events.length);
+    if (user.role === UserRole.CLIENT) realCounts["Active Projects"] = String(events.length);
+  }
+  if (!bookingsLoading) {
+    if (user.role === UserRole.ARTIST) realCounts["Bookings"] = String(bookings.length);
+    if (user.role === UserRole.VENUE) realCounts["Bookings"] = String(bookings.length);
+  }
+
+  const stats = baseStats.map((stat) => ({
+    ...stat,
+    value: realCounts[stat.label] !== undefined ? realCounts[stat.label] : stat.value,
+  }));
 
   return (
     <div className="min-h-screen bg-background-dark">
