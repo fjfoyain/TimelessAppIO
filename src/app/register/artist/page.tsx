@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, FormEvent, useRef, DragEvent } from "react";
 import { signUp, getAuthErrorMessage } from "@/lib/auth";
 import { createUserProfile, createArtistProfile } from "@/lib/firestore";
+import { uploadArtistDemo } from "@/lib/storage";
 import { UserRole } from "@/types";
 import { FirebaseError } from "firebase/app";
 
@@ -102,6 +103,8 @@ export default function ArtistRegistrationPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [fileName, setFileName] = useState<string>("");
   const [isDragging, setIsDragging] = useState(false);
+  const [demoFile, setDemoFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (
@@ -165,6 +168,14 @@ export default function ArtistRegistrationPage() {
         soundcloud: form.soundcloud || undefined,
       });
 
+      if (demoFile) {
+        try {
+          await uploadArtistDemo(uid, demoFile, setUploadProgress);
+        } catch {
+          console.warn("Demo upload failed, user can re-upload later");
+        }
+      }
+
       router.push("/dashboard");
     } catch (err) {
       const code = err instanceof FirebaseError ? err.code : "";
@@ -176,7 +187,10 @@ export default function ArtistRegistrationPage() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) setFileName(file.name);
+    if (file) {
+      setFileName(file.name);
+      setDemoFile(file);
+    }
   };
 
   const handleDragOver = (e: DragEvent) => {
@@ -192,7 +206,10 @@ export default function ArtistRegistrationPage() {
     e.preventDefault();
     setIsDragging(false);
     const file = e.dataTransfer.files?.[0];
-    if (file) setFileName(file.name);
+    if (file) {
+      setFileName(file.name);
+      setDemoFile(file);
+    }
   };
 
   const inputBase =
@@ -509,7 +526,22 @@ export default function ArtistRegistrationPage() {
                 cloud_upload
               </span>
               {fileName ? (
-                <p className="text-sm text-white font-medium">{fileName}</p>
+                <>
+                  <p className="text-sm text-white font-medium">{fileName}</p>
+                  {uploadProgress > 0 && uploadProgress < 100 && (
+                    <div className="w-full max-w-xs mt-2">
+                      <div className="h-1.5 w-full rounded-full bg-[#2d1f3b]">
+                        <div
+                          className="h-1.5 rounded-full bg-primary transition-all duration-300"
+                          style={{ width: `${uploadProgress}%` }}
+                        />
+                      </div>
+                      <p className="mt-1 text-xs text-slate-500 text-center">
+                        Uploading... {Math.round(uploadProgress)}%
+                      </p>
+                    </div>
+                  )}
+                </>
               ) : (
                 <>
                   <p className="text-sm text-slate-400">

@@ -442,6 +442,22 @@ export async function updateApprovalStatus(id: string, status: ApprovalStatus): 
   await updateDoc(doc(db, "approvals", id), { status });
 }
 
+// ─── Update Helpers (for post-upload doc updates) ────────────────
+
+export async function updateEvent(
+  id: string,
+  data: Partial<Pick<AppEvent, "image" | "title" | "description" | "status">>
+): Promise<void> {
+  await updateDoc(doc(db, "events", id), data);
+}
+
+export async function updateArtistProfile(
+  uid: string,
+  data: Record<string, unknown>
+): Promise<void> {
+  await updateDoc(doc(db, "artists", uid), data);
+}
+
 // ─── Admin: Stats ────────────────────────────────────────────────
 
 export async function getAdminStats(): Promise<{

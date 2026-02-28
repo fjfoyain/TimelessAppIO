@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
@@ -8,6 +8,7 @@ import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import { createService } from "@/lib/firestore";
+import { uploadServiceImage } from "@/lib/storage";
 
 const categories = [
   "Sound Engineering",
@@ -34,6 +35,11 @@ function NewServiceContent() {
   const [hourlyRate, setHourlyRate] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitMsg, setSubmitMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const toggleDay = (day: string) => {
     setSelectedDays((prev) =>
@@ -41,12 +47,36 @@ function NewServiceContent() {
     );
   };
 
+  function handleImageSelect(file: File) {
+    if (!file.type.startsWith("image/")) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setSubmitMsg({ type: "error", text: "Image must be under 5MB." });
+      return;
+    }
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  }
+
+  function removeImage() {
+    setImageFile(null);
+    setImagePreview("");
+    setUploadProgress(0);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!user) return;
     setSubmitting(true);
     setSubmitMsg(null);
     try {
+      let imageUrl: string | undefined;
+      if (imageFile) {
+        const tempId = `${user.id}-${Date.now()}`;
+        imageUrl = await uploadServiceImage(tempId, imageFile, (p) =>
+          setUploadProgress(Math.round(p))
+        );
+      }
       await createService({
         userId: user.id,
         name: serviceName,
@@ -54,6 +84,7 @@ function NewServiceContent() {
         description,
         hourlyRate: parseFloat(hourlyRate) || 0,
         availability: selectedDays,
+        image: imageUrl,
       });
       setSubmitMsg({ type: "success", text: "Service published successfully!" });
       // Redirect to dashboard after brief delay so user sees success
@@ -181,12 +212,79 @@ function NewServiceContent() {
                 <label className="block text-sm font-medium text-slate-400 mb-2">
                   Service Image
                 </label>
-                <div className="border-2 border-dashed border-white/10 rounded-xl p-8 flex flex-col items-center justify-center text-center hover:border-primary/30 transition-colors cursor-pointer">
-                  <span className="material-icons text-4xl text-slate-600 mb-3">cloud_upload</span>
-                  <p className="text-sm text-slate-400 mb-1">
-                    Drag and drop an image, or click to browse
-                  </p>
-                  <p className="text-xs text-slate-600">PNG, JPG up to 5MB</p>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) handleImageSelect(f);
+                  }}
+                />
+                <div
+                  onClick={() => !imagePreview && fileInputRef.current?.click()}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setIsDragging(true);
+                  }}
+                  onDragLeave={(e) => {
+                    e.preventDefault();
+                    setIsDragging(false);
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setIsDragging(false);
+                    const f = e.dataTransfer.files?.[0];
+                    if (f) handleImageSelect(f);
+                  }}
+                  className={`border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center text-center transition-colors ${
+                    isDragging
+                      ? "border-primary/50 bg-primary/5"
+                      : imagePreview
+                        ? "border-white/10"
+                        : "border-white/10 hover:border-primary/30 cursor-pointer"
+                  }`}
+                >
+                  {imagePreview ? (
+                    <div className="relative w-full">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={imagePreview}
+                        alt="Service preview"
+                        className="mx-auto max-h-48 rounded-lg object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeImage();
+                        }}
+                        className="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-500/80 hover:bg-red-500 text-white flex items-center justify-center transition-colors"
+                      >
+                        <span className="material-icons text-lg">close</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <span className="material-icons text-4xl text-slate-600 mb-3">cloud_upload</span>
+                      <p className="text-sm text-slate-400 mb-1">
+                        Drag and drop an image, or click to browse
+                      </p>
+                      <p className="text-xs text-slate-600">PNG, JPG, WebP up to 5MB</p>
+                    </>
+                  )}
+                  {uploadProgress > 0 && uploadProgress < 100 && (
+                    <div className="w-full mt-4">
+                      <div className="w-full h-2 rounded-full bg-surface-input overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-primary to-primary-light transition-all duration-300"
+                          style={{ width: `${uploadProgress}%` }}
+                        />
+                      </div>
+                      <p className="text-xs text-slate-400 mt-1">{uploadProgress}% uploaded</p>
+                    </div>
+                  )}
                 </div>
               </div>
 

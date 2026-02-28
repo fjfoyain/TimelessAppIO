@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
-import { getVenues, createEvent } from "@/lib/firestore";
+import { getVenues, createEvent, updateEvent } from "@/lib/firestore";
+import { uploadEventImage } from "@/lib/storage";
 import type { Venue } from "@/types";
 
 const steps = ["Event Basics", "Venue & Date", "Talent & Services", "Review"];
@@ -22,6 +24,11 @@ export default function CreateEventPage() {
   const [venuesLoading, setVenuesLoading] = useState(true);
   const [publishing, setPublishing] = useState(false);
   const [publishError, setPublishError] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -45,7 +52,7 @@ export default function CreateEventPage() {
     setPublishing(true);
     setPublishError(null);
     try {
-      await createEvent({
+      const eventId = await createEvent({
         title: formData.name,
         description: formData.description,
         date: formData.date,
@@ -55,11 +62,27 @@ export default function CreateEventPage() {
         organizer: user.name,
         services: formData.selectedServices,
       });
+
+      if (imageFile) {
+        const imageUrl = await uploadEventImage(eventId, imageFile, setUploadProgress);
+        await updateEvent(eventId, { image: imageUrl });
+      }
+
       router.push("/dashboard/events");
     } catch {
       setPublishError("Failed to publish event. Please try again.");
       setPublishing(false);
     }
+  }
+
+  function handleImageSelect(file: File) {
+    if (!file.type.startsWith("image/")) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setPublishError("Image must be under 5MB.");
+      return;
+    }
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
@@ -169,6 +192,84 @@ export default function CreateEventPage() {
                             className="w-full rounded-xl bg-surface-input border border-white/10 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm"
                           />
                         </label>
+                      </div>
+
+                      {/* Event Image Upload */}
+                      <div className="flex flex-col gap-2">
+                        <span className="text-sm font-medium text-white">Event Image</span>
+                        <input
+                          ref={imageInputRef}
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleImageSelect(file);
+                          }}
+                        />
+
+                        {imagePreview ? (
+                          <div className="relative rounded-xl overflow-hidden border border-white/10">
+                            <Image
+                              src={imagePreview}
+                              alt="Event image preview"
+                              width={800}
+                              height={256}
+                              className="w-full h-48 object-cover"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setImageFile(null);
+                                setImagePreview("");
+                                setUploadProgress(0);
+                                if (imageInputRef.current) imageInputRef.current.value = "";
+                              }}
+                              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:bg-red-500/80 transition"
+                            >
+                              <span className="material-icons text-white text-sm">close</span>
+                            </button>
+                            {publishing && uploadProgress > 0 && uploadProgress < 100 && (
+                              <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-white/10">
+                                <div
+                                  className="h-full bg-primary transition-all duration-300"
+                                  style={{ width: `${uploadProgress}%` }}
+                                />
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <div
+                            role="button"
+                            tabIndex={0}
+                            onClick={() => imageInputRef.current?.click()}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") imageInputRef.current?.click();
+                            }}
+                            onDragOver={(e) => {
+                              e.preventDefault();
+                              setIsDragging(true);
+                            }}
+                            onDragLeave={() => setIsDragging(false)}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              setIsDragging(false);
+                              const file = e.dataTransfer.files[0];
+                              if (file) handleImageSelect(file);
+                            }}
+                            className={`flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed py-10 cursor-pointer transition ${
+                              isDragging
+                                ? "border-primary bg-primary/10"
+                                : "border-white/10 hover:border-primary/40 hover:bg-white/[0.02]"
+                            }`}
+                          >
+                            <span className="material-icons text-4xl text-slate-500">add_photo_alternate</span>
+                            <div className="text-center">
+                              <p className="text-sm text-slate-400">Drag and drop an image</p>
+                              <p className="text-xs text-slate-600 mt-1">or click to browse &middot; JPG, PNG, WebP up to 5MB</p>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -325,9 +426,20 @@ export default function CreateEventPage() {
                 <div className="lg:sticky lg:top-24 space-y-6">
                   {/* Event Preview */}
                   <div className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden">
-                    <div className="h-48 bg-gradient-to-br from-primary/30 via-purple-900/20 to-background-dark flex items-center justify-center">
-                      <span className="material-icons text-6xl text-white/20">celebration</span>
-                    </div>
+                    {imagePreview ? (
+                      <div className="h-48 relative">
+                        <Image
+                          src={imagePreview}
+                          alt="Event preview"
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="h-48 bg-gradient-to-br from-primary/30 via-purple-900/20 to-background-dark flex items-center justify-center">
+                        <span className="material-icons text-6xl text-white/20">celebration</span>
+                      </div>
+                    )}
                     <div className="p-6">
                       <h3 className="text-lg font-bold text-white">{formData.name || "Your Event Name"}</h3>
                       <p className="text-slate-500 text-sm mt-1">{formData.date || "Date"} &middot; {formData.time || "Time"}</p>

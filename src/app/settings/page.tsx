@@ -8,6 +8,7 @@ import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import { updateUserProfile } from "@/lib/firestore";
+import { uploadAvatar } from "@/lib/storage";
 import { auth } from "@/lib/firebase";
 
 type SectionKey = "profile" | "security" | "notifications" | "legal";
@@ -29,6 +30,11 @@ function SettingsContent() {
   const [resetMsg, setResetMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [resettingPassword, setResettingPassword] = useState(false);
 
+  // Avatar upload state
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(0);
+
   // Initialize form from user context
   useEffect(() => {
     if (user) {
@@ -36,26 +42,47 @@ function SettingsContent() {
       setJobTitle(user.jobTitle || "");
       setBio(user.bio || "");
       setPortfolioLink(user.portfolioLink || "");
+      setAvatarPreview(user.avatar || "");
     }
   }, [user]);
+
+  function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setProfileMsg({ type: "error", text: "Image must be under 5MB." });
+      return;
+    }
+    setAvatarFile(file);
+    setAvatarPreview(URL.createObjectURL(file));
+  }
 
   async function handleSaveProfile() {
     if (!user) return;
     setSaving(true);
     setProfileMsg(null);
     try {
+      let avatarUrl = user.avatar || "";
+      if (avatarFile) {
+        avatarUrl = await uploadAvatar(user.id, avatarFile, setUploadProgress);
+        setAvatarFile(null);
+      }
       await updateUserProfile(user.id, {
         name: displayName,
+        avatar: avatarUrl,
         jobTitle,
         bio,
         portfolioLink,
       });
       await refreshUser();
+      setUploadProgress(0);
       setProfileMsg({ type: "success", text: "Profile updated successfully." });
-    } catch {
-      setProfileMsg({ type: "error", text: "Failed to save changes. Please try again." });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Failed to save changes.";
+      setProfileMsg({ type: "error", text: msg });
     } finally {
       setSaving(false);
+      setUploadProgress(0);
     }
   }
 
@@ -136,6 +163,41 @@ function SettingsContent() {
                   <div className="px-6 pb-6 border-t border-white/5 pt-6">
                     {section.key === "profile" && (
                       <div className="space-y-5">
+                        {/* Avatar Upload */}
+                        <div className="flex flex-col items-center gap-3 mb-2">
+                          <label className="relative cursor-pointer group">
+                            <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-dashed border-white/10 group-hover:border-primary/30 transition flex items-center justify-center bg-surface-input">
+                              {avatarPreview ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img src={avatarPreview} alt="Avatar" className="w-full h-full object-cover" />
+                              ) : (
+                                <span className="material-icons text-2xl text-slate-600">add_a_photo</span>
+                              )}
+                            </div>
+                            <input
+                              type="file"
+                              accept="image/jpeg,image/png,image/webp"
+                              onChange={handleAvatarChange}
+                              className="hidden"
+                            />
+                            <div className="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-primary flex items-center justify-center shadow-glow">
+                              <span className="material-icons text-white text-sm">edit</span>
+                            </div>
+                          </label>
+                          <p className="text-xs text-slate-600">Click to change avatar (JPG, PNG, max 5MB)</p>
+                          {uploadProgress > 0 && uploadProgress < 100 && (
+                            <div className="w-full max-w-[200px]">
+                              <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+                                <div
+                                  className="h-full bg-gradient-to-r from-primary to-primary-light rounded-full transition-all duration-300"
+                                  style={{ width: `${uploadProgress}%` }}
+                                />
+                              </div>
+                              <p className="text-xs text-slate-500 text-center mt-1">{Math.round(uploadProgress)}%</p>
+                            </div>
+                          )}
+                        </div>
+
                         <div>
                           <label className="block text-sm font-medium text-slate-400 mb-2">
                             Display Name
