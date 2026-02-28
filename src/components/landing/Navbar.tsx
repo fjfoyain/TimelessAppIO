@@ -75,12 +75,25 @@ export default function Navbar({ activeTab }: NavbarProps) {
                   Dashboard
                 </Link>
                 <div className="flex items-center gap-3 pl-4 border-l border-white/10">
-                  <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-xs font-bold text-primary-light">
-                    {user.name?.charAt(0).toUpperCase() || "U"}
-                  </div>
-                  <span className="text-sm text-white font-medium max-w-[120px] truncate">
-                    {user.name}
-                  </span>
+                  <Link href="/messages" className="text-gray-500 hover:text-white transition-colors" title="Messages">
+                    <span className="material-icons text-lg">chat</span>
+                  </Link>
+                  <Link href="/notifications" className="text-gray-500 hover:text-white transition-colors" title="Notifications">
+                    <span className="material-icons text-lg">notifications</span>
+                  </Link>
+                  <Link href="/wallet" className="text-gray-500 hover:text-white transition-colors" title="Wallet">
+                    <span className="material-icons text-lg">account_balance_wallet</span>
+                  </Link>
+                </div>
+                <div className="flex items-center gap-3 pl-4 border-l border-white/10">
+                  <Link href="/settings" className="flex items-center gap-2 group" title="Settings">
+                    <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-xs font-bold text-primary-light group-hover:border-primary/50 transition-colors">
+                      {user.name?.charAt(0).toUpperCase() || "U"}
+                    </div>
+                    <span className="text-sm text-white font-medium max-w-[120px] truncate">
+                      {user.name}
+                    </span>
+                  </Link>
                   <button
                     onClick={handleLogout}
                     className="text-gray-500 hover:text-red-400 transition-colors"
@@ -99,7 +112,7 @@ export default function Navbar({ activeTab }: NavbarProps) {
                   Marketplace
                 </Link>
                 <Link
-                  href="#about"
+                  href="/help"
                   className="text-sm text-gray-400 hover:text-white transition-colors"
                 >
                   About
@@ -147,6 +160,34 @@ export default function Navbar({ activeTab }: NavbarProps) {
                 >
                   Dashboard
                 </Link>
+                <Link
+                  href="/messages"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-sm text-gray-400 hover:text-white transition-colors py-2"
+                >
+                  Messages
+                </Link>
+                <Link
+                  href="/wallet"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-sm text-gray-400 hover:text-white transition-colors py-2"
+                >
+                  Wallet
+                </Link>
+                <Link
+                  href="/notifications"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-sm text-gray-400 hover:text-white transition-colors py-2"
+                >
+                  Notifications
+                </Link>
+                <Link
+                  href="/settings"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-sm text-gray-400 hover:text-white transition-colors py-2"
+                >
+                  Settings
+                </Link>
                 <div className="flex items-center gap-3 py-2 border-t border-white/5 mt-1 pt-3">
                   <div className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-xs font-bold text-primary-light">
                     {user.name?.charAt(0).toUpperCase() || "U"}
@@ -166,7 +207,7 @@ export default function Navbar({ activeTab }: NavbarProps) {
             ) : (
               <>
                 <Link
-                  href="#about"
+                  href="/help"
                   onClick={() => setMobileMenuOpen(false)}
                   className="text-sm text-gray-400 hover:text-white transition-colors py-2"
                 >

@@ -89,10 +89,10 @@ export default function StudioPage() {
                   </span>
                 </a>
                 <a
-                  href="#gear"
+                  href="/studio/classes"
                   className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-surface-dark px-8 py-3.5 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-surface-alt"
                 >
-                  Explore Gear
+                  Explore Classes
                 </a>
               </div>
 
@@ -234,7 +234,7 @@ export default function StudioPage() {
               </div>
 
               <a
-                href="#academy"
+                href="/studio/classes"
                 className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary-light"
               >
                 Browse Curriculum
@@ -268,7 +268,7 @@ export default function StudioPage() {
               </div>
 
               <a
-                href="#events"
+                href="/search"
                 className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-accent-fuchsia transition-colors hover:text-accent-pink"
               >
                 View Calendar

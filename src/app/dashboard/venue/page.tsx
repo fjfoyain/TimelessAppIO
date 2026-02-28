@@ -37,9 +37,9 @@ const statusStyles: Record<string, string> = {
 };
 
 const quickActions = [
-  { label: "Add Availability", description: "Set open dates and time slots", icon: "event_available", href: "#" },
+  { label: "Add Availability", description: "Set open dates and time slots", icon: "event_available", href: "/booking" },
   { label: "View Calendar", description: "See your full booking calendar", icon: "calendar_month", href: "/booking" },
-  { label: "Edit Venue Profile", description: "Update photos, capacity, and amenities", icon: "edit", href: "#" },
+  { label: "Edit Venue Profile", description: "Update photos, capacity, and amenities", icon: "edit", href: "/settings" },
 ];
 
 function VenueContent() {

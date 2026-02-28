@@ -47,23 +47,23 @@ const roleStats: Record<string, { label: string; value: string; icon: string }[]
 const roleActions: Record<string, { label: string; description: string; icon: string; href: string }[]> = {
   [UserRole.TALENT]: [
     { label: "Browse Marketplace", description: "Discover talent and opportunities", icon: "storefront", href: "/marketplace" },
-    { label: "Edit Profile", description: "Update your portfolio and rates", icon: "edit", href: "#" },
-    { label: "Messages", description: "Check conversations", icon: "chat", href: "#" },
+    { label: "Edit Profile", description: "Update your portfolio and rates", icon: "edit", href: "/settings" },
+    { label: "Messages", description: "Check conversations", icon: "chat", href: "/messages" },
   ],
   [UserRole.ARTIST]: [
     { label: "Browse Marketplace", description: "Find studios and collaborators", icon: "storefront", href: "/marketplace" },
-    { label: "Edit Profile", description: "Update your music and bio", icon: "edit", href: "#" },
+    { label: "Edit Profile", description: "Update your music and bio", icon: "edit", href: "/settings" },
     { label: "Find Studios", description: "Book recording sessions", icon: "mic", href: "/studio" },
   ],
   [UserRole.CLIENT]: [
     { label: "Browse Talent", description: "Find the perfect professional", icon: "storefront", href: "/marketplace" },
-    { label: "Create Event", description: "Start planning your event", icon: "add_circle", href: "#" },
-    { label: "Messages", description: "Check conversations", icon: "chat", href: "#" },
+    { label: "Create Event", description: "Start planning your event", icon: "add_circle", href: "/events/create" },
+    { label: "Messages", description: "Check conversations", icon: "chat", href: "/messages" },
   ],
   [UserRole.VENUE]: [
     { label: "Browse Marketplace", description: "Find talent for your venue", icon: "storefront", href: "/marketplace" },
-    { label: "Edit Venue", description: "Update venue details", icon: "edit", href: "#" },
-    { label: "Manage Bookings", description: "View upcoming events", icon: "calendar_month", href: "#" },
+    { label: "Edit Venue", description: "Update venue details", icon: "edit", href: "/settings" },
+    { label: "Manage Bookings", description: "View upcoming events", icon: "calendar_month", href: "/booking" },
   ],
 };
 
@@ -97,6 +97,30 @@ function DashboardContent() {
             <p className="text-slate-500">
               Here&apos;s your overview. Start exploring or manage your profile.
             </p>
+          </div>
+
+          {/* Dashboard Navigation */}
+          <div className="flex flex-wrap gap-2 mb-8">
+            {[
+              { label: "Overview", href: "/dashboard", icon: "dashboard" },
+              { label: "Events", href: "/dashboard/events", icon: "event" },
+              { label: "Projects", href: "/dashboard/projects", icon: "folder" },
+              ...(user.role === UserRole.VENUE ? [{ label: "Venue", href: "/dashboard/venue", icon: "location_on" }] : []),
+              ...(user.role === UserRole.ADMIN ? [{ label: "Admin", href: "/admin", icon: "admin_panel_settings" }] : []),
+            ].map((nav) => (
+              <Link
+                key={nav.label}
+                href={nav.href}
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition ${
+                  nav.href === "/dashboard"
+                    ? "bg-primary/10 text-primary border border-primary/20"
+                    : "text-slate-400 hover:text-white hover:bg-white/5 border border-white/5"
+                }`}
+              >
+                <span className="material-icons text-sm">{nav.icon}</span>
+                {nav.label}
+              </Link>
+            ))}
           </div>
 
           {/* Quick Stats */}
@@ -136,7 +160,7 @@ function DashboardContent() {
                 </h3>
                 <p className="text-sm text-slate-500">{action.description}</p>
                 <div className="flex items-center gap-1 mt-4 text-xs text-slate-600 group-hover:text-primary transition-colors">
-                  <span>{action.href === "#" ? "Coming soon" : "Go"}</span>
+                  <span>Go</span>
                   <span className="material-icons text-xs">arrow_forward</span>
                 </div>
               </Link>

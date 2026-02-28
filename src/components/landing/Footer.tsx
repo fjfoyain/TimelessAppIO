@@ -34,10 +34,10 @@ function YouTubeIcon() {
 
 const platformLinks = [
   { label: "Marketplace", href: "/marketplace" },
-  { label: "Discover Events", href: "#events" },
-  { label: "Find Artists", href: "#artists" },
-  { label: "Browse Venues", href: "#venues" },
-  { label: "Help Center", href: "/contact" },
+  { label: "Discover Events", href: "/search" },
+  { label: "Find Artists", href: "/marketplace" },
+  { label: "Browse Venues", href: "/marketplace" },
+  { label: "Help Center", href: "/help" },
 ];
 
 const studioLinks = [
