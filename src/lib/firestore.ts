@@ -13,6 +13,7 @@ import {
   limit,
   onSnapshot,
   serverTimestamp,
+  runTransaction,
   Unsubscribe,
   Timestamp,
 } from "firebase/firestore";
@@ -33,6 +34,10 @@ import {
   Approval,
   ApprovalStatus,
   Venue,
+  WalletDoc,
+  Transaction,
+  TransactionSource,
+  TransactionStatus,
 } from "@/types";
 
 interface CreateUserProfileData {
@@ -478,4 +483,155 @@ export async function getAdminStats(): Promise<{
     venues: venuesSnap.size,
     pendingApprovals: approvalsSnap.size,
   };
+}
+
+// ─── Wallet & Transactions ──────────────────────────────────────
+
+export async function getOrCreateWallet(userId: string): Promise<WalletDoc> {
+  const ref = doc(db, "wallets", userId);
+  const snap = await getDoc(ref);
+  if (snap.exists()) {
+    return docToData<WalletDoc>(snap);
+  }
+  const initial = {
+    userId,
+    balance: 0,
+    escrow: 0,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  };
+  await setDoc(ref, initial);
+  const newSnap = await getDoc(ref);
+  return docToData<WalletDoc>(newSnap);
+}
+
+export function subscribeToWallet(
+  userId: string,
+  callback: (wallet: WalletDoc) => void
+): Unsubscribe {
+  const ref = doc(db, "wallets", userId);
+  return onSnapshot(ref, (snap) => {
+    if (snap.exists()) {
+      callback(docToData<WalletDoc>(snap));
+    }
+  });
+}
+
+export async function recordDeposit(data: {
+  userId: string;
+  amount: number;
+  source: TransactionSource;
+  description: string;
+}): Promise<string> {
+  const walletRef = doc(db, "wallets", data.userId);
+  const txRef = doc(collection(db, "transactions"));
+
+  await runTransaction(db, async (transaction) => {
+    const walletSnap = await transaction.get(walletRef);
+    let currentBalance = 0;
+    if (walletSnap.exists()) {
+      currentBalance = walletSnap.data().balance || 0;
+    }
+
+    transaction.set(txRef, {
+      userId: data.userId,
+      description: data.description,
+      amount: data.amount,
+      type: "deposit",
+      source: data.source,
+      status: data.source === "cash" ? "completed" : "processing",
+      createdAt: serverTimestamp(),
+    });
+
+    if (walletSnap.exists()) {
+      transaction.update(walletRef, {
+        balance: currentBalance + data.amount,
+        updatedAt: serverTimestamp(),
+      });
+    } else {
+      transaction.set(walletRef, {
+        userId: data.userId,
+        balance: data.amount,
+        escrow: 0,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+    }
+  });
+
+  return txRef.id;
+}
+
+export async function recordWithdrawal(data: {
+  userId: string;
+  amount: number;
+  description: string;
+}): Promise<string> {
+  const walletRef = doc(db, "wallets", data.userId);
+  const txRef = doc(collection(db, "transactions"));
+
+  await runTransaction(db, async (transaction) => {
+    const walletSnap = await transaction.get(walletRef);
+
+    if (!walletSnap.exists()) {
+      throw new Error("Wallet not found. Please add funds first.");
+    }
+
+    const currentBalance = walletSnap.data().balance || 0;
+    if (currentBalance < data.amount) {
+      throw new Error("Insufficient balance for this withdrawal.");
+    }
+
+    transaction.set(txRef, {
+      userId: data.userId,
+      description: data.description,
+      amount: -data.amount,
+      type: "withdrawal",
+      source: "manual_transfer" as TransactionSource,
+      status: "processing" as TransactionStatus,
+      createdAt: serverTimestamp(),
+    });
+
+    transaction.update(walletRef, {
+      balance: currentBalance - data.amount,
+      updatedAt: serverTimestamp(),
+    });
+  });
+
+  return txRef.id;
+}
+
+export function subscribeToTransactions(
+  userId: string,
+  callback: (txs: Transaction[]) => void
+): Unsubscribe {
+  const q = query(
+    collection(db, "transactions"),
+    where("userId", "==", userId),
+    orderBy("createdAt", "desc")
+  );
+  return onSnapshot(q, (snap) => {
+    callback(snap.docs.map((d) => docToData<Transaction>(d)));
+  });
+}
+
+export async function getUserTransactions(
+  userId: string,
+  maxResults = 50
+): Promise<Transaction[]> {
+  const q = query(
+    collection(db, "transactions"),
+    where("userId", "==", userId),
+    orderBy("createdAt", "desc"),
+    limit(maxResults)
+  );
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => docToData<Transaction>(d));
+}
+
+export async function updateTransactionStatus(
+  txId: string,
+  status: TransactionStatus
+): Promise<void> {
+  await updateDoc(doc(db, "transactions", txId), { status });
 }

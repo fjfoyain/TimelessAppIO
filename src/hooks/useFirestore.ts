@@ -22,6 +22,11 @@ import {
   updateCategory as fbUpdateCategory,
   deleteCategory as fbDeleteCategory,
   getAuditLogs,
+  getOrCreateWallet,
+  subscribeToWallet,
+  subscribeToTransactions,
+  recordDeposit as fbRecordDeposit,
+  recordWithdrawal as fbRecordWithdrawal,
 } from "@/lib/firestore";
 import type {
   Event as AppEvent,
@@ -35,6 +40,9 @@ import type {
   AuditLog,
   Approval,
   ApprovalStatus,
+  WalletDoc,
+  Transaction,
+  TransactionSource,
 } from "@/types";
 
 // ─── Events ──────────────────────────────────────────────────────
@@ -300,4 +308,79 @@ export function useAuditLogs(maxResults = 50) {
   }, [maxResults]);
 
   return { logs, loading };
+}
+
+// ─── Wallet (Realtime) ──────────────────────────────────────────
+
+export function useWallet(userId: string | undefined) {
+  const [wallet, setWallet] = useState<WalletDoc | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    let unsub: (() => void) | undefined;
+
+    getOrCreateWallet(userId)
+      .then((initial) => {
+        setWallet(initial);
+        setLoading(false);
+        unsub = subscribeToWallet(userId, (w) => {
+          setWallet(w);
+        });
+      })
+      .catch((err) => {
+        setError(err instanceof Error ? err.message : "Failed to load wallet");
+        setLoading(false);
+      });
+
+    return () => {
+      if (unsub) unsub();
+    };
+  }, [userId]);
+
+  const addFunds = async (amount: number, source: TransactionSource, description: string) => {
+    if (!userId) throw new Error("Not authenticated");
+    setError(null);
+    try {
+      await fbRecordDeposit({ userId, amount, source, description });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Failed to add funds";
+      setError(msg);
+      throw err;
+    }
+  };
+
+  const withdraw = async (amount: number, description: string) => {
+    if (!userId) throw new Error("Not authenticated");
+    setError(null);
+    try {
+      await fbRecordWithdrawal({ userId, amount, description });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Failed to withdraw";
+      setError(msg);
+      throw err;
+    }
+  };
+
+  return { wallet, loading, error, addFunds, withdraw };
+}
+
+// ─── Transactions (Realtime) ────────────────────────────────────
+
+export function useTransactions(userId: string | undefined) {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!userId) return;
+    const unsub = subscribeToTransactions(userId, (txs) => {
+      setTransactions(txs);
+      setLoading(false);
+    });
+    return () => unsub();
+  }, [userId]);
+
+  return { transactions, loading };
 }

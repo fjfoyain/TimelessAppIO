@@ -78,9 +78,7 @@ export default function StudioPage() {
               {/* CTA buttons */}
               <div className="mt-10 flex flex-wrap gap-4">
                 <a
-                  href="https://wa.me/593958909112?text=Hi%20Timeless!%20I%27d%20like%20to%20book%20a%20studio%20session."
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/booking"
                   className="inline-flex items-center gap-2 rounded-full bg-white px-8 py-3.5 text-sm font-semibold text-background-dark shadow-glow-white transition hover:bg-gray-100"
                 >
                   Book a Session
@@ -303,9 +301,7 @@ export default function StudioPage() {
               </div>
 
               <a
-                href="https://wa.me/593958909112?text=Hi%20Timeless!%20I%27d%20like%20to%20book%20a%20room."
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/booking"
                 className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-purple-400 transition-colors hover:text-purple-300"
               >
                 Book a Room
@@ -416,12 +412,10 @@ export default function StudioPage() {
 
               <div className="mt-10">
                 <a
-                  href="https://wa.me/593958909112?text=Hi%20Timeless!%20I%27d%20like%20to%20book%20a%20class%20or%20visit."
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/booking"
                   className="inline-flex items-center gap-2 rounded-full bg-primary px-10 py-4 text-sm font-semibold text-white btn-glow transition hover:bg-primary-hover hover:shadow-glow-hover"
                 >
-                  Book a Class or Visit
+                  Book a Session
                   <span className="material-icons text-base">
                     arrow_forward
                   </span>

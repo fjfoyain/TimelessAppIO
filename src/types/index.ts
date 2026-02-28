@@ -173,12 +173,18 @@ export interface EventProduct {
   image: string;
 }
 
+export type TransactionSource = "manual_transfer" | "cash" | "stripe" | "crypto";
+export type TransactionStatus = "completed" | "processing" | "pending";
+
 export interface Transaction {
   id: string;
-  date: string;
+  userId: string;
   description: string;
   amount: number;
   type: "deposit" | "withdrawal" | "payment" | "payout" | "refund" | "commission";
+  source: TransactionSource;
+  status: TransactionStatus;
+  createdAt?: string;
   // Web3-ready (future)
   txHash?: string;
   chainId?: number;
@@ -186,11 +192,22 @@ export interface Transaction {
   isOnChain?: boolean;
 }
 
+export interface WalletDoc {
+  userId: string;
+  balance: number;
+  escrow: number;
+  createdAt?: string;
+  updatedAt?: string;
+  // Web3-ready (future)
+  connectedWallets?: ConnectedWallet[];
+  cryptoBalances?: CryptoBalance[];
+}
+
+// Legacy — kept for backward compatibility
 export interface Wallet {
   balance: number;
   escrow: number;
   transactions: Transaction[];
-  // Web3-ready (future)
   connectedWallets?: ConnectedWallet[];
   cryptoBalances?: CryptoBalance[];
 }

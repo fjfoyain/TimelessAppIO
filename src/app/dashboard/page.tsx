@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { useEvents, useBookings } from "@/hooks/useFirestore";
+import { useEvents, useBookings, useWallet } from "@/hooks/useFirestore";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Navbar from "@/components/landing/Navbar";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
@@ -72,6 +72,7 @@ function DashboardContent() {
   const { user } = useAuth();
   const { events, loading: eventsLoading } = useEvents(user?.id);
   const { bookings, loading: bookingsLoading } = useBookings(user?.id);
+  const { wallet, loading: walletLoading } = useWallet(user?.id);
 
   if (!user) return null;
 
@@ -159,6 +160,33 @@ function DashboardContent() {
                 <p className="text-xs text-slate-500 mt-1">{stat.label}</p>
               </div>
             ))}
+          </div>
+
+          {/* Wallet Summary */}
+          <div className="mb-10 bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                <span className="material-icons text-primary">account_balance_wallet</span>
+                Wallet
+              </h2>
+              <Link
+                href="/wallet"
+                className="text-primary text-sm font-medium hover:text-primary-light transition"
+              >
+                View Details
+              </Link>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <p className="text-3xl font-bold text-white">
+                {walletLoading ? "..." : `$${(wallet?.balance ?? 0).toLocaleString("en-US", { minimumFractionDigits: 2 })}`}
+              </p>
+              <span className="text-sm text-slate-500">Available Balance</span>
+            </div>
+            {wallet && wallet.escrow > 0 && (
+              <p className="text-xs text-yellow-400 mt-2">
+                ${wallet.escrow.toLocaleString("en-US", { minimumFractionDigits: 2 })} in escrow
+              </p>
+            )}
           </div>
 
           {/* Quick Actions */}
