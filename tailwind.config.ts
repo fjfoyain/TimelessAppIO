@@ -37,7 +37,7 @@ const config: Config = {
         whatsapp: "#25D366",
       },
       fontFamily: {
-        display: ["Be Vietnam Pro", "sans-serif"],
+        display: ["var(--font-display)", "sans-serif"],
       },
       backgroundImage: {
         "premium-gradient":
