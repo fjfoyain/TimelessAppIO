@@ -95,6 +95,11 @@ export interface SocialLinks {
   soundcloud?: string;
 }
 
+export interface TalentWithUser {
+  talent: Talent;
+  user: User;
+}
+
 export interface Talent {
   id: string;
   userId: string;
@@ -309,6 +314,21 @@ export interface Approval {
   avatar: string;
   description: string;
   status: ApprovalStatus;
+  createdAt?: string;
+}
+
+export interface Course {
+  id: string;
+  title: string;
+  category: string;
+  instructor: string;
+  price: number;
+  color: string;
+  icon: string;
+  description?: string;
+  image?: string;
+  duration?: string;
+  level?: "beginner" | "intermediate" | "advanced";
   createdAt?: string;
 }
 

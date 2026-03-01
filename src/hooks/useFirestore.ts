@@ -27,6 +27,12 @@ import {
   subscribeToTransactions,
   recordDeposit as fbRecordDeposit,
   recordWithdrawal as fbRecordWithdrawal,
+  getAllTalents,
+  getTalentWithUser,
+  getCourses,
+  getAnalyticsMetrics,
+  getMonthlyRevenue,
+  getTopCategories,
 } from "@/lib/firestore";
 import type {
   Event as AppEvent,
@@ -43,6 +49,8 @@ import type {
   WalletDoc,
   Transaction,
   TransactionSource,
+  TalentWithUser,
+  Course,
 } from "@/types";
 
 // ─── Events ──────────────────────────────────────────────────────
@@ -310,6 +318,42 @@ export function useAuditLogs(maxResults = 50) {
   return { logs, loading };
 }
 
+// ─── Marketplace (Talents) ───────────────────────────────────────
+
+export function useMarketplace() {
+  const [talents, setTalents] = useState<TalentWithUser[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await getAllTalents();
+      setTalents(data);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  return { talents, loading, refresh };
+}
+
+export function useTalentProfile(talentId: string | undefined) {
+  const [data, setData] = useState<TalentWithUser | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!talentId) return;
+    getTalentWithUser(talentId).then((result) => {
+      setData(result);
+      setLoading(false);
+    });
+  }, [talentId]);
+
+  return { data, loading };
+}
+
 // ─── Wallet (Realtime) ──────────────────────────────────────────
 
 export function useWallet(userId: string | undefined) {
@@ -383,4 +427,74 @@ export function useTransactions(userId: string | undefined) {
   }, [userId]);
 
   return { transactions, loading };
+}
+
+// ─── Courses (Studio Classes) ──────────────────────────────────
+
+export function useCourses(category?: string) {
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await getCourses(category);
+      setCourses(data);
+    } finally {
+      setLoading(false);
+    }
+  }, [category]);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  return { courses, loading, refresh };
+}
+
+// ─── Admin Analytics ───────────────────────────────────────────
+
+export function useAnalyticsMetrics() {
+  const [metrics, setMetrics] = useState({
+    revenue: 0,
+    newUsers: 0,
+    totalEvents: 0,
+    totalBookings: 0,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getAnalyticsMetrics().then((data) => {
+      setMetrics(data);
+      setLoading(false);
+    });
+  }, []);
+
+  return { metrics, loading };
+}
+
+export function useMonthlyRevenue() {
+  const [data, setData] = useState<{ month: string; amount: number }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getMonthlyRevenue().then((result) => {
+      setData(result);
+      setLoading(false);
+    });
+  }, []);
+
+  return { data, loading };
+}
+
+export function useTopCategories() {
+  const [categories, setCategories] = useState<{ name: string; bookings: number; revenue: number }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getTopCategories().then((result) => {
+      setCategories(result);
+      setLoading(false);
+    });
+  }, []);
+
+  return { categories, loading };
 }

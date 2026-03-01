@@ -4,11 +4,14 @@ import { useState } from "react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
+import { useCourses } from "@/hooks/useFirestore";
+import type { Course } from "@/types";
 
 const tabs = ["All", "DJing", "Production", "Masterclasses"] as const;
 
-const courses = [
+const mockCourses: Course[] = [
   {
+    id: "mock-1",
     title: "Intro to DJing: From Zero to First Set",
     category: "DJing",
     instructor: "DJ Nova",
@@ -17,6 +20,7 @@ const courses = [
     icon: "album",
   },
   {
+    id: "mock-2",
     title: "Beat Making with Ableton Live",
     category: "Production",
     instructor: "Marcus Cole",
@@ -25,6 +29,7 @@ const courses = [
     icon: "piano",
   },
   {
+    id: "mock-3",
     title: "Vinyl Culture & Turntablism",
     category: "DJing",
     instructor: "Scratch Master K",
@@ -33,6 +38,7 @@ const courses = [
     icon: "music_note",
   },
   {
+    id: "mock-4",
     title: "Advanced Mixing & Mastering",
     category: "Masterclasses",
     instructor: "Elena Voss",
@@ -41,6 +47,7 @@ const courses = [
     icon: "equalizer",
   },
   {
+    id: "mock-5",
     title: "Sound Design for Film & Games",
     category: "Production",
     instructor: "Kai Tanaka",
@@ -49,6 +56,7 @@ const courses = [
     icon: "graphic_eq",
   },
   {
+    id: "mock-6",
     title: "Building Your Brand as an Artist",
     category: "Masterclasses",
     instructor: "Zara Mitchell",
@@ -60,11 +68,15 @@ const courses = [
 
 export default function StudioClassesPage() {
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>("All");
+  const { courses: firestoreCourses, loading } = useCourses();
+
+  // Use Firestore data if available, otherwise fall back to mock
+  const allCourses = firestoreCourses.length > 0 ? firestoreCourses : mockCourses;
 
   const filteredCourses =
     activeTab === "All"
-      ? courses
-      : courses.filter((c) => c.category === activeTab);
+      ? allCourses
+      : allCourses.filter((c) => c.category === activeTab);
 
   return (
     <div className="min-h-screen bg-background-dark">
@@ -105,42 +117,60 @@ export default function StudioClassesPage() {
             ))}
           </div>
 
-          {/* Course Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredCourses.map((course, index) => (
-              <div
-                key={index}
-                className="group bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden hover:border-primary/20 hover:-translate-y-1 transition-all duration-300"
-              >
-                {/* Image Placeholder */}
-                <div
-                  className={`h-44 bg-gradient-to-br ${course.color} flex items-center justify-center relative`}
-                >
-                  <span className="material-icons text-white/30 text-6xl">{course.icon}</span>
-                  <span className="absolute top-3 left-3 inline-flex px-3 py-1 rounded-full bg-black/40 backdrop-blur-sm text-xs font-bold text-white">
-                    {course.category}
-                  </span>
-                </div>
+          {/* Loading State */}
+          {loading && (
+            <div className="flex items-center justify-center py-20">
+              <span className="material-icons text-4xl text-primary animate-pulse">school</span>
+              <p className="text-slate-500 ml-3">Loading classes...</p>
+            </div>
+          )}
 
-                {/* Content */}
-                <div className="p-5">
-                  <h3 className="text-white font-semibold mb-2 group-hover:text-primary-light transition-colors line-clamp-2">
-                    {course.title}
-                  </h3>
-                  <p className="text-sm text-slate-500 mb-4 flex items-center gap-1.5">
-                    <span className="material-icons text-sm">person</span>
-                    {course.instructor}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-bold text-white">${course.price}</span>
-                    <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-primary to-primary-light text-xs font-semibold text-white hover:shadow-glow transition-all duration-300">
-                      Enroll
-                    </button>
+          {/* Course Grid */}
+          {!loading && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredCourses.map((course) => (
+                <div
+                  key={course.id}
+                  className="group bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden hover:border-primary/20 hover:-translate-y-1 transition-all duration-300"
+                >
+                  {/* Image Placeholder */}
+                  <div
+                    className={`h-44 bg-gradient-to-br ${course.color || "from-purple-600 to-blue-600"} flex items-center justify-center relative`}
+                  >
+                    <span className="material-icons text-white/30 text-6xl">{course.icon || "school"}</span>
+                    <span className="absolute top-3 left-3 inline-flex px-3 py-1 rounded-full bg-black/40 backdrop-blur-sm text-xs font-bold text-white">
+                      {course.category}
+                    </span>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-5">
+                    <h3 className="text-white font-semibold mb-2 group-hover:text-primary-light transition-colors line-clamp-2">
+                      {course.title}
+                    </h3>
+                    <p className="text-sm text-slate-500 mb-4 flex items-center gap-1.5">
+                      <span className="material-icons text-sm">person</span>
+                      {course.instructor}
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg font-bold text-white">${course.price}</span>
+                      <button className="px-4 py-2 rounded-lg bg-gradient-to-r from-primary to-primary-light text-xs font-semibold text-white hover:shadow-glow transition-all duration-300">
+                        Enroll
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
+
+          {/* Empty State */}
+          {!loading && filteredCourses.length === 0 && (
+            <div className="text-center py-20">
+              <span className="material-icons text-5xl text-slate-700 mb-3 block">search_off</span>
+              <p className="text-slate-500">No classes found in this category.</p>
+            </div>
+          )}
         </div>
       </main>
 

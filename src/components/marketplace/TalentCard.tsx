@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { TalentWithUser } from "@/data/mockTalents";
+import type { TalentWithUser } from "@/types";
 
 function getAverageRating(reviews: { rating: number }[]): number {
   if (reviews.length === 0) return 0;

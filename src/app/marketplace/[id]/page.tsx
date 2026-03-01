@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import Navbar from "@/components/landing/Navbar";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import Footer from "@/components/landing/Footer";
+import { useTalentProfile } from "@/hooks/useFirestore";
 import { mockTalents } from "@/data/mockTalents";
 
 function getAverageRating(reviews: { rating: number }[]): number {
@@ -16,10 +17,30 @@ function getAverageRating(reviews: { rating: number }[]): number {
 
 export default function TalentProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const match = mockTalents.find((t) => t.talent.id === id);
+  const { data: firestoreMatch, loading } = useTalentProfile(id);
 
-  if (!match) {
+  // Fallback to mock data if not found in Firestore
+  const mockMatch = mockTalents.find((t) => t.talent.id === id);
+  const match = firestoreMatch || (!loading ? mockMatch : null);
+
+  if (!loading && !match) {
     notFound();
+  }
+
+  if (loading || !match) {
+    return (
+      <div className="min-h-screen bg-background-dark">
+        <AnimatedBackground />
+        <Navbar />
+        <main className="relative z-10 pt-24 pb-16 flex items-center justify-center">
+          <div className="text-center">
+            <span className="material-icons text-5xl text-primary animate-pulse">person</span>
+            <p className="text-slate-500 mt-4">Loading profile...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
   }
 
   const { talent, user } = match;
@@ -62,40 +83,52 @@ export default function TalentProfilePage({ params }: { params: Promise<{ id: st
                 )}
               </div>
               <p className="text-lg text-primary-light font-medium mt-1">{talent.category}</p>
-              <p className="text-sm text-slate-500 mt-1 flex items-center gap-1">
-                <span className="material-icons text-xs">place</span>
-                {talent.city}
-              </p>
+              {talent.city && (
+                <p className="text-sm text-slate-500 mt-1 flex items-center gap-1">
+                  <span className="material-icons text-xs">place</span>
+                  {talent.city}
+                </p>
+              )}
 
               {/* Stats Row */}
               <div className="flex flex-wrap items-center gap-6 mt-4">
-                <div className="flex items-center gap-1">
-                  <span className="material-icons text-yellow-400 text-sm">star</span>
-                  <span className="text-white font-semibold">{avgRating.toFixed(1)}</span>
-                  <span className="text-slate-500 text-sm">({talent.reviews.length} reviews)</span>
-                </div>
-                <div className="text-sm text-slate-400">{talent.jobsCompleted} jobs completed</div>
-                <div className="text-sm text-slate-400">{talent.responseRate}% response rate</div>
+                {talent.reviews.length > 0 && (
+                  <div className="flex items-center gap-1">
+                    <span className="material-icons text-yellow-400 text-sm">star</span>
+                    <span className="text-white font-semibold">{avgRating.toFixed(1)}</span>
+                    <span className="text-slate-500 text-sm">({talent.reviews.length} reviews)</span>
+                  </div>
+                )}
+                {talent.jobsCompleted > 0 && (
+                  <div className="text-sm text-slate-400">{talent.jobsCompleted} jobs completed</div>
+                )}
+                {talent.responseRate > 0 && (
+                  <div className="text-sm text-slate-400">{talent.responseRate}% response rate</div>
+                )}
               </div>
 
               {/* Tags */}
-              <div className="flex flex-wrap gap-2 mt-4">
-                {talent.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs font-medium text-slate-300 bg-white/5 border border-white/10 px-3 py-1 rounded-full"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+              {talent.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-4">
+                  {talent.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-xs font-medium text-slate-300 bg-white/5 border border-white/10 px-3 py-1 rounded-full"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Price Badge */}
-            <div className="bg-surface-dark/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center min-w-[140px] flex-shrink-0">
-              <p className="text-3xl font-bold text-white">${talent.hourlyRate}</p>
-              <p className="text-xs text-slate-500">per hour</p>
-            </div>
+            {talent.hourlyRate && (
+              <div className="bg-surface-dark/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center min-w-[140px] flex-shrink-0">
+                <p className="text-3xl font-bold text-white">${talent.hourlyRate}</p>
+                <p className="text-xs text-slate-500">per hour</p>
+              </div>
+            )}
           </div>
 
           {/* Two-Column Layout */}
@@ -103,10 +136,12 @@ export default function TalentProfilePage({ params }: { params: Promise<{ id: st
             {/* Left Column */}
             <div className="lg:col-span-2 space-y-10">
               {/* About */}
-              <section>
-                <h2 className="text-xl font-semibold text-white mb-4">About</h2>
-                <p className="text-slate-300 leading-relaxed">{talent.bio}</p>
-              </section>
+              {talent.bio && (
+                <section>
+                  <h2 className="text-xl font-semibold text-white mb-4">About</h2>
+                  <p className="text-slate-300 leading-relaxed">{talent.bio}</p>
+                </section>
+              )}
 
               {/* Portfolio */}
               {talent.portfolio.length > 0 && (
@@ -160,46 +195,48 @@ export default function TalentProfilePage({ params }: { params: Promise<{ id: st
               )}
 
               {/* Reviews */}
-              <section>
-                <h2 className="text-xl font-semibold text-white mb-4">
-                  Reviews ({talent.reviews.length})
-                </h2>
-                <div className="space-y-4">
-                  {talent.reviews.map((review) => (
-                    <div
-                      key={review.id}
-                      className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-xl p-5"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary-light">
-                            {review.author.charAt(0)}
+              {talent.reviews.length > 0 && (
+                <section>
+                  <h2 className="text-xl font-semibold text-white mb-4">
+                    Reviews ({talent.reviews.length})
+                  </h2>
+                  <div className="space-y-4">
+                    {talent.reviews.map((review) => (
+                      <div
+                        key={review.id}
+                        className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-xl p-5"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary-light">
+                              {review.author.charAt(0)}
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold text-white">{review.author}</p>
+                              <p className="text-xs text-slate-500">{review.timestamp}</p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="text-sm font-semibold text-white">{review.author}</p>
-                            <p className="text-xs text-slate-500">{review.timestamp}</p>
+                          <div className="flex items-center gap-0.5">
+                            {Array.from({ length: review.rating }).map((_, i) => (
+                              <span key={i} className="material-icons text-yellow-400 text-sm">
+                                star
+                              </span>
+                            ))}
+                            {Array.from({ length: 5 - review.rating }).map((_, i) => (
+                              <span key={i} className="material-icons text-slate-700 text-sm">
+                                star
+                              </span>
+                            ))}
                           </div>
                         </div>
-                        <div className="flex items-center gap-0.5">
-                          {Array.from({ length: review.rating }).map((_, i) => (
-                            <span key={i} className="material-icons text-yellow-400 text-sm">
-                              star
-                            </span>
-                          ))}
-                          {Array.from({ length: 5 - review.rating }).map((_, i) => (
-                            <span key={i} className="material-icons text-slate-700 text-sm">
-                              star
-                            </span>
-                          ))}
-                        </div>
+                        <p className="mt-3 text-sm text-slate-300 leading-relaxed">
+                          {review.comment}
+                        </p>
                       </div>
-                      <p className="mt-3 text-sm text-slate-300 leading-relaxed">
-                        {review.comment}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </section>
+                    ))}
+                  </div>
+                </section>
+              )}
             </div>
 
             {/* Right Column (Sticky) */}

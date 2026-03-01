@@ -34,10 +34,13 @@ import {
   Approval,
   ApprovalStatus,
   Venue,
+  Talent,
+  TalentWithUser,
   WalletDoc,
   Transaction,
   TransactionSource,
   TransactionStatus,
+  Course,
 } from "@/types";
 
 interface CreateUserProfileData {
@@ -171,6 +174,64 @@ export async function updateUserProfile(
 export async function getVenues(): Promise<Venue[]> {
   const snap = await getDocs(collection(db, "venues"));
   return snap.docs.map((d) => docToData<Venue>(d));
+}
+
+// ─── Talents (marketplace) ───────────────────────────────────────
+
+export async function getAllTalents(): Promise<TalentWithUser[]> {
+  const talentsSnap = await getDocs(collection(db, "talents"));
+  const results: TalentWithUser[] = [];
+
+  for (const talentDoc of talentsSnap.docs) {
+    const talentData = docToData<Talent>(talentDoc);
+    const userSnap = await getDoc(doc(db, "users", talentData.userId));
+    if (!userSnap.exists()) continue;
+    const userData = docToData<User>(userSnap);
+
+    // Provide sensible defaults for fields the registration form doesn't collect
+    results.push({
+      talent: {
+        ...talentData,
+        portfolio: talentData.portfolio ?? [],
+        reviews: talentData.reviews ?? [],
+        servicePlans: talentData.servicePlans ?? [],
+        tags: talentData.tags ?? [],
+        city: talentData.city || "",
+        bio: talentData.bio || "",
+        isVerified: talentData.isVerified ?? false,
+        jobsCompleted: talentData.jobsCompleted ?? 0,
+        responseRate: talentData.responseRate ?? 0,
+      },
+      user: userData,
+    });
+  }
+
+  return results;
+}
+
+export async function getTalentWithUser(talentId: string): Promise<TalentWithUser | null> {
+  const talentSnap = await getDoc(doc(db, "talents", talentId));
+  if (!talentSnap.exists()) return null;
+
+  const talentData = docToData<Talent>(talentSnap);
+  const userSnap = await getDoc(doc(db, "users", talentData.userId));
+  if (!userSnap.exists()) return null;
+
+  return {
+    talent: {
+      ...talentData,
+      portfolio: talentData.portfolio ?? [],
+      reviews: talentData.reviews ?? [],
+      servicePlans: talentData.servicePlans ?? [],
+      tags: talentData.tags ?? [],
+      city: talentData.city || "",
+      bio: talentData.bio || "",
+      isVerified: talentData.isVerified ?? false,
+      jobsCompleted: talentData.jobsCompleted ?? 0,
+      responseRate: talentData.responseRate ?? 0,
+    },
+    user: docToData<User>(userSnap),
+  };
 }
 
 // ─── Events ──────────────────────────────────────────────────────
@@ -634,4 +695,112 @@ export async function updateTransactionStatus(
   status: TransactionStatus
 ): Promise<void> {
   await updateDoc(doc(db, "transactions", txId), { status });
+}
+
+// ─── Courses (Studio Classes) ───────────────────────────────────
+
+export async function getCourses(category?: string): Promise<Course[]> {
+  let q;
+  if (category && category !== "All") {
+    q = query(
+      collection(db, "courses"),
+      where("category", "==", category),
+      orderBy("createdAt", "desc")
+    );
+  } else {
+    q = query(collection(db, "courses"), orderBy("createdAt", "desc"));
+  }
+  const snap = await getDocs(q);
+  return snap.docs.map((d) => docToData<Course>(d));
+}
+
+export async function createCourse(
+  data: Omit<Course, "id" | "createdAt">
+): Promise<string> {
+  const ref = await addDoc(collection(db, "courses"), {
+    ...data,
+    createdAt: serverTimestamp(),
+  });
+  return ref.id;
+}
+
+// ─── Admin Analytics ────────────────────────────────────────────
+
+export async function getAnalyticsMetrics(): Promise<{
+  revenue: number;
+  newUsers: number;
+  totalEvents: number;
+  totalBookings: number;
+}> {
+  const [txSnap, usersSnap, eventsSnap, bookingsSnap] = await Promise.all([
+    getDocs(collection(db, "transactions")),
+    getDocs(collection(db, "users")),
+    getDocs(collection(db, "events")),
+    getDocs(collection(db, "bookings")),
+  ]);
+
+  let revenue = 0;
+  txSnap.docs.forEach((d) => {
+    const data = d.data();
+    if (data.type === "deposit" && data.status === "completed") {
+      revenue += Math.abs(data.amount || 0);
+    }
+  });
+
+  return {
+    revenue,
+    newUsers: usersSnap.size,
+    totalEvents: eventsSnap.size,
+    totalBookings: bookingsSnap.size,
+  };
+}
+
+export async function getMonthlyRevenue(): Promise<{ month: string; amount: number }[]> {
+  const snap = await getDocs(collection(db, "transactions"));
+  const monthMap: Record<string, number> = {};
+
+  snap.docs.forEach((d) => {
+    const data = d.data();
+    if (data.type === "deposit" && data.status === "completed" && data.createdAt) {
+      const ts = data.createdAt instanceof Timestamp
+        ? data.createdAt.toDate()
+        : new Date(data.createdAt);
+      const key = `${ts.getFullYear()}-${String(ts.getMonth() + 1).padStart(2, "0")}`;
+      monthMap[key] = (monthMap[key] || 0) + Math.abs(data.amount || 0);
+    }
+  });
+
+  const months = Object.keys(monthMap).sort();
+  // Keep last 6 months
+  const recent = months.slice(-6);
+  return recent.map((m) => ({ month: m, amount: monthMap[m] }));
+}
+
+export async function getTopCategories(): Promise<
+  { name: string; bookings: number; revenue: number }[]
+> {
+  const [servicesSnap, bookingsSnap] = await Promise.all([
+    getDocs(collection(db, "services")),
+    getDocs(collection(db, "bookings")),
+  ]);
+
+  const categoryMap: Record<string, { bookings: number; revenue: number }> = {};
+
+  servicesSnap.docs.forEach((d) => {
+    const data = d.data();
+    const cat = data.category || "Other";
+    if (!categoryMap[cat]) categoryMap[cat] = { bookings: 0, revenue: 0 };
+    categoryMap[cat].revenue += data.hourlyRate || 0;
+  });
+
+  bookingsSnap.docs.forEach(() => {
+    // Count all bookings — we can refine when bookings store category
+    if (!categoryMap["Sessions"]) categoryMap["Sessions"] = { bookings: 0, revenue: 0 };
+    categoryMap["Sessions"].bookings += 1;
+  });
+
+  return Object.entries(categoryMap)
+    .map(([name, data]) => ({ name, ...data }))
+    .sort((a, b) => b.revenue - a.revenue)
+    .slice(0, 6);
 }

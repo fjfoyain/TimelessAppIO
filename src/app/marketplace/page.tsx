@@ -5,6 +5,7 @@ import Navbar from "@/components/landing/Navbar";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import Footer from "@/components/landing/Footer";
 import TalentCard from "@/components/marketplace/TalentCard";
+import { useMarketplace } from "@/hooks/useFirestore";
 import { mockTalents, talentCategories, talentCities } from "@/data/mockTalents";
 
 function checkPriceRange(rate: number | undefined, range: string): boolean {
@@ -19,21 +20,39 @@ function checkPriceRange(rate: number | undefined, range: string): boolean {
 }
 
 export default function MarketplacePage() {
+  const { talents: firestoreTalents, loading } = useMarketplace();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [priceRange, setPriceRange] = useState("");
   const [verifiedOnly, setVerifiedOnly] = useState(false);
 
+  // Use Firestore talents if available, otherwise fall back to mock data for showcase
+  const allTalents = firestoreTalents.length > 0 ? firestoreTalents : mockTalents;
+
+  // Derive categories/cities from actual data
+  const categories = useMemo(
+    () => firestoreTalents.length > 0
+      ? Array.from(new Set(allTalents.map((t) => t.talent.category).filter(Boolean)))
+      : talentCategories,
+    [allTalents, firestoreTalents.length]
+  );
+  const cities = useMemo(
+    () => firestoreTalents.length > 0
+      ? Array.from(new Set(allTalents.map((t) => t.talent.city).filter(Boolean)))
+      : talentCities,
+    [allTalents, firestoreTalents.length]
+  );
+
   const filteredTalents = useMemo(() => {
-    return mockTalents.filter(({ talent, user }) => {
+    return allTalents.filter(({ talent, user }) => {
       const q = searchQuery.toLowerCase();
       const matchesSearch =
         !searchQuery ||
         user.name.toLowerCase().includes(q) ||
         talent.category.toLowerCase().includes(q) ||
-        talent.tags.some((tag) => tag.toLowerCase().includes(q)) ||
-        talent.bio.toLowerCase().includes(q);
+        (talent.tags || []).some((tag) => tag.toLowerCase().includes(q)) ||
+        (talent.bio || "").toLowerCase().includes(q);
 
       const matchesCategory = !selectedCategory || talent.category === selectedCategory;
       const matchesCity = !selectedCity || talent.city === selectedCity;
@@ -42,7 +61,7 @@ export default function MarketplacePage() {
 
       return matchesSearch && matchesCategory && matchesCity && matchesVerified && matchesPrice;
     });
-  }, [searchQuery, selectedCategory, selectedCity, priceRange, verifiedOnly]);
+  }, [allTalents, searchQuery, selectedCategory, selectedCity, priceRange, verifiedOnly]);
 
   return (
     <div className="min-h-screen bg-background-dark">
@@ -67,7 +86,6 @@ export default function MarketplacePage() {
       <div className="sticky top-16 z-40 py-4 bg-background-dark/80 backdrop-blur-xl border-b border-white/5">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row gap-3">
-            {/* Search Input */}
             <div className="relative flex-1">
               <span className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xl">
                 search
@@ -81,35 +99,28 @@ export default function MarketplacePage() {
               />
             </div>
 
-            {/* Category */}
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
               className="rounded-xl bg-surface-input border border-white/10 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary transition appearance-none cursor-pointer"
             >
               <option value="">All Categories</option>
-              {talentCategories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
               ))}
             </select>
 
-            {/* City */}
             <select
               value={selectedCity}
               onChange={(e) => setSelectedCity(e.target.value)}
               className="rounded-xl bg-surface-input border border-white/10 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary transition appearance-none cursor-pointer"
             >
               <option value="">All Cities</option>
-              {talentCities.map((city) => (
-                <option key={city} value={city}>
-                  {city}
-                </option>
+              {cities.map((city) => (
+                <option key={city} value={city}>{city}</option>
               ))}
             </select>
 
-            {/* Price Range */}
             <select
               value={priceRange}
               onChange={(e) => setPriceRange(e.target.value)}
@@ -122,7 +133,6 @@ export default function MarketplacePage() {
               <option value="300+">$300+/hr</option>
             </select>
 
-            {/* Verified Toggle */}
             <button
               onClick={() => setVerifiedOnly(!verifiedOnly)}
               className={`flex items-center gap-2 px-4 py-3 rounded-xl border text-sm font-medium transition-all ${
@@ -141,37 +151,45 @@ export default function MarketplacePage() {
       {/* Results */}
       <section className="relative z-10 py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Results Count */}
-          <p className="text-sm text-slate-500 mb-6">
-            {filteredTalents.length} {filteredTalents.length === 1 ? "talent" : "talents"} found
-          </p>
-
-          {filteredTalents.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredTalents.map(({ talent, user }) => (
-                <TalentCard key={talent.id} talent={talent} user={user} />
-              ))}
+          {loading ? (
+            <div className="text-center py-20">
+              <span className="material-icons text-5xl text-primary animate-pulse">storefront</span>
+              <p className="text-slate-500 mt-4">Loading marketplace...</p>
             </div>
           ) : (
-            <div className="text-center py-20">
-              <span className="material-icons text-5xl text-slate-700 mb-4">search_off</span>
-              <h3 className="text-xl font-semibold text-white mb-2">No talent found</h3>
-              <p className="text-slate-500 mb-6">
-                Try adjusting your filters or search terms.
+            <>
+              <p className="text-sm text-slate-500 mb-6">
+                {filteredTalents.length} {filteredTalents.length === 1 ? "talent" : "talents"} found
               </p>
-              <button
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedCategory("");
-                  setSelectedCity("");
-                  setPriceRange("");
-                  setVerifiedOnly(false);
-                }}
-                className="px-6 py-2.5 rounded-lg bg-primary/10 border border-primary/30 text-primary-light text-sm font-medium hover:bg-primary/20 transition"
-              >
-                Clear all filters
-              </button>
-            </div>
+
+              {filteredTalents.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredTalents.map(({ talent, user }) => (
+                    <TalentCard key={talent.id} talent={talent} user={user} />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-20">
+                  <span className="material-icons text-5xl text-slate-700 mb-4">search_off</span>
+                  <h3 className="text-xl font-semibold text-white mb-2">No talent found</h3>
+                  <p className="text-slate-500 mb-6">
+                    Try adjusting your filters or search terms.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSelectedCategory("");
+                      setSelectedCity("");
+                      setPriceRange("");
+                      setVerifiedOnly(false);
+                    }}
+                    className="px-6 py-2.5 rounded-lg bg-primary/10 border border-primary/30 text-primary-light text-sm font-medium hover:bg-primary/20 transition"
+                  >
+                    Clear all filters
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>
