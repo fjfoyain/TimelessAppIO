@@ -29,10 +29,13 @@ import {
   recordWithdrawal as fbRecordWithdrawal,
   getAllTalents,
   getTalentWithUser,
+  getTalentByUserId,
+  getVenueByUserId,
   getCourses,
   getAnalyticsMetrics,
   getMonthlyRevenue,
   getTopCategories,
+  getMonthlyUserSignups,
 } from "@/lib/firestore";
 import type {
   Event as AppEvent,
@@ -49,7 +52,9 @@ import type {
   WalletDoc,
   Transaction,
   TransactionSource,
+  Talent,
   TalentWithUser,
+  Venue,
   Course,
 } from "@/types";
 
@@ -497,4 +502,54 @@ export function useTopCategories() {
   }, []);
 
   return { categories, loading };
+}
+
+// ─── Talent by userId (Dashboard) ───────────────────────────────
+
+export function useTalentByUserId(userId: string | undefined) {
+  const [talent, setTalent] = useState<Talent | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!userId) { setLoading(false); return; }
+    getTalentByUserId(userId).then((data) => {
+      setTalent(data);
+      setLoading(false);
+    });
+  }, [userId]);
+
+  return { talent, loading };
+}
+
+// ─── Venue by userId (Dashboard) ────────────────────────────────
+
+export function useVenueByUserId(userId: string | undefined) {
+  const [venue, setVenue] = useState<Venue | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!userId) { setLoading(false); return; }
+    getVenueByUserId(userId).then((data) => {
+      setVenue(data);
+      setLoading(false);
+    });
+  }, [userId]);
+
+  return { venue, loading };
+}
+
+// ─── Monthly User Signups (Admin Chart) ─────────────────────────
+
+export function useMonthlyUserSignups() {
+  const [data, setData] = useState<{ month: string; count: number }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getMonthlyUserSignups().then((result) => {
+      setData(result);
+      setLoading(false);
+    });
+  }, []);
+
+  return { data, loading };
 }

@@ -144,7 +144,7 @@ function ProjectsContent() {
                               <h3 className="text-sm font-semibold text-white group-hover:text-primary-light transition-colors leading-tight">
                                 {event.title}
                               </h3>
-                              <button className="p-1 rounded-lg hover:bg-white/5 transition opacity-0 group-hover:opacity-100">
+                              <button className="p-1 rounded-lg hover:bg-white/5 transition opacity-0 group-hover:opacity-100" aria-label="More options">
                                 <span className="material-icons text-sm text-slate-500">more_horiz</span>
                               </button>
                             </div>

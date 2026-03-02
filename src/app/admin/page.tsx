@@ -4,7 +4,7 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
-import { useAdminStats, useApprovals, useAuditLogs } from "@/hooks/useFirestore";
+import { useAdminStats, useApprovals, useAuditLogs, useMonthlyUserSignups } from "@/hooks/useFirestore";
 
 function statusBadge(status: string) {
   const map: Record<string, string> = {
@@ -22,6 +22,7 @@ function AdminContent() {
   const { stats: adminStats, loading: statsLoading } = useAdminStats();
   const { approvals, loading: approvalsLoading, approve, reject } = useApprovals("pending");
   const { logs, loading: logsLoading } = useAuditLogs(5);
+  const { data: signups, loading: signupsLoading } = useMonthlyUserSignups();
 
   const stats: { label: string; value: string; change: string; changeType: "positive" | "warning" | "neutral"; icon: string }[] = [
     {
@@ -126,17 +127,36 @@ function AdminContent() {
                   </span>
                 </div>
               </div>
-              {/* Chart placeholder */}
-              <div className="h-48 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-center">
-                <div className="text-center">
-                  <span className="material-icons text-3xl text-gray-700 mb-2 block">
-                    show_chart
-                  </span>
-                  <p className="text-xs text-gray-600">
-                    Chart visualization coming soon
-                  </p>
+              {/* Bar chart */}
+              {signupsLoading ? (
+                <div className="h-48 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-center">
+                  <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                 </div>
-              </div>
+              ) : signups.length === 0 ? (
+                <div className="h-48 rounded-xl bg-white/[0.02] border border-white/5 flex items-center justify-center">
+                  <p className="text-xs text-gray-600">No signup data yet</p>
+                </div>
+              ) : (
+                <div className="h-48 rounded-xl bg-white/[0.02] border border-white/5 p-4 flex items-end gap-2">
+                  {signups.map((item) => {
+                    const max = Math.max(...signups.map((s) => s.count), 1);
+                    const pct = (item.count / max) * 100;
+                    const label = item.month.split("-")[1];
+                    const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+                    const monthLabel = monthNames[parseInt(label, 10) - 1] || label;
+                    return (
+                      <div key={item.month} className="flex-1 flex flex-col items-center gap-1">
+                        <span className="text-[10px] text-gray-400 font-medium">{item.count}</span>
+                        <div
+                          className="w-full rounded-t-md bg-gradient-to-t from-primary to-primary-light min-h-[4px]"
+                          style={{ height: `${Math.max(pct, 4)}%` }}
+                        />
+                        <span className="text-[10px] text-gray-500">{monthLabel}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Pending Approvals */}

@@ -262,6 +262,7 @@ export default function CategoriesPage() {
                       <button
                         onClick={() => setEditingCategory(category)}
                         className="w-9 h-9 rounded-lg flex items-center justify-center text-gray-500 hover:text-primary hover:bg-primary/10 transition-colors"
+                        aria-label="Edit category"
                       >
                         <span className="material-icons text-lg">edit</span>
                       </button>
@@ -272,6 +273,7 @@ export default function CategoriesPage() {
                           }
                         }}
                         className="w-9 h-9 rounded-lg flex items-center justify-center text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+                        aria-label="Delete category"
                       >
                         <span className="material-icons text-lg">delete</span>
                       </button>

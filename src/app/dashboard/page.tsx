@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { useEvents, useBookings, useWallet } from "@/hooks/useFirestore";
+import { useEvents, useBookings, useWallet, useTransactions, useTalentByUserId, useVenueByUserId } from "@/hooks/useFirestore";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Navbar from "@/components/landing/Navbar";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
@@ -73,6 +73,13 @@ function DashboardContent() {
   const { events, loading: eventsLoading } = useEvents(user?.id);
   const { bookings, loading: bookingsLoading } = useBookings(user?.id);
   const { wallet, loading: walletLoading } = useWallet(user?.id);
+  const { transactions, loading: txLoading } = useTransactions(user?.id);
+  const { talent, loading: talentLoading } = useTalentByUserId(
+    user?.role === UserRole.TALENT ? user?.id : undefined
+  );
+  const { venue, loading: venueLoading } = useVenueByUserId(
+    user?.role === UserRole.VENUE ? user?.id : undefined
+  );
 
   if (!user) return null;
 
@@ -85,11 +92,39 @@ function DashboardContent() {
   if (!eventsLoading) {
     if (user.role === UserRole.TALENT) realCounts["Jobs Completed"] = String(events.length);
     if (user.role === UserRole.ARTIST) realCounts["Events"] = String(events.length);
-    if (user.role === UserRole.CLIENT) realCounts["Active Projects"] = String(events.length);
+    if (user.role === UserRole.CLIENT) {
+      realCounts["Active Projects"] = String(events.length);
+      realCounts["Events"] = String(events.length);
+    }
   }
   if (!bookingsLoading) {
     if (user.role === UserRole.ARTIST) realCounts["Bookings"] = String(bookings.length);
     if (user.role === UserRole.VENUE) realCounts["Bookings"] = String(bookings.length);
+    if (user.role === UserRole.CLIENT) realCounts["Hired Talent"] = String(bookings.length);
+  }
+  if (!talentLoading && talent) {
+    realCounts["Response Rate"] = talent.responseRate ? `${talent.responseRate}%` : "—";
+    if (talent.reviews && talent.reviews.length > 0) {
+      const avg = talent.reviews.reduce((sum, r) => sum + r.rating, 0) / talent.reviews.length;
+      realCounts["Rating"] = avg.toFixed(1);
+    }
+  }
+  if (!venueLoading && venue) {
+    realCounts["Capacity"] = venue.capacity ? venue.capacity.toLocaleString() : "—";
+  }
+  if (!txLoading && transactions.length > 0) {
+    if (user.role === UserRole.CLIENT) {
+      const spent = transactions
+        .filter((t) => t.type === "withdrawal" || t.type === "payment")
+        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+      realCounts["Budget Spent"] = `$${spent.toLocaleString("en-US", { minimumFractionDigits: 0 })}`;
+    }
+    if (user.role === UserRole.VENUE) {
+      const revenue = transactions
+        .filter((t) => t.type === "deposit" && t.status === "completed")
+        .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+      realCounts["Revenue"] = `$${revenue.toLocaleString("en-US", { minimumFractionDigits: 0 })}`;
+    }
   }
 
   const stats = baseStats.map((stat) => ({

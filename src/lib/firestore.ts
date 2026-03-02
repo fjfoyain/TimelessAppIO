@@ -234,6 +234,22 @@ export async function getTalentWithUser(talentId: string): Promise<TalentWithUse
   };
 }
 
+// ─── Talent / Venue by userId ────────────────────────────────────
+
+export async function getTalentByUserId(userId: string): Promise<Talent | null> {
+  const q = query(collection(db, "talents"), where("userId", "==", userId), limit(1));
+  const snap = await getDocs(q);
+  if (snap.empty) return null;
+  return docToData<Talent>(snap.docs[0]);
+}
+
+export async function getVenueByUserId(userId: string): Promise<Venue | null> {
+  const q = query(collection(db, "venues"), where("userId", "==", userId), limit(1));
+  const snap = await getDocs(q);
+  if (snap.empty) return null;
+  return docToData<Venue>(snap.docs[0]);
+}
+
 // ─── Events ──────────────────────────────────────────────────────
 
 export async function createEvent(data: {
@@ -803,6 +819,28 @@ export async function getTopCategories(): Promise<
     .map(([name, data]) => ({ name, ...data }))
     .sort((a, b) => b.revenue - a.revenue)
     .slice(0, 6);
+}
+
+// ─── Monthly User Signups (Admin Chart) ─────────────────────────
+
+export async function getMonthlyUserSignups(): Promise<{ month: string; count: number }[]> {
+  const snap = await getDocs(collection(db, "users"));
+  const monthMap: Record<string, number> = {};
+
+  snap.docs.forEach((d) => {
+    const data = d.data();
+    if (data.createdAt) {
+      const ts = data.createdAt instanceof Timestamp
+        ? data.createdAt.toDate()
+        : new Date(data.createdAt);
+      const key = `${ts.getFullYear()}-${String(ts.getMonth() + 1).padStart(2, "0")}`;
+      monthMap[key] = (monthMap[key] || 0) + 1;
+    }
+  });
+
+  const months = Object.keys(monthMap).sort();
+  const recent = months.slice(-6);
+  return recent.map((m) => ({ month: m, count: monthMap[m] }));
 }
 
 // ─── Contact / Support Requests ─────────────────────────────────

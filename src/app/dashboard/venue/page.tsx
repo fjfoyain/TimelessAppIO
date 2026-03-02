@@ -133,7 +133,7 @@ function VenueContent() {
                           <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-medium ${statusStyles["Confirmed"] || "text-green-400 bg-green-400/10"}`}>
                             Booked
                           </span>
-                          <button className="p-2 rounded-lg hover:bg-white/5 transition">
+                          <button className="p-2 rounded-lg hover:bg-white/5 transition" aria-label="More options">
                             <span className="material-icons text-sm text-slate-400 hover:text-white">more_vert</span>
                           </button>
                         </div>

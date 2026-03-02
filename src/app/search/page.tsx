@@ -52,6 +52,7 @@ export default function SearchPage() {
                 <button
                   onClick={() => setQuery("")}
                   className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition"
+                  aria-label="Clear search"
                 >
                   <span className="material-icons">close</span>
                 </button>

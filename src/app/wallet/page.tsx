@@ -86,7 +86,7 @@ function AddFundsModal({
       >
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-bold text-white">Add Funds</h3>
-          <button onClick={onClose} className="text-slate-500 hover:text-white transition">
+          <button onClick={onClose} className="text-slate-500 hover:text-white transition" aria-label="Close">
             <span className="material-icons">close</span>
           </button>
         </div>
@@ -223,7 +223,7 @@ function WithdrawModal({
       >
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-bold text-white">Withdraw Funds</h3>
-          <button onClick={onClose} className="text-slate-500 hover:text-white transition">
+          <button onClick={onClose} className="text-slate-500 hover:text-white transition" aria-label="Close">
             <span className="material-icons">close</span>
           </button>
         </div>

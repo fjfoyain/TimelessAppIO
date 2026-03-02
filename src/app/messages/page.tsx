@@ -1,20 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import Navbar from "@/components/landing/Navbar";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
-import { useConversations, useMessages } from "@/hooks/useFirestore";
-
-const contractDetails = {
-  title: "Summer Festival 2026",
-  ref: "MCN-4592",
-  date: "August 24, 2026",
-  value: "$12,500.00",
-  venue: "The Palladium, Los Angeles",
-  requirements: ["90 min DJ Set", "Social Media Promotion (3 posts)", "Meet & Greet (30 mins)"],
-};
+import { useConversations, useMessages, useBookings } from "@/hooks/useFirestore";
 
 function formatTime(dateString?: string): string {
   if (!dateString) return "";
@@ -39,10 +31,12 @@ function formatMessageTime(dateString?: string): string {
 function MessagesContent() {
   const { user } = useAuth();
   const { conversations, loading: convosLoading } = useConversations(user?.id);
+  const { bookings, loading: bookingsLoading } = useBookings(user?.id);
   const [activeConvoId, setActiveConvoId] = useState<string | undefined>(undefined);
   const { messages, loading: msgsLoading, sendMessage } = useMessages(activeConvoId);
   const [newMessage, setNewMessage] = useState("");
   const [tab, setTab] = useState<"messages" | "contracts">("messages");
+  const latestBooking = bookings.length > 0 ? bookings[0] : null;
 
   // Set first conversation as active by default when conversations load
   useEffect(() => {
@@ -215,7 +209,7 @@ function MessagesContent() {
             {/* Message Input */}
             <div className="px-6 py-4 border-t border-white/5 bg-surface-dark/30 backdrop-blur-xl">
               <div className="flex items-center gap-3">
-                <button className="text-slate-500 hover:text-white transition">
+                <button className="text-slate-500 hover:text-white transition" aria-label="Attach file">
                   <span className="material-icons">attach_file</span>
                 </button>
                 <input
@@ -229,6 +223,7 @@ function MessagesContent() {
                 <button
                   onClick={handleSend}
                   className="w-10 h-10 rounded-xl bg-primary hover:bg-primary-dark flex items-center justify-center text-white transition"
+                  aria-label="Send message"
                 >
                   <span className="material-icons text-xl">send</span>
                 </button>
@@ -236,55 +231,59 @@ function MessagesContent() {
             </div>
           </div>
 
-          {/* Right: Contract Details */}
+          {/* Right: Contract / Booking Details */}
           <div className="w-80 border-l border-white/5 bg-surface-dark/30 backdrop-blur-xl p-6 overflow-y-auto hidden lg:block">
             <h3 className="text-lg font-bold text-white mb-4">Contract Details</h3>
 
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="material-icons text-primary">event</span>
-                <div>
-                  <p className="text-sm font-semibold text-white">{contractDetails.title}</p>
-                  <p className="text-xs text-slate-500">Ref: {contractDetails.ref}</p>
-                </div>
+            {bookingsLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
               </div>
+            ) : latestBooking ? (
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <span className="material-icons text-primary">event</span>
+                  <div>
+                    <p className="text-sm font-semibold text-white">{latestBooking.title}</p>
+                    <p className="text-xs text-slate-500">ID: {latestBooking.id.slice(0, 8)}</p>
+                  </div>
+                </div>
 
-              <div className="space-y-3 text-sm">
-                <div className="flex items-center gap-2 text-slate-400">
-                  <span className="material-icons text-xs">calendar_today</span>
-                  {contractDetails.date}
+                <div className="space-y-3 text-sm">
+                  <div className="flex items-center gap-2 text-slate-400">
+                    <span className="material-icons text-xs">calendar_today</span>
+                    {latestBooking.day}
+                  </div>
+                  <div className="flex items-center gap-2 text-slate-400">
+                    <span className="material-icons text-xs">schedule</span>
+                    {latestBooking.hour}:00 ({latestBooking.duration}h)
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 text-white font-bold">
-                  <span className="material-icons text-xs text-green-400">paid</span>
-                  {contractDetails.value}
-                </div>
-                <div className="flex items-center gap-2 text-slate-400">
-                  <span className="material-icons text-xs">place</span>
-                  {contractDetails.venue}
-                </div>
-              </div>
 
-              <div className="border-t border-white/5 pt-4">
-                <p className="text-xs text-slate-500 uppercase tracking-wider font-medium mb-2">Requirements</p>
-                <ul className="space-y-2">
-                  {contractDetails.requirements.map((req, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm text-slate-300">
-                      <span className="material-icons text-primary text-xs">check_circle</span>
-                      {req}
-                    </li>
-                  ))}
-                </ul>
+                <div className="flex gap-2 pt-4">
+                  <Link
+                    href="/booking"
+                    className="flex-1 py-2.5 rounded-lg border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition text-center"
+                  >
+                    View All
+                  </Link>
+                </div>
               </div>
-
-              <div className="flex gap-2 pt-4">
-                <button className="flex-1 py-2.5 rounded-lg border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition">
-                  Propose Changes
-                </button>
-                <button className="flex-1 py-2.5 rounded-lg bg-primary text-white text-sm font-bold hover:bg-primary-dark transition btn-glow">
-                  Sign & Accept
-                </button>
+            ) : (
+              <div className="flex flex-col items-center text-center py-8 gap-3">
+                <span className="material-icons text-3xl text-slate-700">description</span>
+                <p className="text-sm text-slate-500">No active contracts</p>
+                <p className="text-xs text-slate-600">
+                  Create a booking to generate contract details here.
+                </p>
+                <Link
+                  href="/booking"
+                  className="mt-2 px-5 py-2 rounded-lg bg-primary/10 border border-primary/30 text-primary-light text-sm font-medium hover:bg-primary/20 transition"
+                >
+                  Create Booking
+                </Link>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </main>
