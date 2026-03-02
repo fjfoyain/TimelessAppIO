@@ -4,6 +4,7 @@ import { useState } from "react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
+import { submitContactRequest } from "@/lib/firestore";
 
 const categories = [
   "General Inquiry",
@@ -22,6 +23,8 @@ export default function ContactPage() {
     message: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -29,9 +32,18 @@ export default function ContactPage() {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitted(true);
+    setSubmitting(true);
+    setError("");
+    try {
+      await submitContactRequest(formData);
+      setSubmitted(true);
+    } catch {
+      setError("Failed to send message. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -166,12 +178,16 @@ export default function ContactPage() {
                         />
                       </label>
 
+                      {error && (
+                        <p className="text-sm text-red-400">{error}</p>
+                      )}
                       <div className="flex justify-end pt-2">
                         <button
                           type="submit"
-                          className="group flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-lg transition-all shadow-lg shadow-primary/20"
+                          disabled={submitting}
+                          className="group flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-lg transition-all shadow-lg shadow-primary/20 disabled:opacity-50"
                         >
-                          <span>Send Message</span>
+                          <span>{submitting ? "Sending..." : "Send Message"}</span>
                           <span className="material-icons text-xl group-hover:translate-x-1 transition-transform">
                             send
                           </span>

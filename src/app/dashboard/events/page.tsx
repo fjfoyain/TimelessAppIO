@@ -1,12 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEvents } from "@/hooks/useFirestore";
+import { deleteEvent, updateEventStatus } from "@/lib/firestore";
 import type { Event as AppEvent } from "@/types";
 
 const statusStyles: Record<string, string> = {
@@ -19,7 +22,9 @@ const statusStyles: Record<string, string> = {
   Draft: "text-slate-400 bg-slate-400/10",
 };
 
-function EventsTable({ events, title }: { events: AppEvent[]; title: string }) {
+function EventsTable({ events, title, onDelete, onCancel }: { events: AppEvent[]; title: string; onDelete: (id: string) => void; onCancel: (id: string) => void }) {
+  const router = useRouter();
+  const [menuOpen, setMenuOpen] = useState<string | null>(null);
   return (
     <div className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden">
       <div className="flex items-center justify-between p-6 border-b border-white/5">
@@ -70,16 +75,25 @@ function EventsTable({ events, title }: { events: AppEvent[]; title: string }) {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <button className="p-2 rounded-lg hover:bg-white/5 transition" title="View Details">
-                          <span className="material-icons text-sm text-slate-400 hover:text-white">visibility</span>
-                        </button>
-                        <button className="p-2 rounded-lg hover:bg-white/5 transition" title="Edit Event">
+                      <div className="flex items-center justify-end gap-1 relative">
+                        <button onClick={() => router.push(`/events/create?edit=${event.id}`)} className="p-2 rounded-lg hover:bg-white/5 transition" title="Edit Event">
                           <span className="material-icons text-sm text-slate-400 hover:text-white">edit</span>
                         </button>
-                        <button className="p-2 rounded-lg hover:bg-white/5 transition" title="More Options">
+                        <button onClick={() => setMenuOpen(menuOpen === event.id ? null : event.id)} className="p-2 rounded-lg hover:bg-white/5 transition" title="More Options">
                           <span className="material-icons text-sm text-slate-400 hover:text-white">more_vert</span>
                         </button>
+                        {menuOpen === event.id && (
+                          <div className="absolute right-0 top-full mt-1 w-40 bg-surface-dark border border-white/10 rounded-xl shadow-xl z-20 py-1">
+                            {event.status !== "cancelled" && (
+                              <button onClick={() => { onCancel(event.id); setMenuOpen(null); }} className="w-full text-left px-4 py-2 text-sm text-yellow-400 hover:bg-white/5 transition flex items-center gap-2">
+                                <span className="material-icons text-sm">block</span>Cancel
+                              </button>
+                            )}
+                            <button onClick={() => { onDelete(event.id); setMenuOpen(null); }} className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-white/5 transition flex items-center gap-2">
+                              <span className="material-icons text-sm">delete</span>Delete
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -119,7 +133,18 @@ function EventsTable({ events, title }: { events: AppEvent[]; title: string }) {
 
 function EventsContent() {
   const { user } = useAuth();
-  const { events, loading } = useEvents(user?.id);
+  const { events, loading, refresh } = useEvents(user?.id);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this event?")) return;
+    await deleteEvent(id);
+    await refresh();
+  };
+
+  const handleCancel = async (id: string) => {
+    await updateEventStatus(id, "cancelled");
+    await refresh();
+  };
 
   const now = new Date();
   const upcomingEvents = events.filter((e) => new Date(e.date) >= now);
@@ -211,8 +236,8 @@ function EventsContent() {
             </div>
           ) : (
             <div className="space-y-8">
-              <EventsTable events={upcomingEvents} title="Upcoming Events" />
-              <EventsTable events={pastEvents} title="Past Events" />
+              <EventsTable events={upcomingEvents} title="Upcoming Events" onDelete={handleDelete} onCancel={handleCancel} />
+              <EventsTable events={pastEvents} title="Past Events" onDelete={handleDelete} onCancel={handleCancel} />
             </div>
           )}
         </div>

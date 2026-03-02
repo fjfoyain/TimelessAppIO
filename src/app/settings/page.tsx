@@ -7,7 +7,7 @@ import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
-import { updateUserProfile } from "@/lib/firestore";
+import { updateUserProfile, getUserSettings, updateUserSettings } from "@/lib/firestore";
 import { uploadAvatar } from "@/lib/storage";
 import { auth } from "@/lib/firebase";
 
@@ -19,6 +19,24 @@ function SettingsContent() {
   const [twoFAEnabled, setTwoFAEnabled] = useState(false);
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(true);
+
+  // Load saved settings from Firestore
+  useEffect(() => {
+    if (!user) return;
+    getUserSettings(user.id).then((settings) => {
+      if (!settings) return;
+      if (typeof settings.twoFAEnabled === "boolean") setTwoFAEnabled(settings.twoFAEnabled);
+      if (typeof settings.emailNotifications === "boolean") setEmailNotifications(settings.emailNotifications);
+      if (typeof settings.pushNotifications === "boolean") setPushNotifications(settings.pushNotifications);
+    });
+  }, [user]);
+
+  async function handleToggle(key: string, value: boolean, setter: (v: boolean) => void) {
+    setter(value);
+    if (user) {
+      await updateUserSettings(user.id, { [key]: value });
+    }
+  }
 
   // Profile form state
   const [displayName, setDisplayName] = useState("");
@@ -300,7 +318,7 @@ function SettingsContent() {
                             </div>
                           </div>
                           <button
-                            onClick={() => setTwoFAEnabled(!twoFAEnabled)}
+                            onClick={() => handleToggle("twoFAEnabled", !twoFAEnabled, setTwoFAEnabled)}
                             className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${
                               twoFAEnabled ? "bg-primary" : "bg-slate-700"
                             }`}
@@ -328,7 +346,7 @@ function SettingsContent() {
                             </div>
                           </div>
                           <button
-                            onClick={() => setEmailNotifications(!emailNotifications)}
+                            onClick={() => handleToggle("emailNotifications", !emailNotifications, setEmailNotifications)}
                             className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${
                               emailNotifications ? "bg-primary" : "bg-slate-700"
                             }`}
@@ -354,7 +372,7 @@ function SettingsContent() {
                             </div>
                           </div>
                           <button
-                            onClick={() => setPushNotifications(!pushNotifications)}
+                            onClick={() => handleToggle("pushNotifications", !pushNotifications, setPushNotifications)}
                             className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${
                               pushNotifications ? "bg-primary" : "bg-slate-700"
                             }`}
@@ -417,7 +435,18 @@ function SettingsContent() {
             <p className="text-sm text-slate-500 mb-4">
               This will sign you out from all active sessions on every device.
             </p>
-            <button className="px-6 py-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-semibold hover:bg-red-500/20 transition-all">
+            <button
+              onClick={async () => {
+                try {
+                  await auth.signOut();
+                  window.location.href = "/login";
+                } catch {
+                  // fallback
+                  window.location.href = "/logout";
+                }
+              }}
+              className="px-6 py-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm font-semibold hover:bg-red-500/20 transition-all"
+            >
               <span className="flex items-center gap-2">
                 <span className="material-icons text-lg">logout</span>
                 Log Out of All Devices

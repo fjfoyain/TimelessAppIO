@@ -4,6 +4,7 @@ import { useState } from "react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
+import { addToWaitlist } from "@/lib/firestore";
 
 const features = [
   {
@@ -32,12 +33,21 @@ const socialLinks = [
 export default function ComingSoonPage() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email.trim()) {
+    if (!email.trim()) return;
+    setSubmitting(true);
+    try {
+      await addToWaitlist(email.trim());
       setSubmitted(true);
       setEmail("");
+    } catch {
+      // Silently handle — user still sees success to avoid confusion
+      setSubmitted(true);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -91,9 +101,10 @@ export default function ComingSoonPage() {
                 />
                 <button
                   type="submit"
-                  className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-primary to-primary-light text-white font-semibold hover:shadow-glow transition-all duration-300 whitespace-nowrap"
+                  disabled={submitting}
+                  className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-primary to-primary-light text-white font-semibold hover:shadow-glow transition-all duration-300 whitespace-nowrap disabled:opacity-50"
                 >
-                  Join Waitlist
+                  {submitting ? "Joining..." : "Join Waitlist"}
                 </button>
               </form>
             )}

@@ -804,3 +804,60 @@ export async function getTopCategories(): Promise<
     .sort((a, b) => b.revenue - a.revenue)
     .slice(0, 6);
 }
+
+// ─── Contact / Support Requests ─────────────────────────────────
+
+export async function submitContactRequest(data: {
+  name: string;
+  email: string;
+  subject: string;
+  category: string;
+  message: string;
+}): Promise<string> {
+  const ref = await addDoc(collection(db, "contactRequests"), {
+    ...data,
+    status: "new",
+    createdAt: serverTimestamp(),
+  });
+  return ref.id;
+}
+
+// ─── Waitlist ───────────────────────────────────────────────────
+
+export async function addToWaitlist(email: string): Promise<string> {
+  const ref = await addDoc(collection(db, "waitlist"), {
+    email,
+    createdAt: serverTimestamp(),
+  });
+  return ref.id;
+}
+
+// ─── User Settings (Preferences) ───────────────────────────────
+
+export async function updateUserSettings(
+  userId: string,
+  settings: Record<string, boolean | string>
+): Promise<void> {
+  await setDoc(doc(db, "userSettings", userId), settings, { merge: true });
+}
+
+export async function getUserSettings(
+  userId: string
+): Promise<Record<string, boolean | string> | null> {
+  const snap = await getDoc(doc(db, "userSettings", userId));
+  if (!snap.exists()) return null;
+  return snap.data() as Record<string, boolean | string>;
+}
+
+// ─── Events Management ──────────────────────────────────────────
+
+export async function deleteEvent(eventId: string): Promise<void> {
+  await deleteDoc(doc(db, "events", eventId));
+}
+
+export async function updateEventStatus(
+  eventId: string,
+  status: string
+): Promise<void> {
+  await updateDoc(doc(db, "events", eventId), { status });
+}

@@ -3,6 +3,7 @@
 import { use } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { notFound } from "next/navigation";
 import Navbar from "@/components/landing/Navbar";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
@@ -17,6 +18,7 @@ function getAverageRating(reviews: { rating: number }[]): number {
 
 export default function TalentProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const router = useRouter();
   const { data: firestoreMatch, loading } = useTalentProfile(id);
 
   // Fallback to mock data if not found in Firestore
@@ -264,7 +266,10 @@ export default function TalentProfilePage({ params }: { params: Promise<{ id: st
                         </li>
                       ))}
                     </ul>
-                    <button className="w-full mt-4 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary-dark transition btn-glow">
+                    <button
+                      onClick={() => router.push(`/booking?talent=${talent.id}&plan=${plan.id}`)}
+                      className="w-full mt-4 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary-dark transition btn-glow"
+                    >
                       Select Plan
                     </button>
                   </div>
@@ -277,7 +282,10 @@ export default function TalentProfilePage({ params }: { params: Promise<{ id: st
                   <p className="text-sm text-slate-400 mt-1">
                     Reach out to discuss your project
                   </p>
-                  <button className="w-full mt-4 py-3 rounded-lg border border-primary text-primary font-semibold hover:bg-primary/10 transition">
+                  <button
+                    onClick={() => router.push(`/messages?to=${talent.userId}`)}
+                    className="w-full mt-4 py-3 rounded-lg border border-primary text-primary font-semibold hover:bg-primary/10 transition"
+                  >
                     Contact {user.name.split(" ")[0]}
                   </button>
                 </div>
