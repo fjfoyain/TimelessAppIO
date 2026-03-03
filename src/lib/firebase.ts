@@ -12,9 +12,9 @@ const requiredEnvVars = [
 
 const missing = requiredEnvVars.filter((key) => !process.env[key]);
 if (missing.length > 0) {
-  throw new Error(
-    `Missing required Firebase environment variables: ${missing.join(", ")}. ` +
-    "Check your .env.local file."
+  console.warn(
+    `[Firebase] Missing environment variables: ${missing.join(", ")}. ` +
+    "Check your .env.local file or Vercel environment settings."
   );
 }
 
