@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ticket Sales &amp; Checkout - Timeless</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&amp;family=Public+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#625063",
+                        "primary-light": "#7e687f",
+                        "primary-dark": "#4a3c4b",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#1a181a",
+                        "accent-gold": "#D4AF37",
+                        "accent-blue": "#2E86AB",
+                    },
+                    fontFamily: {
+                        "display": ["Montserrat", "sans-serif"],
+                        "body": ["Public Sans", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #2a272a;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #494649;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex flex-col">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#312f31] bg-white dark:bg-[#151415] px-10 py-3 sticky top-0 z-50">
+<div class="flex items-center gap-4 text-slate-900 dark:text-white">
+<div class="size-8 flex items-center justify-center bg-primary rounded-lg text-white">
+<span class="material-symbols-outlined">hourglass_top</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">Timeless</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<div class="hidden md:flex items-center gap-9">
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Events</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">My Tickets</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Support</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="size-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-white/10 text-slate-600 dark:text-slate-300 transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary hover:bg-primary-light text-white text-sm font-bold leading-normal tracking-[0.015em] transition-colors shadow-lg shadow-primary/20">
+<span class="truncate">Login</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow flex justify-center py-8 px-4 md:px-8 lg:px-12">
+<div class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-8 xl:gap-16">
+<!-- Left Column: Event Details -->
+<div class="flex flex-col gap-6">
+<!-- Breadcrumbs -->
+<div class="flex flex-wrap gap-2 text-sm">
+<a class="text-slate-500 dark:text-[#aca9ad] hover:text-primary dark:hover:text-white transition-colors" href="#">Home</a>
+<span class="text-slate-400 dark:text-[#aca9ad]">/</span>
+<a class="text-slate-500 dark:text-[#aca9ad] hover:text-primary dark:hover:text-white transition-colors" href="#">Concerts</a>
+<span class="text-slate-400 dark:text-[#aca9ad]">/</span>
+<span class="text-slate-900 dark:text-white font-medium">The Weeknd</span>
+</div>
+<!-- Event Poster & Title -->
+<div class="relative w-full aspect-[4/5] rounded-xl overflow-hidden shadow-2xl group">
+<img alt="The Weeknd Concert dark moody lighting red suit" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" data-alt="The Weeknd performing on stage with dramatic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBkvV_mWfbp8i7asQ3dRCO2yABo_7kbGw5fvg9Sl48v4vNMYfZH8SBMZWjcdKEpZBthFi5HOQcxbgRODmP1xL-QYACb6L5wpvwztt7FNEfzMbh__TDt3PJrX2StK5ndb4gtlzg82y5RaqpolLLf3-uCzxnWpk_4oO-wrxSuZQat1PING11knfwFfFu5wGFBIpWq_wx5llR3sImDsYV8b_yGsj21ardLgMTZ5yQjgWRXok3OeuwLGZVKiSTF7iXXs9y1A9zTeMl2Kgk"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
+<div class="flex gap-2 mb-4">
+<span class="px-3 py-1 rounded-full bg-accent-gold/20 text-accent-gold border border-accent-gold/30 text-xs font-bold uppercase tracking-wider backdrop-blur-md">Selling Fast</span>
+<span class="px-3 py-1 rounded-full bg-primary/30 text-white border border-white/20 text-xs font-bold uppercase tracking-wider backdrop-blur-md">World Tour</span>
+</div>
+<h1 class="text-white text-4xl md:text-5xl font-extrabold leading-tight mb-2 tracking-tight">The Weeknd: After Hours Til Dawn</h1>
+<p class="text-slate-300 text-lg font-medium">Global Stadium Tour 2024</p>
+</div>
+</div>
+<!-- Event Info Grid -->
+<div class="bg-white dark:bg-[#232023] rounded-xl p-6 border border-slate-200 dark:border-[#312f31] shadow-sm">
+<h3 class="text-slate-900 dark:text-white text-lg font-bold mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">info</span>
+                        Event Details
+                    </h3>
+<div class="space-y-5">
+<div class="grid grid-cols-[40px_1fr] items-start gap-4">
+<div class="size-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">calendar_month</span>
+</div>
+<div>
+<p class="text-slate-500 dark:text-[#aca9ad] text-xs uppercase font-semibold tracking-wider mb-1">Date &amp; Time</p>
+<p class="text-slate-900 dark:text-white font-semibold">Sat, Oct 28, 2023</p>
+<p class="text-slate-600 dark:text-slate-400 text-sm">Doors open 6:30 PM • Show starts 8:00 PM</p>
+</div>
+</div>
+<div class="w-full h-px bg-slate-100 dark:bg-[#312f31]"></div>
+<div class="grid grid-cols-[40px_1fr] items-start gap-4">
+<div class="size-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">location_on</span>
+</div>
+<div>
+<p class="text-slate-500 dark:text-[#aca9ad] text-xs uppercase font-semibold tracking-wider mb-1">Venue</p>
+<p class="text-slate-900 dark:text-white font-semibold">SoFi Stadium</p>
+<p class="text-slate-600 dark:text-slate-400 text-sm">1001 Stadium Dr, Inglewood, CA 90301</p>
+<a class="inline-flex items-center gap-1 text-primary text-xs font-bold mt-2 hover:underline" href="#">
+                                    View on Map <span class="material-symbols-outlined text-[14px]">arrow_outward</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+<!-- Countdown -->
+<div class="bg-gradient-to-r from-primary/20 to-primary/5 rounded-xl p-6 border border-primary/20 flex flex-col md:flex-row items-center justify-between gap-4">
+<div>
+<p class="text-primary dark:text-white font-bold text-lg">Early Bird Ends In:</p>
+<p class="text-slate-600 dark:text-slate-400 text-sm">Secure your spot before prices increase.</p>
+</div>
+<div class="flex gap-3 text-center">
+<div class="bg-white dark:bg-[#1a181a] p-3 rounded-lg min-w-[60px] border border-slate-200 dark:border-white/10 shadow-sm">
+<span class="block text-2xl font-bold text-slate-900 dark:text-white font-mono">02</span>
+<span class="text-[10px] uppercase text-slate-500 font-bold">Days</span>
+</div>
+<div class="bg-white dark:bg-[#1a181a] p-3 rounded-lg min-w-[60px] border border-slate-200 dark:border-white/10 shadow-sm">
+<span class="block text-2xl font-bold text-slate-900 dark:text-white font-mono">14</span>
+<span class="text-[10px] uppercase text-slate-500 font-bold">Hrs</span>
+</div>
+<div class="bg-white dark:bg-[#1a181a] p-3 rounded-lg min-w-[60px] border border-slate-200 dark:border-white/10 shadow-sm">
+<span class="block text-2xl font-bold text-slate-900 dark:text-white font-mono">45</span>
+<span class="text-[10px] uppercase text-slate-500 font-bold">Mins</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Ticket Selection & Checkout -->
+<div class="flex flex-col gap-6">
+<!-- Step 1: Select Tickets -->
+<div class="bg-white dark:bg-[#232023] rounded-xl border border-slate-200 dark:border-[#312f31] overflow-hidden shadow-sm">
+<div class="p-6 border-b border-slate-200 dark:border-[#312f31] flex justify-between items-center bg-slate-50 dark:bg-[#2a272a]">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="flex items-center justify-center size-6 rounded-full bg-primary text-white text-xs">1</span>
+                            Select Tickets
+                        </h2>
+<a class="text-xs text-primary font-bold hover:underline" href="#">View Seating Chart</a>
+</div>
+<div class="p-6 flex flex-col gap-4">
+<!-- Ticket Option 1 -->
+<label class="relative flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-[#494649] hover:border-primary dark:hover:border-primary cursor-pointer transition-all bg-white dark:bg-[#1a181a] group">
+<input class="peer sr-only" name="ticket-type" type="radio"/>
+<div class="absolute inset-0 rounded-xl border-2 border-transparent peer-checked:border-primary peer-checked:bg-primary/5 pointer-events-none transition-all"></div>
+<div class="flex items-center gap-4 z-10">
+<div class="size-5 rounded-full border-2 border-slate-300 dark:border-slate-600 peer-checked:border-primary peer-checked:bg-primary group-hover:border-primary flex items-center justify-center transition-colors">
+<div class="size-2.5 rounded-full bg-white opacity-0 peer-checked:opacity-100"></div>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h4 class="font-bold text-slate-900 dark:text-white text-lg">General Admission</h4>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Standing room only on floor level.</p>
+</div>
+</div>
+<div class="text-right z-10">
+<span class="block text-2xl font-bold text-slate-900 dark:text-white">$145</span>
+<span class="text-xs text-green-500 font-bold bg-green-500/10 px-2 py-1 rounded">Available</span>
+</div>
+</label>
+<!-- Ticket Option 2 -->
+<label class="relative flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-[#494649] hover:border-primary dark:hover:border-primary cursor-pointer transition-all bg-white dark:bg-[#1a181a] group">
+<input checked="" class="peer sr-only" name="ticket-type" type="radio"/>
+<div class="absolute inset-0 rounded-xl border-2 border-transparent peer-checked:border-primary peer-checked:bg-primary/5 pointer-events-none transition-all"></div>
+<div class="flex items-center gap-4 z-10">
+<div class="w-5 h-5 flex items-center justify-center">
+<div class="size-5 rounded-full border-2 border-primary bg-primary flex items-center justify-center">
+<div class="size-2.5 rounded-full bg-white"></div>
+</div>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h4 class="font-bold text-slate-900 dark:text-white text-lg">VIP Experience</h4>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-accent-gold text-black uppercase">Best Value</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Priority entry, private lounge access.</p>
+</div>
+</div>
+<div class="text-right z-10">
+<span class="block text-2xl font-bold text-slate-900 dark:text-white">$295</span>
+<span class="text-xs text-orange-400 font-bold bg-orange-400/10 px-2 py-1 rounded">Low Stock</span>
+</div>
+</label>
+<!-- Ticket Option 3 -->
+<label class="relative flex items-center justify-between p-4 rounded-xl border border-slate-200 dark:border-[#494649] hover:border-primary dark:hover:border-primary cursor-pointer transition-all bg-white dark:bg-[#1a181a] opacity-60 group grayscale">
+<input class="peer sr-only" disabled="" name="ticket-type" type="radio"/>
+<div class="flex items-center gap-4 z-10">
+<div class="size-5 rounded-full border-2 border-slate-300 dark:border-slate-600 flex items-center justify-center"></div>
+<div>
+<div class="flex items-center gap-2">
+<h4 class="font-bold text-slate-900 dark:text-white text-lg">Backstage Pass</h4>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Meet &amp; Greet, Photo Op, Front Row.</p>
+</div>
+</div>
+<div class="text-right z-10">
+<span class="block text-2xl font-bold text-slate-900 dark:text-white">$850</span>
+<span class="text-xs text-slate-500 font-bold bg-slate-500/10 px-2 py-1 rounded">Sold Out</span>
+</div>
+</label>
+<!-- Quantity Selector -->
+<div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-[#312f31] mt-2">
+<span class="text-slate-700 dark:text-slate-300 font-medium">Quantity</span>
+<div class="flex items-center gap-3 bg-slate-100 dark:bg-[#1a181a] rounded-lg p-1">
+<button class="size-8 rounded bg-white dark:bg-[#312f31] shadow-sm flex items-center justify-center hover:bg-slate-50 dark:hover:bg-[#494649] text-slate-600 dark:text-white disabled:opacity-50">
+<span class="material-symbols-outlined text-sm">remove</span>
+</button>
+<span class="w-8 text-center font-bold text-slate-900 dark:text-white">2</span>
+<button class="size-8 rounded bg-white dark:bg-[#312f31] shadow-sm flex items-center justify-center hover:bg-slate-50 dark:hover:bg-[#494649] text-slate-600 dark:text-white">
+<span class="material-symbols-outlined text-sm">add</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Step 2: Payment & Checkout -->
+<div class="bg-white dark:bg-[#232023] rounded-xl border border-slate-200 dark:border-[#312f31] overflow-hidden shadow-lg relative">
+<!-- Glow effect container -->
+<div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+<div class="p-6 border-b border-slate-200 dark:border-[#312f31] bg-slate-50 dark:bg-[#2a272a]">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="flex items-center justify-center size-6 rounded-full bg-primary text-white text-xs">2</span>
+                            Fast Checkout
+                        </h2>
+</div>
+<div class="p-6 flex flex-col gap-6">
+<!-- Express Checkout Buttons -->
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-2 h-12 rounded-lg bg-black text-white hover:bg-slate-800 transition-colors border border-slate-700">
+<svg class="h-5 w-auto fill-current" viewbox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path d="M26.066 18.064c.026-3.834 3.14-5.69 3.277-5.783-1.79-2.613-4.577-2.97-5.553-3.013-2.356-.238-4.607 1.39-5.8 1.39-1.194 0-3.064-1.36-5.044-1.328-2.587.038-4.975 1.503-6.29 3.8-2.705 4.697-.694 11.608 1.936 15.414 1.28 1.87 2.82 3.94 4.83 3.87 1.936-.08 2.668-1.25 5.01-1.25 2.33 0 2.99 1.25 5.03 1.21 2.08-.037 3.4-1.896 4.67-3.765 1.48-2.127 2.08-4.195 2.11-4.298-.05-.02-4.06-1.56-4.17-6.236m-3.235-9.67c1.06-1.285 1.77-3.076 1.58-4.86-1.53.06-3.38 1.01-4.48 2.33-.984 1.144-1.85 2.97-1.61 4.73 1.7.13 3.44-1.03 4.51-2.19"></path></svg>
+<span class="font-medium">Pay</span>
+</button>
+<button class="flex items-center justify-center gap-2 h-12 rounded-lg bg-white dark:bg-white text-slate-900 hover:bg-slate-100 transition-colors border border-slate-200">
+<svg class="h-5 w-auto" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" fill="#EA4335"></path><path d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" fill="#4285F4"></path><path d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" fill="#FBBC05"></path><path d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" fill="#34A853"></path><path d="M0 0h48v48H0z" fill="none"></path></svg>
+<span class="font-medium text-slate-600">Pay</span>
+</button>
+</div>
+<div class="relative flex py-2 items-center">
+<div class="flex-grow border-t border-slate-200 dark:border-[#494649]"></div>
+<span class="flex-shrink-0 mx-4 text-slate-400 dark:text-slate-500 text-xs font-semibold uppercase">Or pay with card</span>
+<div class="flex-grow border-t border-slate-200 dark:border-[#494649]"></div>
+</div>
+<!-- Card Form -->
+<div class="space-y-4">
+<div>
+<label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-2">Card Information</label>
+<div class="relative">
+<input class="w-full rounded-lg bg-slate-50 dark:bg-[#1a181a] border-slate-200 dark:border-[#494649] text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-primary focus:border-primary pl-10 h-12" placeholder="Card number" type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-3 text-slate-400">credit_card</span>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-4">
+<input class="w-full rounded-lg bg-slate-50 dark:bg-[#1a181a] border-slate-200 dark:border-[#494649] text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-primary focus:border-primary h-12 text-center" placeholder="MM / YY" type="text"/>
+<div class="relative">
+<input class="w-full rounded-lg bg-slate-50 dark:bg-[#1a181a] border-slate-200 dark:border-[#494649] text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-primary focus:border-primary h-12 text-center" placeholder="CVC" type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-3.5 text-slate-400 text-lg cursor-help">help</span>
+</div>
+</div>
+</div>
+<div>
+<label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-2">Name on Card</label>
+<input class="w-full rounded-lg bg-slate-50 dark:bg-[#1a181a] border-slate-200 dark:border-[#494649] text-slate-900 dark:text-white placeholder:text-slate-400 focus:ring-primary focus:border-primary h-12" placeholder="Full Name" type="text"/>
+</div>
+</div>
+<!-- Order Summary -->
+<div class="bg-slate-50 dark:bg-[#1a181a] rounded-lg p-4 border border-slate-200 dark:border-[#312f31] mt-2">
+<div class="flex justify-between mb-2 text-sm text-slate-600 dark:text-slate-400">
+<span>VIP Experience x2</span>
+<span>$590.00</span>
+</div>
+<div class="flex justify-between mb-4 text-sm text-slate-600 dark:text-slate-400">
+<span>Service Fee</span>
+<span>$45.00</span>
+</div>
+<div class="border-t border-slate-200 dark:border-[#312f31] pt-3 flex justify-between items-end">
+<div>
+<p class="text-xs text-slate-500">Total Amount</p>
+<p class="text-2xl font-bold text-slate-900 dark:text-white">$635.00</p>
+</div>
+<span class="text-xs text-primary font-bold">USD</span>
+</div>
+</div>
+<!-- Purchase Button -->
+<button class="relative w-full h-14 bg-primary hover:bg-primary-light text-white font-bold text-lg rounded-xl overflow-hidden transition-all shadow-[0_0_20px_rgba(98,80,99,0.5)] hover:shadow-[0_0_30px_rgba(98,80,99,0.7)] group">
+<span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></span>
+<div class="flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">lock</span>
+                                Purchase Tickets
+                            </div>
+</button>
+<p class="text-center text-xs text-slate-400 dark:text-slate-500">
+                            By purchasing you agree to our <a class="underline hover:text-primary" href="#">Terms</a> and <a class="underline hover:text-primary" href="#">Privacy Policy</a>.
+                        </p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer Simple -->
+<footer class="mt-auto border-t border-slate-200 dark:border-[#312f31] bg-white dark:bg-[#151415] py-8 text-center">
+<div class="flex justify-center items-center gap-2 mb-4 text-slate-400">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="text-sm font-medium">100% Secure Checkout Guaranteed</span>
+</div>
+<p class="text-slate-500 dark:text-slate-600 text-sm">© 2023 Timeless Events. All rights reserved.</p>
+</footer>
+<script>
+        // Simple script to handle dark mode toggle if needed, though class="dark" is hardcoded on html
+        tailwind.config.darkMode = 'class';
+    </script>
+</body></html>

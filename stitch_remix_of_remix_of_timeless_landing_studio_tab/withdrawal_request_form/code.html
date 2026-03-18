@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Withdrawal Request Form - Timeless</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&amp;family=Public+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#625063",
+                        "primary-dark": "#4a3b4b",
+                        "accent-green": "#00E676", // Electric green as requested in description
+                        "accent-green-dim": "#00b35c",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#1a181a",
+                        "surface-dark": "#2a272a",
+                        "surface-darker": "#222022",
+                    },
+                    fontFamily: {
+                        "display": ["Montserrat", "sans-serif"],
+                        "body": ["Public Sans", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    boxShadow: {
+                        "glow": "0 0 20px rgba(0, 230, 118, 0.15)",
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-x-hidden antialiased">
+<div class="flex h-full grow flex-col">
+<!-- Main Container -->
+<div class="flex flex-1 justify-center">
+<div class="layout-content-container flex flex-col w-full max-w-[1200px] flex-1">
+<!-- Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-white/10 px-6 lg:px-10 py-4 bg-white/50 dark:bg-background-dark/50 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-4 text-slate-900 dark:text-white">
+<div class="size-8 rounded bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-xl">hourglass_empty</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-tight">Timeless</h2>
+</div>
+<div class="hidden md:flex flex-1 justify-end gap-8 items-center">
+<div class="flex items-center gap-6">
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white text-sm font-medium transition-colors" href="#">Dashboard</a>
+<a class="text-primary dark:text-white text-sm font-bold transition-colors" href="#">Wallet</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white text-sm font-medium transition-colors" href="#">Settings</a>
+</div>
+<div class="h-6 w-px bg-slate-200 dark:bg-white/10"></div>
+<button class="flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white transition-colors">
+<span class="text-sm font-medium">Log Out</span>
+<span class="material-symbols-outlined text-lg">logout</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-primary/20 cursor-pointer hover:border-accent-green transition-colors" data-alt="User profile avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCDuJMKaF_zVw5zIIsQeu-2-AcmU_IDo2KtJkESGd7UPLAc_clptxW-7CnVt-1ZtM6XHTRhdsNqCuTSOEvIx99R3sTaSRvklVfykfEmV-7gJnVHlSxDAraFL6VGrEnqYpDRiXXa5-3qxiDZou8PlRigR3hKJ3SYdvyIQhok2lpWC1-RpIptrFbewsPjNFpJaY7hbARkumgIFWllHIUlKMvIUnAvDrUYUht0umvo4zwWGQCbtmd4baQ0U31l7fV_41UxCtmtqySG2Ew");'></div>
+</div>
+<!-- Mobile Menu Icon -->
+<button class="md:hidden text-slate-900 dark:text-white">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<main class="flex-1 px-4 md:px-10 py-8 md:py-12">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+<!-- Left Column: Form -->
+<div class="lg:col-span-7 flex flex-col gap-8">
+<!-- Page Title Section -->
+<div class="flex flex-col gap-2">
+<h1 class="text-slate-900 dark:text-white text-4xl font-black leading-tight tracking-tight">Withdraw Funds</h1>
+<p class="text-slate-500 dark:text-slate-400 text-lg font-normal">Securely transfer your earnings to your linked account.</p>
+</div>
+<!-- Available Balance Card -->
+<div class="relative overflow-hidden rounded-xl bg-surface-dark dark:bg-surface-dark border border-white/5 p-8 shadow-glow group">
+<div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-accent-green/10 rounded-full blur-3xl group-hover:bg-accent-green/20 transition-all duration-500"></div>
+<div class="relative z-10 flex flex-col gap-2">
+<div class="flex items-center gap-2 text-slate-400 dark:text-slate-400">
+<span class="material-symbols-outlined text-accent-green">account_balance_wallet</span>
+<p class="text-sm font-medium uppercase tracking-wider">Available Balance</p>
+</div>
+<p class="text-white text-5xl font-bold tracking-tight mt-2 flex items-baseline gap-1">
+                                        $12,450<span class="text-2xl text-slate-400">.00</span>
+</p>
+<div class="flex items-center gap-2 mt-4 text-sm text-accent-green">
+<span class="material-symbols-outlined text-lg">trending_up</span>
+<span>+15% from last month</span>
+</div>
+</div>
+</div>
+<!-- Amount Input Section -->
+<div class="flex flex-col gap-4">
+<label class="text-slate-900 dark:text-white text-lg font-bold">Withdrawal Amount</label>
+<div class="bg-white dark:bg-surface-darker border border-slate-200 dark:border-white/10 rounded-xl p-2 focus-within:border-accent-green/50 focus-within:ring-1 focus-within:ring-accent-green/50 transition-all shadow-sm">
+<div class="flex items-center px-4">
+<span class="text-slate-400 text-2xl font-medium">$</span>
+<input class="w-full bg-transparent border-none text-slate-900 dark:text-white text-3xl font-bold focus:ring-0 p-4 placeholder:text-slate-600 dark:placeholder:text-slate-600" placeholder="0.00" type="number"/>
+<div class="flex items-center gap-2">
+<span class="hidden sm:inline text-xs font-bold text-slate-500 uppercase px-2 py-1 bg-slate-100 dark:bg-white/5 rounded">USD</span>
+</div>
+</div>
+</div>
+<!-- Percentage Quick Select -->
+<div class="flex gap-3">
+<button class="flex-1 py-2 px-4 rounded-lg bg-slate-100 dark:bg-surface-dark border border-transparent hover:border-accent-green/50 hover:text-accent-green text-slate-600 dark:text-slate-300 text-sm font-semibold transition-all">25%</button>
+<button class="flex-1 py-2 px-4 rounded-lg bg-slate-100 dark:bg-surface-dark border border-transparent hover:border-accent-green/50 hover:text-accent-green text-slate-600 dark:text-slate-300 text-sm font-semibold transition-all">50%</button>
+<button class="flex-1 py-2 px-4 rounded-lg bg-slate-100 dark:bg-surface-dark border border-transparent hover:border-accent-green/50 hover:text-accent-green text-slate-600 dark:text-slate-300 text-sm font-semibold transition-all">75%</button>
+<button class="flex-1 py-2 px-4 rounded-lg bg-slate-100 dark:bg-surface-dark border border-transparent hover:border-accent-green/50 hover:text-accent-green text-slate-600 dark:text-slate-300 text-sm font-semibold transition-all">Max</button>
+</div>
+</div>
+<!-- Destination Selection -->
+<div class="flex flex-col gap-4 pt-4">
+<div class="flex items-center justify-between">
+<label class="text-slate-900 dark:text-white text-lg font-bold">Select Destination</label>
+<button class="text-accent-green text-sm font-semibold hover:text-accent-green-dim flex items-center gap-1">
+<span class="material-symbols-outlined text-lg">add</span> Add New
+                                    </button>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<!-- Option 1: Bank Account -->
+<label class="relative cursor-pointer group">
+<input checked="" class="peer sr-only" name="destination" type="radio"/>
+<div class="p-5 rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-white/10 peer-checked:border-accent-green peer-checked:bg-accent-green/5 transition-all h-full">
+<div class="flex items-start justify-between mb-3">
+<div class="size-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-slate-900 dark:text-white">account_balance</span>
+</div>
+<div class="size-5 rounded-full border border-slate-300 dark:border-white/20 peer-checked:border-accent-green peer-checked:bg-accent-green flex items-center justify-center">
+<span class="material-symbols-outlined text-black text-[14px] opacity-0 peer-checked:opacity-100 font-bold">check</span>
+</div>
+</div>
+<p class="text-slate-900 dark:text-white font-bold">Chase Bank</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm">**** 4589</p>
+</div>
+</label>
+<!-- Option 2: PayPal -->
+<label class="relative cursor-pointer group">
+<input class="peer sr-only" name="destination" type="radio"/>
+<div class="p-5 rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-white/10 peer-checked:border-accent-green peer-checked:bg-accent-green/5 transition-all h-full">
+<div class="flex items-start justify-between mb-3">
+<div class="size-10 rounded-full bg-[#003087]/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[#003087] dark:text-[#3b7bbf]">payments</span>
+</div>
+<div class="size-5 rounded-full border border-slate-300 dark:border-white/20 peer-checked:border-accent-green peer-checked:bg-accent-green flex items-center justify-center">
+<span class="material-symbols-outlined text-black text-[14px] opacity-0 peer-checked:opacity-100 font-bold">check</span>
+</div>
+</div>
+<p class="text-slate-900 dark:text-white font-bold">PayPal</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm">user@email.com</p>
+</div>
+</label>
+</div>
+</div>
+</div>
+<!-- Right Column: Summary & Actions -->
+<div class="lg:col-span-5 flex flex-col gap-6">
+<div class="bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-white/10 p-6 lg:p-8 sticky top-28">
+<h3 class="text-slate-900 dark:text-white text-xl font-bold mb-6">Transaction Summary</h3>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between items-center text-sm">
+<span class="text-slate-500 dark:text-slate-400">Withdrawal Amount</span>
+<span class="text-slate-900 dark:text-white font-medium">$12,450.00</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-slate-500 dark:text-slate-400">Processing Fee (0.5%)</span>
+<span class="text-slate-900 dark:text-white font-medium">-$62.25</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-slate-500 dark:text-slate-400">Estimated Tax</span>
+<span class="text-slate-900 dark:text-white font-medium">$0.00</span>
+</div>
+<div class="h-px bg-slate-200 dark:bg-white/10 my-4"></div>
+<div class="flex justify-between items-end">
+<span class="text-slate-900 dark:text-white font-bold text-lg">Total to receive</span>
+<span class="text-accent-green text-2xl font-bold">$12,387.75</span>
+</div>
+</div>
+<div class="bg-slate-50 dark:bg-white/5 rounded-lg p-4 mb-8 flex gap-3 items-start">
+<span class="material-symbols-outlined text-accent-green mt-0.5">timer</span>
+<div>
+<p class="text-slate-900 dark:text-white font-bold text-sm">Estimated Arrival</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs mt-1">Funds should arrive by <span class="text-slate-900 dark:text-white font-medium">Tue, Oct 24</span>. Instant transfer is available for a higher fee.</p>
+</div>
+</div>
+<button class="w-full group relative flex items-center justify-center gap-2 bg-accent-green hover:bg-accent-green-dim text-black font-bold text-base py-4 px-6 rounded-lg transition-all shadow-[0_0_20px_rgba(0,230,118,0.3)] hover:shadow-[0_0_30px_rgba(0,230,118,0.5)]">
+<span>Confirm Withdrawal</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<p class="text-center text-xs text-slate-400 dark:text-slate-500 mt-4">
+                                    By confirming, you agree to our <a class="underline hover:text-white" href="#">Terms of Service</a>.
+                                </p>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</div>
+</body></html>

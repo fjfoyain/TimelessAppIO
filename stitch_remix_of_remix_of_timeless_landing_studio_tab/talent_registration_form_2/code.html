@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Interaction &amp; Feedback System - Timeless</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "primary-hover": "#6b11c9",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                        "surface-dark": "#231630",
+                        "surface-light": "#ffffff",
+                        "success": "#10b981",
+                        "error": "#ef4444",
+                    },
+                    fontFamily: {
+                        "display": ["Be Vietnam Pro", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #191022; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3f2e56; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7f13ec; 
+        }select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%239ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-slate-900 dark:text-white antialiased selection:bg-primary selection:text-white h-screen flex flex-col overflow-hidden">
+<div class="flex-1 flex w-full h-full">
+<div class="hidden lg:block lg:w-1/2 relative h-full bg-surface-dark overflow-hidden group">
+<img alt="Concert photographer capturing a live performance with dramatic lighting" class="absolute inset-0 w-full h-full object-cover object-center opacity-60 mix-blend-overlay transition-transform duration-1000 group-hover:scale-105" data-alt="Concert photographer capturing a live performance with dramatic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCh9IVwWVViHBmlXuwHNiLKDH6gkIxFjL08zrgmjrvX39FBrFl6gM7bIM99kmGJljybqzr8DapCDtldvtVWdLT0yKN3tDx78JT8mlwDEn6Ej9eZ0ax1Ma1LeGrgMzniKaalSAbxzi6FpG-oHvAhsiSYVenJeEfzet5bMUpnjkryeQ4-SuP_zJWVKShsqxklIAU-KmeOpgWmnjhBpraZ6V1Mc3TMzFhTd66oXCn-gyQ0NXrK_C7iwQNpMA3tyGKVrEdpwbfGfPGXOJ5"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-primary/20 to-background-dark/80 mix-blend-multiply"></div>
+<div class="absolute inset-0 flex flex-col justify-between p-12 z-10">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded bg-primary flex items-center justify-center shadow-lg shadow-primary/50 ring-2 ring-primary/30">
+<span class="material-icons text-white text-lg animate-pulse">equalizer</span>
+</div>
+<span class="text-2xl font-bold tracking-tight text-white">Timeless</span>
+</div>
+<div class="max-w-md">
+<div class="transform transition-all duration-500 translate-y-0 opacity-100 mb-6 bg-surface-dark/90 backdrop-blur-md border border-success/30 p-4 rounded-xl flex items-center gap-4 shadow-xl shadow-black/20">
+<div class="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center flex-shrink-0">
+<span class="material-icons text-success">check_circle</span>
+</div>
+<div>
+<h4 class="text-white font-semibold text-sm">Profile Verified</h4>
+<p class="text-slate-400 text-xs">Your portfolio has been approved.</p>
+</div>
+<button class="ml-auto text-slate-400 hover:text-white transition-colors">
+<span class="material-icons text-sm">close</span>
+</button>
+</div>
+<h1 class="text-5xl font-bold text-white mb-6 leading-tight">
+                        Interaction States Showcase
+                    </h1>
+<p class="text-lg text-slate-300 mb-8 font-light">
+                        Demonstrating feedback loops: loading indicators, error handling, success states, and micro-interactions that build user trust.
+                    </p>
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-4 p-3 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 transition-colors cursor-default">
+<div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+<span class="material-icons text-primary animate-spin">refresh</span>
+</div>
+<div>
+<div class="text-sm font-medium text-white">Syncing Portfolio</div>
+<div class="text-xs text-slate-400">Connecting to external drive...</div>
+</div>
+</div>
+</div>
+</div>
+<div class="text-xs text-slate-500 font-medium flex justify-between items-center">
+<span>© 2023 Timeless Platform Inc.</span>
+<div class="flex gap-2">
+<span class="w-2 h-2 rounded-full bg-success"></span>
+<span class="text-slate-400">System Operational</span>
+</div>
+</div>
+</div>
+</div>
+<div class="w-full lg:w-1/2 h-full flex flex-col justify-center items-center p-6 lg:p-12 overflow-y-auto bg-background-light dark:bg-background-dark relative">
+<div class="lg:hidden absolute top-6 left-6 flex items-center gap-2">
+<div class="w-8 h-8 rounded bg-primary flex items-center justify-center">
+<span class="material-icons text-white text-lg">equalizer</span>
+</div>
+<span class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Timeless</span>
+</div>
+<div class="w-full max-w-lg mx-auto">
+<div class="mb-8">
+<div class="flex items-center gap-2 mb-2">
+<span class="bg-primary/20 text-primary text-xs font-bold px-2 py-1 rounded uppercase tracking-wider">Step 2 of 3</span>
+</div>
+<h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">Interactive Form Demo</h2>
+<p class="text-slate-500 dark:text-slate-400">Experience valid, invalid, and loading interaction states.</p>
+</div>
+<form class="space-y-6" onsubmit="event.preventDefault()">
+<div class="space-y-1 group">
+<div class="flex justify-between">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300" for="fullname">Full Name</label>
+<span class="text-xs text-success flex items-center gap-1 opacity-0 group-focus-within:opacity-100 transition-opacity">
+<span class="material-icons text-[14px]">check</span> Looks good
+                            </span>
+</div>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-icons text-success text-lg">person</span>
+</div>
+<input class="block w-full pl-10 pr-10 py-3 border border-success rounded-lg leading-5 bg-white dark:bg-surface-dark text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-success focus:border-success sm:text-sm transition duration-150 ease-in-out" id="fullname" name="fullname" placeholder="e.g. Sarah Jenkins" type="text" value="Sarah Jenkins"/>
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+<span class="material-icons text-success">check_circle</span>
+</div>
+</div>
+</div>
+<div class="space-y-1">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300" for="category">Professional Category</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-icons text-error text-lg">work_off</span>
+</div>
+<select class="block w-full pl-10 pr-10 py-3 border border-error rounded-lg leading-5 bg-error/5 dark:bg-surface-dark text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-error focus:border-error sm:text-sm transition duration-150 ease-in-out" id="category" name="category">
+<option disabled="" value="">Select your primary role</option>
+<option value="photographer">Concert Photographer</option>
+<option value="videographer">Videographer / Editor</option>
+<option value="lighting">Lighting Technician</option>
+</select>
+<div class="absolute inset-y-0 right-8 pr-3 flex items-center pointer-events-none">
+<span class="material-icons text-error">error</span>
+</div>
+</div>
+<p class="text-sm text-error mt-1 flex items-center gap-1">
+                            Please select a valid category.
+                        </p>
+</div>
+<div class="space-y-1">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Experience Level</label>
+<div class="grid grid-cols-3 gap-3">
+<label class="cursor-pointer group relative">
+<input class="peer sr-only" name="experience" type="radio" value="beginner"/>
+<div class="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-surface-dark p-3 text-center group-hover:border-primary group-hover:-translate-y-0.5 peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary transition-all duration-300 shadow-sm peer-checked:shadow-primary/20">
+<div class="text-sm font-semibold">Newcomer</div>
+<div class="text-xs text-slate-500 mt-1">1-2 yrs</div>
+</div>
+<div class="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full opacity-0 peer-checked:opacity-100 transition-opacity duration-300"></div>
+</label>
+<label class="cursor-pointer group relative">
+<input checked="" class="peer sr-only" name="experience" type="radio" value="intermediate"/>
+<div class="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-surface-dark p-3 text-center group-hover:border-primary group-hover:-translate-y-0.5 peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary transition-all duration-300 shadow-sm peer-checked:shadow-primary/20">
+<div class="text-sm font-semibold">Pro</div>
+<div class="text-xs text-slate-500 mt-1">3-5 yrs</div>
+</div>
+<div class="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full opacity-0 peer-checked:opacity-100 transition-opacity duration-300"></div>
+</label>
+<label class="cursor-pointer group relative">
+<input class="peer sr-only" name="experience" type="radio" value="expert"/>
+<div class="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-surface-dark p-3 text-center group-hover:border-primary group-hover:-translate-y-0.5 peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary transition-all duration-300 shadow-sm peer-checked:shadow-primary/20">
+<div class="text-sm font-semibold">Veteran</div>
+<div class="text-xs text-slate-500 mt-1">5+ yrs</div>
+</div>
+<div class="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full opacity-0 peer-checked:opacity-100 transition-opacity duration-300"></div>
+</label>
+</div>
+</div>
+<div class="space-y-1">
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300" for="portfolio">Portfolio URL (Validating...)</label>
+<div class="flex rounded-lg shadow-sm relative">
+<span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-primary/50 bg-primary/5 text-primary sm:text-sm">
+                                https://
+                            </span>
+<input class="flex-1 min-w-0 block w-full px-3 py-3 rounded-none rounded-r-lg border border-primary/50 bg-white dark:bg-surface-dark text-slate-900 dark:text-white focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm transition duration-150 ease-in-out" id="portfolio" name="portfolio" placeholder="www.yourportfolio.com" type="text" value="dribbble.com/timeless"/>
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+<svg class="animate-spin h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+<path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+</svg>
+</div>
+</div>
+</div>
+<div class="pt-6 space-y-3">
+<button class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-primary hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-background-dark transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed group relative overflow-hidden" disabled="" type="submit">
+<span class="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></span>
+<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+<path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+</svg>
+                            Processing Registration...
+                        </button>
+<div class="flex justify-between items-center text-sm">
+<button class="text-slate-500 hover:text-slate-300 transition-colors flex items-center gap-1" type="button">
+<span class="material-icons text-sm">arrow_back</span> Back
+                            </button>
+<span class="text-xs text-slate-600">Auto-saving drafts...</span>
+</div>
+</div>
+</form>
+</div>
+<div class="absolute bottom-6 right-6 lg:left-6 lg:right-auto max-w-sm w-full bg-surface-dark border-l-4 border-success p-4 rounded shadow-2xl transform transition-all hover:-translate-y-1 cursor-pointer">
+<div class="flex items-start">
+<div class="flex-shrink-0">
+<span class="material-icons text-success">check_circle_outline</span>
+</div>
+<div class="ml-3">
+<p class="text-sm font-medium text-white">
+                            Draft Saved
+                        </p>
+<p class="text-sm text-slate-400 mt-1">
+                            Your changes have been automatically saved to the cloud.
+                        </p>
+</div>
+<div class="ml-auto pl-3">
+<div class="-mx-1.5 -my-1.5">
+<button class="inline-flex rounded-md p-1.5 text-slate-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-surface-dark focus:ring-success">
+<span class="sr-only">Dismiss</span>
+<span class="material-icons text-sm">close</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</body></html>

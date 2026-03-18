@@ -70,9 +70,9 @@ export default function StudioPage() {
               </h1>
 
               <p className="mt-6 max-w-xl text-xl font-light leading-relaxed text-gray-400">
-                Step away from the screen and into a world-class recording
-                environment. From pre-production to final master, we have the
-                rooms, the gear, and the engineers to bring your vision to life.
+                Step away from the screen into a sanctuary of analog warmth and
+                digital precision. Where sound meets soul in the heart of the
+                city.
               </p>
 
               {/* CTA buttons */}
@@ -90,7 +90,7 @@ export default function StudioPage() {
                   href="/studio/classes"
                   className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-surface-dark px-8 py-3.5 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-surface-alt"
                 >
-                  Explore Classes
+                  Explore Gear
                 </a>
               </div>
 
@@ -415,7 +415,7 @@ export default function StudioPage() {
                   href="/booking"
                   className="inline-flex items-center gap-2 rounded-full bg-primary px-10 py-4 text-sm font-semibold text-white btn-glow transition hover:bg-primary-hover hover:shadow-glow-hover"
                 >
-                  Book a Session
+                  Book a Class or Visit
                   <span className="material-icons text-base">
                     arrow_forward
                   </span>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Add New Provider Service - Timeless</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#625063",
+                        "primary-light": "#8a728c",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#1a181a",
+                        "surface-dark": "#242224",
+                        "border-dark": "#363436",
+                    },
+                    fontFamily: {
+                        "display": ["Montserrat", "sans-serif"],
+                        "sans": ["Montserrat", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .geometric-pattern {
+            background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .glowing-btn:hover {
+            box-shadow: 0 0 15px rgba(98, 80, 99, 0.6);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col geometric-pattern">
+<!-- Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-border-dark px-10 py-4 bg-white dark:bg-[#151415]">
+<div class="flex items-center gap-4 dark:text-white">
+<div class="size-8 flex items-center justify-center text-primary dark:text-primary-light">
+<span class="material-symbols-outlined text-3xl">inventory_2</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">Timeless Inventory</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<div class="hidden md:flex items-center gap-9">
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary-light text-sm font-medium leading-normal transition-colors" href="#">Dashboard</a>
+<a class="text-primary dark:text-primary-light text-sm font-medium leading-normal" href="#">Inventory</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary-light text-sm font-medium leading-normal transition-colors" href="#">Orders</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary-light text-sm font-medium leading-normal transition-colors" href="#">Settings</a>
+</div>
+<div class="flex items-center gap-3 pl-4 border-l border-slate-200 dark:border-border-dark">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border-2 border-primary dark:border-primary-light/30" data-alt="User profile avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD54bKmGnKoFzibrStBfiy43UQ-XXZzpjCRpekVITgkzXXle2_05xYH_PCHBo3lA-1L3vIb7WGJFvPtbGzC3tJ-qOaM_egTLsfHM6_Vb847pVtk6CFrFjGL4CCfunzjOK6_XA4Z1b_7q26KAGPtnta31uEzS2UmX_jWhtPqURM3zbAE57P1L9HKhwc5-tuTTnogMrH0FNoxSiUeIoSMGmNLHnmJHMXmGhQ_iiuDpC6XCW_BaOCt8kLtzbI70XwYiNzS4tkJURgrEZc");'></div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 w-full max-w-[1440px] mx-auto px-6 py-8 md:px-12 md:py-10">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
+<a class="hover:text-primary dark:hover:text-primary-light" href="#">Inventory</a>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+<span>Add New</span>
+</div>
+<h1 class="text-3xl md:text-4xl font-black leading-tight tracking-tight text-slate-900 dark:text-white">Add New Service</h1>
+<p class="text-slate-600 dark:text-slate-400 text-base font-normal max-w-2xl">Fill in the details below to list your new equipment or service on the Timeless network.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-3 rounded-xl border border-slate-300 dark:border-border-dark text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
+                    Save Draft
+                </button>
+<button class="glowing-btn px-8 py-3 rounded-xl bg-primary text-white font-semibold hover:bg-primary-light/90 transition-colors shadow-lg shadow-primary/20 flex items-center gap-2">
+<span class="material-symbols-outlined text-[20px]">check</span>
+                    Publish Service
+                </button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left Column: Media Upload -->
+<div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-6">
+<div class="bg-white dark:bg-surface-dark rounded-2xl p-6 border border-slate-200 dark:border-border-dark shadow-sm h-full">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary dark:text-primary-light">image</span>
+                        Media Gallery
+                    </h3>
+<!-- Main Upload Area -->
+<div class="relative w-full aspect-[4/3] rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-background-dark hover:bg-slate-100 dark:hover:bg-[#2a282a] transition-colors flex flex-col items-center justify-center cursor-pointer group mb-4 overflow-hidden">
+<input class="absolute inset-0 opacity-0 cursor-pointer z-10" multiple="" type="file"/>
+<div class="flex flex-col items-center gap-3 p-6 text-center group-hover:scale-105 transition-transform duration-300">
+<div class="size-16 rounded-full bg-primary/10 flex items-center justify-center text-primary dark:text-primary-light">
+<span class="material-symbols-outlined text-3xl">cloud_upload</span>
+</div>
+<div>
+<p class="font-semibold text-slate-700 dark:text-slate-200">Click or drag images here</p>
+<p class="text-sm text-slate-500 dark:text-slate-400 mt-1">High-res images (JPG, PNG) or Video (MP4)</p>
+</div>
+</div>
+</div>
+<!-- Thumbnails Grid -->
+<div class="grid grid-cols-3 gap-3">
+<div class="aspect-square rounded-lg bg-slate-100 dark:bg-background-dark border border-slate-200 dark:border-border-dark relative overflow-hidden group">
+<img alt="Preview 1" class="w-full h-full object-cover" data-alt="Equipment thumbnail preview" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCejtm6qvN7D5HEb2yNGuj8-hYkYUM5aogKHe3ESAV3dPQziCd-a9dl_CjQiN78e2HvvtUUFSgk4th3zn3gf3iIRyAb0liiMYi1AG2KQ8x1BJtalp11pF5HhQQErKZ_BMmoWMb9UkNMBU_pgOmvuwS_1r_dUCeFIipJlKqV0KrR3H87x0jNinSrwcCzTh6TW4d_OPVcVkq_rEk-Mqd-LKMQoynSHyB3tWnhD9keTFENNn9RsVTmko3pPTgrKnjg-EG328461deePY0"/>
+<button class="absolute top-1 right-1 p-1 bg-black/60 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+<div class="aspect-square rounded-lg bg-slate-100 dark:bg-background-dark border border-slate-200 dark:border-border-dark flex items-center justify-center text-slate-400 dark:text-slate-500 hover:text-primary dark:hover:text-primary-light hover:border-primary dark:hover:border-primary-light transition-colors cursor-pointer border-dashed">
+<span class="material-symbols-outlined">add</span>
+</div>
+</div>
+</div>
+<!-- Stock & Availability Card (Moved to left for balance or stickiness if needed) -->
+<div class="bg-white dark:bg-surface-dark rounded-2xl p-6 border border-slate-200 dark:border-border-dark shadow-sm">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary dark:text-primary-light">inventory</span>
+                        Inventory Status
+                    </h3>
+<div class="space-y-6">
+<!-- Quantity Counter -->
+<div>
+<label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Total Stock Quantity</label>
+<div class="flex items-center">
+<button class="size-12 rounded-l-xl bg-slate-100 dark:bg-background-dark border border-slate-200 dark:border-border-dark hover:bg-slate-200 dark:hover:bg-border-dark text-slate-600 dark:text-slate-300 transition-colors">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<input class="h-12 w-20 text-center bg-white dark:bg-[#151415] border-y border-slate-200 dark:border-border-dark text-slate-900 dark:text-white font-medium focus:ring-0 focus:outline-none" type="number" value="1"/>
+<button class="size-12 rounded-r-xl bg-slate-100 dark:bg-background-dark border border-slate-200 dark:border-border-dark hover:bg-slate-200 dark:hover:bg-border-dark text-slate-600 dark:text-slate-300 transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+</div>
+<!-- Availability Toggle -->
+<div class="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-background-dark border border-slate-200 dark:border-border-dark">
+<div class="flex flex-col">
+<span class="text-sm font-semibold text-slate-900 dark:text-white">Availability Calendar</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">Manage booking dates</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-slate-300 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 dark:peer-focus:ring-primary-light/50 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Details Form -->
+<div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-6">
+<!-- General Info -->
+<div class="bg-white dark:bg-surface-dark rounded-2xl p-6 md:p-8 border border-slate-200 dark:border-border-dark shadow-sm">
+<h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2 pb-4 border-b border-slate-100 dark:border-border-dark">
+<span class="material-symbols-outlined text-primary dark:text-primary-light">edit_note</span>
+                        Product Details
+                    </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+<label class="flex flex-col gap-2">
+<span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Product Name</span>
+<input class="h-12 px-4 rounded-lg bg-slate-50 dark:bg-background-dark border border-slate-300 dark:border-border-dark text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-primary dark:focus:border-primary-light focus:ring-1 focus:ring-primary dark:focus:ring-primary-light outline-none transition-all" placeholder="e.g., JBL Professional Speakers" type="text"/>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Category</span>
+<div class="relative">
+<select class="w-full h-12 px-4 rounded-lg bg-slate-50 dark:bg-background-dark border border-slate-300 dark:border-border-dark text-slate-900 dark:text-white appearance-none focus:border-primary dark:focus:border-primary-light focus:ring-1 focus:ring-primary dark:focus:ring-primary-light outline-none transition-all cursor-pointer">
+<option disabled="" selected="" value="">Select a category</option>
+<option value="audio">Audio Equipment</option>
+<option value="lighting">Lighting</option>
+<option value="logistics">Logistics &amp; Transport</option>
+<option value="furniture">Event Furniture</option>
+</select>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">expand_more</span>
+</div>
+</label>
+</div>
+<label class="flex flex-col gap-2 mb-6">
+<span class="text-sm font-semibold text-slate-700 dark:text-slate-300">Detailed Description</span>
+<textarea class="min-h-[140px] p-4 rounded-lg bg-slate-50 dark:bg-background-dark border border-slate-300 dark:border-border-dark text-slate-900 dark:text-white placeholder:text-slate-400 focus:border-primary dark:focus:border-primary-light focus:ring-1 focus:ring-primary dark:focus:ring-primary-light outline-none transition-all resize-none" placeholder="Describe the key features, condition, and usage scenarios..."></textarea>
+</label>
+<h4 class="text-base font-bold text-slate-900 dark:text-white mt-8 mb-4">Technical Specifications</h4>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<label class="flex flex-col gap-2">
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Dimensions (cm)</span>
+<input class="h-10 px-3 rounded-lg bg-slate-50 dark:bg-background-dark border border-slate-300 dark:border-border-dark text-slate-900 dark:text-white focus:border-primary dark:focus:border-primary-light focus:ring-0 outline-none" placeholder="L x W x H" type="text"/>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Weight (kg)</span>
+<input class="h-10 px-3 rounded-lg bg-slate-50 dark:bg-background-dark border border-slate-300 dark:border-border-dark text-slate-900 dark:text-white focus:border-primary dark:focus:border-primary-light focus:ring-0 outline-none" placeholder="0.0 kg" type="text"/>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Power / Model</span>
+<input class="h-10 px-3 rounded-lg bg-slate-50 dark:bg-background-dark border border-slate-300 dark:border-border-dark text-slate-900 dark:text-white focus:border-primary dark:focus:border-primary-light focus:ring-0 outline-none" placeholder="e.g. 1000W" type="text"/>
+</label>
+</div>
+</div>
+<!-- Pricing Card -->
+<div class="bg-white dark:bg-surface-dark rounded-2xl p-6 md:p-8 border border-slate-200 dark:border-border-dark shadow-sm">
+<h3 class="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2 pb-4 border-b border-slate-100 dark:border-border-dark">
+<span class="material-symbols-outlined text-primary dark:text-primary-light">payments</span>
+                        Pricing Configuration
+                    </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Daily Rate -->
+<div class="relative p-5 rounded-xl border border-primary/20 bg-primary/5 dark:bg-primary/5 dark:border-primary/30 flex flex-col gap-3 group focus-within:ring-2 focus-within:ring-primary/50 transition-all">
+<div class="flex items-center justify-between">
+<label class="font-semibold text-slate-700 dark:text-slate-200" for="daily-rate">Daily Rate</label>
+<span class="material-symbols-outlined text-primary dark:text-primary-light opacity-50 group-focus-within:opacity-100">calendar_today</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="text-xl font-bold text-slate-500 dark:text-slate-400">$</span>
+<input class="w-full bg-transparent border-none p-0 text-3xl font-black text-slate-900 dark:text-white focus:ring-0 placeholder:text-slate-300 dark:placeholder:text-slate-600" id="daily-rate" placeholder="0.00" type="number"/>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400">Standard 24-hour rental period</p>
+</div>
+<!-- Hourly Rate -->
+<div class="relative p-5 rounded-xl border border-slate-200 dark:border-border-dark bg-slate-50 dark:bg-background-dark flex flex-col gap-3 group focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/50 transition-all">
+<div class="flex items-center justify-between">
+<label class="font-semibold text-slate-700 dark:text-slate-200" for="hourly-rate">Hourly Rate</label>
+<span class="material-symbols-outlined text-slate-400 dark:text-slate-500 group-focus-within:text-primary dark:group-focus-within:text-primary-light transition-colors">schedule</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="text-xl font-bold text-slate-500 dark:text-slate-400">$</span>
+<input class="w-full bg-transparent border-none p-0 text-3xl font-black text-slate-900 dark:text-white focus:ring-0 placeholder:text-slate-300 dark:placeholder:text-slate-600" id="hourly-rate" placeholder="0.00" type="number"/>
+</div>
+<p class="text-xs text-slate-500 dark:text-slate-400">Minimum 4-hour booking required</p>
+</div>
+</div>
+<!-- Additional Charges Toggle -->
+<div class="mt-6 pt-6 border-t border-slate-100 dark:border-border-dark">
+<div class="flex items-start gap-3">
+<input class="mt-1 rounded border-slate-300 dark:border-border-dark bg-slate-100 dark:bg-background-dark text-primary focus:ring-primary dark:focus:ring-offset-surface-dark" id="tax-option" type="checkbox"/>
+<label class="text-sm text-slate-600 dark:text-slate-300 select-none" for="tax-option">
+                                 Automatically apply local sales tax to these rates based on customer location.
+                             </label>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

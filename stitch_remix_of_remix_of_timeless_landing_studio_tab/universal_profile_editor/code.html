@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Universal Profile Editor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Be Vietnam Pro", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-primary/20 px-10 py-3 bg-white dark:bg-background-dark sticky top-0 z-50">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-8 flex items-center justify-center">
+<span class="material-symbols-outlined text-3xl">all_inclusive</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-[-0.015em]">Timeless</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<nav class="hidden md:flex items-center gap-9">
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Dashboard</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Gigs</a>
+<a class="text-primary text-sm font-bold leading-normal" href="#">Profile</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Settings</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-primary/30" data-alt="User profile avatar portrait" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDzkfdX-nk7dUXCxaTcIjTE1zJymsyOmm9yEQJyCVxPbk28I48iROcEA7-mtl-HIP5eokWzoswFJIpTmy21XD1Uku-mA9zYgAngz56BHQnoJ-j7XudkdQ5qEwB0oybtAQkhG1CuyX-vAgO17ePnlWvxeWlBQmpGw2CG7Z1R75t6gdh9TIU2QJ3mZhD5xQe-HDk0NV4nIgHYzWfvfqeWbIPVVM2IQH3N1_PpaxaDuHfRaanBJ_3_mlG9vOsskvAc2l_SySjNVnqDj12l");'></div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 justify-center py-8 px-4 sm:px-10 md:px-20 lg:px-40">
+<main class="layout-content-container flex flex-col max-w-[960px] w-full flex-1 gap-8">
+<section class="flex flex-wrap justify-between items-end gap-4 bg-white dark:bg-slate-900/50 p-6 rounded-xl border border-slate-200 dark:border-primary/10">
+<div class="flex min-w-72 flex-col gap-2">
+<h1 class="text-slate-900 dark:text-slate-100 text-3xl md:text-4xl font-black leading-tight tracking-[-0.033em]">Public Profile Editor</h1>
+<p class="text-slate-500 dark:text-slate-400 text-base font-normal leading-normal">Manage your public-facing information for fans, venues, and providers.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="material-symbols-outlined mr-2 text-sm">visibility</span>
+<span class="truncate">Preview</span>
+</button>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-white hover:bg-primary/90 transition-colors text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="material-symbols-outlined mr-2 text-sm">save</span>
+<span class="truncate">Save Changes</span>
+</button>
+</div>
+</section>
+<nav class="pb-2 border-b border-slate-200 dark:border-primary/20 sticky top-[65px] bg-background-light dark:bg-background-dark z-40 pt-4">
+<div class="flex gap-8 overflow-x-auto hide-scrollbar">
+<button class="flex flex-col items-center justify-center border-b-[3px] border-b-primary text-primary pb-3 whitespace-nowrap">
+<span class="text-sm font-bold leading-normal tracking-[0.015em]">Basic Info &amp; Bio</span>
+</button>
+<button class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary pb-3 whitespace-nowrap transition-colors">
+<span class="text-sm font-bold leading-normal tracking-[0.015em]">Media Gallery</span>
+</button>
+<button class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary pb-3 whitespace-nowrap transition-colors">
+<span class="text-sm font-bold leading-normal tracking-[0.015em]">Social Links</span>
+</button>
+<button class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-slate-500 dark:text-slate-400 hover:text-primary dark:hover:text-primary pb-3 whitespace-nowrap transition-colors">
+<span class="text-sm font-bold leading-normal tracking-[0.015em]">Tech Rider</span>
+</button>
+</div>
+</nav>
+<div class="flex flex-col gap-8">
+<section class="bg-white dark:bg-slate-900/30 p-6 rounded-xl border border-slate-200 dark:border-primary/10">
+<h2 class="text-slate-900 dark:text-slate-100 text-[22px] font-bold leading-tight tracking-[-0.015em] pb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">person</span> Core Information
+                            </h2>
+<div class="flex flex-col gap-6">
+<div class="flex flex-wrap gap-6">
+<div class="flex flex-col items-center gap-4">
+<div class="relative group">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-32 border-4 border-slate-100 dark:border-slate-800" data-alt="User profile avatar portrait large" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBPb9GiZadT98_yZ_JPLKo6TlyA9UJvGp_6q_H1osanm8N3WEf-Luf9NiNeLBSFRVtd0kJJNjFnfYHUFp6VEON81B3nEpagg9H1FCx5XbozcLZaaWOwA9483BqustlW6mVkwffKgyJHNNvCUoHXxcVCxxB6i-HDOATo5Vp9p6XkrPmUfoxH2OGWjctcFPFdIhrV_FyWMG3mxWmIy3Hcu9ifyexF5EDQya8ny1vsSzUokJ5YTy-OezG7YASRi0cZrw4jOCuh5IDobWXO");'></div>
+<button class="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full hover:bg-primary/90 shadow-lg transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-sm">photo_camera</span>
+</button>
+</div>
+<span class="text-xs text-slate-500 dark:text-slate-400">Profile Photo (Min 400x400)</span>
+</div>
+<div class="flex flex-col flex-1 gap-4 min-w-[280px]">
+<label class="flex flex-col w-full">
+<span class="text-slate-700 dark:text-slate-300 text-sm font-medium leading-normal pb-1.5">Display Name <span class="text-primary">*</span></span>
+<input class="form-input w-full rounded-lg text-slate-900 dark:text-slate-100 focus:outline-0 focus:ring-1 focus:ring-primary border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 h-12 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-4 text-sm transition-colors" placeholder="Your stage name or business name" value="Alex Rivera"/>
+</label>
+<label class="flex flex-col w-full">
+<span class="text-slate-700 dark:text-slate-300 text-sm font-medium leading-normal pb-1.5">Profile Tagline</span>
+<input class="form-input w-full rounded-lg text-slate-900 dark:text-slate-100 focus:outline-0 focus:ring-1 focus:ring-primary border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 h-12 placeholder:text-slate-400 dark:placeholder:text-slate-500 px-4 text-sm transition-colors" placeholder="Short catchy description" value="Electronic Music Producer &amp; Live Performer"/>
+</label>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<label class="flex flex-col w-full">
+<span class="text-slate-700 dark:text-slate-300 text-sm font-medium leading-normal pb-1.5">Primary Category</span>
+<select class="form-select w-full rounded-lg text-slate-900 dark:text-slate-100 focus:outline-0 focus:ring-1 focus:ring-primary border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 h-12 px-4 text-sm transition-colors">
+<option selected="" value="artist">Artist / Musician</option>
+<option value="venue">Venue / Club</option>
+<option value="provider">Service Provider</option>
+</select>
+</label>
+<label class="flex flex-col w-full">
+<span class="text-slate-700 dark:text-slate-300 text-sm font-medium leading-normal pb-1.5">Location</span>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">location_on</span>
+<input class="form-input w-full rounded-lg text-slate-900 dark:text-slate-100 focus:outline-0 focus:ring-1 focus:ring-primary border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 h-12 pl-10 pr-4 text-sm transition-colors" placeholder="City, Country" value="Berlin, Germany"/>
+</div>
+</label>
+</div>
+</div>
+</section>
+<section class="bg-white dark:bg-slate-900/30 p-6 rounded-xl border border-slate-200 dark:border-primary/10">
+<h2 class="text-slate-900 dark:text-slate-100 text-[22px] font-bold leading-tight tracking-[-0.015em] pb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">description</span> Biography
+                            </h2>
+<div class="flex flex-col gap-4">
+<label class="flex flex-col w-full">
+<span class="text-slate-700 dark:text-slate-300 text-sm font-medium leading-normal pb-1.5 flex justify-between">
+                                        Full Bio
+                                        <span class="text-xs text-slate-500 font-normal">Markdown supported</span>
+</span>
+<textarea class="form-textarea w-full rounded-lg text-slate-900 dark:text-slate-100 focus:outline-0 focus:ring-1 focus:ring-primary border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 min-h-[200px] placeholder:text-slate-400 dark:placeholder:text-slate-500 p-4 text-sm transition-colors resize-y" placeholder="Tell your story...">Alex Rivera is an electronic music producer based in Berlin, known for blending analog textures with driving techno rhythms. With over a decade of experience playing in top European clubs...</textarea>
+</label>
+</div>
+</section>
+</div>
+</main>
+</div>
+</div>
+</div>
+</body></html>

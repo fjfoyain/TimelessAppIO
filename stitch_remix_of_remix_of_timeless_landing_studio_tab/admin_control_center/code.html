@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Timeless Admin Control Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                        "surface-dark": "#2c1e38", // Custom surface color based on the primary hue
+                        "surface-highlight": "#3d2a4f",
+                        "text-primary": "#ffffff",
+                        "text-secondary": "#ad92c9",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-body overflow-hidden">
+<div class="flex h-screen w-full">
+<!-- Sidebar -->
+<aside class="w-64 flex-shrink-0 flex flex-col bg-surface-dark border-r border-surface-highlight">
+<div class="p-6 flex flex-col gap-6">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 shadow-lg shadow-primary/20" data-alt="Profile picture of the admin user" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD8AB2Ez8XgmL-0zBYFslPx6PWEcj8JdPGa37yKuyjn1nzyl0v-3ZPj9fPF3ssyS0spus_kmwGyGxhHQtr9ZQ8cvd1L4WAVP-7XXYMXd77FfQ7eXZPQbDgXaSrZ4LB1iYwKt98j-zJL_XBRkrGmkuE66of8h1G0QCOx0NBTylSmQUsLXQb-teB-f_qTz6WwXvcg-aSh37swG_4Rh-nYr5pf1HmF7nHSubJceWsHjLiwinAOpkZ5zurSrXllOB7hDHIpPKUffSoI2lA");'></div>
+<div class="flex flex-col">
+<h1 class="text-white text-base font-bold leading-normal">Timeless Admin</h1>
+<p class="text-text-secondary text-xs font-normal leading-normal uppercase tracking-wider">Super Admin</p>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<button class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-highlight transition-colors text-text-secondary hover:text-white group">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/20 text-white shadow-sm ring-1 ring-primary/30">
+<span class="material-symbols-outlined text-[20px] text-primary">group</span>
+<span class="text-sm font-medium">User Management</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-highlight transition-colors text-text-secondary hover:text-white group">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">edit_note</span>
+<span class="text-sm font-medium">Category Editor</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-highlight transition-colors text-text-secondary hover:text-white group">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">receipt_long</span>
+<span class="text-sm font-medium">Audit Logs</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-highlight transition-colors text-text-secondary hover:text-white group">
+<span class="material-symbols-outlined text-[20px] group-hover:text-primary transition-colors">settings</span>
+<span class="text-sm font-medium">System Settings</span>
+</button>
+</div>
+</div>
+<div class="mt-auto p-6 border-t border-surface-highlight">
+<button class="flex items-center gap-3 px-3 py-2 text-text-secondary hover:text-red-400 transition-colors w-full">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span class="text-sm font-medium">Log Out</span>
+</button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-full overflow-y-auto relative scrollbar-hide">
+<!-- Top Header with Actions -->
+<header class="sticky top-0 z-10 bg-background-dark/80 backdrop-blur-md border-b border-surface-highlight px-8 py-5 flex items-center justify-between">
+<div>
+<h2 class="text-white text-2xl font-bold tracking-tight">Overview</h2>
+<p class="text-text-secondary text-sm">Welcome back, here's what's happening today.</p>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-text-secondary hover:text-white hover:bg-surface-highlight rounded-full transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border border-background-dark"></span>
+</button>
+<button class="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-4 py-2.5 rounded-lg font-medium transition-all shadow-lg shadow-primary/25">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+<span>Add New Category</span>
+</button>
+</div>
+</header>
+<div class="p-8 flex flex-col gap-8 max-w-[1600px] w-full mx-auto">
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="bg-surface-dark border border-surface-highlight p-6 rounded-xl flex flex-col gap-1 relative overflow-hidden group hover:border-primary/50 transition-colors">
+<div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[64px] text-primary">group</span>
+</div>
+<p class="text-text-secondary text-sm font-medium">Total Users</p>
+<div class="flex items-end gap-3">
+<h3 class="text-white text-3xl font-bold">12,450</h3>
+<span class="text-emerald-400 text-sm font-medium bg-emerald-400/10 px-1.5 py-0.5 rounded flex items-center mb-1">
+<span class="material-symbols-outlined text-[14px] mr-0.5">trending_up</span> 12%
+                            </span>
+</div>
+</div>
+<div class="bg-surface-dark border border-surface-highlight p-6 rounded-xl flex flex-col gap-1 relative overflow-hidden group hover:border-primary/50 transition-colors">
+<div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[64px] text-primary">palette</span>
+</div>
+<p class="text-text-secondary text-sm font-medium">Active Artists</p>
+<div class="flex items-end gap-3">
+<h3 class="text-white text-3xl font-bold">890</h3>
+<span class="text-emerald-400 text-sm font-medium bg-emerald-400/10 px-1.5 py-0.5 rounded flex items-center mb-1">
+<span class="material-symbols-outlined text-[14px] mr-0.5">trending_up</span> 5%
+                            </span>
+</div>
+</div>
+<div class="bg-surface-dark border border-surface-highlight p-6 rounded-xl flex flex-col gap-1 relative overflow-hidden group hover:border-primary/50 transition-colors">
+<div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[64px] text-primary">storefront</span>
+</div>
+<p class="text-text-secondary text-sm font-medium">Venues</p>
+<div class="flex items-end gap-3">
+<h3 class="text-white text-3xl font-bold">342</h3>
+<span class="text-emerald-400 text-sm font-medium bg-emerald-400/10 px-1.5 py-0.5 rounded flex items-center mb-1">
+<span class="material-symbols-outlined text-[14px] mr-0.5">trending_up</span> 2%
+                            </span>
+</div>
+</div>
+<div class="bg-surface-dark border border-surface-highlight p-6 rounded-xl flex flex-col gap-1 relative overflow-hidden group hover:border-primary/50 transition-colors">
+<div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[64px] text-primary">pending_actions</span>
+</div>
+<p class="text-text-secondary text-sm font-medium">Pending Reviews</p>
+<div class="flex items-end gap-3">
+<h3 class="text-white text-3xl font-bold">15</h3>
+<span class="text-amber-400 text-sm font-medium bg-amber-400/10 px-1.5 py-0.5 rounded flex items-center mb-1">
+<span class="material-symbols-outlined text-[14px] mr-0.5">priority_high</span> Action Needed
+                            </span>
+</div>
+</div>
+</div>
+<!-- Main Section: Chart & List -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+<!-- Chart Section -->
+<div class="xl:col-span-2 bg-surface-dark border border-surface-highlight rounded-xl p-6 flex flex-col">
+<div class="flex items-center justify-between mb-6">
+<div>
+<h3 class="text-white text-lg font-bold">Platform Growth</h3>
+<p class="text-text-secondary text-sm">New signups over the last 30 days</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-3xl font-bold text-white">2,340</span>
+<span class="text-emerald-400 text-sm font-medium">+15.3%</span>
+</div>
+</div>
+<div class="flex-1 min-h-[300px] w-full relative">
+<!-- SVG Chart from original component, adapted for container -->
+<svg class="w-full h-full" fill="none" preserveaspectratio="none" viewbox="0 0 472 150" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<lineargradient gradientunits="userSpaceOnUse" id="chartGradient" x1="236" x2="236" y1="0" y2="150">
+<stop stop-color="#7f13ec" stop-opacity="0.5"></stop>
+<stop offset="1" stop-color="#7f13ec" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25V150H0V109Z" fill="url(#chartGradient)"></path>
+<path d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25" stroke="#7f13ec" stroke-linecap="round" stroke-width="3"></path>
+</svg>
+</div>
+<div class="flex justify-between mt-4 px-2 border-t border-surface-highlight pt-4">
+<span class="text-text-secondary text-xs font-bold uppercase tracking-wide">Jan</span>
+<span class="text-text-secondary text-xs font-bold uppercase tracking-wide">Feb</span>
+<span class="text-text-secondary text-xs font-bold uppercase tracking-wide">Mar</span>
+<span class="text-text-secondary text-xs font-bold uppercase tracking-wide">Apr</span>
+<span class="text-text-secondary text-xs font-bold uppercase tracking-wide">May</span>
+<span class="text-text-secondary text-xs font-bold uppercase tracking-wide">Jun</span>
+<span class="text-text-secondary text-xs font-bold uppercase tracking-wide">Jul</span>
+</div>
+</div>
+<!-- Pending Approvals List -->
+<div class="bg-surface-dark border border-surface-highlight rounded-xl flex flex-col h-full overflow-hidden">
+<div class="p-6 border-b border-surface-highlight flex justify-between items-center">
+<h3 class="text-white text-lg font-bold">Pending Approvals</h3>
+<button class="text-primary text-sm font-medium hover:underline">View All</button>
+</div>
+<div class="flex-1 overflow-y-auto">
+<div class="flex flex-col">
+<!-- Item 1 -->
+<div class="p-4 flex items-center gap-4 hover:bg-surface-highlight/50 transition-colors border-b border-surface-highlight/50 last:border-0">
+<div class="size-10 rounded-full bg-cover bg-center shrink-0" data-alt="Portrait of artist Julian Casablancas" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCNvlXezGZRkd40eLsSBk6bKWFJvf73ZhoqDTsG7lRttmiooZzIzTEJyrEafD9lH49bsTg2D_KMuRTN6aJNhFxLEwRQRmDuMiO9-IDzp_H9L4H9OM_QSdDeo_yJ_X5cTvM9myVyjRMJSLTVhOI2U86U6WvJRivMGNspa8yXZKfutpZ0kawJoYDURde4yt044bCkfWljcL_fZlPxztAv9bW5OasrNC57sso9frn2k6EjyIGI_PjGCUSFsHcUzEZDsCeiLXvU6w8dN-w");'></div>
+<div class="flex-1 min-w-0">
+<h4 class="text-white text-sm font-bold truncate">Julian C.</h4>
+<p class="text-text-secondary text-xs truncate">Artist Application • Pop/Rock</p>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-1.5 text-emerald-400 hover:bg-emerald-400/10 rounded-lg transition-colors" title="Approve">
+<span class="material-symbols-outlined text-[20px]">check</span>
+</button>
+<button class="p-1.5 text-red-400 hover:bg-red-400/10 rounded-lg transition-colors" title="Reject">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="p-4 flex items-center gap-4 hover:bg-surface-highlight/50 transition-colors border-b border-surface-highlight/50 last:border-0">
+<div class="size-10 rounded-lg bg-cover bg-center shrink-0" data-alt="Interior of The Blue Note venue" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC4KTbnTChVhLfBvL-vuccDIMAk7YOEXJ_1lZWL3uHf6n4eVQe6B4KFph-88jDq-0XibLWlWpYTPb6x8YbDItAWE6ZtSyhMJ7IwQuIMxc0DuIzIoeOmB9hoHXb5zB78tqUFbSa9192PW97d014Q_3ezzbZg8r8-Cacx1YI_TspbtyOm7hspVKWPE0-0a_iqumtgky4oJX3d8XrpQYrYAak4QxR8NIh0-g0oMEj_QMsyS96OqTTCgdoWxhhWM8qb22zelZYHY74pwTI");'></div>
+<div class="flex-1 min-w-0">
+<h4 class="text-white text-sm font-bold truncate">The Blue Note</h4>
+<p class="text-text-secondary text-xs truncate">Venue Listing • Jazz Club</p>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-1.5 text-emerald-400 hover:bg-emerald-400/10 rounded-lg transition-colors" title="Approve">
+<span class="material-symbols-outlined text-[20px]">check</span>
+</button>
+<button class="p-1.5 text-red-400 hover:bg-red-400/10 rounded-lg transition-colors" title="Reject">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="p-4 flex items-center gap-4 hover:bg-surface-highlight/50 transition-colors border-b border-surface-highlight/50 last:border-0">
+<div class="size-10 rounded-full bg-cover bg-center shrink-0" data-alt="Portrait of artist Sarah Jenkins" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBfMkPRPfakRTOp8KuNkmmrl0Gi1XGg7TaDF6xMRToq8aUdoOuxIWv5VVlnTuCo9kenvWkIKQ9qlzvOSUQLAFr_XLfYfYjSOQYnsdwUpl15a-3V6Hc5ibsiIJLcNi-ZwPm2edIdH5Am0RbM3Qpb3zTKsq6WKvjB23-Z6bMFw1uIBaI-6_qQqn5jLDjcW9HzKRABAzHR1paQ57WMUzblk-ENDfen-8euuOxX-ubyCKWhoYB_Q6u6mKM5UkUcIYIFbRUYLX8cGG_8OOw");'></div>
+<div class="flex-1 min-w-0">
+<h4 class="text-white text-sm font-bold truncate">Sarah Jenkins</h4>
+<p class="text-text-secondary text-xs truncate">Artist Application • Classical</p>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-1.5 text-emerald-400 hover:bg-emerald-400/10 rounded-lg transition-colors" title="Approve">
+<span class="material-symbols-outlined text-[20px]">check</span>
+</button>
+<button class="p-1.5 text-red-400 hover:bg-red-400/10 rounded-lg transition-colors" title="Reject">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+</div>
+<!-- Item 4 -->
+<div class="p-4 flex items-center gap-4 hover:bg-surface-highlight/50 transition-colors border-b border-surface-highlight/50 last:border-0">
+<div class="size-10 rounded-lg bg-cover bg-center shrink-0" data-alt="Exterior of Electric Avenue venue" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCrknC7ifIfeMBSEXdNMEI8PrZrdg-eWP_b0ZKnZcw7NGUOC_MavrYqMKeKeE2kuGzScj_qDovaMZI6rlewQMKpOkPVLDqRirix6VD7kJIefoKcU-R_6M0v94v1jtypwk3lDSTeB5MFNwVbNjX2_yh3lNM_NKhBgBeidZKD1tUFimOfSjy1RroG9YiQOFunWBN0yNTx7vnduojgC9nWxQrmtIXBEfXf7fGvliUfxnOZzpR4plrAtburCAGSZYcvCDor_x9NwnaKIf4");'></div>
+<div class="flex-1 min-w-0">
+<h4 class="text-white text-sm font-bold truncate">Electric Avenue</h4>
+<p class="text-text-secondary text-xs truncate">Venue Listing • Nightclub</p>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-1.5 text-emerald-400 hover:bg-emerald-400/10 rounded-lg transition-colors" title="Approve">
+<span class="material-symbols-outlined text-[20px]">check</span>
+</button>
+<button class="p-1.5 text-red-400 hover:bg-red-400/10 rounded-lg transition-colors" title="Reject">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="p-4 border-t border-surface-highlight bg-surface-dark/50 text-center">
+<p class="text-text-secondary text-xs">Viewing 4 of 15 pending items</p>
+</div>
+</div>
+</div>
+<!-- Recent System Logs Table (Data Heavy) -->
+<div class="bg-surface-dark border border-surface-highlight rounded-xl overflow-hidden">
+<div class="px-6 py-5 border-b border-surface-highlight flex justify-between items-center">
+<h3 class="text-white text-lg font-bold">Recent System Activity</h3>
+<div class="flex gap-2">
+<button class="px-3 py-1.5 text-xs font-medium text-text-secondary bg-surface-highlight rounded hover:text-white transition-colors">Export CSV</button>
+<button class="px-3 py-1.5 text-xs font-medium text-text-secondary bg-surface-highlight rounded hover:text-white transition-colors">Filter</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-highlight/30 text-text-secondary text-xs uppercase tracking-wider">
+<th class="px-6 py-4 font-semibold">User</th>
+<th class="px-6 py-4 font-semibold">Action</th>
+<th class="px-6 py-4 font-semibold">Category</th>
+<th class="px-6 py-4 font-semibold">Date &amp; Time</th>
+<th class="px-6 py-4 font-semibold">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-highlight">
+<tr class="hover:bg-surface-highlight/10 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-bold">JD</div>
+<span class="text-white text-sm font-medium">John Doe</span>
+</div>
+</td>
+<td class="px-6 py-4 text-text-secondary text-sm">Updated Category "Summer Fest"</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-blue-500/10 text-blue-400 text-xs font-medium border border-blue-500/20">
+                                            Category Editor
+                                        </span>
+</td>
+<td class="px-6 py-4 text-text-secondary text-sm">Oct 24, 2023 • 14:30</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-medium">
+<span class="size-1.5 rounded-full bg-emerald-400"></span> Success
+                                        </span>
+</td>
+</tr>
+<tr class="hover:bg-surface-highlight/10 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 text-xs font-bold">AS</div>
+<span class="text-white text-sm font-medium">Alice Smith</span>
+</div>
+</td>
+<td class="px-6 py-4 text-text-secondary text-sm">Deleted User #9921</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-orange-500/10 text-orange-400 text-xs font-medium border border-orange-500/20">
+                                            User Mgmt
+                                        </span>
+</td>
+<td class="px-6 py-4 text-text-secondary text-sm">Oct 24, 2023 • 12:15</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-medium">
+<span class="size-1.5 rounded-full bg-emerald-400"></span> Success
+                                        </span>
+</td>
+</tr>
+<tr class="hover:bg-surface-highlight/10 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-400 text-xs font-bold">RM</div>
+<span class="text-white text-sm font-medium">Robert M.</span>
+</div>
+</td>
+<td class="px-6 py-4 text-text-secondary text-sm">API Key Rotation Failed</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-gray-500/10 text-gray-400 text-xs font-medium border border-gray-500/20">
+                                            System
+                                        </span>
+</td>
+<td class="px-6 py-4 text-text-secondary text-sm">Oct 24, 2023 • 09:45</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-red-500/10 text-red-400 text-xs font-medium">
+<span class="size-1.5 rounded-full bg-red-400"></span> Failed
+                                        </span>
+</td>
+</tr>
+<tr class="hover:bg-surface-highlight/10 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-teal-500/20 flex items-center justify-center text-teal-400 text-xs font-bold">MK</div>
+<span class="text-white text-sm font-medium">Mike K.</span>
+</div>
+</td>
+<td class="px-6 py-4 text-text-secondary text-sm">Bulk Upload Artists</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded bg-blue-500/10 text-blue-400 text-xs font-medium border border-blue-500/20">
+                                            Category Editor
+                                        </span>
+</td>
+<td class="px-6 py-4 text-text-secondary text-sm">Oct 23, 2023 • 16:20</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-medium">
+<span class="size-1.5 rounded-full bg-emerald-400"></span> Success
+                                        </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-6 py-4 border-t border-surface-highlight flex justify-between items-center bg-surface-highlight/10">
+<span class="text-xs text-text-secondary">Showing 4 of 240 records</span>
+<div class="flex gap-2">
+<button class="px-3 py-1 text-xs font-medium text-text-secondary hover:text-white disabled:opacity-50">Previous</button>
+<button class="px-3 py-1 text-xs font-medium text-white bg-primary rounded">1</button>
+<button class="px-3 py-1 text-xs font-medium text-text-secondary hover:text-white">2</button>
+<button class="px-3 py-1 text-xs font-medium text-text-secondary hover:text-white">3</button>
+<span class="text-xs text-text-secondary flex items-center">...</span>
+<button class="px-3 py-1 text-xs font-medium text-text-secondary hover:text-white">Next</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

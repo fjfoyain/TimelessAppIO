@@ -141,7 +141,7 @@ function DashboardContent() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Welcome Section */}
           <div className="mb-10">
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex flex-wrap items-center gap-3 mb-2">
               <h1 className="text-3xl sm:text-4xl font-bold text-white">
                 Welcome back, {user.name.split(" ")[0]}
               </h1>
@@ -149,6 +149,12 @@ function DashboardContent() {
                 <span className="material-icons text-sm">{role.icon}</span>
                 {role.label}
               </span>
+              {user.isSuperUser && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+                  <span className="material-icons text-sm">all_inclusive</span>
+                  Demo Mode
+                </span>
+              )}
             </div>
             <p className="text-slate-500">
               Here&apos;s your overview. Start exploring or manage your profile.
@@ -161,8 +167,8 @@ function DashboardContent() {
               { label: "Overview", href: "/dashboard", icon: "dashboard" },
               { label: "Events", href: "/dashboard/events", icon: "event" },
               { label: "Projects", href: "/dashboard/projects", icon: "folder" },
-              ...(user.role === UserRole.VENUE ? [{ label: "Venue", href: "/dashboard/venue", icon: "location_on" }] : []),
-              ...(user.role === UserRole.ADMIN ? [{ label: "Admin", href: "/admin", icon: "admin_panel_settings" }] : []),
+              ...(user.role === UserRole.VENUE || user.isSuperUser ? [{ label: "Venue", href: "/dashboard/venue", icon: "location_on" }] : []),
+              ...(user.role === UserRole.ADMIN || user.isSuperUser ? [{ label: "Admin", href: "/admin", icon: "admin_panel_settings" }] : []),
             ].map((nav) => (
               <Link
                 key={nav.label}

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Entry Control &amp; QR Scanner</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#625063",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#1a181a",
+                    },
+                    fontFamily: {
+                        "display": ["Montserrat", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex flex-col">
+<div class="relative flex h-full min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Center container to simulate tablet/mobile view on desktop if wide, or full width on smaller screens -->
+<div class="flex flex-1 justify-center py-5 px-4 md:px-0">
+<div class="layout-content-container flex flex-col w-full max-w-[600px] flex-1 bg-white dark:bg-[#222022] rounded-xl shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
+<!-- Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#312f31] px-6 py-4 bg-white dark:bg-[#222022] sticky top-0 z-10">
+<div class="flex items-center gap-3">
+<div class="size-8 flex items-center justify-center rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined text-xl">qr_code_scanner</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight">Entry Control</h2>
+</div>
+<button class="flex size-10 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-slate-100 dark:bg-[#312f31] text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-[#403d40] transition-colors">
+<span class="material-symbols-outlined text-xl">settings</span>
+</button>
+</header>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto">
+<!-- Stats Section -->
+<div class="grid grid-cols-2 gap-4 p-4">
+<div class="flex flex-col gap-1 rounded-xl p-4 bg-slate-50 dark:bg-[#312f31] border border-slate-100 dark:border-[#403d40]">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-green-500 text-sm">check_circle</span>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Checked In</p>
+</div>
+<p class="text-slate-900 dark:text-white text-2xl font-bold leading-tight">1,245</p>
+<div class="w-full bg-slate-200 dark:bg-[#494649] h-1.5 rounded-full mt-2">
+<div class="bg-green-500 h-1.5 rounded-full" style="width: 83%"></div>
+</div>
+</div>
+<div class="flex flex-col gap-1 rounded-xl p-4 bg-slate-50 dark:bg-[#312f31] border border-slate-100 dark:border-[#403d40]">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary text-sm">confirmation_number</span>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Total Sold</p>
+</div>
+<p class="text-slate-900 dark:text-white text-2xl font-bold leading-tight">1,500</p>
+<div class="w-full bg-slate-200 dark:bg-[#494649] h-1.5 rounded-full mt-2">
+<div class="bg-primary h-1.5 rounded-full" style="width: 100%"></div>
+</div>
+</div>
+</div>
+<!-- Scanner Viewfinder -->
+<div class="px-4 pb-4">
+<div class="relative w-full aspect-[3/4] sm:aspect-video rounded-2xl overflow-hidden shadow-lg bg-black group">
+<!-- Background Image (Simulated Camera Feed) -->
+<div class="absolute inset-0 bg-cover bg-center opacity-60 mix-blend-overlay" data-alt="Blurred crowd at a concert with stage lights" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB__B77pU49qxK8wmZWxkb1Oh6PwjtNriXaM7nl8VOb43yKp0lUP5Sl7_21sA_n9ruP2C4View4AAQX4d_qLe6Ai2CRkLkPZKGCKxhxEjJecS-ScxwA36tsQghBfqrT2a0bq1uHd-u5kOlRPTVbnUY0JKozDYHNcP62bxJ0iZr_BeuGr0wdf4_zKEy9CIHbe7U2S80vo-BQ0TVJGhgtFTThPYJ9J_wIKWldLvF45EVte1S2IsAiJpOfT6AUv9Q69pPnsF5HNRK7Fwo");'>
+</div>
+<!-- Scanning Overlay UI -->
+<div class="absolute inset-0 flex flex-col items-center justify-between p-6">
+<div class="w-full flex justify-between items-start">
+<div class="bg-black/50 backdrop-blur-md rounded-lg px-3 py-1.5 flex items-center gap-2">
+<div class="size-2 rounded-full bg-red-500 animate-pulse"></div>
+<span class="text-white text-xs font-medium">LIVE</span>
+</div>
+<button class="bg-black/50 backdrop-blur-md size-8 flex items-center justify-center rounded-full text-white hover:bg-black/70">
+<span class="material-symbols-outlined text-lg">flash_on</span>
+</button>
+</div>
+<!-- Scanning reticle -->
+<div class="relative size-48 border-2 border-white/30 rounded-lg flex items-center justify-center">
+<div class="absolute inset-0 border-2 border-primary rounded-lg animate-[pulse_2s_ease-in-out_infinite]"></div>
+<div class="absolute top-0 left-0 w-4 h-4 border-t-4 border-l-4 border-white rounded-tl-lg -mt-1 -ml-1"></div>
+<div class="absolute top-0 right-0 w-4 h-4 border-t-4 border-r-4 border-white rounded-tr-lg -mt-1 -mr-1"></div>
+<div class="absolute bottom-0 left-0 w-4 h-4 border-b-4 border-l-4 border-white rounded-bl-lg -mb-1 -ml-1"></div>
+<div class="absolute bottom-0 right-0 w-4 h-4 border-b-4 border-r-4 border-white rounded-br-lg -mb-1 -mr-1"></div>
+</div>
+<div class="bg-black/60 backdrop-blur-md rounded-full px-4 py-2">
+<p class="text-white text-sm font-medium">Point at ticket QR code</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Success Result Card -->
+<div class="px-4 pb-6">
+<div class="flex flex-col rounded-xl overflow-hidden border border-green-500/30 bg-green-500/10 dark:bg-green-900/10 shadow-sm relative">
+<!-- Success Strip -->
+<div class="bg-green-500 text-white px-4 py-2 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined">check_circle</span>
+<span class="font-bold text-sm tracking-wide uppercase">Valid Entry</span>
+</div>
+<span class="text-xs font-medium opacity-90">00:02 ago</span>
+</div>
+<div class="p-5 flex flex-col sm:flex-row gap-5 items-start sm:items-center">
+<div class="relative">
+<div class="size-20 rounded-full bg-cover bg-center border-2 border-green-500 shadow-md" data-alt="Portrait of attendee Sarah Jenkins" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBkNXRj2c2lEtEA5lDbaQZ-jKHTU0LW9GC-OnTaTul8NG6svWWBrXt9yxzeteBdbOuo0h_4X-CzAB-5bSR4jEJcQixmwX_OEzLjcca8UDgGbsC7hGSfAMY06vHUnY9HqsCZsd82nEuT60mh9HRhOz2JZCkBewMuFX9Qb8MiE1A79cGaqRMIzE4-z8S9VXsa6t15M7mKsN_CxENkbFDvPpK9nr_RRz175lNQ-h57W1g9SdJrBc_VaDCq8ZuTxpdy46k2FzrftjUatpo");'>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-green-500 text-white p-1 rounded-full shadow-sm border border-white dark:border-[#222022]">
+<span class="material-symbols-outlined text-sm block">verified</span>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<h3 class="text-slate-900 dark:text-white text-xl font-bold truncate">Sarah Jenkins</h3>
+<div class="flex items-center gap-2 mt-1">
+<span class="bg-primary/20 text-primary px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wide">VIP Admission</span>
+<span class="text-slate-500 dark:text-slate-400 text-sm">#8920-33</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-xs mt-2 truncate">Purchased via Early Bird • Group A</p>
+</div>
+<button class="w-full sm:w-auto mt-2 sm:mt-0 flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white px-5 py-3 rounded-lg font-bold text-sm transition-transform active:scale-95 shadow-lg shadow-primary/20">
+<span>Admit Next</span>
+<span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Action Bar (Fixed at bottom for mobile) -->
+<div class="p-4 border-t border-slate-200 dark:border-[#312f31] bg-white dark:bg-[#222022] flex gap-3">
+<button class="flex-1 flex flex-col items-center justify-center gap-1 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-[#312f31] text-primary transition-colors">
+<span class="material-symbols-outlined">history</span>
+<span class="text-xs font-medium">History</span>
+</button>
+<button class="flex-1 flex flex-col items-center justify-center gap-1 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-[#312f31] text-slate-500 dark:text-slate-400 transition-colors">
+<span class="material-symbols-outlined">keyboard</span>
+<span class="text-xs font-medium">Manual</span>
+</button>
+<button class="flex-1 flex flex-col items-center justify-center gap-1 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-[#312f31] text-slate-500 dark:text-slate-400 transition-colors">
+<span class="material-symbols-outlined">group</span>
+<span class="text-xs font-medium">Guestlist</span>
+</button>
+<button class="flex-1 flex flex-col items-center justify-center gap-1 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-[#312f31] text-slate-500 dark:text-slate-400 transition-colors">
+<span class="material-symbols-outlined">report_problem</span>
+<span class="text-xs font-medium">Report</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

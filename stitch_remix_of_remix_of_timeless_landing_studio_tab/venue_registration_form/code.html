@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Venue Registration Form - Timeless</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "primary-dark": "#5e0eb0",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                        "surface-dark": "#231630",
+                        "input-bg": "#2d1e3d",
+                    },
+                    fontFamily: {
+                        "display": ["Be Vietnam Pro", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for dark theme consistency */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #191022; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3c2a52; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7f13ec; 
+        }
+        
+        .glass-effect {
+            background: rgba(35, 22, 48, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-white font-display antialiased h-screen overflow-hidden selection:bg-primary selection:text-white">
+<div class="flex flex-col lg:flex-row h-full w-full">
+<!-- Left Side: Immersive Visual -->
+<div class="hidden lg:block lg:w-5/12 xl:w-1/2 relative h-full overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-1000 hover:scale-105" data-alt="Dark atmospheric concert hall with purple lighting" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDu_ZGBfssyPSr6Sa6F1QGu4d3AHzaETrHCI51Mzi74r0oScKFalhSnTdWAgUuOmzTzR-1zAupfo6YAg6XyTrVtdzuvcGjd71fn1n1qo15bw_rarudd8HWhONheBTG8xuGSkvgzh6CEQvCOtjk9O4pu_Bq9epgLQ_jkNopZdujryv8vVU-hFHQ9DYUBeI3lvVQytic4H_y5324RTzsLsxaCJY0Z94iA0qNcG3yxKtoGH7jWlHDHaZyWPTFmophBIa_gifCcrGBpV0Hc');">
+</div>
+<!-- Overlay Gradient -->
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-primary/20 to-transparent opacity-90"></div>
+<div class="absolute bottom-0 left-0 w-full p-12 z-10">
+<div class="mb-8">
+<span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary/20 text-purple-200 border border-primary/30 backdrop-blur-sm mb-4">
+<span class="w-1.5 h-1.5 rounded-full bg-primary mr-2 animate-pulse"></span>
+                        Trusted by 5,000+ Venues
+                    </span>
+<h2 class="text-4xl xl:text-5xl font-bold leading-tight mb-4 text-white">
+                        Connect your stage to the world.
+                    </h2>
+<p class="text-lg text-gray-300 max-w-md leading-relaxed">
+                        Join Timeless to discover premier talent, manage bookings effortlessly, and elevate your venue's reputation in the industry.
+                    </p>
+</div>
+<div class="flex items-center space-x-4">
+<div class="flex -space-x-3">
+<img class="w-10 h-10 rounded-full border-2 border-background-dark object-cover" data-alt="Profile of a female club manager" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWemJTur5PfBjqRKHw5gr8hYDVeQhZ1rDRy22NCf0vLHCTgifi8ZaZu3iP0ubhGEuy1Aj6S7LD3pVjtXR73QsNlclb1iPHhASMgR90EMgcYjpPJFQ-E3Lq7qfE1rZre0Rhsn6q3im-XoxR7WHCec2P9RLSrThr3sB2i4l5HScjnkcVKEZJHEXl3apzTJkf9QrqBUXbKKy4cSBE1ym9j9OXSu71s1xzh6UMKifHaaXchQ2-dDx6du3cJR26LMgJczNGiHq0G_aozkLy"/>
+<img class="w-10 h-10 rounded-full border-2 border-background-dark object-cover" data-alt="Profile of a male music producer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7rk3gy_cuBaBOFE0sPbGJknMbva1jrn507-RtBPgdQPrkOevJTKu85UW-sIZf4xOo0YycfKZsREDIRMP-Twjq1iPuSOPYEUXfXoxFZsW8TSEVRhVxOCLhCIQzdrcPmiSrsGnTSgtMM_EnQsEYO3tEAbrQar5SUmxwMZqF43GgVwzL5NOM5vN6B6EJzi0QzzfedmnIWzthJAJCsVss88sgPbvBULuXnenAh075_8XklLNEZk2sZhYWC7x7Di3to4COFEG5-qHrsSoJ"/>
+<img class="w-10 h-10 rounded-full border-2 border-background-dark object-cover" data-alt="Profile of a sound engineer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBubsLAtNyM4P55GHkrrX9gkbDaAICA7acHVRTYDCiHos4BTmcSNnY9_d3mhIcuhZNxmwDEMii9o5QlJ18aGlBHpHi3v-r3zfY8LnQBpFRuWwKqPyxuNURsJc6j_GRLiakPP1PGKWgClN0AVBuihZm0-lt78QMmoP9BfuTQPxigH2IPZPbJRQhNm2kuulg9XqDSEXeYzycVv05KVZz9QXKdi7YabttbZrU2zBgs6HV_vNfBgDuLMvm-rFu4oM0dvEhCvSveSUELq4vQ"/>
+</div>
+<div class="text-sm font-medium text-white">
+<span class="text-primary font-bold">New!</span> Top producers joined this week.
+                   </div>
+</div>
+</div>
+</div>
+<!-- Right Side: Registration Form -->
+<div class="w-full lg:w-7/12 xl:w-1/2 h-full flex flex-col relative overflow-y-auto bg-background-dark">
+<!-- Navbar / Top Bar for Mobile/Desktop consistency -->
+<div class="sticky top-0 z-20 w-full px-6 py-4 lg:px-12 lg:py-8 flex justify-between items-center bg-background-dark/95 backdrop-blur-md lg:bg-transparent">
+<div class="flex items-center space-x-2">
+<div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-purple-800 flex items-center justify-center text-white font-bold text-lg shadow-[0_0_15px_rgba(127,19,236,0.5)]">
+                        T
+                    </div>
+<span class="text-xl font-bold tracking-tight text-white">Timeless</span>
+</div>
+<div class="text-sm text-gray-400">
+                    Already a partner? <a class="text-primary hover:text-purple-400 font-medium transition-colors ml-1" href="#">Log in</a>
+</div>
+</div>
+<!-- Form Container -->
+<div class="flex-grow flex items-center justify-center p-6 lg:p-12">
+<div class="w-full max-w-lg mx-auto space-y-8">
+<!-- Header -->
+<div class="space-y-2">
+<h1 class="text-3xl font-bold text-white tracking-tight">Register your Venue</h1>
+<p class="text-gray-400">Complete the details below to list your space on our exclusive network.</p>
+</div>
+<!-- Form -->
+<form class="space-y-6">
+<!-- Venue Name -->
+<div class="space-y-1">
+<label class="block text-sm font-medium text-gray-300" for="venue-name">Venue Name</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+<span class="material-icons text-sm">storefront</span>
+</span>
+<input class="block w-full rounded-lg border-gray-700/50 bg-input-bg text-white shadow-sm focus:border-primary focus:ring-primary pl-10 sm:text-sm py-2.5 placeholder-gray-500 transition-shadow duration-200" id="venue-name" placeholder="e.g. The Underground Lounge" type="text"/>
+</div>
+</div>
+<!-- Location & Capacity Row -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-1">
+<label class="block text-sm font-medium text-gray-300" for="location">Location / Address</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+<span class="material-icons text-sm">place</span>
+</span>
+<input class="block w-full rounded-lg border-gray-700/50 bg-input-bg text-white shadow-sm focus:border-primary focus:ring-primary pl-10 sm:text-sm py-2.5 placeholder-gray-500 transition-shadow duration-200" id="location" placeholder="City, Country" type="text"/>
+</div>
+</div>
+<div class="space-y-1">
+<label class="block text-sm font-medium text-gray-300" for="capacity">Capacity</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+<span class="material-icons text-sm">groups</span>
+</span>
+<input class="block w-full rounded-lg border-gray-700/50 bg-input-bg text-white shadow-sm focus:border-primary focus:ring-primary pl-10 sm:text-sm py-2.5 placeholder-gray-500 transition-shadow duration-200" id="capacity" placeholder="Max guests" type="number"/>
+</div>
+</div>
+</div>
+<!-- Type of Events (Tags) -->
+<div class="space-y-2">
+<label class="block text-sm font-medium text-gray-300">Type of Events Hosted</label>
+<div class="flex flex-wrap gap-2">
+<!-- Active Tag -->
+<button class="group relative inline-flex items-center justify-center rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-white transition-all hover:bg-primary-dark ring-2 ring-primary ring-offset-2 ring-offset-background-dark" type="button">
+                                    Techno
+                                    <span class="ml-1.5 -mr-0.5 material-icons text-[14px]">check</span>
+</button>
+<!-- Inactive Tags -->
+<button class="inline-flex items-center justify-center rounded-full bg-surface-dark border border-gray-700 px-4 py-1.5 text-xs font-medium text-gray-300 transition-all hover:bg-primary/20 hover:border-primary/50 hover:text-white" type="button">
+                                    House
+                                </button>
+<button class="inline-flex items-center justify-center rounded-full bg-surface-dark border border-gray-700 px-4 py-1.5 text-xs font-medium text-gray-300 transition-all hover:bg-primary/20 hover:border-primary/50 hover:text-white" type="button">
+                                    Live Jazz
+                                </button>
+<button class="inline-flex items-center justify-center rounded-full bg-surface-dark border border-gray-700 px-4 py-1.5 text-xs font-medium text-gray-300 transition-all hover:bg-primary/20 hover:border-primary/50 hover:text-white" type="button">
+                                    Corporate
+                                </button>
+<button class="inline-flex items-center justify-center rounded-full bg-surface-dark border border-gray-700 px-4 py-1.5 text-xs font-medium text-gray-300 transition-all hover:bg-primary/20 hover:border-primary/50 hover:text-white" type="button">
+                                    Private Parties
+                                </button>
+<button class="inline-flex items-center justify-center rounded-full bg-surface-dark border border-gray-700 px-4 py-1.5 text-xs font-medium text-gray-300 transition-all hover:bg-primary/20 hover:border-primary/50 hover:text-white" type="button">
+                                    Classical
+                                </button>
+</div>
+<p class="text-xs text-gray-500 mt-1">Select all that apply.</p>
+</div>
+<!-- Technical Equipment -->
+<div class="space-y-1">
+<label class="block text-sm font-medium text-gray-300" for="tech-specs">Technical Equipment Available</label>
+<div class="relative">
+<textarea class="block w-full rounded-lg border-gray-700/50 bg-input-bg text-white shadow-sm focus:border-primary focus:ring-primary sm:text-sm p-3 placeholder-gray-500 transition-shadow duration-200" id="tech-specs" placeholder="e.g. Funktion-One Sound System, Pioneer CDJ-3000s, Lighting rig details..." rows="3"></textarea>
+</div>
+</div>
+<!-- Social Media / Website -->
+<div class="space-y-1">
+<label class="block text-sm font-medium text-gray-300" for="website">Website or Social Link</label>
+<div class="flex rounded-lg shadow-sm">
+<span class="inline-flex items-center rounded-l-lg border border-r-0 border-gray-700/50 bg-surface-dark px-3 text-gray-400 sm:text-sm">https://</span>
+<input class="block w-full min-w-0 flex-1 rounded-none rounded-r-lg border-gray-700/50 bg-input-bg text-white focus:border-primary focus:ring-primary sm:text-sm py-2.5 px-3 placeholder-gray-500" id="website" placeholder="www.yourvenue.com" type="text"/>
+</div>
+</div>
+<!-- Submit Button -->
+<div class="pt-4">
+<button class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg shadow-primary/25 text-sm font-semibold text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary focus:ring-offset-background-dark transition-all duration-300 transform hover:-translate-y-0.5" type="submit">
+                                Create Venue Profile
+                            </button>
+<p class="mt-4 text-center text-xs text-gray-500">
+                                By registering, you agree to our <a class="text-gray-400 hover:text-primary transition-colors underline decoration-dotted" href="#">Terms of Service</a> and <a class="text-gray-400 hover:text-primary transition-colors underline decoration-dotted" href="#">Privacy Policy</a>.
+                            </p>
+</div>
+</form>
+</div>
+</div>
+<!-- Mobile Image (Visible only on small screens at bottom or hidden if preferred, here hidden to focus on form) -->
+<div class="lg:hidden h-24 relative overflow-hidden mt-auto border-t border-gray-800">
+<div class="absolute inset-0 bg-cover bg-center opacity-40 grayscale" data-alt="Abstract crowd at a concert" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDM8sfphS0w-TcVKw6P0_o3YA1kED7zuj6DPEz0nB0ALGZUeZcpNyt8wdxxheim7ypGDKqOL3oLkjCKC-pJrKjUfx3B6xn_Yv2In8qv0TzmDGUugYDBf82tZGCAG0Na6L3wtxX_KPlPDHRJpNl9nL8kSGFsyC-ChhfnmmQgXerIwSpjNI5fRyQRtTCs47yJ3xozD62GLv7FWBPp2802jtGz_A5ZVqQkc7SBm_B6PJLcQRXcRV6lxfVHDFM-m_QQWLWXdGnwo4GkMMIP');"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="text-gray-500 text-xs font-medium tracking-widest uppercase">Timeless Network</span>
+</div>
+</div>
+</div>
+</div>
+</body></html>

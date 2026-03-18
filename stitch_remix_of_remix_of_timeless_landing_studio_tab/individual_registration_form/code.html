@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Individual Registration Form - Timeless</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #191022; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #362348; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4d3267; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen flex flex-col overflow-x-hidden antialiased selection:bg-primary/30 selection:text-white">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-50 flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-[#362348] bg-background-light/80 dark:bg-[#1a1122]/80 backdrop-blur-md px-10 py-3">
+<div class="flex items-center gap-4">
+<div class="size-8 flex items-center justify-center rounded bg-primary/20 text-primary">
+<span class="material-symbols-outlined text-2xl">hourglass_top</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">Timeless</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<nav class="hidden md:flex items-center gap-9">
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Home</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">About</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Contact</a>
+</nav>
+<button class="group flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary hover:bg-primary/90 text-white text-sm font-bold leading-normal tracking-[0.015em] transition-all duration-300 shadow-[0_0_15px_rgba(127,19,236,0.3)] hover:shadow-[0_0_25px_rgba(127,19,236,0.6)]">
+<span class="truncate flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">login</span>
+                        Login
+                    </span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<div class="flex flex-1 justify-center py-10 px-4 sm:px-6 lg:px-8">
+<div class="layout-content-container flex flex-col max-w-[800px] w-full flex-1">
+<!-- Progress Section -->
+<div class="flex flex-col gap-4 mb-10">
+<div class="flex items-end justify-between">
+<div class="flex flex-col gap-1">
+<h1 class="text-3xl md:text-4xl font-black leading-tight tracking-tight text-slate-900 dark:text-white">Individual Registration</h1>
+<p class="text-slate-500 dark:text-[#ad92c9] text-base font-normal">Step 2 of 3: Professional &amp; Financial Details</p>
+</div>
+<div class="flex items-center gap-2 bg-slate-100 dark:bg-[#261933] px-3 py-1 rounded-full border border-slate-200 dark:border-[#362348]">
+<span class="material-symbols-outlined text-primary text-sm">pending</span>
+<span class="text-xs font-bold text-primary tracking-wide">IN PROGRESS</span>
+</div>
+</div>
+<div class="relative h-2 w-full rounded-full bg-slate-200 dark:bg-[#2e1d3d] overflow-hidden">
+<div class="absolute top-0 left-0 h-full bg-primary rounded-full transition-all duration-500 ease-out shadow-[0_0_10px_rgba(127,19,236,0.5)]" style="width: 66%;">
+<div class="absolute inset-0 bg-white/20 w-full h-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full"></div>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-[#22152e] rounded-xl border border-slate-200 dark:border-[#362348] p-6 md:p-10 shadow-xl">
+<form class="flex flex-col gap-8">
+<!-- Personal Info Section -->
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-3 pb-2 border-b border-slate-200 dark:border-[#362348]">
+<span class="material-symbols-outlined text-primary">person</span>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Personal Information</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<label class="flex flex-col gap-2">
+<span class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Full Name</span>
+<div class="relative group">
+<input class="w-full rounded-lg border-slate-200 dark:border-[#4d3267] bg-slate-50 dark:bg-[#261933] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#6f5685] h-12 px-4 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="e.g. Alex Morgan" type="text"/>
+<div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400 dark:text-[#6f5685] opacity-0 group-focus-within:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-lg">edit</span>
+</div>
+</div>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-slate-700 dark:text-slate-300 text-sm font-semibold">DNI/Tax ID</span>
+<div class="relative group">
+<input class="w-full rounded-lg border-slate-200 dark:border-[#4d3267] bg-slate-50 dark:bg-[#261933] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#6f5685] h-12 px-4 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="ID Number" type="text"/>
+<div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400 dark:text-[#6f5685] opacity-0 group-focus-within:opacity-100 transition-opacity">
+<span class="material-symbols-outlined text-lg">badge</span>
+</div>
+</div>
+</label>
+</div>
+</div>
+<!-- Professional Info Section -->
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-3 pb-2 border-b border-slate-200 dark:border-[#362348]">
+<span class="material-symbols-outlined text-primary">work</span>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Professional Profile</h3>
+</div>
+<label class="flex flex-col gap-2">
+<span class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Portfolio URL</span>
+<div class="relative group">
+<div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-slate-400 dark:text-[#6f5685]">
+<span class="material-symbols-outlined text-lg">link</span>
+</div>
+<input class="w-full pl-10 rounded-lg border-slate-200 dark:border-[#4d3267] bg-slate-50 dark:bg-[#261933] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#6f5685] h-12 px-4 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="https://dribbble.com/yourusername" type="url"/>
+</div>
+<p class="text-xs text-slate-500 dark:text-[#ad92c9] mt-1">Provide a link to your Behance, Dribbble, or personal website.</p>
+</label>
+</div>
+<!-- Banking Section -->
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-3 pb-2 border-b border-slate-200 dark:border-[#362348]">
+<span class="material-symbols-outlined text-primary">account_balance</span>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Banking Details <span class="text-xs font-normal ml-2 px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">Private &amp; Secure</span></h3>
+</div>
+<div class="p-4 rounded-lg bg-primary/5 border border-primary/10 flex gap-4 items-start">
+<span class="material-symbols-outlined text-primary mt-1">lock</span>
+<div class="text-sm text-slate-600 dark:text-slate-300">
+<p class="font-bold mb-1">Encrypted Data</p>
+<p>Your banking information is encrypted and stored securely. We only use this for payouts.</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<label class="flex flex-col gap-2">
+<span class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Account Holder Name</span>
+<input class="w-full rounded-lg border-slate-200 dark:border-[#4d3267] bg-slate-50 dark:bg-[#261933] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#6f5685] h-12 px-4 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="Name as on account" type="text"/>
+</label>
+<label class="flex flex-col gap-2">
+<span class="text-slate-700 dark:text-slate-300 text-sm font-semibold">Bank Name</span>
+<div class="relative">
+<select class="w-full appearance-none rounded-lg border-slate-200 dark:border-[#4d3267] bg-slate-50 dark:bg-[#261933] text-slate-900 dark:text-white h-12 px-4 pr-10 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all cursor-pointer">
+<option disabled="" selected="" value="">Select your bank</option>
+<option value="chase">Chase</option>
+<option value="boa">Bank of America</option>
+<option value="wf">Wells Fargo</option>
+<option value="citi">Citi</option>
+<option value="other">Other</option>
+</select>
+<div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400 dark:text-[#6f5685]">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</div>
+</label>
+<label class="flex flex-col gap-2 md:col-span-2">
+<span class="text-slate-700 dark:text-slate-300 text-sm font-semibold">IBAN / Account Number</span>
+<div class="relative group">
+<div class="absolute inset-y-0 left-3 flex items-center pointer-events-none text-slate-400 dark:text-[#6f5685]">
+<span class="material-symbols-outlined text-lg">credit_card</span>
+</div>
+<input class="w-full pl-10 rounded-lg border-slate-200 dark:border-[#4d3267] bg-slate-50 dark:bg-[#261933] text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#6f5685] h-12 px-4 outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all font-mono" placeholder="XXXX XXXX XXXX XXXX" type="text"/>
+</div>
+</label>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex flex-col-reverse md:flex-row items-center justify-between gap-4 pt-6 mt-2 border-t border-slate-200 dark:border-[#362348]">
+<button class="w-full md:w-auto px-6 py-3 rounded-lg text-slate-600 dark:text-slate-300 font-bold hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-[#2d213a] transition-colors flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-lg">arrow_back</span>
+                                Back
+                            </button>
+<button class="w-full md:w-auto min-w-[200px] px-8 py-3 rounded-lg bg-primary hover:bg-[#6c10ca] text-white font-bold shadow-[0_0_20px_rgba(127,19,236,0.4)] hover:shadow-[0_0_30px_rgba(127,19,236,0.6)] transition-all transform active:scale-95 flex items-center justify-center gap-2 group" type="button">
+                                Continue
+                                <span class="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</form>
+</div>
+<p class="text-center text-slate-400 dark:text-[#6f5685] text-sm mt-8">
+                    By registering, you agree to our <a class="text-primary hover:underline" href="#">Terms of Service</a> and <a class="text-primary hover:underline" href="#">Privacy Policy</a>.
+                </p>
+</div>
+</div>
+</div>
+<!-- Shimmer Animation Keyframes -->
+<style>
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+    </style>
+</body></html>

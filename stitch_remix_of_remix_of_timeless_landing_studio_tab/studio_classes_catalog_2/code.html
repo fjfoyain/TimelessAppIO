@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Studio Masterclass - Classes</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec", 
+                        "primary-hover": "#6a0bc9",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#1a1122", 
+                        "surface-dark": "#261933",
+                        "border-dark": "#362348",
+                        "accent-purple": "#ad92c9",
+                        "electric-violet": "#9d4edd",
+                        "deep-charcoal": "#120e16"
+                    },
+                    fontFamily: {
+                        "display": ["Montserrat", "sans-serif"],
+                        "body": ["Montserrat", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    backgroundImage: {
+                        'glow-gradient': 'linear-gradient(135deg, rgba(127, 19, 236, 0.1) 0%, rgba(26, 17, 34, 0) 100%)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+        }
+        .glow-border {
+            position: relative;
+        }
+        .glow-border::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(45deg, #7f13ec, transparent 60%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        .text-glow {
+            text-shadow: 0 0 10px rgba(127, 19, 236, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-deep-charcoal text-slate-900 dark:text-slate-100 min-h-screen flex flex-col font-display selection:bg-primary selection:text-white">
+<header class="sticky top-0 z-50 flex items-center justify-between border-b border-solid border-border-dark bg-deep-charcoal/95 backdrop-blur-md px-6 py-4 lg:px-10">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-white">
+<div class="size-8 text-primary">
+<span class="material-symbols-outlined !text-[32px]">equalizer</span>
+</div>
+<h2 class="text-white text-xl font-bold leading-tight tracking-tight">Studio Masterclass</h2>
+</div>
+<nav class="hidden md:flex items-center gap-8 ml-4">
+<a class="text-gray-300 hover:text-primary text-sm font-medium transition-colors" href="#">Home</a>
+<a class="text-white text-sm font-medium transition-colors border-b-2 border-primary" href="#">Classes</a>
+<a class="text-gray-300 hover:text-primary text-sm font-medium transition-colors" href="#">Studio Rental</a>
+<a class="text-gray-300 hover:text-primary text-sm font-medium transition-colors" href="#">Instructors</a>
+<a class="text-gray-300 hover:text-primary text-sm font-medium transition-colors" href="#">Contact</a>
+</nav>
+</div>
+<div class="flex items-center gap-4 lg:gap-8">
+<div class="hidden lg:flex w-full max-w-xs items-center rounded-xl bg-surface-dark border border-border-dark px-3 py-2 focus-within:border-primary transition-colors">
+<span class="material-symbols-outlined text-accent-purple">search</span>
+<input class="w-full bg-transparent px-2 text-sm text-white placeholder-accent-purple focus:outline-none" placeholder="Search courses..."/>
+</div>
+<div class="flex gap-3">
+<button class="hidden sm:flex h-10 items-center justify-center rounded-xl bg-surface-dark border border-border-dark px-5 text-sm font-bold text-white hover:bg-border-dark hover:text-primary transition-colors">
+                    Log In
+                </button>
+<button class="h-10 items-center justify-center rounded-xl bg-primary px-5 text-sm font-bold text-white hover:bg-primary-hover transition-colors shadow-[0_0_15px_rgba(127,19,236,0.5)]">
+                    Sign Up
+                </button>
+</div>
+</div>
+</header>
+<main class="flex-1 w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-10 py-8">
+<section class="relative w-full rounded-2xl overflow-hidden mb-12 group border border-border-dark">
+<div class="absolute inset-0 bg-gradient-to-r from-deep-charcoal via-deep-charcoal/90 to-transparent z-10"></div>
+<div class="bg-cover bg-center h-[400px] w-full transition-transform duration-700 group-hover:scale-105" data-alt="Professional recording studio mixing console with colorful lights" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAhAR6-iw3cSq9oVzCwDeTmS3JKEDZPmM4H-jcrcV3sq7a0ZJTGTDkdLflWEDKu3zRyTdfFrkv0U44tJHlX7IpNR2j0o3OESLyQAfDkqt06CiMFZjTjz06JCzMTzNtCCOxC9sRcudGkSbMl07CVVG99e8WYfIwIf6YzSth9mpQsD906jG3Xpls0gorQKtvyEEmrHU9rLRIG876a0n49JgsnVFOAXiPiyZ3blYKv99pKMFOi8v3zTU6YDxpD6ZRQZS4rejAUqG15UqE');">
+</div>
+<div class="absolute inset-0 z-20 flex flex-col justify-center px-8 md:px-16 lg:px-24">
+<span class="inline-flex items-center gap-2 text-primary font-bold tracking-wider uppercase text-xs mb-4">
+<span class="w-8 h-[2px] bg-primary"></span>
+                    Premium Education
+                </span>
+<h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight max-w-2xl">
+                    Master the Art of <br/> <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-electric-violet">Sound Engineering</span>
+</h1>
+<p class="text-gray-300 text-lg max-w-lg mb-8 leading-relaxed">
+                    Join our world-class studio sessions in DJing and Music Production. Learn from legends in a state-of-the-art environment designed for creativity.
+                </p>
+<div class="flex flex-wrap gap-4">
+<button class="h-12 px-8 rounded-xl bg-white text-deep-charcoal font-bold hover:bg-gray-100 transition-colors flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                        View All Classes
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<button class="h-12 px-8 rounded-xl bg-surface-dark/50 border border-primary/40 backdrop-blur-sm text-white font-bold hover:bg-surface-dark hover:border-primary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">play_circle</span>
+                        Watch Trailer
+                    </button>
+</div>
+</div>
+</section>
+<div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-10">
+<div class="flex flex-wrap gap-3">
+<button class="h-10 px-5 rounded-xl bg-primary text-white text-sm font-bold shadow-[0_0_10px_rgba(127,19,236,0.3)] hover:bg-primary-hover transition-colors">
+                    All Levels
+                </button>
+<button class="h-10 px-5 rounded-xl bg-surface-dark border border-border-dark text-gray-300 hover:text-white hover:border-primary hover:bg-primary/10 text-sm font-medium transition-all flex items-center gap-2">
+                    Beginner
+                </button>
+<button class="h-10 px-5 rounded-xl bg-surface-dark border border-border-dark text-gray-300 hover:text-white hover:border-primary hover:bg-primary/10 text-sm font-medium transition-all flex items-center gap-2">
+                    Intermediate
+                </button>
+<button class="h-10 px-5 rounded-xl bg-surface-dark border border-border-dark text-gray-300 hover:text-white hover:border-primary hover:bg-primary/10 text-sm font-medium transition-all flex items-center gap-2">
+                    Pro
+                </button>
+</div>
+<div class="flex items-center gap-2 text-sm text-gray-400">
+<span class="material-symbols-outlined text-primary">filter_list</span>
+<span>Sorted by:</span>
+<select class="bg-transparent text-white font-medium focus:outline-none cursor-pointer border-none p-0 pr-6">
+<option class="bg-surface-dark">Popularity</option>
+<option class="bg-surface-dark">Price: Low to High</option>
+<option class="bg-surface-dark">Price: High to Low</option>
+<option class="bg-surface-dark">Duration</option>
+</select>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+<div class="group relative aspect-[16/9] rounded-2xl overflow-hidden cursor-pointer border border-border-dark hover:border-primary/50 transition-colors">
+<div class="absolute inset-0 bg-gradient-to-t from-deep-charcoal via-deep-charcoal/20 to-transparent z-10 transition-opacity group-hover:opacity-90"></div>
+<div class="bg-cover bg-center w-full h-full transition-transform duration-500 group-hover:scale-110" data-alt="DJ mixer close up with hands" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBkq0bthXyDaB-UOR4ksSChRNr178CjvpGGn6P2j-066Z0S_OMy5fF16RCNTwBZILh_fqxlXeiGn4ewWlS1XmqwgeeWDHDKZt_DKsgxGz4Sn8IEZDrMkimE60K5ry39wpdhNmfocdYuS_9-B3q4q_REAUlaN9xw5OuR6C9_5VjuVwO05FvigR-JeCgv0i3DP8d9Y8rKoDXaDoM5Fo24iWvxZs8zazNKIbMsUYYYt3em_YC5fjm40eF8l59gJiEU4Sr-LTJBL4IZgQc');">
+</div>
+<div class="absolute bottom-0 left-0 p-6 z-20 w-full">
+<div class="flex justify-between items-end">
+<div>
+<p class="text-primary font-bold text-xs uppercase tracking-wider mb-1">Category</p>
+<h3 class="text-white text-2xl font-bold group-hover:text-glow transition-all">DJing</h3>
+</div>
+<span class="material-symbols-outlined text-primary opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">arrow_forward</span>
+</div>
+</div>
+</div>
+<div class="group relative aspect-[16/9] rounded-2xl overflow-hidden cursor-pointer border border-border-dark hover:border-primary/50 transition-colors">
+<div class="absolute inset-0 bg-gradient-to-t from-deep-charcoal via-deep-charcoal/20 to-transparent z-10 transition-opacity group-hover:opacity-90"></div>
+<div class="bg-cover bg-center w-full h-full transition-transform duration-500 group-hover:scale-110" data-alt="Music production software on monitor in studio" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBzFthszz0dFjcW1LWoo7oI73b9cPDiwUi_Re32g_3Iq4MPXetglq6btT8kBa0AiDiQ-vqG8Ko_ROBG5Z4j44XjZGIuRVR6boX5j_vlQa7ENJHQnyO4ARt7bcnIdxOptuuVzcOn6Ha0fwc42wI4ot4dU00ia99y1jJ6tfht-p7E8qTgSIk5Bl4zYJIH4S5XB8XUPUhl5BRSJBAbTAqJnEUFtxPjTwluZSSsORMyHtvloxfpjapFYujWR53ZzCOfHjezlMJg_gLFZVw');">
+</div>
+<div class="absolute bottom-0 left-0 p-6 z-20 w-full">
+<div class="flex justify-between items-end">
+<div>
+<p class="text-primary font-bold text-xs uppercase tracking-wider mb-1">Category</p>
+<h3 class="text-white text-2xl font-bold group-hover:text-glow transition-all">Production</h3>
+</div>
+<span class="material-symbols-outlined text-primary opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">arrow_forward</span>
+</div>
+</div>
+</div>
+<div class="group relative aspect-[16/9] rounded-2xl overflow-hidden cursor-pointer border border-border-dark hover:border-primary/50 transition-colors">
+<div class="absolute inset-0 bg-gradient-to-t from-deep-charcoal via-deep-charcoal/20 to-transparent z-10 transition-opacity group-hover:opacity-90"></div>
+<div class="bg-cover bg-center w-full h-full transition-transform duration-500 group-hover:scale-110" data-alt="Live masterclass session with audience" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCFKUBOmR_7e4t2ArzgW8JFGX-HKFkuiLdBIUdXf70qttT08-nOGY_dQgnFWkkbHOQZMxmnwpho2bZh-rsJhUwa9_bSpSjGsd6s_WUrVA6CLl1ASnNgaFacYizhcSluSK11ZImQRB62Vc3oHJDwJEJg-STHr3cpbeGlp594o0-ooCEfpkKHgEw9QSsMQWsxYurCVscrixfxQjl12yEp5lmd9JrPbBvzmFiT7kG2tJJ7cJMmS5lfPZljCZf03KVZQJyqW6ewtXudMbQ');">
+</div>
+<div class="absolute bottom-0 left-0 p-6 z-20 w-full">
+<div class="flex justify-between items-end">
+<div>
+<p class="text-primary font-bold text-xs uppercase tracking-wider mb-1">Category</p>
+<h3 class="text-white text-2xl font-bold group-hover:text-glow transition-all">Masterclasses</h3>
+</div>
+<span class="material-symbols-outlined text-primary opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+<h2 class="text-2xl font-bold text-white mb-6">Featured Courses</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<div class="glow-border bg-surface-dark rounded-2xl p-6 flex flex-col hover:bg-[#2d1e3d] transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-primary/20 text-primary font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wide border border-primary/20">Beginner</span>
+<div class="flex gap-1 text-primary">
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star_half</span>
+</div>
+</div>
+<h3 class="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors">Foundations of DJing</h3>
+<p class="text-gray-400 text-sm mb-6 line-clamp-2">Learn the basics of beatmatching, mixing, and understanding song structure. Perfect for complete beginners starting their journey.</p>
+<div class="flex flex-col gap-3 mb-6">
+<div class="flex items-center gap-3 text-sm text-gray-300">
+<span class="material-symbols-outlined text-primary text-[20px]">schedule</span>
+<span>4 Weeks (8 Sessions)</span>
+</div>
+<div class="flex items-center gap-3 text-sm text-gray-300">
+<span class="material-symbols-outlined text-primary text-[20px]">album</span>
+<span>Basic Mixing &amp; Transitions</span>
+</div>
+<div class="flex items-center gap-3 text-sm text-gray-300">
+<span class="material-symbols-outlined text-primary text-[20px]">groups</span>
+<span>Small Group (Max 5)</span>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-border-dark flex items-center justify-between">
+<div>
+<p class="text-xs text-gray-500 font-medium">Total Price</p>
+<p class="text-2xl font-bold text-white">$299</p>
+</div>
+<button class="bg-white text-deep-charcoal font-bold py-2 px-6 rounded-xl hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl">
+                        Book Now
+                    </button>
+</div>
+</div>
+<div class="glow-border bg-surface-dark rounded-2xl p-6 flex flex-col hover:bg-[#2d1e3d] transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-electric-violet/20 text-electric-violet font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wide border border-electric-violet/20">Advanced</span>
+<div class="flex gap-1 text-primary">
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+</div>
+</div>
+<h3 class="text-xl font-bold text-white mb-2 group-hover:text-electric-violet transition-colors">Pro Music Production</h3>
+<p class="text-gray-400 text-sm mb-6 line-clamp-2">Deep dive into synthesis, sound design, and advanced mixing techniques. Take your tracks to professional industry standards.</p>
+<div class="flex flex-col gap-3 mb-6">
+<div class="flex items-center gap-3 text-sm text-gray-300">
+<span class="material-symbols-outlined text-electric-violet text-[20px]">schedule</span>
+<span>8 Weeks (16 Sessions)</span>
+</div>
+<div class="flex items-center gap-3 text-sm text-gray-300">
+<span class="material-symbols-outlined text-electric-violet text-[20px]">graphic_eq</span>
+<span>Advanced Synthesis</span>
+</div>
+<div class="flex items-center gap-3 text-sm text-gray-300">
+<span class="material-symbols-outlined text-electric-violet text-[20px]">settings_input_component</span>
+<span>Mixing &amp; Mastering</span>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-border-dark flex items-center justify-between">
+<div>
+<p class="text-xs text-gray-500 font-medium">Total Price</p>
+<p class="text-2xl font-bold text-white">$499</p>
+</div>
+<button class="bg-white text-deep-charcoal font-bold py-2 px-6 rounded-xl hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl">
+                        Book Now
+                    </button>
+</div>
+</div>
+<div class="relative bg-surface-dark rounded-2xl p-6 flex flex-col hover:bg-[#2d1e3d] transition-colors group border border-border-dark overflow-hidden">
+<div class="absolute top-0 right-0 p-3">
+<span class="bg-gradient-to-r from-primary to-electric-violet text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wide shadow-lg">Special Event</span>
+</div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-white/10 text-white font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wide border border-white/10">Masterclass</span>
+<div class="flex gap-1 text-primary">
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px]">star</span>
+</div>
+</div>
+<h3 class="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors">Artist Series: Techno</h3>
+<p class="text-gray-400 text-sm mb-6 line-clamp-2">Exclusive one-day session with guest artist. Learn their specific workflow, plugin chains, and creative process.</p>
+<div class="flex flex-col gap-3 mb-6">
+<div class="flex items-center gap-3 text-sm text-gray-300">
+<span class="material-symbols-outlined text-primary text-[20px]">event</span>
+<span>1 Day Intensive</span>
+</div>
+<div class="flex items-center gap-3 text-sm text-gray-300">
+<span class="material-symbols-outlined text-primary text-[20px]">forum</span>
+<span>Live Q&amp;A Session</span>
+</div>
+<div class="flex items-center gap-3 text-sm text-gray-300">
+<span class="material-symbols-outlined text-primary text-[20px]">mic</span>
+<span>Guest Lecturer</span>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-border-dark flex items-center justify-between">
+<div>
+<p class="text-xs text-gray-500 font-medium">Per Session</p>
+<p class="text-2xl font-bold text-white">$199</p>
+</div>
+<button class="bg-gradient-to-r from-primary to-electric-violet text-white font-bold py-2 px-6 rounded-xl hover:shadow-[0_0_15px_rgba(157,78,221,0.5)] transition-all">
+                        Reserve
+                    </button>
+</div>
+</div>
+<div class="glow-border bg-surface-dark rounded-2xl p-6 flex flex-col hover:bg-[#2d1e3d] transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-primary/20 text-primary font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wide border border-primary/20">Intermediate</span>
+<div class="flex gap-1 text-primary">
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px]">star</span>
+</div>
+</div>
+<h3 class="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors">Scratch &amp; Turntablism</h3>
+<p class="text-gray-400 text-sm mb-6 line-clamp-2">Master the art of scratching. From baby scratches to complex flares and chirps, enhance your DJ performance skills.</p>
+<div class="flex flex-col gap-3 mb-6">
+<div class="flex items-center gap-3 text-sm text-gray-300">
+<span class="material-symbols-outlined text-primary text-[20px]">schedule</span>
+<span>6 Weeks (12 Sessions)</span>
+</div>
+<div class="flex items-center gap-3 text-sm text-gray-300">
+<span class="material-symbols-outlined text-primary text-[20px]">album</span>
+<span>Vinyl Control</span>
+</div>
+<div class="flex items-center gap-3 text-sm text-gray-300">
+<span class="material-symbols-outlined text-primary text-[20px]">hand_gesture</span>
+<span>Performance Skills</span>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-border-dark flex items-center justify-between">
+<div>
+<p class="text-xs text-gray-500 font-medium">Total Price</p>
+<p class="text-2xl font-bold text-white">$349</p>
+</div>
+<button class="bg-white text-deep-charcoal font-bold py-2 px-6 rounded-xl hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl">
+                        Book Now
+                    </button>
+</div>
+</div>
+<div class="glow-border bg-surface-dark rounded-2xl p-6 flex flex-col hover:bg-[#2d1e3d] transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<span class="bg-electric-violet/20 text-electric-violet font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wide border border-electric-violet/20">All Levels</span>
+<div class="flex gap-1 text-primary">
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star_half</span>
+</div>
+</div>
+<h3 class="text-xl font-bold text-white mb-2 group-hover:text-electric-violet transition-colors">Ableton Live Bootcamp</h3>
+<p class="text-gray-400 text-sm mb-6 line-clamp-2">Intensive weekend bootcamp covering the essentials of Ableton Live. Ideal for quick learners wanting to start fast.</p>
+<div class="flex flex-col gap-3 mb-6">
+<div class="flex items-center gap-3 text-sm text-gray-300">
+<span class="material-symbols-outlined text-electric-violet text-[20px]">schedule</span>
+<span>2 Days (Weekend)</span>
+</div>
+<div class="flex items-center gap-3 text-sm text-gray-300">
+<span class="material-symbols-outlined text-electric-violet text-[20px]">laptop_mac</span>
+<span>Software Focus</span>
+</div>
+<div class="flex items-center gap-3 text-sm text-gray-300">
+<span class="material-symbols-outlined text-electric-violet text-[20px]">library_music</span>
+<span>Project Completion</span>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-border-dark flex items-center justify-between">
+<div>
+<p class="text-xs text-gray-500 font-medium">Total Price</p>
+<p class="text-2xl font-bold text-white">$249</p>
+</div>
+<button class="bg-white text-deep-charcoal font-bold py-2 px-6 rounded-xl hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl">
+                        Book Now
+                    </button>
+</div>
+</div>
+<div class="relative bg-surface-dark rounded-2xl p-6 flex flex-col hover:bg-[#2d1e3d] transition-colors group border border-border-dark overflow-hidden">
+<div class="absolute top-0 right-0 p-3">
+<span class="bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-lg uppercase tracking-wide shadow-lg">New</span>
+</div>
+<div class="flex justify-between items-start mb-4">
+<span class="bg-primary/20 text-primary font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wide border border-primary/20">Advanced</span>
+<div class="flex gap-1 text-primary">
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+<span class="material-symbols-outlined text-[16px] fill-current">star</span>
+</div>
+</div>
+<h3 class="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors">Vocal Production</h3>
+<p class="text-gray-400 text-sm mb-6 line-clamp-2">Learn how to record, edit, tune, and mix vocals like a pro. Essential for producers working with singers.</p>
+<div class="flex flex-col gap-3 mb-6">
+<div class="flex items-center gap-3 text-sm text-gray-300">
+<span class="material-symbols-outlined text-primary text-[20px]">schedule</span>
+<span>5 Weeks (10 Sessions)</span>
+</div>
+<div class="flex items-center gap-3 text-sm text-gray-300">
+<span class="material-symbols-outlined text-primary text-[20px]">mic_external_on</span>
+<span>Recording Techniques</span>
+</div>
+<div class="flex items-center gap-3 text-sm text-gray-300">
+<span class="material-symbols-outlined text-primary text-[20px]">tune</span>
+<span>Pitch Correction</span>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-border-dark flex items-center justify-between">
+<div>
+<p class="text-xs text-gray-500 font-medium">Total Price</p>
+<p class="text-2xl font-bold text-white">$399</p>
+</div>
+<button class="bg-white text-deep-charcoal font-bold py-2 px-6 rounded-xl hover:bg-gray-100 transition-colors shadow-lg hover:shadow-xl">
+                        Book Now
+                    </button>
+</div>
+</div>
+</div>
+<div class="flex justify-center mt-12">
+<button class="px-8 py-3 rounded-xl border border-border-dark text-white hover:bg-primary/20 hover:border-primary transition-colors font-bold text-sm">
+                Load More Courses
+            </button>
+</div>
+</main>
+<footer class="border-t border-border-dark bg-deep-charcoal mt-12 pt-16 pb-8 px-6 lg:px-10">
+<div class="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+<div class="col-span-1 md:col-span-1">
+<div class="flex items-center gap-2 mb-6 text-white">
+<span class="material-symbols-outlined !text-[32px] text-primary">equalizer</span>
+<span class="text-xl font-bold">Studio Masterclass</span>
+</div>
+<p class="text-gray-400 text-sm leading-relaxed mb-6">
+                    The premier destination for aspiring DJs and Producers. We provide top-tier education in a professional studio environment.
+                </p>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-full bg-surface-dark flex items-center justify-center text-white hover:bg-primary transition-colors" href="#">
+<svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"></path></svg>
+</a>
+<a class="w-10 h-10 rounded-full bg-surface-dark flex items-center justify-center text-white hover:bg-primary transition-colors" href="#">
+<svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.072 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"></path></svg>
+</a>
+</div>
+</div>
+<div>
+<h4 class="text-white font-bold mb-6">Courses</h4>
+<ul class="flex flex-col gap-3 text-sm text-gray-400">
+<li><a class="hover:text-primary transition-colors" href="#">Beginner DJ</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Pro Production</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Sound Design</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Mastering</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Music Theory</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-white font-bold mb-6">Studio</h4>
+<ul class="flex flex-col gap-3 text-sm text-gray-400">
+<li><a class="hover:text-primary transition-colors" href="#">Book a Room</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Equipment List</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Virtual Tour</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Location</a></li>
+<li><a class="hover:text-primary transition-colors" href="#">Rules &amp; Policy</a></li>
+</ul>
+</div>
+<div>
+<h4 class="text-white font-bold mb-6">Newsletter</h4>
+<p class="text-gray-400 text-sm mb-4">Get the latest updates on new courses and masterclasses.</p>
+<div class="flex gap-2">
+<input class="bg-surface-dark border border-border-dark text-white text-sm rounded-lg px-3 py-2 w-full focus:outline-none focus:border-primary placeholder-gray-500" placeholder="Your email" type="email"/>
+<button class="bg-primary text-white rounded-lg px-3 hover:bg-primary-hover transition-colors">
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<div class="max-w-[1440px] mx-auto border-t border-border-dark pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500">
+<p>© 2023 Studio Masterclass. All rights reserved.</p>
+<div class="flex gap-6 mt-4 md:mt-0">
+<a class="hover:text-white transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-white transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-white transition-colors" href="#">Cookie Policy</a>
+</div>
+</div>
+</footer>
+
+</body></html>

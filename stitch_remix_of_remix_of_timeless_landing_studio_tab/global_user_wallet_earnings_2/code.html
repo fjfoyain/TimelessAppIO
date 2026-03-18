@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Global User Wallet &amp; Earnings - Timeless</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#524253",
+                        "primary-hover": "#6a566b",
+                        "primary-light": "#9e8ca0",
+                        "purple-accent": "#8b5cf6", 
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#1a181a",
+                        "card-dark": "#242024",
+                        "accent-green": "#0bda7d",
+                        "accent-green-hover": "#09b366",
+                        "charcoal": "#2d2a2e",
+                    },
+                    fontFamily: {
+                        "display": ["Montserrat", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>.bg-data-pattern {
+            background-image: radial-gradient(rgba(139, 92, 246, 0.07) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased overflow-x-hidden">
+<div class="relative flex h-screen w-full flex-col overflow-hidden bg-data-pattern">
+<header class="flex flex-shrink-0 items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-white/10 bg-background-light/95 dark:bg-[#151415]/95 backdrop-blur-md px-10 py-3 z-20">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-slate-900 dark:text-white">
+<div class="size-6 text-purple-accent">
+<svg class="w-full h-full" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">Timeless</h2>
+</div>
+<div class="hidden md:flex items-center gap-9">
+<a class="text-slate-500 hover:text-purple-accent dark:text-slate-400 dark:hover:text-purple-accent text-sm font-medium leading-normal transition-colors" href="#">Dashboard</a>
+<a class="text-slate-500 hover:text-purple-accent dark:text-slate-400 dark:hover:text-purple-accent text-sm font-medium leading-normal transition-colors" href="#">Events</a>
+<a class="text-purple-accent font-bold text-sm leading-normal transition-colors" href="#">Wallet</a>
+<a class="text-slate-500 hover:text-purple-accent dark:text-slate-400 dark:hover:text-purple-accent text-sm font-medium leading-normal transition-colors" href="#">Settings</a>
+</div>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full group bg-white dark:bg-charcoal ring-1 ring-slate-200 dark:ring-white/10 focus-within:ring-purple-accent">
+<div class="text-slate-400 dark:text-[#aca9ad] flex border-none items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border-none bg-transparent h-full placeholder:text-slate-400 dark:placeholder:text-[#aca9ad] px-4 rounded-l-none pl-2 text-sm font-normal leading-normal" placeholder="Search transactions..." value=""/>
+</div>
+</label>
+<button class="relative p-2 rounded-full hover:bg-slate-100 dark:hover:bg-charcoal text-slate-500 dark:text-slate-300 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 h-2 w-2 rounded-full bg-purple-accent shadow-[0_0_8px_rgba(139,92,246,0.6)]"></span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 ring-2 ring-primary/20 dark:ring-purple-accent/30" data-alt="User profile picture showing a young woman" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCbXM2hXm9uAHj2aaVIxVzVDT8jc_TWdIeK_yTgui73lag8xvifT8Dh9ewVqoHozMZyRDZeMy9VnrOm4liYg7YYso1AGFER3jLOaB2uunp8BZsrGdZBxGLnRxuW5gKHAGsRiOxAHANCmhucpFN3pH1Dm4EMZUxgpjQh6RymEMOhqK9S1ia17RLzG0GQG-iiES5lwreI8LV8hPEXsH_xKJ2TTYxaB4GIKt_lrqOyzhZuKqGuSONUnqyWGm-y3Fhv5OHQwNMCJapAVAo");'></div>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto p-6 md:p-10 lg:px-40 pb-20 scrollbar-hide">
+<div class="max-w-[1200px] mx-auto flex flex-col gap-8">
+<div class="flex flex-wrap justify-between items-end gap-4">
+<div class="flex flex-col gap-1">
+<h1 class="text-slate-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">My Wallet</h1>
+<p class="text-slate-500 dark:text-[#aca9ad] text-base font-normal">Manage your earnings, payouts, and payment methods.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center justify-center gap-2 rounded-lg h-10 px-5 bg-white dark:bg-charcoal border border-slate-200 dark:border-white/5 text-slate-700 dark:text-slate-200 text-sm font-bold hover:bg-slate-50 dark:hover:bg-[#3d3a3d] hover:border-purple-accent/30 transition-all shadow-sm">
+<span class="material-symbols-outlined text-[18px]">download</span>
+<span>Statement</span>
+</button>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="lg:col-span-2 relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#2d2a2e] via-[#3a323d] to-[#4c3a52] p-8 shadow-xl text-white group border border-white/5">
+<div class="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-purple-accent blur-[100px] opacity-30 group-hover:opacity-40 transition-opacity duration-500"></div>
+<div class="absolute bottom-0 left-0 h-full w-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 mix-blend-overlay"></div>
+<div class="relative z-10 flex flex-col justify-between h-full min-h-[220px]">
+<div class="flex justify-between items-start">
+<div>
+<p class="text-primary-light dark:text-white/70 text-sm font-medium tracking-wide uppercase">Total Balance</p>
+<h2 class="text-5xl font-bold mt-2 tracking-tight drop-shadow-sm">$12,450.00</h2>
+</div>
+<div class="bg-white/10 backdrop-blur-md p-2 rounded-lg border border-white/10">
+<span class="material-symbols-outlined text-white text-2xl">account_balance_wallet</span>
+</div>
+</div>
+<div class="flex items-end justify-between mt-8">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2 text-accent-green font-bold bg-black/30 backdrop-blur-sm px-3 py-1 rounded-full w-fit border border-accent-green/20">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+15.3%</span>
+</div>
+<span class="text-white/60 text-xs pl-1">Compared to last month</span>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm px-5 py-2.5 rounded-lg font-bold text-sm transition-all shadow-lg border border-white/10 hover:border-white/20">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                                    Add Funds
+                                </button>
+<button class="flex items-center gap-2 bg-purple-accent hover:bg-[#7c4dff] text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-all shadow-lg shadow-purple-accent/30 hover:shadow-purple-accent/50">
+<span class="material-symbols-outlined text-[18px]">north_east</span>
+                                    Withdraw
+                                </button>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-card-dark rounded-2xl p-6 border border-slate-100 dark:border-white/5 flex flex-col shadow-sm relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-purple-accent/5 rounded-full blur-3xl -z-10"></div>
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-slate-900 dark:text-white font-bold text-lg">Payment Methods</h3>
+<button class="text-purple-accent hover:text-[#7c4dff] text-sm font-bold flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[18px]">add_circle</span> Add
+                        </button>
+</div>
+<div class="flex flex-col gap-3 flex-1">
+<div class="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-charcoal border border-slate-100 dark:border-white/5 group cursor-pointer hover:border-purple-accent/50 hover:bg-slate-100 dark:hover:bg-[#363336] transition-all">
+<div class="flex items-center gap-3">
+<div class="h-10 w-14 rounded bg-slate-200 dark:bg-[#1f1d20] flex items-center justify-center relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-slate-600 to-slate-800 opacity-20"></div>
+<span class="font-bold text-[10px] text-slate-500 dark:text-slate-300">VISA</span>
+</div>
+<div class="flex flex-col">
+<span class="text-slate-900 dark:text-white font-bold text-sm">Visa ending in 4242</span>
+<span class="text-slate-500 dark:text-slate-400 text-xs">Expires 12/25</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-purple-accent transition-colors">chevron_right</span>
+</div>
+<div class="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-charcoal border border-slate-100 dark:border-white/5 group cursor-pointer hover:border-purple-accent/50 hover:bg-slate-100 dark:hover:bg-[#363336] transition-all">
+<div class="flex items-center gap-3">
+<div class="h-10 w-14 rounded bg-slate-200 dark:bg-[#1f1d20] flex items-center justify-center text-slate-500 dark:text-slate-300">
+<span class="material-symbols-outlined text-[20px]">account_balance</span>
+</div>
+<div class="flex flex-col">
+<span class="text-slate-900 dark:text-white font-bold text-sm">Chase Bank</span>
+<span class="text-slate-500 dark:text-slate-400 text-xs">Checking ••• 8890</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-400 group-hover:text-purple-accent transition-colors">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="flex flex-col gap-6">
+<div class="bg-white dark:bg-card-dark rounded-2xl p-6 border border-slate-100 dark:border-white/5 shadow-sm hover:border-purple-accent/30 transition-colors">
+<div class="flex items-center gap-4 mb-2">
+<div class="p-3 rounded-lg bg-purple-accent/10 text-purple-accent">
+<span class="material-symbols-outlined">confirmation_number</span>
+</div>
+<h4 class="text-slate-500 dark:text-slate-400 font-medium text-sm">Ticket Sales</h4>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-2xl font-bold text-slate-900 dark:text-white">$8,230.50</span>
+<span class="text-xs text-accent-green font-medium">+12%</span>
+</div>
+</div>
+<div class="bg-white dark:bg-card-dark rounded-2xl p-6 border border-slate-100 dark:border-white/5 shadow-sm hover:border-blue-500/30 transition-colors">
+<div class="flex items-center gap-4 mb-2">
+<div class="p-3 rounded-lg bg-blue-500/10 text-blue-500">
+<span class="material-symbols-outlined">piano</span>
+</div>
+<h4 class="text-slate-500 dark:text-slate-400 font-medium text-sm">Gig Payouts</h4>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-2xl font-bold text-slate-900 dark:text-white">$3,840.00</span>
+<span class="text-xs text-slate-400 font-medium">0%</span>
+</div>
+</div>
+<div class="bg-white dark:bg-card-dark rounded-2xl p-6 border border-slate-100 dark:border-white/5 shadow-sm hover:border-orange-500/30 transition-colors">
+<div class="flex items-center gap-4 mb-2">
+<div class="p-3 rounded-lg bg-orange-500/10 text-orange-500">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<h4 class="text-slate-500 dark:text-slate-400 font-medium text-sm">Pending Clearance</h4>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-2xl font-bold text-slate-900 dark:text-white">$379.50</span>
+<span class="text-xs text-slate-400 font-medium">Available in 2 days</span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-2 bg-white dark:bg-card-dark rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm flex flex-col overflow-hidden">
+<div class="p-6 border-b border-slate-100 dark:border-white/5 flex justify-between items-center bg-slate-50/50 dark:bg-white/[0.02]">
+<h3 class="text-slate-900 dark:text-white font-bold text-lg">Transaction History</h3>
+<div class="flex gap-2">
+<select class="bg-transparent text-xs font-medium text-slate-500 dark:text-slate-400 border-none focus:ring-0 cursor-pointer">
+<option>Last 30 Days</option>
+<option>Last 90 Days</option>
+<option>This Year</option>
+</select>
+<button class="text-slate-400 dark:text-slate-500 hover:text-purple-accent dark:hover:text-purple-accent p-1 rounded transition-colors">
+<span class="material-symbols-outlined text-[20px]">filter_list</span>
+</button>
+</div>
+</div>
+<div class="flex-1 overflow-auto">
+<table class="w-full text-left text-sm">
+<thead class="text-xs uppercase text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-charcoal/50">
+<tr>
+<th class="px-6 py-4 font-medium">Transaction</th>
+<th class="px-6 py-4 font-medium">Date</th>
+<th class="px-6 py-4 font-medium">Type</th>
+<th class="px-6 py-4 font-medium text-right">Amount</th>
+<th class="px-6 py-4 font-medium text-center">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-white/5">
+<tr class="hover:bg-slate-50 dark:hover:bg-charcoal/30 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-slate-100 dark:bg-charcoal flex items-center justify-center text-slate-500 dark:text-slate-300 group-hover:bg-purple-accent group-hover:text-white transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[20px]">confirmation_number</span>
+</div>
+<div class="flex flex-col">
+<span class="font-bold text-slate-900 dark:text-white group-hover:text-purple-accent transition-colors">Summer Jazz Fest</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">Ticket Revenue #8839</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">Oct 24, 2023</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">Ticket Sales</td>
+<td class="px-6 py-4 text-right font-bold text-accent-green">+$450.00</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center rounded-full bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-green-500 ring-1 ring-inset ring-green-500/20">Completed</span>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-charcoal/30 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-slate-100 dark:bg-charcoal flex items-center justify-center text-slate-500 dark:text-slate-300 group-hover:bg-purple-accent group-hover:text-white transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[20px]">north_east</span>
+</div>
+<div class="flex flex-col">
+<span class="font-bold text-slate-900 dark:text-white group-hover:text-purple-accent transition-colors">Chase Bank ••• 8890</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">Withdrawal</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">Oct 22, 2023</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">Payout</td>
+<td class="px-6 py-4 text-right font-bold text-slate-900 dark:text-white">-$1,200.00</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center rounded-full bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-green-500 ring-1 ring-inset ring-green-500/20">Completed</span>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-charcoal/30 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-slate-100 dark:bg-charcoal flex items-center justify-center text-slate-500 dark:text-slate-300 group-hover:bg-purple-accent group-hover:text-white transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[20px]">piano</span>
+</div>
+<div class="flex flex-col">
+<span class="font-bold text-slate-900 dark:text-white group-hover:text-purple-accent transition-colors">The Blue Note</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">Gig Fee</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">Oct 20, 2023</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">Performance</td>
+<td class="px-6 py-4 text-right font-bold text-accent-green">+$850.00</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center rounded-full bg-yellow-500/10 px-2.5 py-0.5 text-xs font-medium text-yellow-500 ring-1 ring-inset ring-yellow-500/20">Processing</span>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-charcoal/30 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-slate-100 dark:bg-charcoal flex items-center justify-center text-slate-500 dark:text-slate-300 group-hover:bg-purple-accent group-hover:text-white transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[20px]">construction</span>
+</div>
+<div class="flex flex-col">
+<span class="font-bold text-slate-900 dark:text-white group-hover:text-purple-accent transition-colors">Platform Fee</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">Monthly Service</span>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">Oct 15, 2023</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">Service Fee</td>
+<td class="px-6 py-4 text-right font-bold text-slate-900 dark:text-white">-$15.00</td>
+<td class="px-6 py-4 text-center">
+<span class="inline-flex items-center rounded-full bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-green-500 ring-1 ring-inset ring-green-500/20">Completed</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t border-slate-100 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02]">
+<button class="w-full py-2 text-center text-sm font-medium text-purple-accent hover:text-white transition-colors">View All Transactions</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

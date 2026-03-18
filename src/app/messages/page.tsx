@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/landing/Navbar";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
@@ -30,6 +31,8 @@ function formatMessageTime(dateString?: string): string {
 
 function MessagesContent() {
   const { user } = useAuth();
+  const searchParams = useSearchParams();
+  const toUserId = searchParams.get("to");
   const { conversations, loading: convosLoading } = useConversations(user?.id);
   const { bookings, loading: bookingsLoading } = useBookings(user?.id);
   const [activeConvoId, setActiveConvoId] = useState<string | undefined>(undefined);
@@ -38,12 +41,23 @@ function MessagesContent() {
   const [tab, setTab] = useState<"messages" | "contracts">("messages");
   const latestBooking = bookings.length > 0 ? bookings[0] : null;
 
-  // Set first conversation as active by default when conversations load
+  // Pre-select conversation based on ?to=userId, otherwise default to first
   useEffect(() => {
-    if (conversations.length > 0 && !activeConvoId) {
+    if (convosLoading || activeConvoId) return;
+    if (toUserId) {
+      const match = conversations.find((c) =>
+        c.participants?.includes(toUserId) ||
+        (c.participantNames && toUserId in c.participantNames)
+      );
+      if (match) {
+        setActiveConvoId(match.id);
+        return;
+      }
+    }
+    if (conversations.length > 0) {
       setActiveConvoId(conversations[0].id);
     }
-  }, [conversations, activeConvoId]);
+  }, [conversations, convosLoading, activeConvoId, toUserId]);
 
   const activeConvo = conversations.find((c) => c.id === activeConvoId);
 
@@ -294,7 +308,9 @@ function MessagesContent() {
 export default function MessagesPage() {
   return (
     <ProtectedRoute>
-      <MessagesContent />
+      <Suspense fallback={null}>
+        <MessagesContent />
+      </Suspense>
     </ProtectedRoute>
   );
 }

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Create Event - NightLife Pro</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                        "surface-dark": "#261933",
+                        "border-dark": "#4d3267",
+                        "text-muted": "#ad92c9",
+                    },
+                    fontFamily: {
+                        "display": ["Spline Sans", "Noto Sans", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "2rem", "xl": "3rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display antialiased min-h-screen flex flex-col overflow-x-hidden selection:bg-primary selection:text-white">
+<!-- Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-border-dark px-10 py-4 bg-white dark:bg-background-dark sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="size-8 text-primary">
+<svg class="w-full h-full" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor" fill-rule="evenodd"></path>
+<path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">NightLife Pro</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<div class="hidden md:flex items-center gap-9">
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Dashboard</a>
+<a class="text-primary dark:text-white text-sm font-bold leading-normal" href="#">Events</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Talent</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal transition-colors" href="#">Venues</a>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 rounded-full border border-slate-200 dark:border-border-dark text-slate-900 dark:text-white text-sm font-medium hover:bg-slate-100 dark:hover:bg-surface-dark transition-colors">
+<span class="material-symbols-outlined text-[20px]">save</span>
+<span>Save Draft</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 ring-2 ring-primary/20" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBYDaesWcGQxHtkAGQPNxXJ38haWg0y-yXNxhSB0v_1KEdBUnICk6gIgQi4n49RHHa6peI_dvvYwqDbk-jXso0yw4vnraeY4XFEbvSWS2K7oksnEnI-J6tqs6F2DqgaSPxsARrn-EWxrGAYQROqNG1yo6AB3kmPipJCtJ8CrIVGgVi5faeOYT43N9kjE0n8cali76Uk1MMTTTZghY-cFlz2Cf77o95dY7THRP1-i_MVVfJaMcQOdfZVFFzrRPv_Gr22sZnVEquf-Z4");'></div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col md:flex-row relative">
+<!-- Background Decoration (Fixed) -->
+<div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+<div class="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] bg-primary/20 rounded-full blur-[120px] mix-blend-screen opacity-30"></div>
+<div class="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[100px] mix-blend-screen opacity-20"></div>
+</div>
+<!-- Left Column: Form Section -->
+<div class="w-full lg:w-3/5 xl:w-1/2 flex flex-col relative z-10 p-6 md:p-12 lg:p-20 overflow-y-auto">
+<div class="max-w-[640px] mx-auto w-full">
+<!-- Progress Header -->
+<div class="mb-10">
+<div class="flex items-center justify-between mb-4">
+<div>
+<h1 class="text-3xl md:text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-2">Create New Event</h1>
+<p class="text-slate-500 dark:text-text-muted">Step 1 of 4: Event Basics</p>
+</div>
+<span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-bold">25% Complete</span>
+</div>
+<div class="h-2 w-full bg-slate-200 dark:bg-surface-dark rounded-full overflow-hidden">
+<div class="h-full bg-primary w-1/4 rounded-full"></div>
+</div>
+</div>
+<!-- Form -->
+<form class="flex flex-col gap-8">
+<!-- Section: General Info -->
+<div class="space-y-6">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">event_note</span>
+                            General Information
+                        </h2>
+<div class="space-y-4">
+<label class="block">
+<span class="text-slate-700 dark:text-slate-200 text-sm font-medium mb-2 block">Event Name</span>
+<input class="w-full bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl px-5 py-4 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary placeholder-slate-400 dark:placeholder-text-muted transition-all" placeholder="e.g. Neon Nights Rooftop Launch" type="text"/>
+</label>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<label class="block">
+<span class="text-slate-700 dark:text-slate-200 text-sm font-medium mb-2 block">Date</span>
+<div class="relative">
+<input class="w-full bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl px-5 py-4 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary placeholder-slate-400 dark:placeholder-text-muted transition-all appearance-none" style="color-scheme: dark;" type="date"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">calendar_today</span>
+</div>
+</label>
+<label class="block">
+<span class="text-slate-700 dark:text-slate-200 text-sm font-medium mb-2 block">Time</span>
+<div class="relative">
+<input class="w-full bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl px-5 py-4 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary placeholder-slate-400 dark:placeholder-text-muted transition-all appearance-none" style="color-scheme: dark;" type="time"/>
+<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">schedule</span>
+</div>
+</label>
+</div>
+</div>
+</div>
+<hr class="border-slate-200 dark:border-border-dark"/>
+<!-- Section: Venue Selection -->
+<div class="space-y-6">
+<div class="flex justify-between items-center">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">location_on</span>
+                                Venue Selection
+                            </h2>
+<button class="text-sm text-primary font-medium hover:text-primary/80" type="button">Browse Map</button>
+</div>
+<div class="grid grid-cols-1 gap-4">
+<!-- Selected Card -->
+<div class="relative group cursor-pointer border-2 border-primary bg-primary/5 dark:bg-primary/10 rounded-xl p-4 flex gap-4 items-center transition-all">
+<div class="absolute top-3 right-3 text-primary">
+<span class="material-symbols-outlined">check_circle</span>
+</div>
+<div class="size-20 rounded-lg bg-cover bg-center shrink-0" data-alt="Interior of a modern club with neon lights" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD_MolUmsMmaUrEjEtg7R7PcoYNy7hFAd_m60fXrm96hzXSZdPe2VeiHKqQ6cDvGuzjhnmRksb3Z7zXhsOHMcS51BFVRVxdyPxgL7M1Ks4eDMSLvqLSMcnT_mkQhhLGlZE7oqQLcv7PqJE8A78LYfxtUJlEogmq-VU5ps_wVi_i-brVErWUf2fJEUHbVSmJ_b24q7fbKXpOg-mVSwP0VcKfomvI1ykTm_YOHxbY2ptND74nmgL_nuT0aZ6bHkCMfaLNdkzCRFrmgS4')"></div>
+<div>
+<h3 class="font-bold text-slate-900 dark:text-white">Skyline Lounge</h3>
+<p class="text-sm text-slate-500 dark:text-text-muted">Downtown • Capacity: 300</p>
+<div class="flex gap-1 mt-2">
+<span class="text-xs bg-white dark:bg-surface-dark px-2 py-0.5 rounded text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-border-dark">Rooftop</span>
+<span class="text-xs bg-white dark:bg-surface-dark px-2 py-0.5 rounded text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-border-dark">Bar</span>
+</div>
+</div>
+</div>
+<!-- Option Card -->
+<div class="relative group cursor-pointer border border-slate-200 dark:border-border-dark hover:border-primary/50 bg-white dark:bg-surface-dark rounded-xl p-4 flex gap-4 items-center transition-all hover:shadow-lg hover:shadow-primary/5">
+<div class="size-20 rounded-lg bg-cover bg-center shrink-0 grayscale group-hover:grayscale-0 transition-all" data-alt="Underground industrial style venue" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDyZE-2LOGI2AM18ciVIfDa4OkCAPHesw00TYDQ5QcvBHBZQkZNxlrYYuvjqJQ9YskBSUzCHIDW6xaVD5fYwg2BJea5H2xI18jzwJ663yribZksItUKmrX3cZFqcvMgzRznGYrbUzXnkCPjPzK7LY8q_OBAMq2fCCDV_Ix8b38tTYa5wROK681VCgqnTvFuuwMz_NzqNLEFXBuY3kMyEnI7by2ZzrcG2lDhbyROXesIEcsWsugFv1XjMAkFXFnKrAtIwoVS9y4Dltw')"></div>
+<div>
+<h3 class="font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">The Basement</h3>
+<p class="text-sm text-slate-500 dark:text-text-muted">Arts District • Capacity: 150</p>
+<div class="flex gap-1 mt-2">
+<span class="text-xs bg-slate-100 dark:bg-background-dark px-2 py-0.5 rounded text-slate-600 dark:text-slate-300">Intimate</span>
+<span class="text-xs bg-slate-100 dark:bg-background-dark px-2 py-0.5 rounded text-slate-600 dark:text-slate-300">Live Audio</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<hr class="border-slate-200 dark:border-border-dark"/>
+<!-- Section: Talent & Services -->
+<div class="space-y-6">
+<h2 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">groups</span>
+                            Talent &amp; Services
+                        </h2>
+<div class="space-y-4">
+<label class="block">
+<span class="text-slate-700 dark:text-slate-200 text-sm font-medium mb-2 block">Required Talent</span>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full bg-white dark:bg-surface-dark border border-slate-200 dark:border-border-dark rounded-xl pl-12 pr-4 py-4 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary placeholder-slate-400 dark:placeholder-text-muted transition-all" placeholder="Search DJs, Bands, Performers..." type="text"/>
+<!-- Search Dropdown Preview (Static for design) -->
+<div class="absolute top-full mt-2 left-0 w-full bg-white dark:bg-surface-dark rounded-xl border border-slate-200 dark:border-border-dark shadow-xl overflow-hidden z-20 hidden group-focus-within:block">
+<div class="p-2">
+<div class="px-3 py-2 text-xs font-semibold text-slate-500 dark:text-text-muted uppercase tracking-wider">Suggested</div>
+<div class="flex items-center gap-3 p-2 hover:bg-slate-100 dark:hover:bg-primary/20 rounded-lg cursor-pointer">
+<div class="size-8 rounded-full bg-cover bg-center" data-alt="Profile of DJ Axon" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCAdNeAECotejEY3NlweJBN5ECS03H-PxUiG6XGqrxzN6YyIMsSO6guqS_7rzvWLfL-Ew5uF4891QaEYAOsnre25UlA1wNE-wE6WJOcQIDoO6gxRzcgdsr_gOhaC2YhvHUN-djLb4m0L2VxLby9hAyCuX6uxjlU1rsNtPgeMh2zMfUcAN85tzmg8a0UMQwxSWEeXk4AjRUd-O-T68Yr_lZgVC_MJvNrj2kZ2ARTgqYUoNysCkCojyKV2ALUH2z3KSAzqWGWdQ5o_xI')"></div>
+<div class="flex-1">
+<div class="text-sm font-bold text-slate-900 dark:text-white">DJ Axon</div>
+<div class="text-xs text-slate-500 dark:text-text-muted">Techno / House</div>
+</div>
+</div>
+<div class="flex items-center gap-3 p-2 hover:bg-slate-100 dark:hover:bg-primary/20 rounded-lg cursor-pointer">
+<div class="size-8 rounded-full bg-cover bg-center" data-alt="Profile of The Neon Trio Band" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAPCKtD6_SnWL7JFzfb7sS6nGZCGKsT7gepsVj8TmrUsfktULd8qKfStS_eDRN4cpBq-uz7gfqOSdPT06rpcFDNLLlu1ZDV_5UdO4St5JmEdXqCdtFaSzRFoJLcOXVyLQemJGAjZ2pZqqZDWieOMcWshBUFA6qxAI3euak7ZDPV3jPiW_XbNNycl81PqGhkZJdDrvk_QBEnHGHpXMGplYatMlcvfy3zbRyvwDY_7H2Ewiiquyp8xKF9KZ8_K6WaR1iaIyrmvdsVjwE')"></div>
+<div class="flex-1">
+<div class="text-sm font-bold text-slate-900 dark:text-white">The Neon Trio</div>
+<div class="text-xs text-slate-500 dark:text-text-muted">Live Jazz</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-3 flex flex-wrap gap-2">
+<div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary text-white text-sm font-medium">
+<span>DJ Spark</span>
+<button class="hover:bg-white/20 rounded-full p-0.5" type="button"><span class="material-symbols-outlined text-[16px]">close</span></button>
+</div>
+</div>
+</label>
+<label class="block">
+<span class="text-slate-700 dark:text-slate-200 text-sm font-medium mb-2 block">Required Services</span>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+<label class="cursor-pointer">
+<input checked="" class="peer sr-only" type="checkbox"/>
+<div class="flex flex-col items-center justify-center gap-2 p-4 rounded-xl border border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark text-slate-500 dark:text-text-muted peer-checked:bg-primary/10 peer-checked:border-primary peer-checked:text-primary transition-all">
+<span class="material-symbols-outlined text-2xl">local_bar</span>
+<span class="text-sm font-medium">Bartending</span>
+</div>
+</label>
+<label class="cursor-pointer">
+<input class="peer sr-only" type="checkbox"/>
+<div class="flex flex-col items-center justify-center gap-2 p-4 rounded-xl border border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark text-slate-500 dark:text-text-muted peer-checked:bg-primary/10 peer-checked:border-primary peer-checked:text-primary transition-all">
+<span class="material-symbols-outlined text-2xl">security</span>
+<span class="text-sm font-medium">Security</span>
+</div>
+</label>
+<label class="cursor-pointer">
+<input class="peer sr-only" type="checkbox"/>
+<div class="flex flex-col items-center justify-center gap-2 p-4 rounded-xl border border-slate-200 dark:border-border-dark bg-white dark:bg-surface-dark text-slate-500 dark:text-text-muted peer-checked:bg-primary/10 peer-checked:border-primary peer-checked:text-primary transition-all">
+<span class="material-symbols-outlined text-2xl">photo_camera</span>
+<span class="text-sm font-medium">Photography</span>
+</div>
+</label>
+</div>
+</label>
+</div>
+</div>
+<!-- Footer Actions -->
+<div class="pt-6 flex gap-4 sticky bottom-0 bg-background-light dark:bg-background-dark py-4 z-10 border-t border-slate-200 dark:border-transparent mt-8">
+<button class="px-6 py-3 rounded-full font-bold text-slate-700 dark:text-white hover:bg-slate-200 dark:hover:bg-surface-dark transition-colors" type="button">
+                            Back
+                        </button>
+<button class="flex-1 px-6 py-3 rounded-full bg-primary text-white font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/25 flex justify-center items-center gap-2 group" type="button">
+                            Continue to Details
+                            <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</form>
+</div>
+</div>
+<!-- Right Column: Visual Preview -->
+<div class="hidden lg:flex w-2/5 xl:w-1/2 bg-surface-dark relative overflow-hidden flex-col justify-end p-12">
+<!-- Background Image -->
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Atmospheric crowd shot at a nightlife event with blue and purple lighting" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDUs7RguRHrkEG6ZZiSSEy31nKQlAAtcXeD1tCoOh7TZ4cZ7Yzl7RBiQDUG8pp7pC3tYIH_xqEt4GT8i-PfGbUqMLq4vYWZWfbw2mxkS_hbwyYB6tIsCuJuZ4F8yglsqhTnU09c2ThcjFfbzMZsFXcFg5WgxQo1avFgSygyGccmJt29FsSGfeptsYtMlBndCdJ9oSr76eHpp7Vh4_O1sA-4GfqKhBx_gzM4rp4_2tED0OwF96dL45r4sFgySyhQcJ9Sx7K6T9hCk14');"></div>
+<!-- Gradient Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/80 to-transparent"></div>
+<!-- Content -->
+<div class="relative z-10 max-w-lg">
+<div class="bg-surface-dark/40 backdrop-blur-md border border-white/10 p-8 rounded-3xl mb-8 transform transition-transform hover:scale-[1.02]">
+<div class="flex items-center gap-4 mb-6">
+<div class="p-3 bg-primary/20 rounded-full text-primary">
+<span class="material-symbols-outlined text-2xl">lightbulb</span>
+</div>
+<div>
+<h3 class="text-white font-bold text-lg">Pro Tip</h3>
+<p class="text-slate-300 text-sm">Events with clear service requirements get 40% more applications from top-tier talent.</p>
+</div>
+</div>
+<div class="flex -space-x-3 rtl:space-x-reverse">
+<div class="w-10 h-10 rounded-full border-2 border-surface-dark bg-cover bg-center" data-alt="User avatar 1" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAP855VAlcGggCXxXGh-iHPeGCKS7VQmXjaKIOOVdLURylS9Ns4ah6ZlRkFkWSEiaOs9Lw4XzEMQqM1xq-cqFcp2lGtnqM3rCeMAMzFMFR4My8xUotfYgT4UYUTyuf6ZyZi6Q60QXHuqiLOxGEiGM6hTdi-MA4H4QF-GG0Dp4_WNEjl97KVSPJ8RqeSSsF6UiQ9stTP2nc0RAWb71GcKuqzD-yxawXzQgiJdh5VCeJLUqCirLnuXg3ZOPwKkdoLtpgWUBWUM8VcVvs')"></div>
+<div class="w-10 h-10 rounded-full border-2 border-surface-dark bg-cover bg-center" data-alt="User avatar 2" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD4QczcwZekDGGwyw0zYICWIYcQlv3iLqFPRA3IwI19ybcsMot22DiHzLNSS0vjzlAHfW0jdlTrkhzT4SoDpiKfdWxJO92i_Iyfn3FJt8Cycarljwj4Ia6SR3LpQrq5pdnTu0YpXnCEJR4j09crDlXZROgCAcIa5u-0MuAHJ4mU_Fn-nDjmo2JYTL6zk5HIqEUuqXM_UvqRhai4-ol1mmON09kfNSBjh4M-8FUuWGPhg9QDtoX_9s_5ZEk-IKlJjgN46oSPCFoG0jA')"></div>
+<div class="w-10 h-10 rounded-full border-2 border-surface-dark bg-cover bg-center" data-alt="User avatar 3" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCKOtnFZ8hRGlC1i5W1SV5GhIatEp0y1jAWNxLuS458K2L2eBQYC7HdfCGt7zSDR9FGMpsNn_SOp2KEH6jJ2Csx8DwEX_GGTpGUZRlo3XdeRSYRqKGuDEiTWcfuqrjnPpLWncMqz2qoJWUDbOk1rpKzw3FNCWfEDmFQAl5pbA5UQ5QTAI3nk5G8oIg8fBgWvXFeKh771D1-MKQ_zVkWZJYjdL6akBMZ7BT5jn6P5fZtIIglb1NKV1uetCxbQkTym9tlJDI2MFX3T94')"></div>
+<div class="w-10 h-10 flex items-center justify-center rounded-full border-2 border-surface-dark bg-primary text-white text-xs font-bold">+12</div>
+</div>
+<p class="mt-3 text-slate-300 text-xs">Recently booked talent in your area</p>
+</div>
+<h2 class="text-4xl font-black text-white leading-tight mb-4">Host the night everyone remembers.</h2>
+<p class="text-lg text-slate-300">You're just a few steps away from launching your event to thousands of potential guests.</p>
+</div>
+</div>
+</main>
+</body></html>

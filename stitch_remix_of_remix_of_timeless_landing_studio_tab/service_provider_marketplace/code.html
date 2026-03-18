@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Service Provider Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col overflow-x-hidden">
+<div class="relative flex h-full grow flex-col">
+<!-- Top Navigation -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-primary/20 px-10 py-4 bg-white dark:bg-background-dark sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2.5 text-slate-900 dark:text-white">
+<div class="size-8 rounded-lg bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[20px]">hub</span>
+</div>
+<h2 class="text-xl font-bold leading-tight tracking-[-0.015em]">ProFinder</h2>
+</div>
+<label class="flex flex-col min-w-64 !h-10">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-slate-100 dark:bg-primary/10 border border-slate-200 dark:border-transparent focus-within:border-primary dark:focus-within:border-primary transition-colors">
+<div class="text-slate-500 dark:text-primary/70 flex items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg bg-transparent text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border-none h-full placeholder:text-slate-400 dark:placeholder:text-primary/50 px-3 text-sm font-normal leading-normal" placeholder="Search services, gear, or providers..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<div class="hidden lg:flex items-center gap-6">
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-medium leading-normal transition-colors" href="#">Browse Providers</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-medium leading-normal transition-colors" href="#">Venues</a>
+<a class="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary text-sm font-medium leading-normal transition-colors" href="#">My Bookings</a>
+</div>
+<div class="flex gap-3">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-transparent border border-slate-300 dark:border-primary/30 hover:border-primary text-slate-900 dark:text-white text-sm font-bold leading-normal tracking-[0.015em] transition-colors">
+<span class="truncate">Log In</span>
+</button>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-9 px-4 bg-primary hover:bg-primary/90 text-white text-sm font-bold leading-normal tracking-[0.015em] transition-colors shadow-lg shadow-primary/20">
+<span class="truncate">Sign Up</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col items-center w-full">
+<div class="w-full max-w-[1280px] px-6 lg:px-10 py-8 flex flex-col gap-8">
+<!-- Hero Section -->
+<div class="flex flex-wrap justify-between items-end gap-6 pb-4 border-b border-slate-200 dark:border-primary/10">
+<div class="flex min-w-72 flex-col gap-3">
+<h1 class="text-slate-900 dark:text-white text-4xl lg:text-5xl font-extrabold leading-tight tracking-[-0.033em]">
+                            Find the Best <span class="text-primary">Service Providers</span>
+</h1>
+<p class="text-slate-500 dark:text-slate-400 text-lg font-normal leading-normal max-w-2xl">
+                            Discover top-rated audio, lighting, and permit experts for your next event. Trusted by over 10,000 venue managers.
+                        </p>
+</div>
+<div class="flex items-center gap-2 text-sm font-medium text-slate-500 dark:text-primary/60">
+<span class="material-symbols-outlined text-[20px]">location_on</span>
+<span>Los Angeles, CA</span>
+<a class="text-primary hover:underline ml-1" href="#">Change</a>
+</div>
+</div>
+<!-- Filters -->
+<div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-primary text-white px-6 shadow-lg shadow-primary/25 transition-transform hover:scale-105">
+<span class="text-sm font-bold leading-normal">All</span>
+</button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-primary/10 hover:bg-slate-50 dark:hover:bg-primary/20 border border-slate-200 dark:border-transparent px-5 transition-colors group">
+<span class="material-symbols-outlined text-[18px] text-slate-400 dark:text-primary group-hover:text-primary">graphic_eq</span>
+<span class="text-slate-700 dark:text-slate-200 text-sm font-medium leading-normal">Audio Engineers</span>
+</button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-primary/10 hover:bg-slate-50 dark:hover:bg-primary/20 border border-slate-200 dark:border-transparent px-5 transition-colors group">
+<span class="material-symbols-outlined text-[18px] text-slate-400 dark:text-primary group-hover:text-primary">lightbulb</span>
+<span class="text-slate-700 dark:text-slate-200 text-sm font-medium leading-normal">Lighting</span>
+</button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-primary/10 hover:bg-slate-50 dark:hover:bg-primary/20 border border-slate-200 dark:border-transparent px-5 transition-colors group">
+<span class="material-symbols-outlined text-[18px] text-slate-400 dark:text-primary group-hover:text-primary">curtains</span>
+<span class="text-slate-700 dark:text-slate-200 text-sm font-medium leading-normal">Stage Design</span>
+</button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-primary/10 hover:bg-slate-50 dark:hover:bg-primary/20 border border-slate-200 dark:border-transparent px-5 transition-colors group">
+<span class="material-symbols-outlined text-[18px] text-slate-400 dark:text-primary group-hover:text-primary">verified</span>
+<span class="text-slate-700 dark:text-slate-200 text-sm font-medium leading-normal">Permits</span>
+</button>
+<button class="flex h-10 shrink-0 items-center justify-center gap-x-2 rounded-full bg-white dark:bg-primary/10 hover:bg-slate-50 dark:hover:bg-primary/20 border border-slate-200 dark:border-transparent px-5 transition-colors group">
+<span class="material-symbols-outlined text-[18px] text-slate-400 dark:text-primary group-hover:text-primary">security</span>
+<span class="text-slate-700 dark:text-slate-200 text-sm font-medium leading-normal">Security</span>
+</button>
+</div>
+<!-- Grid Content -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<div class="flex flex-col rounded-xl bg-white dark:bg-[#20152b] border border-slate-200 dark:border-primary/10 shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300 overflow-hidden group">
+<div class="relative h-48 w-full overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+<div class="w-full h-full bg-center bg-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="Concert stage with vibrant laser lights and smoke" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDR8oLzTQzExLEcKnreAIcHpIX93tv5W168a0qIXRaxb5oigVvTzDeaI5YUhxeIu1W95s7PVNWj16jo-mJsWJFpZJNcEV27sTv1zMfeSGkAqKr0MzEjMO7r-OEYJ8olvfxRRSK7Iq3u0DZN7TlwC0UVUWuqMxSRRfk4za2F94KXmZRXI9qWZ4ZWaVRNREJd1PjX-HvvJNPWIpVwoR2ogb4_m3LcHikEoWEiGB-LAiqWmvs7qJhrGqHjO_VwS0s5D96Pl2d8wmf5qV0");'></div>
+<div class="absolute bottom-3 left-3 z-20 flex items-center gap-1 bg-black/50 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-white">
+<span class="material-symbols-outlined text-[14px] text-yellow-400">star</span>
+                                4.9 (120 reviews)
+                             </div>
+<button class="absolute top-3 right-3 z-20 p-2 rounded-full bg-white/10 backdrop-blur-md text-white hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+<div class="flex flex-col p-5 gap-4 flex-1">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xs font-bold uppercase tracking-wider text-primary">Audio</span>
+<span class="text-xs text-slate-400 dark:text-slate-500">•</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">Response time: &lt; 1hr</span>
+</div>
+<h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight mb-2">Luminous Audio Systems</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-relaxed line-clamp-2">
+                                    Professional sound reinforcement for large venues. Specializing in line array systems and live mixing for festivals.
+                                </p>
+</div>
+<div class="flex flex-wrap gap-2 mt-auto">
+<span class="px-2 py-1 rounded bg-slate-100 dark:bg-primary/5 text-slate-600 dark:text-primary/80 text-xs font-medium border border-slate-200 dark:border-primary/10">Line Arrays</span>
+<span class="px-2 py-1 rounded bg-slate-100 dark:bg-primary/5 text-slate-600 dark:text-primary/80 text-xs font-medium border border-slate-200 dark:border-primary/10">Digital Consoles</span>
+</div>
+<button class="w-full mt-2 cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-slate-900 dark:bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+                                Request Quote
+                            </button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="flex flex-col rounded-xl bg-white dark:bg-[#20152b] border border-slate-200 dark:border-primary/10 shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300 overflow-hidden group">
+<div class="relative h-48 w-full overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+<div class="w-full h-full bg-center bg-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="Event lighting setup with purple spotlights" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDsSbpqLQVMeFfD6RgcSpUEyorHYJzkHB12ypYsiBE14EG1OVCXKsHb5tfzL7s8DkqP476SpdJScdjuMcUu6btpX92WueZ6b9xy8-CLTgAUhiS61atnRIIkYgwXQqHpivAYCfRCvxsq92jqpuSePygUDICihndNQOQ3tPLWf0KoQDH2J1KHF5uiF_GzEDS3C_BKmjoOh5w99dp-T69Mwoa4MvMgOrY4NMzWXhAd_GuXx7Gp0KCxTPaOXU0pJUoD1DQgUFUX3-ULZ2o");'></div>
+<div class="absolute bottom-3 left-3 z-20 flex items-center gap-1 bg-black/50 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-white">
+<span class="material-symbols-outlined text-[14px] text-yellow-400">star</span>
+                                4.8 (85 reviews)
+                             </div>
+<button class="absolute top-3 right-3 z-20 p-2 rounded-full bg-white/10 backdrop-blur-md text-white hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+<div class="flex flex-col p-5 gap-4 flex-1">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xs font-bold uppercase tracking-wider text-primary">Lighting</span>
+<span class="text-xs text-slate-400 dark:text-slate-500">•</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">Response time: 2hrs</span>
+</div>
+<h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight mb-2">BrightNight Lighting</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-relaxed line-clamp-2">
+                                    Creative lighting design for concerts and corporate events. Moving heads, lasers, and atmosphere effects.
+                                </p>
+</div>
+<div class="flex flex-wrap gap-2 mt-auto">
+<span class="px-2 py-1 rounded bg-slate-100 dark:bg-primary/5 text-slate-600 dark:text-primary/80 text-xs font-medium border border-slate-200 dark:border-primary/10">Moving Heads</span>
+<span class="px-2 py-1 rounded bg-slate-100 dark:bg-primary/5 text-slate-600 dark:text-primary/80 text-xs font-medium border border-slate-200 dark:border-primary/10">Lasers</span>
+</div>
+<button class="w-full mt-2 cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-slate-900 dark:bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+                                Request Quote
+                            </button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="flex flex-col rounded-xl bg-white dark:bg-[#20152b] border border-slate-200 dark:border-primary/10 shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300 overflow-hidden group">
+<div class="relative h-48 w-full overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+<div class="w-full h-full bg-center bg-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="Security guard checking pass at event entrance" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCXsDG1I6c_aWx13uPeUTlauolnHJyDZ34kGux6q8u5-MA31vvTSu1Dc_4a_-jbJXeL5Q2qeU6Y4y8-3kiF-kQidRY6OXQWKqJBJ8mOx_wf0icmEFc4QnS2K0DeniKG95CbM78jXlgvK7aGa57qsYY_XJMV8m0lx6J1-21Z6Qr4R_o7TagitqJa7pgTlG6e0GS7fD9YyPHl0yADSwAwLZY6vwxCqYDElliFYxS_Lv_woTkw_bXcrhpzmOfTFfMeQ06UUPzrDkm8K4w");'></div>
+<div class="absolute bottom-3 left-3 z-20 flex items-center gap-1 bg-black/50 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-white">
+<span class="material-symbols-outlined text-[14px] text-yellow-400">star</span>
+                                5.0 (42 reviews)
+                             </div>
+<button class="absolute top-3 right-3 z-20 p-2 rounded-full bg-white/10 backdrop-blur-md text-white hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+<div class="flex flex-col p-5 gap-4 flex-1">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xs font-bold uppercase tracking-wider text-primary">Security</span>
+<span class="text-xs text-slate-400 dark:text-slate-500">•</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">Response time: 4hrs</span>
+</div>
+<h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight mb-2">SafeGuard Events</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-relaxed line-clamp-2">
+                                    Licensed and insured event security teams. Crowd control, VIP protection, and entrance screening services.
+                                </p>
+</div>
+<div class="flex flex-wrap gap-2 mt-auto">
+<span class="px-2 py-1 rounded bg-slate-100 dark:bg-primary/5 text-slate-600 dark:text-primary/80 text-xs font-medium border border-slate-200 dark:border-primary/10">VIP Protection</span>
+<span class="px-2 py-1 rounded bg-slate-100 dark:bg-primary/5 text-slate-600 dark:text-primary/80 text-xs font-medium border border-slate-200 dark:border-primary/10">Crowd Control</span>
+</div>
+<button class="w-full mt-2 cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-slate-900 dark:bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+                                Request Quote
+                            </button>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="flex flex-col rounded-xl bg-white dark:bg-[#20152b] border border-slate-200 dark:border-primary/10 shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300 overflow-hidden group">
+<div class="relative h-48 w-full overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+<div class="w-full h-full bg-center bg-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="Event stage setup with screens and structure" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDwf9-Amc8Z7caXqz_5gfcwIqUv_SUUXTANZH510mbZQX9iBKobE6uDYEEaEUkDpFcq1aFtJytmSCyV7lYW51joeKitbh49f9ZGYhN75J39Zy0FhEd7whtTX9XU9rwvCUSH_ae6d741a5_mKxOzRfxMVvxz5iVG03PgqSby1R_0ojC5lhabNR_xrNfwoieZPCVlw8D1m_jP-n9siNLBGrtVp1libdnbsBsBteMRtXIkCUaaLXLbgKoruLWuZftl4UP2JfBbtlyLDX4");'></div>
+<div class="absolute bottom-3 left-3 z-20 flex items-center gap-1 bg-black/50 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-white">
+<span class="material-symbols-outlined text-[14px] text-yellow-400">star</span>
+                                4.7 (210 reviews)
+                             </div>
+<button class="absolute top-3 right-3 z-20 p-2 rounded-full bg-white/10 backdrop-blur-md text-white hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+<div class="flex flex-col p-5 gap-4 flex-1">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xs font-bold uppercase tracking-wider text-primary">Stage Design</span>
+<span class="text-xs text-slate-400 dark:text-slate-500">•</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">Response time: &lt; 1hr</span>
+</div>
+<h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight mb-2">BuildIt Stage Co.</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-relaxed line-clamp-2">
+                                    Custom stage fabrication and rigging solutions. We turn empty halls into spectacular performance spaces.
+                                </p>
+</div>
+<div class="flex flex-wrap gap-2 mt-auto">
+<span class="px-2 py-1 rounded bg-slate-100 dark:bg-primary/5 text-slate-600 dark:text-primary/80 text-xs font-medium border border-slate-200 dark:border-primary/10">Trussing</span>
+<span class="px-2 py-1 rounded bg-slate-100 dark:bg-primary/5 text-slate-600 dark:text-primary/80 text-xs font-medium border border-slate-200 dark:border-primary/10">Platforms</span>
+</div>
+<button class="w-full mt-2 cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-slate-900 dark:bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+                                Request Quote
+                            </button>
+</div>
+</div>
+<!-- Card 5 -->
+<div class="flex flex-col rounded-xl bg-white dark:bg-[#20152b] border border-slate-200 dark:border-primary/10 shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300 overflow-hidden group">
+<div class="relative h-48 w-full overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+<div class="w-full h-full bg-center bg-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="Paperwork and permit documents on desk with glasses" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBme19X92rzYSbZS8bDOz-Ss7_DW91gEYqX_CniTh3-jD-z5Kr-sjbS_9gMrzTDGDpgaulhrgsrltFTPcN3IHdb15I2JaOYWYnm-qaoCQkNAS4Uh-zo_091TzDMxFT5OOtdrJnCMjDrjDpi6nFDcE5vVlf-G_Ex2M1Y6L97HF35TP-uU9xGPbFAlbVo1Nn2QeQ1Qb244rRZ7ZmmnugN6DNlPB0K_UAGDfFza3BG7MSc4RSQlQMxShj9w0i-EFsbdWJGJmsdr3D6Zto");'></div>
+<div class="absolute bottom-3 left-3 z-20 flex items-center gap-1 bg-black/50 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-white">
+<span class="material-symbols-outlined text-[14px] text-yellow-400">star</span>
+                                5.0 (14 reviews)
+                             </div>
+<button class="absolute top-3 right-3 z-20 p-2 rounded-full bg-white/10 backdrop-blur-md text-white hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+<div class="flex flex-col p-5 gap-4 flex-1">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xs font-bold uppercase tracking-wider text-primary">Permits</span>
+<span class="text-xs text-slate-400 dark:text-slate-500">•</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">Response time: 24hrs</span>
+</div>
+<h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight mb-2">City Event Permitting</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-relaxed line-clamp-2">
+                                    Navigating city bureaucracy so you don't have to. Fire safety, noise ordinances, and liquor license expediting.
+                                </p>
+</div>
+<div class="flex flex-wrap gap-2 mt-auto">
+<span class="px-2 py-1 rounded bg-slate-100 dark:bg-primary/5 text-slate-600 dark:text-primary/80 text-xs font-medium border border-slate-200 dark:border-primary/10">Fire Safety</span>
+<span class="px-2 py-1 rounded bg-slate-100 dark:bg-primary/5 text-slate-600 dark:text-primary/80 text-xs font-medium border border-slate-200 dark:border-primary/10">Liquor License</span>
+</div>
+<button class="w-full mt-2 cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-slate-900 dark:bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+                                Request Quote
+                            </button>
+</div>
+</div>
+<!-- Card 6 -->
+<div class="flex flex-col rounded-xl bg-white dark:bg-[#20152b] border border-slate-200 dark:border-primary/10 shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300 overflow-hidden group">
+<div class="relative h-48 w-full overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+<div class="w-full h-full bg-center bg-cover transform group-hover:scale-105 transition-transform duration-500" data-alt="Sound mixing console close up with knobs" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDSt3IG9UbhJsWjeW5RR3ZIInXteaf-cVfju6dB5Tj9A7xLyd7dVsk-F3mPID9Za9V1L9bJkcfdPHpH9zsTfyxJf_kLPwTNF84luMpYcQJqF0Wo7iErAEEO9gpQ0EURYEipcqZy06U15XvW9_BmXuxSgfQ94a1FnjUvZdwYm5MnqYwd4hW0XHx2SSVf4t4p80jwzpEwBsOeUuGwu4lI2pQ5KkBr8WqKjSq5kvaDvY_QOCzzlMta6dEnsyY4_VUd9vaJqTFO8-3wXrc");'></div>
+<div class="absolute bottom-3 left-3 z-20 flex items-center gap-1 bg-black/50 backdrop-blur-sm px-2 py-1 rounded text-xs font-medium text-white">
+<span class="material-symbols-outlined text-[14px] text-yellow-400">star</span>
+                                4.6 (56 reviews)
+                             </div>
+<button class="absolute top-3 right-3 z-20 p-2 rounded-full bg-white/10 backdrop-blur-md text-white hover:bg-white/20 transition-colors">
+<span class="material-symbols-outlined text-[20px]">favorite</span>
+</button>
+</div>
+<div class="flex flex-col p-5 gap-4 flex-1">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xs font-bold uppercase tracking-wider text-primary">Audio</span>
+<span class="text-xs text-slate-400 dark:text-slate-500">•</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">Response time: 3hrs</span>
+</div>
+<h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight mb-2">Sonic Wave Tech</h3>
+<p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-relaxed line-clamp-2">
+                                    Boutique audio services for intimate venues and private parties. High-fidelity systems for discerning clients.
+                                </p>
+</div>
+<div class="flex flex-wrap gap-2 mt-auto">
+<span class="px-2 py-1 rounded bg-slate-100 dark:bg-primary/5 text-slate-600 dark:text-primary/80 text-xs font-medium border border-slate-200 dark:border-primary/10">Hi-Fi</span>
+<span class="px-2 py-1 rounded bg-slate-100 dark:bg-primary/5 text-slate-600 dark:text-primary/80 text-xs font-medium border border-slate-200 dark:border-primary/10">Wireless Mics</span>
+</div>
+<button class="w-full mt-2 cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-slate-900 dark:bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+                                Request Quote
+                            </button>
+</div>
+</div>
+</div>
+<!-- Load More Button -->
+<div class="flex justify-center mt-4 mb-12">
+<button class="flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-slate-300 dark:border-primary/30 text-slate-600 dark:text-primary hover:bg-slate-100 dark:hover:bg-primary/10 transition-colors text-sm font-bold">
+<span>Load More Providers</span>
+<span class="material-symbols-outlined text-[18px]">expand_more</span>
+</button>
+</div>
+</div>
+</main>
+</div>
+</body></html>

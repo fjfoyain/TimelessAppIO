@@ -4,7 +4,6 @@ import { use } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { notFound } from "next/navigation";
 import Navbar from "@/components/landing/Navbar";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import Footer from "@/components/landing/Footer";
@@ -22,12 +21,9 @@ export default function TalentProfilePage({ params }: { params: Promise<{ id: st
   const { data: firestoreMatch, loading } = useTalentProfile(id);
 
   // Fallback to mock data if not found in Firestore
-  const mockMatch = mockTalents.find((t) => t.talent.id === id);
+  const mockMatch = mockTalents.find((t) => t.talent.id === id) ?? mockTalents[0];
   const match = firestoreMatch || (!loading ? mockMatch : null);
-
-  if (!loading && !match) {
-    notFound();
-  }
+  const isUsingMockData = !loading && !firestoreMatch && !!match;
 
   if (loading || !match) {
     return (
@@ -55,6 +51,14 @@ export default function TalentProfilePage({ params }: { params: Promise<{ id: st
 
       <main className="relative z-10 pt-24 pb-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          {/* Sample data banner */}
+          {isUsingMockData && (
+            <div className="flex items-center gap-2 mb-6 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm">
+              <span className="material-icons text-base">info</span>
+              Sample Profile — this is demo data. Real profiles appear once talent accounts are created.
+            </div>
+          )}
+
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-sm text-slate-500 mb-8">
             <Link href="/marketplace" className="hover:text-primary transition-colors">
@@ -267,7 +271,7 @@ export default function TalentProfilePage({ params }: { params: Promise<{ id: st
                       ))}
                     </ul>
                     <button
-                      onClick={() => router.push(`/booking?talent=${talent.id}&plan=${plan.id}`)}
+                      onClick={() => router.push(`/booking/contract?talent=${talent.id}&plan=${plan.id}`)}
                       className="w-full mt-4 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary-dark transition btn-glow"
                     >
                       Select Plan

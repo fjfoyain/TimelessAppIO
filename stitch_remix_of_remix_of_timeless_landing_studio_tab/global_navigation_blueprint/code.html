@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Global Navigation Blueprint - Timeless</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        @container (max-width: 120px) { .table-col-120 { display: none; } }
+        @container (max-width: 240px) { .table-col-240 { display: none; } }
+        @container (max-width: 360px) { .table-col-360 { display: none; } }
+        @container (max-width: 480px) { .table-col-480 { display: none; } }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-primary/30 px-10 py-3 mb-6">
+<div class="flex items-center gap-4 text-slate-900 dark:text-slate-100">
+<div class="size-6 text-primary">
+<span class="material-symbols-outlined">account_tree</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">Timeless Nav Blueprint</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="flex items-center gap-9">
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Sitemap</a>
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Flows</a>
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Dashboards</a>
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Components</a>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User profile avatar placeholder" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCkgJgANvddQ8Q--OQUuQdikPHdzdzxvTHYsbSZczCB-YXJSJM2JyWhcwpF792Wbs3JkCh4I0rpLHiUXCi3H8DNPTY7Ua7kvJJ1UD8XbTq6EAY-LFzEpw-x-YYfndhmsrzCwsgBSGMdwxgYfUbBNGmJMvaH1Ru22PUc22SS_PBPczaYUliarodey6bsZr5iEgDPShie66HgdHR2oG0WCL-vKupRE9Gx8Mw8AtHRDJkKAZgbDahXgfVV5sWXMgSQOfDWdQZWBu1CDIx9");'></div>
+</div>
+</header>
+<div class="flex flex-wrap justify-between gap-3 p-4">
+<div class="flex min-w-72 flex-col gap-3">
+<p class="text-4xl font-black leading-tight tracking-[-0.033em]">Global Navigation Blueprint</p>
+<p class="text-slate-500 dark:text-slate-400 text-base font-normal leading-normal">Central navigation logic mapping for Timeless</p>
+</div>
+</div>
+<div class="flex flex-col p-4 gap-3">
+<details class="flex flex-col rounded-lg bg-primary/10 border border-primary/20 px-4 py-2 group">
+<summary class="flex cursor-pointer items-center justify-between gap-6 py-2">
+<p class="text-sm font-medium leading-normal">Landing Page to User Selection</p>
+<div class="text-primary group-open:rotate-180 transition-transform">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</summary>
+<p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-normal pb-2 mt-2">
+                                Visual tree showing paths to Creator Dashboard, Business Dashboard, and General User Dashboard.
+                            </p>
+</details>
+<details class="flex flex-col rounded-lg bg-primary/10 border border-primary/20 px-4 py-2 group">
+<summary class="flex cursor-pointer items-center justify-between gap-6 py-2">
+<p class="text-sm font-medium leading-normal">Registration Flows</p>
+<div class="text-primary group-open:rotate-180 transition-transform">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</summary>
+<p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-normal pb-2 mt-2">
+                                Maps the specific onboarding steps for different user roles (Creator, Business, General).
+                            </p>
+</details>
+<details class="flex flex-col rounded-lg bg-primary/10 border border-primary/20 px-4 py-2 group" open="">
+<summary class="flex cursor-pointer items-center justify-between gap-6 py-2">
+<p class="text-sm font-medium leading-normal">Role-Based Dashboards</p>
+<div class="text-primary group-open:rotate-180 transition-transform">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</summary>
+<div class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-normal pb-2 mt-2 space-y-2">
+<p>Visual tree showing paths to specialized dashboards based on user type.</p>
+<ul class="list-disc list-inside pl-2">
+<li>Creator: Content management, analytics, earnings</li>
+<li>Business: Campaigns, analytics, payments</li>
+<li>User: Feed, interactions, wallet</li>
+</ul>
+</div>
+</details>
+<details class="flex flex-col rounded-lg bg-primary/10 border border-primary/20 px-4 py-2 group">
+<summary class="flex cursor-pointer items-center justify-between gap-6 py-2">
+<p class="text-sm font-medium leading-normal">Interconnectivity (Marketplace, Messaging, Wallet)</p>
+<div class="text-primary group-open:rotate-180 transition-transform">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</summary>
+<p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-normal pb-2 mt-2">
+                                Illustrates how shared hubs connect across all role-based dashboards.
+                            </p>
+</details>
+</div>
+<div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-4 p-4">
+<div class="flex flex-1 gap-3 rounded-xl border border-primary/20 bg-primary/5 p-5 flex-col hover:bg-primary/10 transition-colors cursor-pointer">
+<div class="text-primary bg-primary/20 w-10 h-10 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined">storefront</span>
+</div>
+<div class="flex flex-col gap-1 mt-2">
+<h2 class="text-base font-bold leading-tight">Marketplace Hub</h2>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">Links to Discovery and Checkout</p>
+</div>
+</div>
+<div class="flex flex-1 gap-3 rounded-xl border border-primary/20 bg-primary/5 p-5 flex-col hover:bg-primary/10 transition-colors cursor-pointer">
+<div class="text-primary bg-primary/20 w-10 h-10 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined">chat</span>
+</div>
+<div class="flex flex-col gap-1 mt-2">
+<h2 class="text-base font-bold leading-tight">Messaging Hub</h2>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">Links to Inbox and Connections</p>
+</div>
+</div>
+<div class="flex flex-1 gap-3 rounded-xl border border-primary/20 bg-primary/5 p-5 flex-col hover:bg-primary/10 transition-colors cursor-pointer">
+<div class="text-primary bg-primary/20 w-10 h-10 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</div>
+<div class="flex flex-col gap-1 mt-2">
+<h2 class="text-base font-bold leading-tight">Wallet Hub</h2>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">Links to Balance and Transactions</p>
+</div>
+</div>
+</div>
+<div class="px-4 py-6 @container">
+<h3 class="text-xl font-bold mb-4">Route Definitions</h3>
+<div class="flex overflow-hidden rounded-xl border border-primary/20 bg-background-light dark:bg-background-dark shadow-sm">
+<table class="flex-1 w-full text-left border-collapse">
+<thead>
+<tr class="bg-primary/10 border-b border-primary/20">
+<th class="table-col-120 px-6 py-4 text-sm font-semibold leading-normal">Screen Name</th>
+<th class="table-col-240 px-6 py-4 text-sm font-semibold leading-normal">Path</th>
+<th class="table-col-360 px-6 py-4 text-sm font-semibold leading-normal">Role Access</th>
+<th class="table-col-480 px-6 py-4 text-sm font-semibold leading-normal">Primary Connections</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-primary/10 hover:bg-primary/5 transition-colors">
+<td class="table-col-120 px-6 py-4 text-sm font-medium leading-normal">Landing Page</td>
+<td class="table-col-240 px-6 py-4 text-slate-500 dark:text-slate-400 text-sm font-mono leading-normal">/</td>
+<td class="table-col-360 px-6 py-4 text-sm font-normal leading-normal">
+<span class="inline-flex items-center rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-1 text-xs font-medium text-slate-600 dark:text-slate-300 ring-1 ring-inset ring-slate-500/10">All</span>
+</td>
+<td class="table-col-480 px-6 py-4 text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">User Selection</td>
+</tr>
+<tr class="border-b border-primary/10 hover:bg-primary/5 transition-colors">
+<td class="table-col-120 px-6 py-4 text-sm font-medium leading-normal">User Selection</td>
+<td class="table-col-240 px-6 py-4 text-slate-500 dark:text-slate-400 text-sm font-mono leading-normal">/role-select</td>
+<td class="table-col-360 px-6 py-4 text-sm font-normal leading-normal">
+<span class="inline-flex items-center rounded-md bg-slate-100 dark:bg-slate-800 px-2 py-1 text-xs font-medium text-slate-600 dark:text-slate-300 ring-1 ring-inset ring-slate-500/10">All</span>
+</td>
+<td class="table-col-480 px-6 py-4 text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">Registration Flows</td>
+</tr>
+<tr class="border-b border-primary/10 hover:bg-primary/5 transition-colors">
+<td class="table-col-120 px-6 py-4 text-sm font-medium leading-normal">Creator Registration</td>
+<td class="table-col-240 px-6 py-4 text-slate-500 dark:text-slate-400 text-sm font-mono leading-normal">/register/creator</td>
+<td class="table-col-360 px-6 py-4 text-sm font-normal leading-normal">
+<span class="inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/20">Guest</span>
+</td>
+<td class="table-col-480 px-6 py-4 text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">Creator Dashboard</td>
+</tr>
+<tr class="border-b border-primary/10 hover:bg-primary/5 transition-colors">
+<td class="table-col-120 px-6 py-4 text-sm font-medium leading-normal">Creator Dashboard</td>
+<td class="table-col-240 px-6 py-4 text-slate-500 dark:text-slate-400 text-sm font-mono leading-normal">/dashboard/creator</td>
+<td class="table-col-360 px-6 py-4 text-sm font-normal leading-normal">
+<span class="inline-flex items-center rounded-md bg-primary/20 px-2 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/30">Creator</span>
+</td>
+<td class="table-col-480 px-6 py-4 text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">Marketplace, Wallet</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="table-col-120 px-6 py-4 text-sm font-medium leading-normal">Messaging Inbox</td>
+<td class="table-col-240 px-6 py-4 text-slate-500 dark:text-slate-400 text-sm font-mono leading-normal">/messages</td>
+<td class="table-col-360 px-6 py-4 text-sm font-normal leading-normal">
+<span class="inline-flex items-center rounded-md bg-blue-50 dark:bg-blue-900/30 px-2 py-1 text-xs font-medium text-blue-700 dark:text-blue-300 ring-1 ring-inset ring-blue-700/10 dark:ring-blue-300/20">Authenticated</span>
+</td>
+<td class="table-col-480 px-6 py-4 text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">All Dashboards</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

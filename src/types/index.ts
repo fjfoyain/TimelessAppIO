@@ -35,6 +35,8 @@ export interface User {
   bio?: string;
   portfolioLink?: string;
   createdAt?: string;
+  // Super user / demo access
+  isSuperUser?: boolean;
   // Web3-ready (future)
   walletAddress?: string;
   chainId?: number;

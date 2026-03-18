@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Timeless Admin - Pending Approvals</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#625063",
+                        "primary-light": "#7d667e",
+                        "primary-dark": "#4a3c4b",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#1a181a",
+                        "surface-dark": "#242224",
+                        "surface-darker": "#151415",
+                    },
+                    fontFamily: {
+                        "display": ["Montserrat", "sans-serif"],
+                        "body": ["Montserrat", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-body overflow-hidden h-screen flex">
+<!-- Sidebar Navigation -->
+<aside class="w-64 bg-surface-darker flex flex-col border-r border-white/5 h-full shrink-0">
+<div class="p-6 flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center text-white font-bold text-xl">T</div>
+<div>
+<h1 class="text-white text-base font-bold leading-tight">Timeless Admin</h1>
+<p class="text-white/50 text-xs font-normal">Marketplace Control</p>
+</div>
+</div>
+<nav class="flex-1 overflow-y-auto py-4 px-3 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-white/50 group-hover:text-white transition-colors">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/20 text-white border border-primary/30" href="#">
+<span class="material-symbols-outlined text-primary">assignment_turned_in</span>
+<span class="text-sm font-medium">Pending Approvals</span>
+<span class="ml-auto bg-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">12</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-white/50 group-hover:text-white transition-colors">inventory_2</span>
+<span class="text-sm font-medium">Active Listings</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-white/50 group-hover:text-white transition-colors">group</span>
+<span class="text-sm font-medium">Providers</span>
+</a>
+<div class="my-2 border-t border-white/5"></div>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-white/50 group-hover:text-white transition-colors">analytics</span>
+<span class="text-sm font-medium">Reports</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/70 hover:bg-white/5 hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined text-white/50 group-hover:text-white transition-colors">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+<div class="p-4 border-t border-white/5">
+<div class="flex items-center gap-3">
+<div class="h-8 w-8 rounded-full bg-surface-dark bg-center bg-cover" data-alt="Admin User Profile" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBY42Pf6JlGcDHotDH9O_W8B9tm_lt97nF1bMpdOUrYwJAKhEQ_b4LV9ydVCSgVECexXH-bK48HerL_bPhUri7qk0UYY_x0yVjb7PkKrWFZWDHtkLq7zZaj_EVofk3djMxG99Rs8DgHMfgvASijLKPpHYDlC5ADxTPfw6HS7hKe8r-yaZDpO0fr-O6R312vJhI6tNFYw_biFDIFT_5F0lswjqsZ5p_KmpMZO5R4t3qqhSJbbeTOQhATaTfqFC_kDVkEnnpSnVE9-4A')"></div>
+<div class="flex flex-col">
+<span class="text-sm font-medium text-white">Jane Admin</span>
+<span class="text-xs text-white/50">Super User</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0 bg-surface-dark overflow-hidden">
+<!-- Header -->
+<header class="h-16 border-b border-white/5 flex items-center justify-between px-6 bg-surface-darker shrink-0">
+<div>
+<h2 class="text-xl font-bold text-white tracking-tight">Pending Approvals</h2>
+<p class="text-xs text-white/50">Review and manage product submissions</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white/30 text-lg">search</span>
+<input class="bg-surface-dark border border-white/10 rounded-lg pl-10 pr-4 py-1.5 text-sm text-white focus:outline-none focus:border-primary w-64 placeholder-white/30" placeholder="Search ID, Provider..." type="text"/>
+</div>
+<button class="h-9 w-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/70 transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+</button>
+</div>
+</header>
+<!-- Split View Container -->
+<div class="flex-1 flex overflow-hidden">
+<!-- List View (Left) -->
+<div class="w-1/2 flex flex-col border-r border-white/5 min-w-[400px]">
+<!-- Filters -->
+<div class="p-4 border-b border-white/5 flex gap-2 overflow-x-auto no-scrollbar bg-surface-darker/50 shrink-0">
+<button class="px-4 py-1.5 rounded-full bg-primary text-white text-xs font-medium whitespace-nowrap">All Items</button>
+<button class="px-4 py-1.5 rounded-full bg-white/5 text-white/70 hover:bg-white/10 text-xs font-medium whitespace-nowrap transition-colors">Sound Equipment</button>
+<button class="px-4 py-1.5 rounded-full bg-white/5 text-white/70 hover:bg-white/10 text-xs font-medium whitespace-nowrap transition-colors">Lighting</button>
+<button class="px-4 py-1.5 rounded-full bg-white/5 text-white/70 hover:bg-white/10 text-xs font-medium whitespace-nowrap transition-colors">Stage Effects</button>
+<button class="px-4 py-1.5 rounded-full bg-white/5 text-white/70 hover:bg-white/10 text-xs font-medium whitespace-nowrap transition-colors">Services</button>
+</div>
+<!-- Scrollable List -->
+<div class="flex-1 overflow-y-auto">
+<div class="divide-y divide-white/5">
+<!-- List Item 1 (Active) -->
+<div class="p-4 bg-primary/10 border-l-2 border-primary cursor-pointer hover:bg-primary/20 transition-colors group">
+<div class="flex gap-4">
+<div class="h-16 w-16 rounded bg-surface-darker shrink-0 overflow-hidden relative">
+<img class="h-full w-full object-cover" data-alt="DJ Mixer Equipment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGgGhzbHynfX6j0oGgUz7taVNG1pIJw0h_pXhpZWnwZlQwBEgv1cK7qfLBVw1wmdwIvG1VHw-wYwg53ECfxdzAcdXCtON4Kd53ZWSBfFEZPjl1fd6Af3gjlv__a3D_E3_Eom4XfvIgBYIYXRu_FoXn5-vKA7aGWUN8p9ieZohYjpPwPG7vLKFRKj_EOBxKn1OSvec8T2Eb2UizDqlzr45QOI60u6WORsXmqE8FcWGIFZQ5mDIqB2c34jOTnipGWXajTODz9xV98GU"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h3 class="text-white font-semibold truncate pr-2">Pioneer DJM-900NXS2 Mixer</h3>
+<span class="text-[10px] bg-orange-500/20 text-orange-300 px-1.5 py-0.5 rounded border border-orange-500/30">Pending</span>
+</div>
+<p class="text-xs text-white/50 mb-2">Provider: <span class="text-white/80">AudioVisual Pro</span> • Category: <span class="text-white/80">Sound</span></p>
+<div class="flex items-center gap-2 text-[10px] text-white/40">
+<span class="material-symbols-outlined text-[14px]">schedule</span> Submitted 2h ago
+                                    </div>
+</div>
+<button class="self-center p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-all">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</div>
+<!-- List Item 2 -->
+<div class="p-4 hover:bg-white/5 border-l-2 border-transparent cursor-pointer transition-colors group">
+<div class="flex gap-4">
+<div class="h-16 w-16 rounded bg-surface-darker shrink-0 overflow-hidden relative">
+<img class="h-full w-full object-cover" data-alt="Concert Lighting Rig" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCzpYdkk8cPSWXNNMVNKNfFvwDwbRr7K8PqdILd6FN9cYx6XhUfKXVUAVZwXNgnmrjNrlWVwjFvkn5p5xUB2p2jxRcb1oXTHobrEVhgFMG7eE3fGpmzr0uC4eM4pZ__Ax9RcnRSzzRHS4dkVBVZtjA9j8Xi95otsp-EEhQQtzidR5A80izcZm2rAD0V-BX2voenAN6ms3QbGZUEHiWdzFIzvKmoCOVXOaiFbto2CSidKOATTPa35N6bTv2f5nLOlIFFhHPm2cOgz-s"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h3 class="text-white font-medium truncate pr-2">Chauvet Moving Head Spot</h3>
+<span class="text-[10px] bg-orange-500/20 text-orange-300 px-1.5 py-0.5 rounded border border-orange-500/30">Pending</span>
+</div>
+<p class="text-xs text-white/50 mb-2">Provider: <span class="text-white/80">BrightLights Inc</span> • Category: <span class="text-white/80">Lighting</span></p>
+<div class="flex items-center gap-2 text-[10px] text-white/40">
+<span class="material-symbols-outlined text-[14px]">schedule</span> Submitted 5h ago
+                                    </div>
+</div>
+<button class="self-center p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-all">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</div>
+<!-- List Item 3 -->
+<div class="p-4 hover:bg-white/5 border-l-2 border-transparent cursor-pointer transition-colors group">
+<div class="flex gap-4">
+<div class="h-16 w-16 rounded bg-surface-darker shrink-0 overflow-hidden relative">
+<img class="h-full w-full object-cover" data-alt="Smoke Machine Effect" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBv4xKhmYrCniI4S3Cez4dsAi6Oohqz_zAGVUgP_fXFR2z_KAzQhhunAhTnvJPL4TiLviQPmunGtM-wmyiHhrWFfKjkpQmjoQAGnSLH6gcno0DI2zbbXdEPvfm1UF59s1b2TJmf-d99MTgemuWjKMMf71RpBsgwpBjerDFpkCH2MUZZwqDSDtIz8COnkaNx4mKnjKnUjx2rJ-91RKIVoHrDM2DgL8IvUmepFVf10z0hSswZJJIy0V2n4zVCj1uUsOkOHukcw1A6Wb8"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h3 class="text-white font-medium truncate pr-2">Antari Z-350 Fazer</h3>
+<span class="text-[10px] bg-orange-500/20 text-orange-300 px-1.5 py-0.5 rounded border border-orange-500/30">Pending</span>
+</div>
+<p class="text-xs text-white/50 mb-2">Provider: <span class="text-white/80">FX Masters</span> • Category: <span class="text-white/80">Stage Effects</span></p>
+<div class="flex items-center gap-2 text-[10px] text-white/40">
+<span class="material-symbols-outlined text-[14px]">schedule</span> Submitted 1d ago
+                                    </div>
+</div>
+<button class="self-center p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-all">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</div>
+<!-- List Item 4 -->
+<div class="p-4 hover:bg-white/5 border-l-2 border-transparent cursor-pointer transition-colors group">
+<div class="flex gap-4">
+<div class="h-16 w-16 rounded bg-surface-darker shrink-0 overflow-hidden relative">
+<img class="h-full w-full object-cover" data-alt="Stage Setup Service" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHlckHJnKO6vOsWZdUC6O_yefcq89-UEmrieN0bb9mHsVd0u81jSo0YO52yEYqQOgUUErXp4vSm5iH0Z5TTIDrsPRK5axRw0vDkilYY8625WnyMXt89NzawChtuWpluz1tE839YDfqZ0oOrQwhah6iJY9Gw07E114Y3oAZlhcC0pyEUDVtAo-Bk2Q06yqvBQvBaWI7Lj1fj7orecF8n-BefGHxwB9sx8vybiyBKOtwNCj_OUrOpyqa2cxCFkCkTivMu3-tR1QPd98"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h3 class="text-white font-medium truncate pr-2">Full Stage Setup &amp; Rigging</h3>
+<span class="text-[10px] bg-orange-500/20 text-orange-300 px-1.5 py-0.5 rounded border border-orange-500/30">Pending</span>
+</div>
+<p class="text-xs text-white/50 mb-2">Provider: <span class="text-white/80">EventCore</span> • Category: <span class="text-white/80">Services</span></p>
+<div class="flex items-center gap-2 text-[10px] text-white/40">
+<span class="material-symbols-outlined text-[14px]">schedule</span> Submitted 1d ago
+                                    </div>
+</div>
+<button class="self-center p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/10 opacity-0 group-hover:opacity-100 transition-all">
+<span class="material-symbols-outlined">visibility</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Detail Panel Overlay (Right) -->
+<div class="w-1/2 bg-surface-darker flex flex-col overflow-y-auto">
+<!-- Detail Header -->
+<div class="p-6 pb-4 border-b border-white/5 bg-surface-darker sticky top-0 z-10">
+<div class="flex justify-between items-start mb-4">
+<div class="flex gap-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary text-white">Reviewing</span>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-white/10 text-white/60">ID #9823-A</span>
+</div>
+<div class="flex gap-2">
+<button class="text-white/40 hover:text-white transition-colors" title="Print">
+<span class="material-symbols-outlined text-lg">print</span>
+</button>
+<button class="text-white/40 hover:text-white transition-colors" title="More Options">
+<span class="material-symbols-outlined text-lg">more_horiz</span>
+</button>
+</div>
+</div>
+<h1 class="text-2xl font-bold text-white mb-2 leading-tight">Pioneer DJM-900NXS2 Professional DJ Mixer</h1>
+<div class="flex items-center gap-2 mb-4">
+<div class="h-6 w-6 rounded-full bg-white/10 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Provider Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLAwS8GVqnG5NRL3cVQ_f77UXtMsy0wuyQjA_993zTcTpYw8oeYsEk-EPv6TnK4Ss8C7NVnrXvoep8lGevrrz-7T3BfyTTaNMUgFXvOuFfPlB4QNbr5Hk54QAt1atfOG3ybLA6MWTC_751J9abkfYS61dOGFZAFxyNilw9c-LPsyq-xqMd1dchcWcHEhOU_qdSH_L7rDkcCChks_6v99UBS9G4ZbAWhn7gUTFOXEYs74e_mV61GBPTiB4qOsX7sInyLq2btDChzPg"/>
+</div>
+<span class="text-sm text-white/80">AudioVisual Pro</span>
+<span class="text-white/20 text-xs">•</span>
+<span class="text-sm text-white/60">4.9 Star Rating</span>
+</div>
+<!-- Action Buttons -->
+<div class="grid grid-cols-3 gap-3">
+<button class="col-span-1 flex items-center justify-center gap-2 py-2.5 rounded-lg border border-red-500/50 text-red-400 hover:bg-red-500/10 transition-colors group">
+<span class="material-symbols-outlined text-lg">close</span>
+<span class="text-sm font-medium">Reject</span>
+</button>
+<button class="col-span-1 flex items-center justify-center gap-2 py-2.5 rounded-lg border border-orange-500/50 text-orange-400 hover:bg-orange-500/10 transition-colors shadow-[0_0_15px_-3px_rgba(249,115,22,0.3)] hover:shadow-[0_0_20px_-3px_rgba(249,115,22,0.5)]">
+<span class="material-symbols-outlined text-lg">help</span>
+<span class="text-sm font-medium">Request Info</span>
+</button>
+<button class="col-span-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-green-600 hover:bg-green-500 text-white transition-colors shadow-[0_0_15px_-3px_rgba(22,163,74,0.4)] hover:shadow-[0_0_20px_-3px_rgba(22,163,74,0.6)]">
+<span class="material-symbols-outlined text-lg">check</span>
+<span class="text-sm font-medium">Approve</span>
+</button>
+</div>
+</div>
+<!-- Detail Body -->
+<div class="p-6 flex flex-col gap-8">
+<!-- Images Grid -->
+<div>
+<h4 class="text-xs font-bold text-white/40 uppercase tracking-widest mb-3">Product Images</h4>
+<div class="grid grid-cols-2 gap-3 h-64">
+<div class="col-span-1 row-span-2 rounded-lg bg-surface-dark overflow-hidden border border-white/5 relative group">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Main Product Shot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDY_bvqAtvTJVx2pQoP2r-jft-feuAGpg9aCz6xrSetnmiZVEGbTXwwROODxJVV1yo9P8zpeLO5QH34Ddl653eQHNp_4qd3wFodgP2GKtFHG03gw9MxpMHkz-xuoJPBKExJmefegQWPVhms9atrKgZGFL22vHw7z49MMafaJX9DPzzDrTLrZQv8GNDnrgFkNW0lPiwW4h_sKLoujMwXkZEHUDS8KZN6dWyAeQNxuv1GVYuuTAExuM31M_2DFyaoVGcUHDlCC5RuTuU"/>
+<div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors"></div>
+</div>
+<div class="col-span-1 rounded-lg bg-surface-dark overflow-hidden border border-white/5 relative group">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Product Detail Shot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBinrpWVvD2U3ZheTNpz1kBVduHQaQf4modcIPEex8ESdr8jiluj4B2CwfEytXYvhZgzC60iSjmm1nIF5GowTTjfAK1Yt_UGfc-wzylCTIdDotsQDoDguDz3qSh0YqRVw8VyPKG7DqbGCunjIIiYK4eQ2LlRI5AeESsKkYNB8gTv-ru1mpT8_8bgLo4yE3bnlk80yseUNtm_PfMt4xWo8nPqdWUo-Fepm6eW5oILSd3vV6GgpfTae9VxwWHXpjr8xrAzveP-U_gbyk"/>
+</div>
+<div class="col-span-1 rounded-lg bg-surface-dark overflow-hidden border border-white/5 relative group flex items-center justify-center cursor-pointer hover:bg-white/5 transition-colors">
+<div class="text-center">
+<span class="material-symbols-outlined text-white/30 text-3xl mb-1">add_photo_alternate</span>
+<p class="text-[10px] text-white/30">+2 more images</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Pricing & Specs Grid -->
+<div class="grid grid-cols-2 gap-6">
+<div>
+<h4 class="text-xs font-bold text-white/40 uppercase tracking-widest mb-3">Pricing Details</h4>
+<div class="bg-surface-dark rounded-lg p-4 border border-white/5 space-y-3">
+<div class="flex justify-between items-center pb-2 border-b border-white/5">
+<span class="text-sm text-white/60">Daily Rate</span>
+<span class="text-sm text-white font-medium">$85.00</span>
+</div>
+<div class="flex justify-between items-center pb-2 border-b border-white/5">
+<span class="text-sm text-white/60">Weekly Rate</span>
+<span class="text-sm text-white font-medium">$340.00</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm text-white/60">Deposit</span>
+<span class="text-sm text-white font-medium">$500.00</span>
+</div>
+</div>
+</div>
+<div>
+<h4 class="text-xs font-bold text-white/40 uppercase tracking-widest mb-3">Key Specs</h4>
+<div class="bg-surface-dark rounded-lg p-4 border border-white/5 space-y-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">equalizer</span>
+<span class="text-sm text-white/80">4 Channels</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">usb</span>
+<span class="text-sm text-white/80">Dual USB Ports</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">settings_input_component</span>
+<span class="text-sm text-white/80">Magvel Fader</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm">bolt</span>
+<span class="text-sm text-white/80">Built-in FX Unit</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Description -->
+<div>
+<h4 class="text-xs font-bold text-white/40 uppercase tracking-widest mb-2">Description</h4>
+<p class="text-sm text-white/70 leading-relaxed">
+                            The industry-standard DJM-900NXS2 4-channel mixer features our first ever 64-bit mixing processor for a warmer, more nuanced sound. We’ve fine-tuned the EQ and fader curves and enhanced the FX controls to give you even more creative choice. Plus the versatile DJM-900NXS2 has an independent Send/Return, 4 phono inputs and 2 USB ports – giving you flexibility to set it up your way.
+                        </p>
+</div>
+<!-- Metadata -->
+<div class="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+<div>
+<h4 class="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-1">Listing Created</h4>
+<p class="text-sm text-white/60">Oct 24, 2023 at 09:42 AM</p>
+</div>
+<div>
+<h4 class="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-1">SKU / Asset ID</h4>
+<p class="text-sm text-white/60">PRO-AUDIO-0092</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Notification Toast (Hidden by default, shown for demo) -->
+<div class="absolute bottom-6 right-6 z-50 animate-bounce" style="animation-duration: 3s; animation-iteration-count: 1;">
+<div class="bg-surface-dark border-l-4 border-primary shadow-xl rounded-r-lg p-4 flex items-start gap-3 w-80">
+<span class="material-symbols-outlined text-primary mt-0.5">info</span>
+<div>
+<h4 class="text-sm font-bold text-white">Review Mode Active</h4>
+<p class="text-xs text-white/60 mt-1">You are currently reviewing pending item #9823-A.</p>
+</div>
+<button class="ml-auto text-white/20 hover:text-white">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+</div>
+</body></html>

@@ -39,14 +39,14 @@ const platformLinks = [
   { label: "Find Artists", href: "/marketplace" },
   { label: "Browse Venues", href: "/marketplace" },
   { label: "Help Center", href: "/help" },
+  { label: "Contact Support", href: "/contact" },
 ];
 
 const studioLinks = [
-  { label: "Book Studios", href: "/studio#book" },
-  { label: "Equipment", href: "/studio#equipment" },
-  { label: "Engineers", href: "/studio#engineers" },
-  { label: "Mixing & Mastering", href: "/studio#mixing" },
-  { label: "Studio Partners", href: "/studio#partners" },
+  { label: "Book a Class", href: "/studio/classes" },
+  { label: "Rent Studio Time", href: "/booking" },
+  { label: "Events Calendar", href: "/search" },
+  { label: "Gear List", href: "/studio#equipment" },
 ];
 
 const socialLinks = [
@@ -182,6 +182,12 @@ export default function Footer() {
               className="text-xs text-gray-600 hover:text-primary transition-colors"
             >
               Terms of Service
+            </Link>
+            <Link
+              href="/cookies"
+              className="text-xs text-gray-600 hover:text-primary transition-colors"
+            >
+              Cookie Preferences
             </Link>
           </div>
         </div>

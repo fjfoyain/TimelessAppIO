@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Interaction &amp; Feedback Master</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Be Vietnam Pro", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 overflow-x-hidden">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-slate-200 dark:border-b-primary/20 px-10 py-3">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-slate-900 dark:text-slate-100">
+<div class="size-4 text-primary">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M36.7273 44C33.9891 44 31.6043 39.8386 30.3636 33.69C29.123 39.8386 26.7382 44 24 44C21.2618 44 18.877 39.8386 17.6364 33.69C16.3957 39.8386 14.0109 44 11.2727 44C7.25611 44 4 35.0457 4 24C4 12.9543 7.25611 4 11.2727 4C14.0109 4 16.3957 8.16144 17.6364 14.31C18.877 8.16144 21.2618 4 24 4C26.7382 4 29.123 8.16144 30.3636 14.31C31.6043 8.16144 33.9891 4 36.7273 4C40.7439 4 44 12.9543 44 24C44 35.0457 40.7439 44 36.7273 44Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">StatusUI</h2>
+</div>
+<label class="flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-slate-500 dark:text-slate-400 flex border-none bg-slate-100 dark:bg-primary/10 items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-slate-100 focus:outline-0 focus:ring-0 border-none bg-slate-100 dark:bg-primary/10 focus:border-none h-full placeholder:text-slate-500 dark:placeholder:text-slate-400 px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal" placeholder="Search components" value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="flex items-center gap-9">
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Components</a>
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Feedback</a>
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Guidelines</a>
+</div>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 transition-colors">
+<span class="truncate">Documentation</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 bg-slate-200 dark:bg-slate-700" data-alt="User avatar placeholder image" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAJx19rhPMkMBaBHpCp5TrxMwSmvj4GQQPicfA2n3Qyl7nFaZenPMwaHhrCoczVfeZKmEtC2aHbD5qST4vW1ddyES1P34v3FX-9V4mYLEoYImGTpEryuFkOAMRUopHuX1IM1t4wDMK8OIIQb3gurXRV0H8Yo7-_g0ofcBEfxOCbk87S73s4AGa-285eZ446AsMkXtCuRWQvnp6bDSVllxcWFbyNBkklxEyreqLog1kViSj7vjrOKroYniSgEHYDG0XQj8p6B8GefFnk");'></div>
+</div>
+</header>
+<div class="flex flex-wrap justify-between gap-3 p-4 mt-6">
+<div class="flex min-w-72 flex-col gap-3">
+<p class="text-4xl font-black leading-tight tracking-[-0.033em]">Interaction &amp; Feedback Master</p>
+<p class="text-slate-600 dark:text-slate-400 text-base font-normal leading-normal">Platform-wide status, toasts, and feedback mechanisms.</p>
+</div>
+</div>
+<h2 class="text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-8">Success Indicators</h2>
+<div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Banner -->
+<div class="flex items-stretch justify-between gap-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 p-4 shadow-sm">
+<div class="flex flex-[2_2_0px] flex-col gap-4">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-green-600 dark:text-green-400 mt-0.5">check_circle</span>
+<div class="flex flex-col gap-1">
+<p class="text-slate-900 dark:text-slate-100 text-base font-bold leading-tight">Payment Successful</p>
+<p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-normal">Your transaction of $49.99 was completed successfully.</p>
+</div>
+</div>
+<div class="ml-9">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-medium leading-normal w-fit hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
+<span class="truncate">View Receipt</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Toast -->
+<div class="flex flex-col items-center justify-center p-6 bg-slate-50 dark:bg-primary/5 rounded-xl border border-slate-100 dark:border-primary/10">
+<div class="flex items-center gap-3 bg-white dark:bg-slate-800 px-4 py-3 rounded-lg shadow-lg border border-slate-100 dark:border-slate-700 w-full max-w-sm transform transition-all">
+<span class="material-symbols-outlined text-green-500">task_alt</span>
+<div class="flex-1">
+<p class="text-sm font-medium">Message sent successfully</p>
+</div>
+<button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+<span class="material-symbols-outlined text-sm">close</span>
+</button>
+</div>
+<p class="text-xs text-slate-500 mt-4 font-medium uppercase tracking-wider">Bottom Right Toast</p>
+</div>
+</div>
+<h2 class="text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-8">Error &amp; Warning States</h2>
+<div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Error Banner -->
+<div class="flex flex-col gap-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 p-4 shadow-sm">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-red-600 dark:text-red-400 mt-0.5">error</span>
+<div class="flex flex-col gap-1">
+<p class="text-slate-900 dark:text-slate-100 text-base font-bold leading-tight">Connection Failed</p>
+<p class="text-slate-600 dark:text-slate-400 text-sm font-normal leading-normal">We couldn't save your changes. Please check your internet connection and try again.</p>
+</div>
+</div>
+<div class="ml-9 flex gap-3">
+<button class="flex items-center justify-center rounded-lg h-8 px-4 bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition-colors">
+                                    Retry
+                                </button>
+<button class="flex items-center justify-center rounded-lg h-8 px-4 bg-transparent hover:bg-red-100 dark:hover:bg-red-900/30 text-red-700 dark:text-red-400 text-sm font-medium transition-colors">
+                                    Dismiss
+                                </button>
+</div>
+</div>
+<!-- Tooltip & Inline Error -->
+<div class="flex flex-col justify-center gap-6 p-6 bg-slate-50 dark:bg-primary/5 rounded-xl border border-slate-100 dark:border-primary/10">
+<div class="w-full max-w-sm">
+<label class="block text-sm font-medium mb-1">Email Address</label>
+<div class="relative">
+<input class="w-full rounded-lg border-red-500 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 pr-10 focus:ring-red-500 focus:border-red-500" type="email" value="invalid-email@"/>
+<span class="material-symbols-outlined absolute right-3 top-2.5 text-red-500">warning</span>
+</div>
+<p class="text-red-500 text-xs mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">info</span>
+                                    Please enter a valid email address
+                                </p>
+</div>
+<div class="relative inline-block w-max mt-4">
+<button class="bg-slate-200 dark:bg-slate-700 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+                                    Hover me
+                                    <span class="material-symbols-outlined text-sm">help</span>
+</button>
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs rounded-md whitespace-nowrap opacity-100">
+                                    Field is required
+                                    <div class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-900 dark:border-t-slate-100"></div>
+</div>
+</div>
+</div>
+</div>
+<h2 class="text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-8">Loading States</h2>
+<div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Skeletons -->
+<div class="flex flex-col gap-4 p-6 bg-slate-50 dark:bg-primary/5 rounded-xl border border-slate-100 dark:border-primary/10">
+<p class="text-sm text-slate-500 font-medium uppercase tracking-wider mb-2">Content Skeleton</p>
+<div class="flex gap-4 items-center">
+<div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-700 animate-pulse"></div>
+<div class="flex-1 space-y-2">
+<div class="h-4 bg-slate-200 dark:bg-slate-700 rounded animate-pulse w-3/4"></div>
+<div class="h-3 bg-slate-200 dark:bg-slate-700 rounded animate-pulse w-1/2"></div>
+</div>
+</div>
+<div class="space-y-2 mt-2">
+<div class="h-3 bg-slate-200 dark:bg-slate-700 rounded animate-pulse"></div>
+<div class="h-3 bg-slate-200 dark:bg-slate-700 rounded animate-pulse w-5/6"></div>
+<div class="h-3 bg-slate-200 dark:bg-slate-700 rounded animate-pulse w-4/6"></div>
+</div>
+</div>
+<!-- Spinners -->
+<div class="flex flex-col justify-center items-center gap-6 p-6 bg-slate-50 dark:bg-primary/5 rounded-xl border border-slate-100 dark:border-primary/10">
+<p class="text-sm text-slate-500 font-medium uppercase tracking-wider w-full text-left">Processing State</p>
+<button class="flex items-center justify-center gap-2 rounded-lg h-10 px-6 bg-primary text-white text-sm font-medium w-fit opacity-80 cursor-not-allowed">
+<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+<path class="opacity-75" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" fill="currentColor"></path>
+</svg>
+                                Saving Changes...
+                            </button>
+<div class="flex items-center gap-3 text-primary">
+<span class="material-symbols-outlined animate-spin">progress_activity</span>
+<span class="text-sm font-medium">Syncing data</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

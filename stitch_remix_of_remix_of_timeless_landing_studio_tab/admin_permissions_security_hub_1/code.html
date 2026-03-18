@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Permissions &amp; Security Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7f13ec",
+                        "background-light": "#f7f6f8",
+                        "background-dark": "#191022",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen antialiased flex">
+<!-- SideNavBar -->
+<div class="w-64 flex-shrink-0 border-r border-slate-200 dark:border-slate-800 bg-background-light dark:bg-background-dark flex flex-col justify-between p-4 h-screen sticky top-0">
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-3">
+<div class="bg-primary/20 bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="System Admin Profile Picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDPVghzivy_jBOxBv1bLjVd8EBg71XVg8HxH1JyPppo6tmouNCn85qbdMnpkfHfHn4_K17WNhOOn9pxfyR87FEltBpEMhLuwBUswhqvJBXZvgq-S0YY2C8M4eP_SjVAhec_Yv53rVWZ_wxsip9fzn4Yw9aVMD4PzhsHlDwrr0W3mVLWCNx-35oRmSvIKoEL1tPm7hsHAOQMvzhksgXdaykYH8qAcgt0L2dzd5WUCydFNO-ri5vJnKDGYBz5UVZXKoYa0jOoyoU5beo1");'></div>
+<div class="flex flex-col">
+<h1 class="text-slate-900 dark:text-slate-100 text-base font-medium leading-normal">System Admin</h1>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">Super Admin</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-sm font-medium">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-sm font-medium">Users</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 dark:bg-primary/20 text-primary dark:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">security</span>
+<span class="text-sm font-medium">Security &amp; Permissions</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-sm font-medium">Settings</span>
+</a>
+</nav>
+</div>
+</div>
+<!-- Main Content -->
+<div class="flex-1 flex flex-col min-w-0">
+<div class="max-w-5xl mx-auto w-full px-8 py-8 flex flex-col gap-8">
+<!-- Header -->
+<div class="flex flex-wrap items-start justify-between gap-4">
+<div class="flex flex-col gap-2">
+<h1 class="text-4xl font-black leading-tight tracking-tight text-slate-900 dark:text-slate-100">Admin Security &amp; Permissions</h1>
+<p class="text-slate-500 dark:text-slate-400 text-base">Manage access levels and view system audit logs</p>
+</div>
+<button class="flex items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold tracking-wide hover:bg-primary/90 transition-colors shadow-sm">
+                    Add New Admin
+                </button>
+</div>
+<!-- Tabs -->
+<div class="border-b border-slate-200 dark:border-slate-800">
+<div class="flex gap-8">
+<a class="flex items-center justify-center border-b-2 border-primary text-primary pb-3 pt-2" href="#">
+<span class="text-sm font-bold tracking-wide">Access Management</span>
+</a>
+<a class="flex items-center justify-center border-b-2 border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 pb-3 pt-2 transition-colors" href="#">
+<span class="text-sm font-bold tracking-wide">Audit Logs</span>
+</a>
+</div>
+</div>
+<!-- Content Area -->
+<div class="flex flex-col gap-6">
+<h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Admin Access Management</h2>
+<div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#20152b] shadow-sm">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-800">
+<th class="px-6 py-4 text-sm font-medium text-slate-600 dark:text-slate-300">Admin Name</th>
+<th class="px-6 py-4 text-sm font-medium text-slate-600 dark:text-slate-300">Email</th>
+<th class="px-6 py-4 text-sm font-medium text-slate-600 dark:text-slate-300">Role</th>
+<th class="px-6 py-4 text-sm font-medium text-slate-600 dark:text-slate-300">Status</th>
+<th class="px-6 py-4 text-sm font-medium text-slate-600 dark:text-slate-300 text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<td class="px-6 py-4 text-sm text-slate-900 dark:text-slate-100 font-medium">Alice Johnson</td>
+<td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">alice@company.com</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary border border-primary/20">
+                                        Super Admin
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                                        Active
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-sm font-medium text-primary hover:text-primary/80 transition-colors">Edit Access</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<td class="px-6 py-4 text-sm text-slate-900 dark:text-slate-100 font-medium">Bob Smith</td>
+<td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">bob@company.com</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                                        Editor Admin
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
+                                        Active
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-sm font-medium text-primary hover:text-primary/80 transition-colors">Edit Access</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<td class="px-6 py-4 text-sm text-slate-900 dark:text-slate-100 font-medium">Charlie Davis</td>
+<td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">charlie@company.com</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                                        Viewer Admin
+                                    </span>
+</td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-rose-100 text-rose-800 dark:bg-rose-900/30 dark:text-rose-400 border border-rose-200 dark:border-rose-800">
+                                        Suspended
+                                    </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="text-sm font-medium text-primary hover:text-primary/80 transition-colors">Edit Access</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</body></html>

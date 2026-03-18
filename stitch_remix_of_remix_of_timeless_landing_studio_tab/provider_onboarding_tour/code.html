@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Provider Onboarding Tour - Timeless</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#625063",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#1a181a",
+                        "accent-green": "#0bda7d",
+                    },
+                    fontFamily: {
+                        "display": ["Montserrat", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Tooltip Arrow */
+        .tooltip-arrow::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -8px;
+            border-width: 8px;
+            border-style: solid;
+            border-color: #625063 transparent transparent transparent;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased overflow-x-hidden">
+<div class="relative flex h-auto min-h-screen w-full flex-col">
+<!-- Onboarding Progress Bar Overlay -->
+<div class="fixed top-0 left-0 w-full z-50 bg-background-dark/95 border-b border-white/10 px-6 py-3 flex items-center justify-between backdrop-blur-md">
+<div class="flex items-center gap-4">
+<span class="text-xs font-semibold uppercase tracking-wider text-primary dark:text-gray-400">Step 3 of 4</span>
+<h3 class="text-sm font-bold text-white">Setup Your Inventory</h3>
+</div>
+<div class="flex gap-2">
+<div class="h-1.5 w-8 rounded-full bg-primary/40"></div>
+<div class="h-1.5 w-8 rounded-full bg-primary/40"></div>
+<div class="h-1.5 w-8 rounded-full bg-primary"></div>
+<div class="h-1.5 w-8 rounded-full bg-primary/40"></div>
+</div>
+<button class="text-sm font-medium text-gray-400 hover:text-white">Skip Tour</button>
+</div>
+<div class="layout-container flex h-full grow flex-col pt-14"> <!-- Added pt-14 for fixed overlay -->
+<div class="px-4 md:px-10 lg:px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[1200px] flex-1">
+<!-- Header -->
+<header class="flex flex-col md:flex-row items-center justify-between whitespace-nowrap border-b border-solid border-white/10 px-4 md:px-10 py-5 gap-4">
+<div class="flex items-center gap-8 w-full md:w-auto">
+<div class="flex items-center gap-4 text-white">
+<div class="size-8 text-primary">
+<span class="material-symbols-outlined !text-[32px]">hourglass_top</span>
+</div>
+<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">Timeless</h2>
+</div>
+<label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-white/5 border border-white/10 focus-within:border-primary/50 transition-colors">
+<div class="text-gray-400 flex items-center justify-center pl-4 pr-2">
+<span class="material-symbols-outlined !text-[20px]">search</span>
+</div>
+<input class="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-white focus:outline-0 bg-transparent h-full placeholder:text-gray-500 text-sm" placeholder="Search orders..."/>
+</div>
+</label>
+</div>
+<div class="flex w-full md:w-auto flex-1 justify-between md:justify-end gap-4 md:gap-8 items-center">
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-gray-400 hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Dashboard</a>
+<a class="text-white text-sm font-medium leading-normal relative after:content-[''] after:absolute after:-bottom-6 after:left-0 after:w-full after:h-0.5 after:bg-primary" href="#">Inventory</a>
+<a class="text-gray-400 hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Bookings</a>
+<a class="text-gray-400 hover:text-white transition-colors text-sm font-medium leading-normal flex items-center gap-1" href="#">
+                                    Wallet
+                                    <span class="h-1.5 w-1.5 rounded-full bg-accent-green"></span>
+</a>
+</nav>
+<div class="flex items-center gap-4">
+<div class="relative">
+<button class="relative flex items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary hover:bg-primary/90 transition-colors text-white text-sm font-bold shadow-lg shadow-primary/20 z-20">
+<span class="truncate mr-2">Add Equipment</span>
+<span class="material-symbols-outlined !text-[18px]">add</span>
+</button>
+<!-- Tooltip -->
+<div class="absolute top-14 right-0 w-72 z-30 animate-bounce-slow">
+<div class="relative bg-primary text-white p-4 rounded-xl shadow-xl border border-white/10 tooltip-arrow -mt-2">
+<div class="flex items-start gap-3">
+<div class="bg-white/20 p-1.5 rounded-full shrink-0">
+<span class="material-symbols-outlined !text-[18px]">lightbulb</span>
+</div>
+<div>
+<p class="font-bold text-sm mb-1">Start Here!</p>
+<p class="text-xs text-white/90 leading-relaxed">List your gear here. Remember, all new listings require Admin approval before going live to ensure quality.</p>
+</div>
+<button class="text-white/60 hover:text-white shrink-0">
+<span class="material-symbols-outlined !text-[16px]">close</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 ring-2 ring-white/10" data-alt="Profile picture of a user smiling" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD8ehwtI4oI5EqGiNhMbdTYWaEUhHzRaXG1Qz4dTZrjXggsMgYverhagGM7F9PcwBsICOuYgElYW73Es0ehNsb3XOSlDQeMtthgBsIJ1Q54yjHRvEcF2JZ1AQWi4W6QBWTtsTV9IDWYiPVmDv1XQjire8pJQSV4zTE-EJDuaGXWO02jdCUM0ISEo5NW3k67BjExupwAqoiau-n0RXr6l0e1WS9i-TG_vHto95lQ6XA32DI-OqLZ1s7ocoQDwQeJNrYEUNm0Zpil8Uw");'></div>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex flex-col gap-6 py-8">
+<!-- Welcome Section -->
+<div class="flex flex-wrap justify-between items-end gap-4 px-4 md:px-10">
+<div class="flex flex-col gap-2">
+<h1 class="text-white text-3xl md:text-4xl font-black leading-tight tracking-tight">
+                                    Inventory Management
+                                </h1>
+<p class="text-gray-400 text-base font-normal max-w-2xl">
+                                    Track your assets, monitor performance, and manage your equipment availability.
+                                </p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 rounded-lg border border-white/10 text-sm font-medium text-white hover:bg-white/5 flex items-center gap-2">
+<span class="material-symbols-outlined !text-[18px]">filter_list</span>
+                                    Filters
+                                </button>
+<button class="px-4 py-2 rounded-lg border border-white/10 text-sm font-medium text-white hover:bg-white/5 flex items-center gap-2">
+<span class="material-symbols-outlined !text-[18px]">download</span>
+                                    Export
+                                </button>
+</div>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-4 md:px-10">
+<!-- Card 1 -->
+<div class="group flex flex-col gap-3 rounded-xl p-6 bg-white/5 border border-white/5 hover:border-primary/30 transition-all hover:shadow-lg hover:shadow-primary/5">
+<div class="flex justify-between items-start">
+<div class="p-2 rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined">attach_money</span>
+</div>
+<span class="text-accent-green text-sm font-bold flex items-center bg-accent-green/10 px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined !text-[14px] mr-1">trending_up</span>
+                                        12%
+                                    </span>
+</div>
+<div>
+<p class="text-gray-400 text-sm font-medium mb-1">Total Earnings</p>
+<p class="text-white text-2xl font-bold tracking-tight">$12,450.00</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="group flex flex-col gap-3 rounded-xl p-6 bg-white/5 border border-white/5 hover:border-primary/30 transition-all hover:shadow-lg hover:shadow-primary/5 relative overflow-hidden">
+<!-- Glowing effect for wallet focus -->
+<div class="absolute -right-4 -top-4 w-24 h-24 bg-accent-green/20 rounded-full blur-2xl"></div>
+<div class="flex justify-between items-start relative z-10">
+<div class="p-2 rounded-lg bg-accent-green/20 text-accent-green">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+</div>
+<span class="text-accent-green text-sm font-bold flex items-center bg-accent-green/10 px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined !text-[14px] mr-1">trending_up</span>
+                                        5%
+                                    </span>
+</div>
+<div class="relative z-10">
+<p class="text-gray-400 text-sm font-medium mb-1">Pending Payout</p>
+<p class="text-white text-2xl font-bold tracking-tight">$850.00</p>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="group flex flex-col gap-3 rounded-xl p-6 bg-white/5 border border-white/5 hover:border-primary/30 transition-all hover:shadow-lg hover:shadow-primary/5">
+<div class="flex justify-between items-start">
+<div class="p-2 rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined">inventory_2</span>
+</div>
+<span class="text-accent-green text-sm font-bold flex items-center bg-accent-green/10 px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined !text-[14px] mr-1">trending_up</span>
+                                        2%
+                                    </span>
+</div>
+<div>
+<p class="text-gray-400 text-sm font-medium mb-1">Active Rentals</p>
+<p class="text-white text-2xl font-bold tracking-tight">24</p>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="group flex flex-col gap-3 rounded-xl p-6 bg-white/5 border border-white/5 hover:border-primary/30 transition-all hover:shadow-lg hover:shadow-primary/5">
+<div class="flex justify-between items-start">
+<div class="p-2 rounded-lg bg-primary/20 text-primary">
+<span class="material-symbols-outlined">category</span>
+</div>
+<span class="text-accent-green text-sm font-bold flex items-center bg-accent-green/10 px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined !text-[14px] mr-1">trending_up</span>
+                                        8%
+                                    </span>
+</div>
+<div>
+<p class="text-gray-400 text-sm font-medium mb-1">Total Items</p>
+<p class="text-white text-2xl font-bold tracking-tight">42</p>
+</div>
+</div>
+</div>
+<!-- Empty State / CTA Area -->
+<div class="px-4 md:px-10 mt-2">
+<div class="flex flex-col md:flex-row items-center justify-between gap-6 rounded-xl border border-dashed border-white/20 bg-white/[0.02] p-8">
+<div class="flex items-start gap-5">
+<div class="hidden sm:flex h-12 w-12 items-center justify-center rounded-full bg-white/10 shrink-0">
+<span class="material-symbols-outlined text-white">add_a_photo</span>
+</div>
+<div class="flex flex-col gap-1">
+<h3 class="text-white text-lg font-bold">Expand Your Catalog</h3>
+<p class="text-gray-400 text-sm max-w-lg">
+                                            Ready to scale? Add more premium equipment to attract high-value clients. 
+                                            New items will appear in the "Pending" tab until approved.
+                                        </p>
+</div>
+</div>
+<button class="whitespace-nowrap flex items-center justify-center rounded-lg h-10 px-6 bg-white/10 hover:bg-white/20 text-white text-sm font-semibold transition-colors border border-white/10">
+                                    View Submission Guidelines
+                                </button>
+</div>
+</div>
+<!-- Inventory Table Section -->
+<div class="px-4 md:px-10 mt-4">
+<h2 class="text-white tracking-tight text-xl font-bold mb-4">Recent Inventory</h2>
+<div class="overflow-hidden rounded-xl border border-white/10 bg-white/5">
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm text-gray-400">
+<thead class="bg-white/5 text-xs uppercase text-gray-300">
+<tr>
+<th class="px-6 py-4 font-semibold" scope="col">Item Name</th>
+<th class="px-6 py-4 font-semibold" scope="col">Status</th>
+<th class="px-6 py-4 font-semibold" scope="col">Daily Rate</th>
+<th class="px-6 py-4 font-semibold" scope="col">Earnings</th>
+<th class="px-6 py-4 font-semibold text-right" scope="col">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-4 font-medium text-white flex items-center gap-3">
+<div class="h-10 w-10 rounded bg-cover bg-center" data-alt="Camera lens" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAtFii0TShHcg6ZiLfd9DYdNA8mHGcu5eZeBwG7vCKzqR4m3O7fDQCXqwQ22TOm8m2GLhqvrymM6i5ngIfeu0yKCnnprH7Pg7I-wcm5AiE0C5We3GdY-Y-Jj75jv8R5VgHMpbNBHa473MCPjz9qF6VJu48D07b8y24QZodezl6Qdy26J4K_9RDAJCaTVl3SmcLBzmyis1N9XbB78ENYsmai9rbqp9rROK9Z4wCNuvf5sY2HholvE1dyAG0_krs0swShSDILm-A6oVs')"></div>
+                                                    Sony Alpha A7S III
+                                                </td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1 rounded-full bg-accent-green/10 px-2 py-1 text-xs font-medium text-accent-green">
+<span class="h-1.5 w-1.5 rounded-full bg-accent-green"></span>
+                                                        Active
+                                                    </span>
+</td>
+<td class="px-6 py-4 text-white">$120.00</td>
+<td class="px-6 py-4 text-white">$2,400.00</td>
+<td class="px-6 py-4 text-right">
+<button class="text-gray-400 hover:text-white">
+<span class="material-symbols-outlined !text-[20px]">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-4 font-medium text-white flex items-center gap-3">
+<div class="h-10 w-10 rounded bg-cover bg-center" data-alt="Microphone setup" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBJkK-CP7PzJzxQ-8sg1NKJ-QYipypVzUwlDxCAlGVFNtXqCeEqQSvOxB8G8Z8ODFnPpysxNn2BKJridcbb4J_nBI71muyEnNcpjXQAWthoYsWerBdlH6WZc8PpDuOWN4UMDUcIz30AytVk-xZOvTIb1n9kjqjqKiz9g5RcHxk_EVzhMUjL2ixebjC9Eup_AYW4LKUgv_dQi_dGkiHxCmUvbs5G4nNJmf4kd9I3h1KowUh2GN84iGpPIEIzRkUVMBH0VihWYqxHqJg')"></div>
+                                                    Sennheiser MKH 416
+                                                </td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1 rounded-full bg-yellow-500/10 px-2 py-1 text-xs font-medium text-yellow-500">
+<span class="h-1.5 w-1.5 rounded-full bg-yellow-500"></span>
+                                                        In Maintenance
+                                                    </span>
+</td>
+<td class="px-6 py-4 text-white">$45.00</td>
+<td class="px-6 py-4 text-white">$650.00</td>
+<td class="px-6 py-4 text-right">
+<button class="text-gray-400 hover:text-white">
+<span class="material-symbols-outlined !text-[20px]">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-white/5 transition-colors">
+<td class="px-6 py-4 font-medium text-white flex items-center gap-3">
+<div class="h-10 w-10 rounded bg-cover bg-center" data-alt="Drone" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAldTB9s8drlCeVk5MOstx6kKM-tJamm3wGdLfEk29uIcXfccahTLaOjYLzpL7MELqKLRL4M1UgvmIbPlaLS3J-LC9hNFHEf0UlqAyZJmfrCpT4yf4redxRFB3116B2C3RM3LCtpsmLOo5IYxDdczxz9PnMLPdnEI9Oa8ejsG07CTxMOEYmLM1l27taBMnn2e36_U8Q1Fm85CK74c7ZvLE6TXO-8B2FZvCcYe0Q7JGLdJgR3wx5s0A571947bK49IzFgEbt4NaJcss')"></div>
+                                                    DJI Mavic 3 Cine
+                                                </td>
+<td class="px-6 py-4">
+<span class="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-1 text-xs font-medium text-blue-500">
+<span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
+                                                        Pending Approval
+                                                    </span>
+</td>
+<td class="px-6 py-4 text-white">$180.00</td>
+<td class="px-6 py-4 text-white">$0.00</td>
+<td class="px-6 py-4 text-right">
+<button class="text-gray-400 hover:text-white">
+<span class="material-symbols-outlined !text-[20px]">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="bg-white/5 border-t border-white/5 px-6 py-3 flex items-center justify-between">
+<span class="text-xs text-gray-500">Showing 3 of 42 items</span>
+<div class="flex gap-2">
+<button class="p-1 rounded hover:bg-white/10 text-gray-400 disabled:opacity-50">
+<span class="material-symbols-outlined !text-[20px]">chevron_left</span>
+</button>
+<button class="p-1 rounded hover:bg-white/10 text-white">
+<span class="material-symbols-outlined !text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+<!-- Onboarding Controls Footer -->
+<div class="sticky bottom-0 w-full bg-background-dark/95 border-t border-white/10 py-4 px-6 md:px-40 backdrop-blur-md flex justify-between items-center z-50">
+<button class="text-sm font-medium text-gray-400 hover:text-white flex items-center gap-2">
+<span class="material-symbols-outlined !text-[18px]">arrow_back</span>
+                    Back
+                </button>
+<div class="flex gap-3">
+<button class="px-6 py-2.5 rounded-lg border border-white/10 text-sm font-bold text-white hover:bg-white/5 transition-colors">
+                        Save Draft
+                    </button>
+<button class="px-6 py-2.5 rounded-lg bg-primary hover:bg-primary/90 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-colors flex items-center gap-2">
+                        Next Step
+                        <span class="material-symbols-outlined !text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Timeless - Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#625063",
+                        "primary-hover": "#7a637a",
+                        "background-light": "#f7f7f7",
+                        "background-dark": "#151415",
+                        "surface-dark": "#1E1C1E",
+                        "surface-light": "#ffffff",
+                        "text-primary-dark": "#f7f7f7",
+                        "text-secondary-dark": "#aca9ad",
+                    },
+                    fontFamily: {
+                        display: ["Montserrat", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        lg: "0.5rem",
+                        xl: "0.75rem",
+                        full: "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for clean look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #151415; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #312f31; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4a474a; 
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-text-primary-dark font-display min-h-screen flex flex-col antialiased">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-50 flex items-center justify-between border-b border-[#312f31] bg-[#151415]/90 backdrop-blur-md px-6 py-3 w-full">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-white">
+<div class="size-8 text-primary">
+<svg fill="currentColor" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M44 4H30.6666V17.3334H17.3334V30.6666H4V44H44V4Z"></path>
+</svg>
+</div>
+<h2 class="text-white text-xl font-bold tracking-tight">Timeless</h2>
+</div>
+<!-- Search Bar -->
+<label class="hidden md:flex flex-col min-w-64 h-10 group relative">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full bg-[#1E1C1E] ring-1 ring-[#312f31] focus-within:ring-primary transition-all">
+<div class="text-[#aca9ad] flex items-center justify-center pl-3">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="w-full bg-transparent border-none text-white placeholder:text-[#aca9ad] px-3 focus:ring-0 text-sm font-medium" placeholder="Search artists, venues, events..."/>
+</div>
+</label>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-white hover:text-primary transition-colors text-sm font-semibold" href="#">Dashboard</a>
+<a class="text-[#aca9ad] hover:text-white transition-colors text-sm font-medium" href="#">Marketplace</a>
+<a class="text-[#aca9ad] hover:text-white transition-colors text-sm font-medium" href="#">Contracts</a>
+<a class="text-[#aca9ad] hover:text-white transition-colors text-sm font-medium" href="#">Wallet</a>
+<a class="text-[#aca9ad] hover:text-white transition-colors text-sm font-medium" href="#">News</a>
+</nav>
+<div class="flex items-center gap-3">
+<button class="hidden sm:flex items-center justify-center rounded-lg h-9 px-4 bg-primary hover:bg-primary-hover text-white text-sm font-bold transition-all shadow-lg shadow-primary/20">
+<span>Create Event</span>
+</button>
+<button class="flex size-9 items-center justify-center rounded-lg bg-[#1E1C1E] text-[#aca9ad] hover:text-white hover:bg-[#312f31] transition-colors ring-1 ring-[#312f31]">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="flex size-9 items-center justify-center rounded-lg bg-[#1E1C1E] text-[#aca9ad] hover:text-white hover:bg-[#312f31] transition-colors ring-1 ring-[#312f31]">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</button>
+<div class="h-9 w-px bg-[#312f31] mx-1"></div>
+<div class="flex items-center gap-3 cursor-pointer group">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-9 ring-2 ring-[#312f31] group-hover:ring-primary transition-all" data-alt="User profile picture of a man" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBN8XZIwVPsrc28UIY03PsrnwJbCNB_6iFBiWJ4m0jb-mKJbzZffKemdmUssSAAKSGcGi5HHaO95OyfH4cmPOhZja74VQtC7nJ_1Z9IuureiQb0WxzqJtN0BxYMFJSFQ3uJbZzfR5yyq72WQilrVf8EjuDCj5lsd_BPEvMvucMfJfjZDBEpMLS_UY7oZeNm4sbhXBjAr1kSjJgwgko9NX21afVIGUnZFcWCLfHuSbpo-_Abxw_TEuqLq5gVH55qNRU8uF6vGpiuAJ0");'></div>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 w-full max-w-[1440px] mx-auto p-6 lg:p-8">
+<!-- Welcome Section -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+<div class="flex flex-col gap-1">
+<p class="text-[#aca9ad] text-sm font-medium uppercase tracking-wider">Tuesday, October 24th</p>
+<h1 class="text-white text-3xl md:text-4xl font-bold tracking-tight">Welcome back, <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-300">Artist</span></h1>
+<p class="text-[#aca9ad] text-base mt-1">Here is your daily snapshot and recommended actions.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1E1C1E] border border-[#312f31] text-white hover:bg-[#312f31] transition-colors text-sm font-medium">
+<span class="material-symbols-outlined text-[18px]">calendar_month</span>
+                    View Calendar
+                </button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#1E1C1E] border border-[#312f31] text-white hover:bg-[#312f31] transition-colors text-sm font-medium">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                    Export Report
+                </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-min">
+<!-- 1. Wallet Snapshot (Span 4) -->
+<div class="md:col-span-4 lg:col-span-3 flex flex-col gap-4">
+<div class="group relative overflow-hidden rounded-xl bg-gradient-to-br from-[#1E1C1E] to-[#151415] border border-[#312f31] hover:border-primary/50 transition-all duration-300 p-6 shadow-xl">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-white">account_balance_wallet</span>
+</div>
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-[#aca9ad] text-sm font-medium">Total Balance</h3>
+<span class="flex items-center text-emerald-400 text-xs font-bold bg-emerald-400/10 px-2 py-1 rounded">
+<span class="material-symbols-outlined text-[14px] mr-1">trending_up</span>
+                            +12.5%
+                        </span>
+</div>
+<div class="mb-6">
+<p class="text-white text-3xl font-bold tracking-tight">$12,450.00</p>
+<p class="text-[#aca9ad] text-xs mt-1">Available for withdrawal</p>
+</div>
+<div class="flex flex-col gap-3">
+<button class="w-full flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-primary hover:bg-primary-hover text-white text-sm font-bold transition-all">
+<span>Withdraw Funds</span>
+</button>
+<button class="w-full flex items-center justify-center gap-2 rounded-lg h-10 px-4 bg-[#312f31] hover:bg-[#4a474a] text-white text-sm font-bold transition-all">
+<span>Transaction History</span>
+</button>
+</div>
+</div>
+<!-- Quick Stats Mini Cards -->
+<div class="grid grid-cols-2 gap-4">
+<div class="rounded-xl bg-[#1E1C1E] border border-[#312f31] p-4 flex flex-col gap-1 hover:border-primary/30 transition-colors">
+<span class="material-symbols-outlined text-primary text-2xl mb-1">visibility</span>
+<p class="text-white text-lg font-bold">2.4k</p>
+<p class="text-[#aca9ad] text-xs">Profile Views</p>
+</div>
+<div class="rounded-xl bg-[#1E1C1E] border border-[#312f31] p-4 flex flex-col gap-1 hover:border-primary/30 transition-colors">
+<span class="material-symbols-outlined text-purple-400 text-2xl mb-1">star</span>
+<p class="text-white text-lg font-bold">4.9</p>
+<p class="text-[#aca9ad] text-xs">Rating</p>
+</div>
+</div>
+</div>
+<!-- 2. Active Contracts/Events (Span 5) -->
+<div class="md:col-span-8 lg:col-span-6 flex flex-col h-full">
+<div class="rounded-xl bg-[#1E1C1E] border border-[#312f31] flex flex-col h-full overflow-hidden hover:border-primary/30 transition-all duration-300">
+<div class="p-5 border-b border-[#312f31] flex justify-between items-center">
+<h3 class="text-white text-lg font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">event_note</span>
+                            Active Contracts
+                        </h3>
+<a class="text-xs text-primary hover:text-white transition-colors font-medium" href="#">View All</a>
+</div>
+<div class="flex-1 overflow-y-auto p-2 space-y-2 max-h-[400px]">
+<!-- Contract Item 1 -->
+<div class="group flex items-center gap-4 p-3 rounded-lg hover:bg-[#252325] transition-colors cursor-pointer border border-transparent hover:border-[#312f31]">
+<div class="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Concert stage with lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdSXxJPVNkG1oHtP-GuFC9FpfXeAqk4D2P7_iuSZ54Sxvwxc-PpBxuuJhvKz4RjL9AVMCPufm7ETs1HjQM54MABmU_wU6vMT1I40CDkX7wcDne81tM9XqccxM9hvTfGaAhlwr1r4NwaT77gBMrmkhegHDICxm4H1XNhMJMQ18FWEsgP6W2zTIn5OxrGWxJV1Hj5-uOknU6LeFiwtAqkAZcdDN5lqhJ0Ft7MWJzvY5Ko5QkyCT6itOwWfkGwVS0eN9b0ovvXig0jo4"/>
+<div class="absolute inset-0 bg-primary/20 hidden group-hover:flex items-center justify-center backdrop-blur-[1px]">
+<span class="material-symbols-outlined text-white">open_in_new</span>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-white font-semibold truncate">Summer Jazz Festival</h4>
+<span class="text-xs font-bold text-orange-400 bg-orange-400/10 px-2 py-0.5 rounded ml-2">Pending</span>
+</div>
+<p class="text-[#aca9ad] text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                                    Central Park Arena
+                                </p>
+<p class="text-[#aca9ad] text-xs mt-1">Oct 28, 2023 • 8:00 PM</p>
+</div>
+<div class="text-right">
+<p class="text-white font-bold text-sm">$3,500</p>
+</div>
+</div>
+<!-- Contract Item 2 -->
+<div class="group flex items-center gap-4 p-3 rounded-lg hover:bg-[#252325] transition-colors cursor-pointer border border-transparent hover:border-[#312f31]">
+<div class="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Neon city street at night" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAW2VPRdAW4yr9qNZg81D7wqTvTGjZdmDgqhUAzaoWroXqeKpzOs3iroCzZadcUt80e_t5me2dBg6FoSS0UvIrt4GCrf2LtX8Hqb22_aWm2TKHC3i68Bn--tLt9tir7uyhnycIILO9XkjJ7iqs4A-wdk7n95uT5CRW1akT5x6FYHrVXKMWdnw3uJjxlwK54XJwzrCZMT7DX30g5aTGEYL1nzk_mtxN-MwTJCV-xXcwRS5_4-MYT_VIk1JJQmcgXmS2ZBrNLVe8gkA8"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-white font-semibold truncate">Neon Nights Launch</h4>
+<span class="text-xs font-bold text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded ml-2">Active</span>
+</div>
+<p class="text-[#aca9ad] text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                                    The Void Club
+                                </p>
+<p class="text-[#aca9ad] text-xs mt-1">Nov 02, 2023 • 10:00 PM</p>
+</div>
+<div class="text-right">
+<p class="text-white font-bold text-sm">$1,200</p>
+</div>
+</div>
+<!-- Contract Item 3 -->
+<div class="group flex items-center gap-4 p-3 rounded-lg hover:bg-[#252325] transition-colors cursor-pointer border border-transparent hover:border-[#312f31]">
+<div class="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="DJ mixing music" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3ucKMxHEbRFEDzHYcqdFUWgGLN76zG7LuyqP25WQdmMYArqiPo_GMTKaasCiobpejGfmwhqQIRxjZ2w5T7I8NTmDjkZnCBfO7HXEiAehAhZTMOsslx7BiKD7x_CVFKdqCP7esCkdbfEEku6FZUzGkpXTTUfHnejNdSN_gpumHN02Y5VuLsTF6nCI1l61GLX4B8jCaXHlBatsRPGQiaJbV6u5WCuIdeAIQKPmPytRnBeTH8nN7T_OpNG_eCu3M3bboyN_HHLPspJI"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-white font-semibold truncate">Private Corporate Gala</h4>
+<span class="text-xs font-bold text-blue-400 bg-blue-400/10 px-2 py-0.5 rounded ml-2">Signed</span>
+</div>
+<p class="text-[#aca9ad] text-xs flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                                    Grand Hyatt Hall
+                                </p>
+<p class="text-[#aca9ad] text-xs mt-1">Nov 15, 2023 • 6:30 PM</p>
+</div>
+<div class="text-right">
+<p class="text-white font-bold text-sm">$5,000</p>
+</div>
+</div>
+</div>
+<div class="p-3 border-t border-[#312f31] bg-[#151415]/50">
+<button class="w-full text-xs text-[#aca9ad] hover:text-white py-2 flex items-center justify-center gap-1 transition-colors">
+                            Show 3 more contracts <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+<!-- 3. Recommended Talent/Services (Span 3) -->
+<div class="md:col-span-12 lg:col-span-3 flex flex-col h-full">
+<div class="rounded-xl bg-[#1E1C1E] border border-[#312f31] flex flex-col h-full overflow-hidden hover:border-primary/30 transition-all duration-300">
+<div class="p-5 border-b border-[#312f31]">
+<h3 class="text-white text-lg font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">recommend</span>
+                            Recommended
+                        </h3>
+</div>
+<div class="flex-1 p-4 space-y-4">
+<!-- Recommendation 1 -->
+<div class="flex items-center gap-3 group cursor-pointer">
+<div class="size-10 rounded-full bg-cover bg-center border border-[#312f31] group-hover:border-primary transition-colors" data-alt="Portrait of a female photographer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBTFYtKK-MHpSFkIMd4NNN1j2kP2xfN3ZjrU2bChI8zxbX5gChSs5Oz3-L7kUbzyscphfL8RG-ESSCk3ueQOaXCXPJF3ZfejiNRJrkO4g4MDJfp8do0p3zDrv8_ppPmugXzd5CBSQbSDKeTxV810HIkFojYGIzDGBZyMj3Yvi7pvgFHDDWRDPkL2JSsQXp2QTfWmBqPtD_3XAuUQlHZgVJdLnl9kUgU3iNnbIMLrvqPTaEinUMkIkzfF-OfeyViWxyGwg6W4fULplg')"></div>
+<div class="flex-1">
+<h5 class="text-white text-sm font-semibold group-hover:text-primary transition-colors">Sarah Jenkins</h5>
+<p class="text-[#aca9ad] text-xs">Photographer • 2h ago</p>
+</div>
+<button class="size-8 rounded-full bg-[#312f31] text-white flex items-center justify-center hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-[16px]">add</span>
+</button>
+</div>
+<!-- Recommendation 2 -->
+<div class="flex items-center gap-3 group cursor-pointer">
+<div class="size-10 rounded-full bg-cover bg-center border border-[#312f31] group-hover:border-primary transition-colors" data-alt="Portrait of a male sound engineer" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAMmMOpP5g5b4UfHptHEY9-CnL6Vir0G3QKoAwLmBpLdUfAmCqxR19XQuHnxWE7sDvWARGU8k34E5xLldQai-CJAdm02kWGeAcjoV8j_Mmdswc9b0VcMBgb54sgisKjxK8FxcSH9DAjd4FKYqMAWPQOm1wgIw1qqiE4EhAwZY_dV3Vi-25DDNvp6kIdtXVbn4_DoGZVybcH2nRnSQ1p8PwNgE6yK1E4HAiH3Rgg9fpaYB8X3S3C2BM546tZaBnrCZTnO3vTFp2Jk2w')"></div>
+<div class="flex-1">
+<h5 class="text-white text-sm font-semibold group-hover:text-primary transition-colors">Mike Ross</h5>
+<p class="text-[#aca9ad] text-xs">Sound Engineer • 5h ago</p>
+</div>
+<button class="size-8 rounded-full bg-[#312f31] text-white flex items-center justify-center hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-[16px]">add</span>
+</button>
+</div>
+<!-- Recommendation 3 -->
+<div class="flex items-center gap-3 group cursor-pointer">
+<div class="size-10 rounded-full bg-cover bg-center border border-[#312f31] group-hover:border-primary transition-colors" data-alt="Portrait of a venue manager" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBht1e46l8OK2KO-gLm3qDzzeeaRtlm4zxpsyO5bCD7xccxqadLg5QUBOjrG8SnDAmH0A7ZxgzsOBrfWcWBvLdVfNF-mNL2nGQVcLUhMcKOZnMpVdqcf1R5UOKkE6CpG85pqL762_ilCfc0bmMCP0dNLKRlazJIS8zYRvKLZoP8_hffh4qdBe1DLYJcj_2K3n28lYpX6LiGvroZWEN8gSCk0HTuzKSyl0UhXtTRZm7bAoHI5CU8A5wPh2x69JbS6QdT2B72gpCqLSU')"></div>
+<div class="flex-1">
+<h5 class="text-white text-sm font-semibold group-hover:text-primary transition-colors">The Loft</h5>
+<p class="text-[#aca9ad] text-xs">Venue Space • 1d ago</p>
+</div>
+<button class="size-8 rounded-full bg-[#312f31] text-white flex items-center justify-center hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-[16px]">add</span>
+</button>
+</div>
+</div>
+<div class="p-4 pt-0">
+<button class="w-full rounded-lg h-9 bg-[#312f31] hover:bg-[#4a474a] text-white text-xs font-bold transition-all uppercase tracking-wide">
+                            Explore Talent
+                        </button>
+</div>
+</div>
+</div>
+<!-- 4. Platform News & Updates (Span 12) -->
+<div class="col-span-12">
+<h3 class="text-white text-lg font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">newspaper</span>
+                    Platform News
+                </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- News Card 1 -->
+<article class="group relative overflow-hidden rounded-xl bg-[#1E1C1E] border border-[#312f31] hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
+<div class="h-40 overflow-hidden relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Abstract colorful light waves" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1FMS7l-HAZIf4539XKQ9uw9nXznrS0S-pCrkmpKitOIpxWlglYCaNHFZvVd-yF3en1VivWUP1hsG7U5WbX3nanCTh2TUoYBecpidqMIOxNfnS-o3CT3xX0-F7PXnNOzCAEVxJxki8Y9YgFtsz-cCOFzPgIIhxNwUUK6vmP6YS1QRkBQhiOAvu-sBSWRS52qFzf-EX487qI2Df_59zlwc1UE-80unlZpt9SN8DSWQidpNFiLwQX685frTarOJ5xIrXkoElVCMBRWQ"/>
+<div class="absolute top-3 left-3 bg-primary/90 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider backdrop-blur-sm">
+                                Feature Update
+                            </div>
+</div>
+<div class="p-5">
+<h4 class="text-white text-lg font-bold mb-2 group-hover:text-primary transition-colors">Smart Contracts 2.0 Live</h4>
+<p class="text-[#aca9ad] text-sm line-clamp-2">We've updated our smart contract infrastructure to support faster payments and automated escrow releases for verified artists.</p>
+<div class="mt-4 flex items-center justify-between">
+<span class="text-xs text-[#aca9ad]">2 hours ago</span>
+<span class="material-symbols-outlined text-primary opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">arrow_forward</span>
+</div>
+</div>
+</article>
+<!-- News Card 2 -->
+<article class="group relative overflow-hidden rounded-xl bg-[#1E1C1E] border border-[#312f31] hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
+<div class="h-40 overflow-hidden relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Microphone on stand with stage lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDV3VAoiKE-35kJW_p7JvgdCHxRVn10iL4A1QaeOHd_BGUBVwR-lxNu9gEivAdEFt0uMPU0_XtSOCWT66101o9_n1jmfAbgiTFz97BJ_SziE6nhK6z0yKrAAo0x6YTe9VtJtZ3QJ8Co8q_gm6Pur_k27U94ZLYrrivPnTh9QyS2olfrNEGA1g7IbtQsykiVu4pee_kV9EUS2xTlsIpygNV2KS8NJfkXLsGf1XQXX39iXl5HR2F0YiGIzAxUbaaOqoBmcaFN4RMjDO8"/>
+<div class="absolute top-3 left-3 bg-blue-500/90 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider backdrop-blur-sm">
+                                Community
+                            </div>
+</div>
+<div class="p-5">
+<h4 class="text-white text-lg font-bold mb-2 group-hover:text-primary transition-colors">Timeless Artist Spotlight</h4>
+<p class="text-[#aca9ad] text-sm line-clamp-2">Meet the rising stars of October. Check out our curated list of top performing artists in the electronic music scene.</p>
+<div class="mt-4 flex items-center justify-between">
+<span class="text-xs text-[#aca9ad]">Yesterday</span>
+<span class="material-symbols-outlined text-primary opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">arrow_forward</span>
+</div>
+</div>
+</article>
+<!-- News Card 3 -->
+<article class="group relative overflow-hidden rounded-xl bg-[#1E1C1E] border border-[#312f31] hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300">
+<div class="h-40 overflow-hidden relative">
+<div class="w-full h-full bg-gradient-to-br from-primary/20 to-purple-900/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-5xl text-primary/50">campaign</span>
+</div>
+<div class="absolute top-3 left-3 bg-purple-500/90 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider backdrop-blur-sm">
+                                Announcement
+                            </div>
+</div>
+<div class="p-5">
+<h4 class="text-white text-lg font-bold mb-2 group-hover:text-primary transition-colors">New Venue Partnerships</h4>
+<p class="text-[#aca9ad] text-sm line-clamp-2">Expanding our reach in New York and London. We've onboarded 50+ new premium venues looking for talent.</p>
+<div class="mt-4 flex items-center justify-between">
+<span class="text-xs text-[#aca9ad]">3 days ago</span>
+<span class="material-symbols-outlined text-primary opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">arrow_forward</span>
+</div>
+</div>
+</article>
+</div>
+</div>
+</div>
+</main>
+<!-- Simple Footer for density -->
+<footer class="border-t border-[#312f31] bg-[#151415] py-6 px-6 mt-8">
+<div class="max-w-[1440px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-[#aca9ad] text-xs">© 2023 Timeless Inc. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="text-[#aca9ad] hover:text-white text-xs transition-colors" href="#">Privacy Policy</a>
+<a class="text-[#aca9ad] hover:text-white text-xs transition-colors" href="#">Terms of Service</a>
+<a class="text-[#aca9ad] hover:text-white text-xs transition-colors" href="#">Support</a>
+</div>
+</div>
+</footer>
+</body></html>

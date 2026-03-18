@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navLinks = [
   { label: "Dashboard", href: "/admin", icon: "dashboard" },
@@ -19,6 +20,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const { user } = useAuth();
 
   return (
     <ProtectedRoute>
@@ -31,6 +33,11 @@ export default function AdminLayout({
             <span className="text-[10px] font-semibold uppercase tracking-widest text-primary-light bg-primary/10 px-2 py-0.5 rounded-full">
               Admin
             </span>
+            {user?.isSuperUser && (
+              <span className="text-[9px] font-semibold uppercase tracking-widest text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded-full border border-amber-500/20">
+                Super
+              </span>
+            )}
           </div>
 
           {/* Nav Links */}
