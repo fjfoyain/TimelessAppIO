@@ -4,8 +4,9 @@ import Link from "next/link";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
-export default function RegisterSuccessPage() {
+function RegisterSuccessContent() {
   return (
     <div className="min-h-screen bg-background-dark">
       <AnimatedBackground />
@@ -62,5 +63,13 @@ export default function RegisterSuccessPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function RegisterSuccessPage() {
+  return (
+    <ProtectedRoute>
+      <RegisterSuccessContent />
+    </ProtectedRoute>
   );
 }
