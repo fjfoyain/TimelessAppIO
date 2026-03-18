@@ -216,11 +216,8 @@ export default function VenueRegistrationPage() {
       <div className="w-full lg:w-7/12 xl:w-1/2 bg-[#191022] flex flex-col min-h-screen">
         {/* Top Bar */}
         <div className="flex items-center justify-between px-6 lg:px-12 py-5 border-b border-white/5">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="flex items-center justify-center w-8 h-8 rounded-md bg-gradient-to-br from-primary to-primary-light">
-              <span className="text-white font-bold text-sm">T</span>
-            </div>
-            <span className="text-lg font-bold text-white tracking-tight">Timeless</span>
+          <Link href="/">
+            <Image src="/images/logo.svg" alt="TIMELESS" width={120} height={34} className="h-7 w-auto" />
           </Link>
           <p className="text-sm text-slate-500">
             Already a partner?{" "}

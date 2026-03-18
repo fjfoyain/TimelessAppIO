@@ -13,22 +13,26 @@ service cloud.firestore {
       return isAuth() && request.auth.uid == userId;
     }
 
-    // Helper: check if user has admin role
+    // Helper: check if user has admin role or is a super user
     function isAdmin() {
-      return isAuth() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'ADMIN';
+      return isAuth() && (
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'ADMIN' ||
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isSuperUser == true
+      );
     }
 
-    // Users: owner can read/write own doc, admin can read all
+    // Users: any authenticated user can read (needed for marketplace profiles),
+    // only owner can write their own doc, admin can write any
     match /users/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
+      allow read: if isAuth() || isOwner(userId);
       allow create: if isOwner(userId);
-      allow update: if isOwner(userId);
+      allow update: if isOwner(userId) || isAdmin();
     }
 
-    // Role-specific profiles: owner read/write, admin read all
+    // Role-specific profiles
     match /artists/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
-      allow write: if isOwner(userId);
+      allow read: if isAuth();
+      allow write: if isOwner(userId) || isAdmin();
     }
 
     match /clients/{userId} {
@@ -38,7 +42,7 @@ service cloud.firestore {
 
     match /talents/{userId} {
       allow read: if true; // Public for marketplace
-      allow write: if isOwner(userId);
+      allow write: if isOwner(userId) || isAdmin();
     }
 
     match /venues/{venueId} {
@@ -52,7 +56,7 @@ service cloud.firestore {
       allow read: if true;
       allow create: if isAuth();
       allow update: if isAuth() && resource.data.organizerId == request.auth.uid;
-      allow delete: if isAuth() && resource.data.organizerId == request.auth.uid || isAdmin();
+      allow delete: if (isAuth() && resource.data.organizerId == request.auth.uid) || isAdmin();
     }
 
     // Bookings: owner read/write, admin read all
@@ -104,12 +108,26 @@ service cloud.firestore {
     // Audit Logs: admin only
     match /auditLogs/{logId} {
       allow read: if isAdmin();
-      allow create: if isAuth(); // System can create logs
+      allow create: if isAuth();
     }
 
-    // Approvals: admin can read/write
+    // Approvals: admin can read/write, any auth user can create
     match /approvals/{approvalId} {
       allow read: if isAdmin();
+      allow create: if isAuth();
+      allow update: if isAdmin();
+    }
+
+    // Wallets: owner only (previously missing — caused permissions errors)
+    match /wallets/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+    }
+
+    // Transactions: owner only (previously missing — caused permissions errors)
+    match /transactions/{transactionId} {
+      allow read: if isAuth() && (resource.data.userId == request.auth.uid || isAdmin());
       allow create: if isAuth();
       allow update: if isAdmin();
     }

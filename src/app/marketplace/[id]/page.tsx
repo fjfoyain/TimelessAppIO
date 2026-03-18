@@ -1,9 +1,8 @@
 "use client";
 
-import { use } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import Navbar from "@/components/landing/Navbar";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import Footer from "@/components/landing/Footer";
@@ -15,8 +14,8 @@ function getAverageRating(reviews: { rating: number }[]): number {
   return reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
 }
 
-export default function TalentProfilePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function TalentProfilePage() {
+  const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { data: firestoreMatch, loading } = useTalentProfile(id);
 
