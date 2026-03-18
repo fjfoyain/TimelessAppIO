@@ -70,7 +70,7 @@ export default function Home() {
       {/* ── Hero Section ── */}
       <section className="relative z-10 pt-28 pb-16 lg:pt-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-20 items-center">
             {/* ─── Left Column ─── */}
             <div className="flex flex-col gap-8">
               {/* Beta Badge */}
@@ -85,7 +85,7 @@ export default function Home() {
               </div>
 
               {/* Headline */}
-              <h1 className="text-5xl md:text-7xl lg:text-[5rem] font-extrabold tracking-tighter leading-[0.95]">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[5rem] font-extrabold tracking-tighter leading-[0.95]">
                 Connect the
                 <br />
                 <span className="bg-gradient-to-r from-primary via-primary-light to-accent-cyan bg-clip-text text-transparent text-glow">
@@ -101,7 +101,7 @@ export default function Home() {
               </p>
 
               {/* Role Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                 {roles.map((role) => (
                   <Link
                     key={role.label}
@@ -136,9 +136,9 @@ export default function Home() {
             </div>
 
             {/* ─── Right Column: Phone Mockup ─── */}
-            <div className="hidden lg:flex items-center justify-center relative">
+            <div className="hidden md:flex items-center justify-center relative">
               {/* Phone Frame */}
-              <div className="relative w-[380px] h-[720px] rounded-[3rem] border-[6px] border-slate-800 bg-black overflow-hidden shadow-2xl shadow-primary/10 animate-tilt">
+              <div className="relative w-[260px] sm:w-[300px] lg:w-[380px] aspect-[9/19] rounded-[2.5rem] lg:rounded-[3rem] border-[5px] lg:border-[6px] border-slate-800 bg-black overflow-hidden shadow-2xl shadow-primary/10 animate-tilt">
                 {/* Notch */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-black rounded-b-2xl z-30" />
 
@@ -253,7 +253,7 @@ export default function Home() {
       {/* ── Stats Section ── */}
       <section className="relative z-10 border-t border-white/5 bg-black/40 backdrop-blur-sm">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 text-center">
             {stats.map((stat) => (
               <div key={stat.label} className="group">
                 <p

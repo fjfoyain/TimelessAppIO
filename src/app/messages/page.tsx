@@ -39,9 +39,9 @@ function MessagesContent() {
   const { messages, loading: msgsLoading, sendMessage } = useMessages(activeConvoId);
   const [newMessage, setNewMessage] = useState("");
   const [tab, setTab] = useState<"messages" | "contracts">("messages");
+  const [showChat, setShowChat] = useState(false);
   const latestBooking = bookings.length > 0 ? bookings[0] : null;
 
-  // Pre-select conversation based on ?to=userId, otherwise default to first
   useEffect(() => {
     if (convosLoading || activeConvoId) return;
     if (toUserId) {
@@ -51,6 +51,7 @@ function MessagesContent() {
       );
       if (match) {
         setActiveConvoId(match.id);
+        setShowChat(true);
         return;
       }
     }
@@ -61,7 +62,6 @@ function MessagesContent() {
 
   const activeConvo = conversations.find((c) => c.id === activeConvoId);
 
-  // Get display name for the other participant in the active conversation
   const getOtherParticipantName = (convo: typeof conversations[number]): string => {
     if (!user?.id || !convo.participantNames) return "Unknown";
     const otherNames = Object.entries(convo.participantNames)
@@ -88,22 +88,32 @@ function MessagesContent() {
     }
   };
 
+  const handleSelectConvo = (id: string) => {
+    setActiveConvoId(id);
+    setShowChat(true);
+  };
+
   return (
     <div className="min-h-screen bg-background-dark flex flex-col">
       <AnimatedBackground />
       <Navbar />
 
       <main className="relative z-10 flex-1 pt-16">
-        <div className="h-[calc(100vh-4rem)] flex">
-          {/* Left: Conversation List */}
-          <div className="w-80 border-r border-white/5 bg-surface-dark/30 backdrop-blur-xl flex flex-col shrink-0 hidden md:flex">
-            <div className="p-4 border-b border-white/5">
+        <div className="h-[calc(100vh-4rem)] flex overflow-hidden">
+
+          {/* Left: Conversation List — hidden on mobile when chat is open */}
+          <div
+            className={`${
+              showChat ? "hidden md:flex" : "flex"
+            } w-full md:w-72 lg:w-80 border-r border-white/5 bg-surface-dark/30 backdrop-blur-xl flex-col shrink-0`}
+          >
+            <div className="px-4 py-3 border-b border-white/5">
               <h2 className="text-lg font-bold text-white mb-3">Messages</h2>
               <div className="flex gap-2">
                 {(["All", "Unread", "Archived"] as const).map((f) => (
                   <button
                     key={f}
-                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition"
+                    className="px-3 py-2.5 rounded-lg text-xs font-medium bg-white/5 text-slate-400 hover:text-white hover:bg-white/10 transition min-h-[44px]"
                   >
                     {f}
                   </button>
@@ -125,8 +135,8 @@ function MessagesContent() {
                 conversations.map((c) => (
                   <button
                     key={c.id}
-                    onClick={() => setActiveConvoId(c.id)}
-                    className={`w-full text-left p-4 border-b border-white/5 hover:bg-white/5 transition ${
+                    onClick={() => handleSelectConvo(c.id)}
+                    className={`w-full text-left p-4 border-b border-white/5 hover:bg-white/5 transition min-h-[64px] ${
                       activeConvoId === c.id ? "bg-primary/5 border-l-2 border-l-primary" : ""
                     }`}
                   >
@@ -148,28 +158,40 @@ function MessagesContent() {
             </div>
           </div>
 
-          {/* Center: Chat Thread */}
-          <div className="flex-1 flex flex-col min-w-0">
+          {/* Center: Chat Thread — hidden on mobile when no chat selected */}
+          <div
+            className={`${
+              showChat ? "flex" : "hidden md:flex"
+            } flex-1 flex-col min-w-0`}
+          >
             {/* Chat Header */}
-            <div className="px-6 py-4 border-b border-white/5 bg-surface-dark/30 backdrop-blur-xl flex items-center justify-between">
-              <div className="flex items-center gap-3">
+            <div className="px-4 sm:px-6 py-3 border-b border-white/5 bg-surface-dark/30 backdrop-blur-xl flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                {/* Back button — mobile only */}
+                <button
+                  onClick={() => setShowChat(false)}
+                  className="md:hidden w-11 h-11 flex items-center justify-center rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition shrink-0"
+                  aria-label="Back to conversations"
+                >
+                  <span className="material-icons">arrow_back</span>
+                </button>
                 {activeConvo ? (
                   <>
-                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary-light font-bold text-xs">
+                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary-light font-bold text-xs shrink-0">
                       {getInitial(activeConvo)}
                     </div>
-                    <span className="text-white font-semibold text-sm">{getOtherParticipantName(activeConvo)}</span>
+                    <span className="text-white font-semibold text-sm truncate">{getOtherParticipantName(activeConvo)}</span>
                   </>
                 ) : (
                   <span className="text-slate-500 text-sm">Select a conversation</span>
                 )}
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-2 shrink-0">
                 {(["messages", "contracts"] as const).map((t) => (
                   <button
                     key={t}
                     onClick={() => setTab(t)}
-                    className={`px-4 py-1.5 rounded-lg text-xs font-medium transition ${
+                    className={`px-3 py-2 rounded-lg text-xs font-medium transition min-h-[36px] ${
                       tab === t
                         ? "bg-primary/10 text-primary border border-primary/30"
                         : "text-slate-400 hover:text-white"
@@ -182,7 +204,7 @@ function MessagesContent() {
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 space-y-4">
               {msgsLoading ? (
                 <div className="flex items-center justify-center h-full">
                   <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
@@ -205,7 +227,7 @@ function MessagesContent() {
                   return (
                     <div key={msg.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
                       <div
-                        className={`max-w-[70%] rounded-2xl px-4 py-3 ${
+                        className={`max-w-[85%] sm:max-w-[75%] md:max-w-[70%] rounded-2xl px-4 py-3 ${
                           mine
                             ? "bg-primary/20 border border-primary/30 text-white"
                             : "bg-surface-dark/80 border border-white/5 text-slate-200"
@@ -221,9 +243,9 @@ function MessagesContent() {
             </div>
 
             {/* Message Input */}
-            <div className="px-6 py-4 border-t border-white/5 bg-surface-dark/30 backdrop-blur-xl">
-              <div className="flex items-center gap-3">
-                <button className="text-slate-500 hover:text-white transition" aria-label="Attach file">
+            <div className="px-3 py-3 sm:px-6 sm:py-4 border-t border-white/5 bg-surface-dark/30 backdrop-blur-xl">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <button className="w-11 h-11 flex items-center justify-center text-slate-500 hover:text-white transition shrink-0" aria-label="Attach file">
                   <span className="material-icons">attach_file</span>
                 </button>
                 <input
@@ -236,7 +258,7 @@ function MessagesContent() {
                 />
                 <button
                   onClick={handleSend}
-                  className="w-10 h-10 rounded-xl bg-primary hover:bg-primary-dark flex items-center justify-center text-white transition"
+                  className="w-11 h-11 rounded-xl bg-primary hover:bg-primary-dark flex items-center justify-center text-white transition shrink-0"
                   aria-label="Send message"
                 >
                   <span className="material-icons text-xl">send</span>
@@ -246,7 +268,7 @@ function MessagesContent() {
           </div>
 
           {/* Right: Contract / Booking Details */}
-          <div className="w-80 border-l border-white/5 bg-surface-dark/30 backdrop-blur-xl p-6 overflow-y-auto hidden lg:block">
+          <div className="w-72 lg:w-80 border-l border-white/5 bg-surface-dark/30 backdrop-blur-xl p-6 overflow-y-auto hidden lg:block">
             <h3 className="text-lg font-bold text-white mb-4">Contract Details</h3>
 
             {bookingsLoading ? (

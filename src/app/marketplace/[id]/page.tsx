@@ -68,9 +68,9 @@ export default function TalentProfilePage() {
           </nav>
 
           {/* Hero */}
-          <div className="flex flex-col md:flex-row items-start gap-8 mb-12">
+          <div className="flex flex-col md:flex-row items-start gap-4 sm:gap-6 md:gap-8 mb-12">
             {/* Avatar */}
-            <div className="relative w-32 h-32 rounded-2xl overflow-hidden border-2 border-primary/20 flex-shrink-0">
+            <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden border-2 border-primary/20 flex-shrink-0">
               <Image
                 src={user.avatar || "/images/avatar-producer.jpg"}
                 alt={user.name}
@@ -129,7 +129,7 @@ export default function TalentProfilePage() {
 
             {/* Price Badge */}
             {talent.hourlyRate && (
-              <div className="bg-surface-dark/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center min-w-[140px] flex-shrink-0">
+              <div className="bg-surface-dark/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center w-full sm:w-auto sm:min-w-[140px] flex-shrink-0">
                 <p className="text-3xl font-bold text-white">${talent.hourlyRate}</p>
                 <p className="text-xs text-slate-500">per hour</p>
               </div>
@@ -152,11 +152,11 @@ export default function TalentProfilePage() {
               {talent.portfolio.length > 0 && (
                 <section>
                   <h2 className="text-xl font-semibold text-white mb-4">Portfolio</h2>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
                     {talent.portfolio.map((item, i) => (
                       <div
                         key={i}
-                        className="relative h-48 rounded-xl overflow-hidden group cursor-pointer border border-white/5"
+                        className="relative h-32 sm:h-40 md:h-48 rounded-xl overflow-hidden group cursor-pointer border border-white/5"
                       >
                         <Image
                           src={item.url}
@@ -165,7 +165,7 @@ export default function TalentProfilePage() {
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <span className="material-icons text-white text-3xl">zoom_in</span>
+                          <span className="material-icons text-white text-2xl sm:text-3xl">zoom_in</span>
                         </div>
                         {item.caption && (
                           <p className="absolute bottom-2 left-2 text-xs text-white/80 bg-black/50 px-2 py-1 rounded">
@@ -209,7 +209,7 @@ export default function TalentProfilePage() {
                     {talent.reviews.map((review) => (
                       <div
                         key={review.id}
-                        className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-xl p-5"
+                        className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-xl p-3 sm:p-5"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">

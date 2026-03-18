@@ -7,7 +7,7 @@ export default function WhatsAppFAB() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Contact us on WhatsApp"
-      className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-whatsapp whatsapp-glow hover:scale-110 transition-transform duration-300"
+      className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-whatsapp whatsapp-glow hover:scale-110 transition-transform duration-300"
     >
       {/* Notification dot */}
       <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4">

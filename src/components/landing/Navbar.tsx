@@ -79,19 +79,19 @@ export default function Navbar({ activeTab }: NavbarProps) {
                 >
                   Dashboard
                 </Link>
-                <div className="flex items-center gap-3 pl-4 border-l border-white/10">
-                  <Link href="/messages" className="text-gray-500 hover:text-white transition-colors" title="Messages">
+                <div className="flex items-center gap-1 pl-4 border-l border-white/10">
+                  <Link href="/messages" className="p-2 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-colors" title="Messages">
                     <span className="material-icons text-lg">chat</span>
                   </Link>
-                  <Link href="/notifications" className="relative text-gray-500 hover:text-white transition-colors" title="Notifications">
+                  <Link href="/notifications" className="relative p-2 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-colors" title="Notifications">
                     <span className="material-icons text-lg">notifications</span>
                     {unreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 text-[10px] text-white font-bold flex items-center justify-center">
+                      <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-red-500 text-[10px] text-white font-bold flex items-center justify-center">
                         {unreadCount}
                       </span>
                     )}
                   </Link>
-                  <Link href="/wallet" className="text-gray-500 hover:text-white transition-colors" title="Wallet">
+                  <Link href="/wallet" className="p-2 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-colors" title="Wallet">
                     <span className="material-icons text-lg">account_balance_wallet</span>
                   </Link>
                 </div>
@@ -140,7 +140,7 @@ export default function Navbar({ activeTab }: NavbarProps) {
           {/* Right: Mobile Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+            className="md:hidden flex items-center justify-center w-11 h-11 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
             aria-label="Toggle menu"
           >
             <span className="material-icons text-2xl">
@@ -157,7 +157,7 @@ export default function Navbar({ activeTab }: NavbarProps) {
             <Link
               href="/marketplace"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-sm text-gray-400 hover:text-white transition-colors py-2"
+              className="text-sm text-gray-400 hover:text-white transition-colors py-3"
             >
               Marketplace
             </Link>
@@ -166,35 +166,35 @@ export default function Navbar({ activeTab }: NavbarProps) {
                 <Link
                   href="/dashboard"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-sm text-gray-400 hover:text-white transition-colors py-2"
+                  className="text-sm text-gray-400 hover:text-white transition-colors py-3"
                 >
                   Dashboard
                 </Link>
                 <Link
                   href="/messages"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-sm text-gray-400 hover:text-white transition-colors py-2"
+                  className="text-sm text-gray-400 hover:text-white transition-colors py-3"
                 >
                   Messages
                 </Link>
                 <Link
                   href="/wallet"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-sm text-gray-400 hover:text-white transition-colors py-2"
+                  className="text-sm text-gray-400 hover:text-white transition-colors py-3"
                 >
                   Wallet
                 </Link>
                 <Link
                   href="/notifications"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-sm text-gray-400 hover:text-white transition-colors py-2"
+                  className="text-sm text-gray-400 hover:text-white transition-colors py-3"
                 >
                   Notifications
                 </Link>
                 <Link
                   href="/settings"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="text-sm text-gray-400 hover:text-white transition-colors py-2"
+                  className="text-sm text-gray-400 hover:text-white transition-colors py-3"
                 >
                   Settings
                 </Link>

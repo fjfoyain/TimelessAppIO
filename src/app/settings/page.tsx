@@ -319,13 +319,13 @@ function SettingsContent() {
                           </div>
                           <button
                             onClick={() => handleToggle("twoFAEnabled", !twoFAEnabled, setTwoFAEnabled)}
-                            className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${
+                            className={`relative w-14 h-7 rounded-full transition-colors duration-300 ${
                               twoFAEnabled ? "bg-primary" : "bg-slate-700"
                             }`}
                           >
                             <span
-                              className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-300 ${
-                                twoFAEnabled ? "translate-x-6" : ""
+                              className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow transition-transform duration-300 ${
+                                twoFAEnabled ? "translate-x-7" : ""
                               }`}
                             />
                           </button>
@@ -347,13 +347,13 @@ function SettingsContent() {
                           </div>
                           <button
                             onClick={() => handleToggle("emailNotifications", !emailNotifications, setEmailNotifications)}
-                            className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${
+                            className={`relative w-14 h-7 rounded-full transition-colors duration-300 ${
                               emailNotifications ? "bg-primary" : "bg-slate-700"
                             }`}
                           >
                             <span
-                              className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-300 ${
-                                emailNotifications ? "translate-x-6" : ""
+                              className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow transition-transform duration-300 ${
+                                emailNotifications ? "translate-x-7" : ""
                               }`}
                             />
                           </button>
@@ -373,13 +373,13 @@ function SettingsContent() {
                           </div>
                           <button
                             onClick={() => handleToggle("pushNotifications", !pushNotifications, setPushNotifications)}
-                            className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${
+                            className={`relative w-14 h-7 rounded-full transition-colors duration-300 ${
                               pushNotifications ? "bg-primary" : "bg-slate-700"
                             }`}
                           >
                             <span
-                              className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform duration-300 ${
-                                pushNotifications ? "translate-x-6" : ""
+                              className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow transition-transform duration-300 ${
+                                pushNotifications ? "translate-x-7" : ""
                               }`}
                             />
                           </button>

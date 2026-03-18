@@ -98,57 +98,61 @@ export default function BookingPage() {
               </div>
             ) : null}
 
-            <div className={`grid grid-cols-1 lg:grid-cols-4 gap-6 ${bookingsLoading ? "opacity-50 pointer-events-none" : ""}`}>
+            <div className={`grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6 ${bookingsLoading ? "opacity-50 pointer-events-none" : ""}`}>
               {/* Calendar Grid */}
               <div className="lg:col-span-3 bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden">
-                {/* Day Headers */}
-                <div className="grid grid-cols-7 border-b border-white/5">
-                  {days.map((day) => (
-                    <div key={day} className="px-3 py-3 text-center text-xs font-bold text-slate-400 uppercase tracking-wider border-r border-white/5 last:border-r-0">
-                      {day}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Time Grid */}
                 <div className="overflow-x-auto">
-                  {hours.map((hour) => (
-                    <div key={hour} className="grid grid-cols-7 border-b border-white/5 last:border-b-0">
-                      {days.map((day) => {
-                        const booking = bookingsByDay[day]?.find((b) => b.hour === hour);
-                        const isOccupied = bookingsByDay[day]?.some(
-                          (b) => hour >= b.hour && hour < b.hour + b.duration
-                        );
-
-                        return (
-                          <div
-                            key={`${day}-${hour}`}
-                            onClick={() => !isOccupied && setSelectedSlot({ day, hour })}
-                            className={`relative min-h-[60px] px-2 py-1.5 border-r border-white/5 last:border-r-0 transition cursor-pointer ${
-                              selectedSlot?.day === day && selectedSlot?.hour === hour
-                                ? "bg-primary/10"
-                                : isOccupied
-                                ? ""
-                                : "hover:bg-white/[0.02]"
-                            }`}
-                          >
-                            {/* Hour label (first column) */}
-                            {day === "Mon" && (
-                              <span className="absolute -left-0 top-1 text-[10px] text-slate-600 font-mono">
-                                {hour > 12 ? hour - 12 : hour}{hour >= 12 ? "pm" : "am"}
-                              </span>
-                            )}
-
-                            {booking && (
-                              <div className={`text-[10px] font-medium px-2 py-1 rounded-lg border ${booking.color} truncate`}>
-                                {booking.title}
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
+                  <div className="min-w-[560px]">
+                    {/* Day Headers */}
+                    <div className="grid grid-cols-7 border-b border-white/5">
+                      {days.map((day) => (
+                        <div key={day} className="px-2 py-3 text-center text-[11px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider border-r border-white/5 last:border-r-0">
+                          {day}
+                        </div>
+                      ))}
                     </div>
-                  ))}
+
+                    {/* Time Grid */}
+                    <div>
+                      {hours.map((hour) => (
+                        <div key={hour} className="grid grid-cols-7 border-b border-white/5 last:border-b-0">
+                          {days.map((day) => {
+                            const booking = bookingsByDay[day]?.find((b) => b.hour === hour);
+                            const isOccupied = bookingsByDay[day]?.some(
+                              (b) => hour >= b.hour && hour < b.hour + b.duration
+                            );
+
+                            return (
+                              <div
+                                key={`${day}-${hour}`}
+                                onClick={() => !isOccupied && setSelectedSlot({ day, hour })}
+                                className={`relative min-h-[60px] px-2 py-1.5 border-r border-white/5 last:border-r-0 transition cursor-pointer ${
+                                  selectedSlot?.day === day && selectedSlot?.hour === hour
+                                    ? "bg-primary/10"
+                                    : isOccupied
+                                    ? ""
+                                    : "hover:bg-white/[0.02]"
+                                }`}
+                              >
+                                {/* Hour label (first column) */}
+                                {day === "Mon" && (
+                                  <span className="absolute -left-0 top-1 text-[9px] sm:text-[10px] text-slate-600 font-mono">
+                                    {hour > 12 ? hour - 12 : hour}{hour >= 12 ? "pm" : "am"}
+                                  </span>
+                                )}
+
+                                {booking && (
+                                  <div className={`text-[9px] sm:text-[10px] font-medium px-1.5 py-1 rounded-lg border ${booking.color} truncate`}>
+                                    {booking.title}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
 
