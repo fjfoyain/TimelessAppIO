@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function NotFound() {
@@ -5,9 +6,8 @@ export default function NotFound() {
     <div className="min-h-screen bg-background-dark flex flex-col">
       {/* Header */}
       <header className="flex items-center justify-between border-b border-white/5 bg-surface-dark/50 backdrop-blur-md px-6 py-4 sticky top-0 z-50">
-        <Link href="/" className="flex items-center gap-2 text-white">
-          <span className="material-icons text-primary text-2xl">hourglass_empty</span>
-          <h2 className="text-xl font-bold tracking-tight">TIMELESS</h2>
+        <Link href="/">
+          <Image src="/images/logo.svg" alt="TIMELESS" width={130} height={37} className="h-8 w-auto" />
         </Link>
         <div className="hidden md:flex items-center gap-8">
           <nav className="flex items-center gap-8">
@@ -105,9 +105,8 @@ export default function NotFound() {
       {/* Footer */}
       <footer className="border-t border-white/5 bg-background-dark py-8 px-6 mt-auto relative z-10">
         <div className="max-w-[960px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2 text-white/50">
-            <span className="material-icons text-2xl">hourglass_empty</span>
-            <span className="font-bold text-lg tracking-tight">Timeless</span>
+          <div className="opacity-50">
+            <Image src="/images/logo.svg" alt="TIMELESS" width={120} height={34} className="h-7 w-auto" />
           </div>
           <div className="flex flex-wrap items-center justify-center gap-8">
             <Link href="/privacy" className="text-slate-500 hover:text-primary transition-colors text-sm">

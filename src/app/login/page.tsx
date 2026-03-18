@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -43,18 +44,8 @@ export default function LoginPage() {
 
       <div className="relative z-10 w-full max-w-md">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 justify-center mb-12 group">
-          <div className="relative">
-            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-accent-cyan rounded-lg blur opacity-40 group-hover:opacity-100 transition duration-1000" />
-            <div className="relative w-10 h-10 rounded-lg bg-black flex items-center justify-center border border-white/10">
-              <span className="text-white font-black text-xl bg-clip-text text-transparent bg-gradient-to-br from-white to-slate-400">
-                T
-              </span>
-            </div>
-          </div>
-          <span className="text-2xl font-bold tracking-tight text-white">
-            Timeless
-          </span>
+        <Link href="/" className="flex justify-center mb-12">
+          <Image src="/images/logo.svg" alt="TIMELESS" width={160} height={46} className="h-10 w-auto" priority />
         </Link>
 
         {/* Card */}

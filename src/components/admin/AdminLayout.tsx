@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -26,13 +27,8 @@ export default function AdminLayout({
         <aside className="fixed top-0 left-0 z-40 w-64 h-screen border-r border-white/5 bg-surface-dark/80 backdrop-blur-xl flex flex-col">
           {/* Logo */}
           <div className="flex items-center gap-2 px-6 h-16 border-b border-white/5">
-            <span className="material-icons text-primary text-2xl">
-              admin_panel_settings
-            </span>
-            <span className="text-lg font-bold tracking-tighter text-white">
-              TIMELESS
-            </span>
-            <span className="ml-1 text-[10px] font-semibold uppercase tracking-widest text-primary-light bg-primary/10 px-2 py-0.5 rounded-full">
+            <Image src="/images/logo.svg" alt="TIMELESS" width={110} height={32} className="h-7 w-auto" />
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-primary-light bg-primary/10 px-2 py-0.5 rounded-full">
               Admin
             </span>
           </div>

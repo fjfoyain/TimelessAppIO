@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export const metadata = {
@@ -65,13 +66,8 @@ export default function RegisterPage() {
       <div className="pointer-events-none absolute bottom-0 right-1/4 h-96 w-96 rounded-full bg-accent-fuchsia/10 blur-[160px]" />
 
       {/* Logo */}
-      <Link href="/" className="mb-12 flex items-center gap-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-          <span className="material-icons text-white text-lg">graphic_eq</span>
-        </div>
-        <span className="text-xl font-bold tracking-tight text-white">
-          Timeless
-        </span>
+      <Link href="/" className="mb-12 flex justify-center">
+        <Image src="/images/logo.svg" alt="TIMELESS" width={160} height={46} className="h-10 w-auto" />
       </Link>
 
       {/* Header */}

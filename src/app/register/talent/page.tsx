@@ -149,11 +149,8 @@ export default function TalentRegistrationPage() {
         {/* Content Overlay */}
         <div className="absolute inset-0 flex flex-col justify-between p-12 z-10">
           {/* Top: Logo */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary">
-              <span className="material-icons text-white text-xl">equalizer</span>
-            </div>
-            <span className="text-xl font-bold text-white tracking-tight">Timeless</span>
+          <div>
+            <Image src="/images/logo.svg" alt="TIMELESS" width={140} height={40} className="h-9 w-auto" />
           </div>
 
           {/* Middle: Hero Content */}
@@ -227,11 +224,8 @@ export default function TalentRegistrationPage() {
       {/* ══════════════ RIGHT SIDE ══════════════ */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 lg:p-12 bg-[#191022]">
         {/* Mobile Logo */}
-        <div className="flex items-center gap-3 mb-8 lg:hidden">
-          <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary">
-            <span className="material-icons text-white text-xl">equalizer</span>
-          </div>
-          <span className="text-xl font-bold text-white tracking-tight">Timeless</span>
+        <div className="mb-8 lg:hidden">
+          <Image src="/images/logo.svg" alt="TIMELESS" width={140} height={40} className="h-9 w-auto" />
         </div>
 
         <div className="w-full max-w-md">

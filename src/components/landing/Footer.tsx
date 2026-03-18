@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 function InstagramIcon() {
@@ -67,12 +68,13 @@ export default function Footer() {
           {/* Column 1: Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4 group">
-              <span className="material-icons text-primary text-2xl group-hover:text-primary-light transition-colors">
-                hourglass_empty
-              </span>
-              <span className="text-lg font-bold tracking-tighter text-white">
-                TIMELESS
-              </span>
+              <Image
+                src="/images/logo.svg"
+                alt="TIMELESS"
+                width={120}
+                height={35}
+                className="h-7 w-auto"
+              />
             </Link>
             <p className="text-sm text-gray-500 leading-relaxed mb-6 max-w-xs">
               Bridging the gap between creation and performance. The ultimate

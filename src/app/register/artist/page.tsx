@@ -234,15 +234,8 @@ export default function ArtistRegistrationPage() {
         {/* Bottom Content */}
         <div className="relative z-10 mt-auto p-12 pb-16">
           {/* Logo */}
-          <div className="flex items-center gap-2 mb-10">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <span className="material-icons text-white text-lg">
-                graphic_eq
-              </span>
-            </div>
-            <span className="text-xl font-bold tracking-tight text-white">
-              Timeless
-            </span>
+          <div className="mb-10">
+            <Image src="/images/logo.svg" alt="TIMELESS" width={140} height={40} className="h-9 w-auto" />
           </div>
 
           {/* Testimonial */}
@@ -275,15 +268,8 @@ export default function ArtistRegistrationPage() {
       {/* ────────── RIGHT SIDE ────────── */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 py-12 lg:px-20 xl:px-32 bg-[#191022]">
         {/* Mobile Logo */}
-        <div className="flex items-center gap-2 mb-8 lg:hidden">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-            <span className="material-icons text-white text-lg">
-              graphic_eq
-            </span>
-          </div>
-          <span className="text-xl font-bold tracking-tight text-white">
-            Timeless
-          </span>
+        <div className="mb-8 lg:hidden">
+          <Image src="/images/logo.svg" alt="TIMELESS" width={140} height={40} className="h-9 w-auto" />
         </div>
 
         {/* Title */}

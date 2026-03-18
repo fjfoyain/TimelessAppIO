@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 export default function MaintenancePage() {
   return (
     <div className="min-h-screen bg-[#0a060f] flex items-center justify-center px-4">
@@ -56,9 +58,8 @@ export default function MaintenancePage() {
         </div>
 
         {/* Branding */}
-        <div className="mt-16 flex items-center justify-center gap-2 opacity-40">
-          <span className="material-icons text-[#7f13ec] text-xl">hourglass_empty</span>
-          <span className="text-sm font-bold tracking-tighter text-white">TIMELESS</span>
+        <div className="mt-16 flex justify-center opacity-40">
+          <Image src="/images/logo.svg" alt="TIMELESS" width={120} height={34} className="h-7 w-auto" />
         </div>
       </div>
     </div>

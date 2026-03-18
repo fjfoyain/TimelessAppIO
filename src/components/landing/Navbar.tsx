@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -28,12 +29,14 @@ export default function Navbar({ activeTab }: NavbarProps) {
         <div className="flex h-16 items-center justify-between">
           {/* Left: Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <span className="material-icons text-primary text-3xl group-hover:text-primary-light transition-colors">
-              hourglass_empty
-            </span>
-            <span className="text-xl font-bold tracking-tighter text-white">
-              TIMELESS
-            </span>
+            <Image
+              src="/images/logo.svg"
+              alt="TIMELESS"
+              width={140}
+              height={40}
+              className="h-8 w-auto"
+              priority
+            />
           </Link>
 
           {/* Center: Pill Toggle */}
