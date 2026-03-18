@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
 import { AuthProvider } from "@/contexts/AuthContext";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import "./globals.css";
 
 const beVietnamPro = Be_Vietnam_Pro({
@@ -37,7 +38,9 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-background-dark font-display text-white min-h-screen antialiased">
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <ErrorBoundary>{children}</ErrorBoundary>
+        </AuthProvider>
       </body>
     </html>
   );

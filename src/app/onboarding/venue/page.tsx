@@ -5,6 +5,7 @@ import Link from "next/link";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const steps = [
   { number: 1, title: "Venue Details" },
@@ -52,7 +53,7 @@ const pricingTiers = [
   { label: "Weekend Rate", placeholder: "e.g. 3,000" },
 ];
 
-export default function VenueOnboardingPage() {
+function VenueOnboardingContent() {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
 
@@ -274,5 +275,13 @@ export default function VenueOnboardingPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function VenueOnboardingPage() {
+  return (
+    <ProtectedRoute>
+      <VenueOnboardingContent />
+    </ProtectedRoute>
   );
 }

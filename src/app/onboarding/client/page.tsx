@@ -5,6 +5,7 @@ import Link from "next/link";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const steps = [
   { number: 1, title: "Tell us about you" },
@@ -44,7 +45,7 @@ const budgetRanges = [
   { label: "$50,000+", value: "50k+" },
 ];
 
-export default function ClientOnboardingPage() {
+function ClientOnboardingContent() {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedBudget, setSelectedBudget] = useState("");
@@ -238,5 +239,13 @@ export default function ClientOnboardingPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function ClientOnboardingPage() {
+  return (
+    <ProtectedRoute>
+      <ClientOnboardingContent />
+    </ProtectedRoute>
   );
 }

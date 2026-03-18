@@ -179,17 +179,54 @@ export async function getVenues(): Promise<Venue[]> {
 // ─── Talents (marketplace) ───────────────────────────────────────
 
 export async function getAllTalents(): Promise<TalentWithUser[]> {
-  const talentsSnap = await getDocs(collection(db, "talents"));
-  const results: TalentWithUser[] = [];
+  try {
+    const talentsSnap = await getDocs(collection(db, "talents"));
+    const results: TalentWithUser[] = [];
 
-  for (const talentDoc of talentsSnap.docs) {
-    const talentData = docToData<Talent>(talentDoc);
+    for (const talentDoc of talentsSnap.docs) {
+      try {
+        const talentData = docToData<Talent>(talentDoc);
+        const userSnap = await getDoc(doc(db, "users", talentData.userId));
+        if (!userSnap.exists()) continue;
+        const userData = docToData<User>(userSnap);
+
+        results.push({
+          talent: {
+            ...talentData,
+            portfolio: talentData.portfolio ?? [],
+            reviews: talentData.reviews ?? [],
+            servicePlans: talentData.servicePlans ?? [],
+            tags: talentData.tags ?? [],
+            city: talentData.city || "",
+            bio: talentData.bio || "",
+            isVerified: talentData.isVerified ?? false,
+            jobsCompleted: talentData.jobsCompleted ?? 0,
+            responseRate: talentData.responseRate ?? 0,
+          },
+          user: userData,
+        });
+      } catch {
+        // Skip individual talent if its data can't be read
+        continue;
+      }
+    }
+
+    return results;
+  } catch {
+    return [];
+  }
+}
+
+export async function getTalentWithUser(talentId: string): Promise<TalentWithUser | null> {
+  try {
+    const talentSnap = await getDoc(doc(db, "talents", talentId));
+    if (!talentSnap.exists()) return null;
+
+    const talentData = docToData<Talent>(talentSnap);
     const userSnap = await getDoc(doc(db, "users", talentData.userId));
-    if (!userSnap.exists()) continue;
-    const userData = docToData<User>(userSnap);
+    if (!userSnap.exists()) return null;
 
-    // Provide sensible defaults for fields the registration form doesn't collect
-    results.push({
+    return {
       talent: {
         ...talentData,
         portfolio: talentData.portfolio ?? [],
@@ -202,36 +239,11 @@ export async function getAllTalents(): Promise<TalentWithUser[]> {
         jobsCompleted: talentData.jobsCompleted ?? 0,
         responseRate: talentData.responseRate ?? 0,
       },
-      user: userData,
-    });
+      user: docToData<User>(userSnap),
+    };
+  } catch {
+    return null;
   }
-
-  return results;
-}
-
-export async function getTalentWithUser(talentId: string): Promise<TalentWithUser | null> {
-  const talentSnap = await getDoc(doc(db, "talents", talentId));
-  if (!talentSnap.exists()) return null;
-
-  const talentData = docToData<Talent>(talentSnap);
-  const userSnap = await getDoc(doc(db, "users", talentData.userId));
-  if (!userSnap.exists()) return null;
-
-  return {
-    talent: {
-      ...talentData,
-      portfolio: talentData.portfolio ?? [],
-      reviews: talentData.reviews ?? [],
-      servicePlans: talentData.servicePlans ?? [],
-      tags: talentData.tags ?? [],
-      city: talentData.city || "",
-      bio: talentData.bio || "",
-      isVerified: talentData.isVerified ?? false,
-      jobsCompleted: talentData.jobsCompleted ?? 0,
-      responseRate: talentData.responseRate ?? 0,
-    },
-    user: docToData<User>(userSnap),
-  };
 }
 
 // ─── Talent / Venue by userId ────────────────────────────────────

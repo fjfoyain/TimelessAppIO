@@ -21,10 +21,10 @@ service cloud.firestore {
       );
     }
 
-    // Users: any authenticated user can read (needed for marketplace profiles),
-    // only owner can write their own doc, admin can write any
+    // Users: public read (marketplace profiles show name/avatar to all visitors),
+    // only owner can write, admin can update any
     match /users/{userId} {
-      allow read: if isAuth() || isOwner(userId);
+      allow read: if true;
       allow create: if isOwner(userId);
       allow update: if isOwner(userId) || isAdmin();
     }

@@ -5,6 +5,7 @@ import Link from "next/link";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const steps = [
   { number: 1, title: "Business Profile" },
@@ -39,7 +40,7 @@ const serviceOptions = [
 
 const scheduleOptions = ["Morning (8am-12pm)", "Afternoon (12pm-5pm)", "Evening (5pm-10pm)", "Night (10pm-4am)", "24/7 Available"];
 
-export default function ProviderOnboardingPage() {
+function ProviderOnboardingContent() {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
   const [selectedSchedule, setSelectedSchedule] = useState<string[]>([]);
@@ -281,5 +282,13 @@ export default function ProviderOnboardingPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function ProviderOnboardingPage() {
+  return (
+    <ProtectedRoute>
+      <ProviderOnboardingContent />
+    </ProtectedRoute>
   );
 }
