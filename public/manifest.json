@@ -1,0 +1,65 @@
+{
+  "name": "Timeless",
+  "short_name": "Timeless",
+  "description": "Connect the Frequency. The ultimate ecosystem connecting artists, venues, and industry talent in one seamless rhythm.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#050408",
+  "theme_color": "#7F13EC",
+  "orientation": "portrait-primary",
+  "lang": "en",
+  "categories": ["music", "entertainment", "business"],
+  "icons": [
+    {
+      "src": "/images/logo-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/images/hero-concert.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Timeless Marketplace"
+    },
+    {
+      "src": "/images/hero-studio.jpg",
+      "sizes": "720x1280",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Timeless Studio"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Marketplace",
+      "short_name": "Discover",
+      "description": "Browse talent, artists and venues",
+      "url": "/marketplace",
+      "icons": [{ "src": "/images/logo-icon.svg", "sizes": "any" }]
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Your personal dashboard",
+      "url": "/dashboard",
+      "icons": [{ "src": "/images/logo-icon.svg", "sizes": "any" }]
+    }
+  ]
+}
