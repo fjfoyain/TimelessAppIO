@@ -19,10 +19,10 @@ export default function TalentProfilePage() {
   const router = useRouter();
   const { data: firestoreMatch, loading } = useTalentProfile(id);
 
-  // Fallback to mock data if not found in Firestore
-  const mockMatch = mockTalents.find((t) => t.talent.id === id) ?? mockTalents[0];
-  const match = firestoreMatch || (!loading ? mockMatch : null);
-  const isUsingMockData = !loading && !firestoreMatch && !!match;
+  // Look up in mock data as well (demo entries have their own IDs)
+  const mockMatch = mockTalents.find((t) => t.talent.id === id);
+  const match = firestoreMatch || (!loading ? mockMatch ?? null : null);
+  const isDemo = !!match?.talent.isDemo;
 
   if (loading || !match) {
     return (
@@ -50,11 +50,13 @@ export default function TalentProfilePage() {
 
       <main className="relative z-10 pt-24 pb-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Sample data banner */}
-          {isUsingMockData && (
-            <div className="flex items-center gap-2 mb-6 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm">
-              <span className="material-icons text-base">info</span>
-              Sample Profile — this is demo data. Real profiles appear once talent accounts are created.
+          {/* Demo profile banner */}
+          {isDemo && (
+            <div className="flex items-center gap-3 mb-6 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm">
+              <span className="material-icons text-base flex-shrink-0">auto_awesome</span>
+              <span>
+                <span className="font-bold">Demo Profile</span> — This is a showcase entry illustrating the kind of world-class talent you can connect with on Timeless. Real profiles appear once verified talent accounts are created.
+              </span>
             </div>
           )}
 
@@ -128,12 +130,19 @@ export default function TalentProfilePage() {
             </div>
 
             {/* Price Badge */}
-            {talent.hourlyRate && (
-              <div className="bg-surface-dark/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center w-full sm:w-auto sm:min-w-[140px] flex-shrink-0">
-                <p className="text-3xl font-bold text-white">${talent.hourlyRate}</p>
-                <p className="text-xs text-slate-500">per hour</p>
-              </div>
-            )}
+            <div className="bg-surface-dark/50 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center w-full sm:w-auto sm:min-w-[140px] flex-shrink-0">
+              {talent.hourlyRate !== undefined ? (
+                <>
+                  <p className="text-3xl font-bold text-white">${talent.hourlyRate}</p>
+                  <p className="text-xs text-slate-500">per hour</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-2xl font-bold text-amber-400">TBS</p>
+                  <p className="text-xs text-slate-500">rate on request</p>
+                </>
+              )}
+            </div>
           </div>
 
           {/* Two-Column Layout */}

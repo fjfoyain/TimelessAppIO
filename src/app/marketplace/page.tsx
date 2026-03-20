@@ -6,7 +6,7 @@ import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import Footer from "@/components/landing/Footer";
 import TalentCard from "@/components/marketplace/TalentCard";
 import { useMarketplace } from "@/hooks/useFirestore";
-import { mockTalents, talentCategories, talentCities } from "@/data/mockTalents";
+import { mockTalents } from "@/data/mockTalents";
 
 function checkPriceRange(rate: number | undefined, range: string): boolean {
   if (!rate) return false;
@@ -27,21 +27,20 @@ export default function MarketplacePage() {
   const [priceRange, setPriceRange] = useState("");
   const [verifiedOnly, setVerifiedOnly] = useState(false);
 
-  // Use Firestore talents if available, otherwise fall back to mock data for showcase
-  const allTalents = firestoreTalents.length > 0 ? firestoreTalents : mockTalents;
+  // Always show real Firestore talent alongside demo entries
+  const allTalents = useMemo(
+    () => [...firestoreTalents, ...mockTalents],
+    [firestoreTalents]
+  );
 
-  // Derive categories/cities from actual data
+  // Derive categories/cities from merged data
   const categories = useMemo(
-    () => firestoreTalents.length > 0
-      ? Array.from(new Set(allTalents.map((t) => t.talent.category).filter(Boolean)))
-      : talentCategories,
-    [allTalents, firestoreTalents.length]
+    () => Array.from(new Set(allTalents.map((t) => t.talent.category).filter(Boolean))),
+    [allTalents]
   );
   const cities = useMemo(
-    () => firestoreTalents.length > 0
-      ? Array.from(new Set(allTalents.map((t) => t.talent.city).filter(Boolean)))
-      : talentCities,
-    [allTalents, firestoreTalents.length]
+    () => Array.from(new Set(allTalents.map((t) => t.talent.city).filter(Boolean))),
+    [allTalents]
   );
 
   const filteredTalents = useMemo(() => {

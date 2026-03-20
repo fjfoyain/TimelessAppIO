@@ -120,6 +120,7 @@ export interface Talent {
   availability?: string[];
   badges?: Badge[];
   socials?: SocialLinks;
+  isDemo?: boolean;
 }
 
 export interface Venue {

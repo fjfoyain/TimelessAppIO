@@ -25,6 +25,14 @@ export default function TalentCard({ talent, user }: TalentWithUser) {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-card-dark via-card-dark/20 to-transparent" />
 
+          {/* Demo Badge */}
+          {talent.isDemo && (
+            <div className="absolute top-3 left-3 flex items-center gap-1 rounded-full bg-amber-500/90 backdrop-blur-sm px-2.5 py-1">
+              <span className="material-icons text-white text-xs">auto_awesome</span>
+              <span className="text-[10px] font-bold text-white uppercase tracking-wider">Demo</span>
+            </div>
+          )}
+
           {/* Verified Badge */}
           {talent.isVerified && (
             <div className="absolute top-3 right-3 flex items-center gap-1 rounded-full bg-primary/80 backdrop-blur-sm px-2.5 py-1">
@@ -71,10 +79,14 @@ export default function TalentCard({ talent, user }: TalentWithUser) {
 
           {/* Bottom Row */}
           <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/5">
-            <span className="text-lg font-bold text-white">
-              ${talent.hourlyRate}
-              <span className="text-xs text-slate-500 font-normal">/hr</span>
-            </span>
+            {talent.hourlyRate !== undefined ? (
+              <span className="text-lg font-bold text-white">
+                ${talent.hourlyRate}
+                <span className="text-xs text-slate-500 font-normal">/hr</span>
+              </span>
+            ) : (
+              <span className="text-sm font-semibold text-amber-400">Rate: TBS</span>
+            )}
             <span className="text-xs text-slate-500">{talent.jobsCompleted} jobs</span>
           </div>
         </div>
