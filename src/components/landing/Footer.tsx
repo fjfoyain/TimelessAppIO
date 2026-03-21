@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import WaitlistForm from "./WaitlistForm";
 
 function InstagramIcon() {
   return (
@@ -147,19 +148,7 @@ export default function Footer() {
               Get early access, event drops, and exclusive updates straight to
               your inbox.
             </p>
-            <form className="flex flex-col gap-3">
-              <input
-                type="email"
-                placeholder="your@email.com"
-                className="w-full rounded-lg bg-surface-input border border-white/10 px-4 py-2.5 text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-colors"
-              />
-              <button
-                type="submit"
-                className="w-full sm:w-auto rounded-lg bg-gradient-to-r from-primary to-primary-light px-4 py-2.5 text-sm font-semibold text-white hover:shadow-glow transition-all duration-300"
-              >
-                Join Waitlist
-              </button>
-            </form>
+            <WaitlistForm />
           </div>
         </div>
       </div>
