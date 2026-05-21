@@ -21,10 +21,11 @@ service cloud.firestore {
       );
     }
 
-    // Users: public read (marketplace profiles show name/avatar to all visitors),
-    // only owner can write, admin can update any
+    // Users: PRIVATE. Holds email and other contact data, so only the owner
+    // and admins may read it. Public-facing name/avatar are denormalized into
+    // the `talents` / `venues` docs for the marketplace (see S3 in ACTION_PLAN.md).
     match /users/{userId} {
-      allow read: if true;
+      allow read: if isOwner(userId) || isAdmin();
       allow create: if isOwner(userId);
       allow update: if isOwner(userId) || isAdmin();
     }
@@ -62,7 +63,7 @@ service cloud.firestore {
     // Bookings: owner read/write, admin read all
     match /bookings/{bookingId} {
       allow read: if isAuth() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isAuth();
+      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
       allow update, delete: if isAuth() && resource.data.userId == request.auth.uid;
     }
 
@@ -79,10 +80,11 @@ service cloud.firestore {
       }
     }
 
-    // Notifications: owner only
+    // Notifications: owner only. A user may only create notifications
+    // addressed to themselves (cross-user notifications must be server-side).
     match /notifications/{notifId} {
       allow read: if isAuth() && resource.data.userId == request.auth.uid;
-      allow create: if isAuth();
+      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
       allow update: if isAuth() && resource.data.userId == request.auth.uid;
     }
 
@@ -105,10 +107,10 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
-    // Audit Logs: admin only
+    // Audit Logs: admin only (read and write)
     match /auditLogs/{logId} {
       allow read: if isAdmin();
-      allow create: if isAuth();
+      allow create: if isAdmin();
     }
 
     // Approvals: admin can read/write, any auth user can create
@@ -125,10 +127,13 @@ service cloud.firestore {
       allow update: if isOwner(userId);
     }
 
-    // Transactions: owner only (previously missing — caused permissions errors)
+    // Transactions: owner only. A user may only create transactions for
+    // themselves. NOTE: amounts are still client-controlled — see S1 in
+    // ACTION_PLAN.md (move wallet movements to Cloud Functions before
+    // handling real money).
     match /transactions/{transactionId} {
       allow read: if isAuth() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isAuth();
+      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
       allow update: if isAdmin();
     }
   }

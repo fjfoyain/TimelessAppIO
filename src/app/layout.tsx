@@ -16,8 +16,7 @@ export const viewport: Viewport = {
   themeColor: "#7F13EC",
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  // Pinch-to-zoom is left enabled on purpose for accessibility (WCAG 1.4.4).
 };
 
 export const metadata: Metadata = {

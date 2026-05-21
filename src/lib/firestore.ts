@@ -119,29 +119,94 @@ export async function createTalentProfile(
     portfolioLink?: string;
   }
 ): Promise<void> {
-  await setDoc(doc(db, "talents", uid), {
+  // Build a doc shaped like the `Talent` type so the talent shows up
+  // correctly in the marketplace (rate, defaults for arrays, etc.).
+  const profileData: Record<string, unknown> = {
     userId: uid,
-    ...data,
+    // Denormalized public fields — see S3 in ACTION_PLAN.md. Lets the
+    // marketplace render talent cards without reading the private user doc.
+    name: data.fullName,
+    avatar: "",
+    category: data.category,
+    experience: data.experience,
+    baseRate: data.baseRate,
+    ratePer: data.ratePer,
+    hourlyRate: data.baseRate,
+    city: "",
+    bio: "",
+    tags: [],
+    portfolio: [],
+    reviews: [],
+    servicePlans: [],
+    isVerified: false,
+    jobsCompleted: 0,
+    responseRate: 0,
     createdAt: serverTimestamp(),
-  });
+  };
+  if (data.portfolioLink) profileData.portfolioLink = data.portfolioLink;
+
+  await setDoc(doc(db, "talents", uid), profileData);
 }
 
 export async function createVenueProfile(
   uid: string,
   data: {
     venueName: string;
-    location: string;
+    address: string;
     capacity: number;
     eventTypes: string[];
     equipment?: string;
-    websiteLink?: string;
+    website?: string;
   }
 ): Promise<void> {
-  await setDoc(doc(db, "venues", uid), {
+  // Build the doc explicitly so it matches the `Venue` type and so we never
+  // write `undefined` field values (Firestore rejects them).
+  const profileData: Record<string, unknown> = {
     userId: uid,
-    ...data,
+    venueName: data.venueName,
+    address: data.address,
+    capacity: data.capacity,
+    eventTypes: data.eventTypes,
     createdAt: serverTimestamp(),
-  });
+  };
+  if (data.equipment) profileData.equipment = data.equipment;
+  if (data.website) profileData.website = data.website;
+
+  await setDoc(doc(db, "venues", uid), profileData);
+}
+
+export interface VenueProfileInput {
+  venueName: string;
+  address: string;
+  capacity: number;
+  eventTypes: string[];
+  equipment?: string;
+  website?: string;
+}
+
+// Create the venue doc if it doesn't exist yet, otherwise update it.
+// Lets any authenticated user own a single venue (`venues/{uid}`).
+export async function saveVenueProfile(
+  uid: string,
+  data: VenueProfileInput
+): Promise<void> {
+  const ref = doc(db, "venues", uid);
+  const snap = await getDoc(ref);
+  const base: Record<string, unknown> = {
+    userId: uid,
+    venueName: data.venueName,
+    address: data.address,
+    capacity: data.capacity,
+    eventTypes: data.eventTypes,
+    equipment: data.equipment || "",
+    website: data.website || "",
+    updatedAt: serverTimestamp(),
+  };
+  if (snap.exists()) {
+    await updateDoc(ref, base);
+  } else {
+    await setDoc(ref, { ...base, createdAt: serverTimestamp() });
+  }
 }
 
 // ─── Helper: convert Firestore Timestamps to ISO strings ────────
@@ -167,6 +232,23 @@ export async function updateUserProfile(
   data: Partial<Pick<User, "name" | "avatar" | "jobTitle" | "bio" | "portfolioLink">>
 ): Promise<void> {
   await updateDoc(doc(db, "users", uid), data);
+
+  // Keep the denormalized public copy on the talent profile (if any) in sync,
+  // so the marketplace doesn't show a stale name/avatar.
+  if (data.name !== undefined || data.avatar !== undefined) {
+    try {
+      const talentRef = doc(db, "talents", uid);
+      const talentSnap = await getDoc(talentRef);
+      if (talentSnap.exists()) {
+        const sync: Record<string, unknown> = {};
+        if (data.name !== undefined) sync.name = data.name;
+        if (data.avatar !== undefined) sync.avatar = data.avatar;
+        await updateDoc(talentRef, sync);
+      }
+    } catch {
+      // Non-fatal: the user doc was already updated.
+    }
+  }
 }
 
 // ─── Venues (query) ──────────────────────────────────────────────
@@ -181,40 +263,50 @@ export async function getVenues(): Promise<Venue[]> {
 export async function getAllTalents(): Promise<TalentWithUser[]> {
   try {
     const talentsSnap = await getDocs(collection(db, "talents"));
-    const results: TalentWithUser[] = [];
 
-    for (const talentDoc of talentsSnap.docs) {
-      try {
-        const talentData = docToData<Talent>(talentDoc);
-        const userSnap = await getDoc(doc(db, "users", talentData.userId));
-        if (!userSnap.exists()) continue;
-        const userData = docToData<User>(userSnap);
-
-        results.push({
-          talent: {
-            ...talentData,
-            portfolio: talentData.portfolio ?? [],
-            reviews: talentData.reviews ?? [],
-            servicePlans: talentData.servicePlans ?? [],
-            tags: talentData.tags ?? [],
-            city: talentData.city || "",
-            bio: talentData.bio || "",
-            isVerified: talentData.isVerified ?? false,
-            jobsCompleted: talentData.jobsCompleted ?? 0,
-            responseRate: talentData.responseRate ?? 0,
-          },
-          user: userData,
-        });
-      } catch {
-        // Skip individual talent if its data can't be read
-        continue;
-      }
-    }
-
-    return results;
+    // Build cards purely from the public `talents` docs — the private
+    // `users` collection is no longer read here (see S3 in ACTION_PLAN.md).
+    return talentsSnap.docs
+      .map((talentDoc) => {
+        try {
+          const talentData = docToData<Talent>(talentDoc);
+          return {
+            talent: {
+              ...talentData,
+              portfolio: talentData.portfolio ?? [],
+              reviews: talentData.reviews ?? [],
+              servicePlans: talentData.servicePlans ?? [],
+              tags: talentData.tags ?? [],
+              city: talentData.city || "",
+              bio: talentData.bio || "",
+              isVerified: talentData.isVerified ?? false,
+              jobsCompleted: talentData.jobsCompleted ?? 0,
+              responseRate: talentData.responseRate ?? 0,
+            },
+            user: talentToPublicUser(talentData),
+          } as TalentWithUser;
+        } catch {
+          // Skip individual talent if its data can't be read
+          return null;
+        }
+      })
+      .filter((r): r is TalentWithUser => r !== null);
   } catch {
     return [];
   }
+}
+
+// Builds the minimal, public-safe `User` object the marketplace needs from a
+// talent's denormalized fields. Never exposes email or other private data.
+function talentToPublicUser(talentData: Talent): User {
+  return {
+    id: talentData.userId,
+    name: talentData.name || "Talent",
+    avatar: talentData.avatar || "",
+    email: "",
+    role: UserRole.TALENT,
+    status: UserStatus.ACTIVE,
+  };
 }
 
 export async function getTalentWithUser(talentId: string): Promise<TalentWithUser | null> {
@@ -223,8 +315,6 @@ export async function getTalentWithUser(talentId: string): Promise<TalentWithUse
     if (!talentSnap.exists()) return null;
 
     const talentData = docToData<Talent>(talentSnap);
-    const userSnap = await getDoc(doc(db, "users", talentData.userId));
-    if (!userSnap.exists()) return null;
 
     return {
       talent: {
@@ -239,7 +329,7 @@ export async function getTalentWithUser(talentId: string): Promise<TalentWithUse
         jobsCompleted: talentData.jobsCompleted ?? 0,
         responseRate: talentData.responseRate ?? 0,
       },
-      user: docToData<User>(userSnap),
+      user: talentToPublicUser(talentData),
     };
   } catch {
     return null;
@@ -270,6 +360,7 @@ export async function createEvent(data: {
   date: string;
   time: string;
   venueId: string;
+  location: string;
   organizerId: string;
   organizer: string;
   services: string[];
@@ -278,7 +369,6 @@ export async function createEvent(data: {
     ...data,
     status: "published",
     image: "",
-    location: "",
     lat: 0,
     lng: 0,
     ticketTiers: [],

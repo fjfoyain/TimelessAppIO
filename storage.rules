@@ -20,12 +20,15 @@ service firebase.storage {
                    && request.resource.contentType.matches('image/.*');
     }
 
-    // Event images: authenticated can write; anyone can read
+    // Event images: only the event's organizer can write; anyone can read.
+    // The event doc is created before its image is uploaded, so we can
+    // verify ownership against Firestore.
     match /events/{eventId}/{allPaths=**} {
       allow read: if true;
       allow write: if request.auth != null
                    && request.resource.size < 5 * 1024 * 1024
-                   && request.resource.contentType.matches('image/.*');
+                   && request.resource.contentType.matches('image/.*')
+                   && firestore.get(/databases/(default)/documents/events/$(eventId)).data.organizerId == request.auth.uid;
     }
 
     // Artist demos: auth user can write own; anyone can read

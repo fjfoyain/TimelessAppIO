@@ -114,14 +114,14 @@ export default function VenueRegistrationPage() {
 
       await createVenueProfile(uid, {
         venueName: form.venueName,
-        location: form.location,
+        address: form.location,
         capacity: parseInt(form.capacity, 10),
         eventTypes: form.eventTypes,
         equipment: form.equipment || undefined,
-        websiteLink: form.websiteLink || undefined,
+        website: form.websiteLink || undefined,
       });
 
-      router.push("/dashboard");
+      router.push("/dashboard/venue");
     } catch (err) {
       const code = err instanceof FirebaseError ? err.code : "";
       setErrors({ email: getAuthErrorMessage(code) });

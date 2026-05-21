@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
@@ -10,9 +11,10 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import { getVenues, createEvent, updateEvent } from "@/lib/firestore";
 import { uploadEventImage } from "@/lib/storage";
+import { eventSchema } from "@/lib/validators";
 import type { Venue } from "@/types";
 
-const steps = ["Event Basics", "Venue & Date", "Talent & Services", "Review"];
+const steps = ["Event Basics", "Venue & Date", "Services", "Review"];
 
 const serviceTypes = ["DJ Spark", "Security", "Photography", "Videography", "Sound Engineer", "Lighting"];
 
@@ -24,6 +26,7 @@ export default function CreateEventPage() {
   const [venuesLoading, setVenuesLoading] = useState(true);
   const [publishing, setPublishing] = useState(false);
   const [publishError, setPublishError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -36,7 +39,6 @@ export default function CreateEventPage() {
     time: "",
     venue: "",
     selectedServices: [] as string[],
-    talentSearch: "",
   });
 
   // Load venues from Firestore on mount
@@ -47,17 +49,60 @@ export default function CreateEventPage() {
       .finally(() => setVenuesLoading(false));
   }, []);
 
+  // Validate a single wizard step. Returns true when the step is complete.
+  function validateStep(step: number): boolean {
+    const e: Record<string, string> = {};
+    if (step === 0) {
+      if (formData.name.trim().length < 3)
+        e.name = "Event name must be at least 3 characters.";
+      if (formData.description.trim().length < 10)
+        e.description = "Description must be at least 10 characters.";
+      if (!formData.date) e.date = "Date is required.";
+      if (!formData.time) e.time = "Time is required.";
+    }
+    if (step === 1) {
+      if (!formData.venue) e.venue = "Please select a venue.";
+    }
+    setErrors(e);
+    return Object.keys(e).length === 0;
+  }
+
   async function handlePublish() {
     if (!user) return;
+
+    // Final validation against the shared Zod schema before publishing.
+    const parsed = eventSchema.safeParse({
+      title: formData.name.trim(),
+      description: formData.description.trim(),
+      date: formData.date,
+      time: formData.time,
+      venueId: formData.venue,
+      services: formData.selectedServices,
+    });
+    if (!parsed.success) {
+      const fieldErrors: Record<string, string> = {};
+      for (const issue of parsed.error.issues) {
+        const path = issue.path[0];
+        const key = path === "title" ? "name" : path === "venueId" ? "venue" : String(path);
+        fieldErrors[key] = issue.message;
+      }
+      setErrors(fieldErrors);
+      setPublishError("Please complete all required fields before publishing.");
+      setCurrentStep(0);
+      return;
+    }
+
     setPublishing(true);
     setPublishError(null);
     try {
+      const selectedVenue = venues.find((v) => v.id === formData.venue);
       const eventId = await createEvent({
-        title: formData.name,
-        description: formData.description,
+        title: formData.name.trim(),
+        description: formData.description.trim(),
         date: formData.date,
         time: formData.time,
         venueId: formData.venue,
+        location: selectedVenue?.address || selectedVenue?.venueName || "",
         organizerId: user.id,
         organizer: user.name,
         services: formData.selectedServices,
@@ -86,7 +131,15 @@ export default function CreateEventPage() {
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[name];
+        return next;
+      });
+    }
   }
 
   function toggleService(service: string) {
@@ -155,8 +208,11 @@ export default function CreateEventPage() {
                           value={formData.name}
                           onChange={handleChange}
                           placeholder="e.g. Neon Nights Rooftop Launch"
-                          className="w-full rounded-xl bg-surface-input border border-white/10 px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                          className={`w-full rounded-xl bg-surface-input border px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary text-sm ${
+                            errors.name ? "border-red-500" : "border-white/10"
+                          }`}
                         />
+                        {errors.name && <span className="text-xs text-red-400">{errors.name}</span>}
                       </label>
 
                       <label className="flex flex-col gap-2">
@@ -167,8 +223,13 @@ export default function CreateEventPage() {
                           onChange={handleChange}
                           placeholder="Describe your event..."
                           rows={4}
-                          className="w-full rounded-xl bg-surface-input border border-white/10 px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary resize-y text-sm"
+                          className={`w-full rounded-xl bg-surface-input border px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary resize-y text-sm ${
+                            errors.description ? "border-red-500" : "border-white/10"
+                          }`}
                         />
+                        {errors.description && (
+                          <span className="text-xs text-red-400">{errors.description}</span>
+                        )}
                       </label>
 
                       <div className="grid grid-cols-2 gap-4">
@@ -179,8 +240,11 @@ export default function CreateEventPage() {
                             type="date"
                             value={formData.date}
                             onChange={handleChange}
-                            className="w-full rounded-xl bg-surface-input border border-white/10 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                            className={`w-full rounded-xl bg-surface-input border px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm ${
+                              errors.date ? "border-red-500" : "border-white/10"
+                            }`}
                           />
+                          {errors.date && <span className="text-xs text-red-400">{errors.date}</span>}
                         </label>
                         <label className="flex flex-col gap-2">
                           <span className="text-sm font-medium text-white">Time</span>
@@ -189,8 +253,11 @@ export default function CreateEventPage() {
                             type="time"
                             value={formData.time}
                             onChange={handleChange}
-                            className="w-full rounded-xl bg-surface-input border border-white/10 px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                            className={`w-full rounded-xl bg-surface-input border px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary text-sm ${
+                              errors.time ? "border-red-500" : "border-white/10"
+                            }`}
                           />
+                          {errors.time && <span className="text-xs text-red-400">{errors.time}</span>}
                         </label>
                       </div>
 
@@ -286,12 +353,29 @@ export default function CreateEventPage() {
                       {venuesLoading ? (
                         <p className="text-slate-500 text-sm py-4 text-center">Loading venues...</p>
                       ) : venues.length === 0 ? (
-                        <p className="text-slate-500 text-sm py-4 text-center">No venues available yet.</p>
+                        <div className="py-8 text-center">
+                          <span className="material-icons text-3xl text-slate-700 mb-2 block">location_off</span>
+                          <p className="text-slate-500 text-sm">No venues available yet.</p>
+                          <Link
+                            href="/dashboard/venue/edit"
+                            className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-lg bg-primary/10 text-primary text-sm font-medium hover:bg-primary/20 transition"
+                          >
+                            <span className="material-icons text-sm">add</span>
+                            Create a venue
+                          </Link>
+                        </div>
                       ) : (
                         venues.map((v) => (
                           <button
                             key={v.id}
-                            onClick={() => setFormData((prev) => ({ ...prev, venue: v.id }))}
+                            onClick={() => {
+                              setFormData((prev) => ({ ...prev, venue: v.id }));
+                              setErrors((prev) => {
+                                const next = { ...prev };
+                                delete next.venue;
+                                return next;
+                              });
+                            }}
                             className={`w-full text-left p-4 rounded-xl border transition flex items-center gap-4 ${
                               formData.venue === v.id
                                 ? "border-primary/30 bg-primary/5"
@@ -312,28 +396,19 @@ export default function CreateEventPage() {
                         ))
                       )}
                     </div>
+                    {errors.venue && (
+                      <p className="text-xs text-red-400 mt-3">{errors.venue}</p>
+                    )}
                   </div>
                 )}
 
-                {/* Step 3: Talent & Services */}
+                {/* Step 3: Services */}
                 {currentStep === 2 && (
                   <div className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-2xl p-8">
                     <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
                       <span className="material-icons text-primary">people</span>
-                      Talent & Services
+                      Services
                     </h2>
-
-                    <label className="flex flex-col gap-2 mb-6">
-                      <span className="text-sm font-medium text-white">Search Talent</span>
-                      <input
-                        name="talentSearch"
-                        type="text"
-                        value={formData.talentSearch}
-                        onChange={handleChange}
-                        placeholder="Search DJs, Bands, Performers..."
-                        className="w-full rounded-xl bg-surface-input border border-white/10 px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-                      />
-                    </label>
 
                     <p className="text-sm font-medium text-white mb-3">Required Services</p>
                     <div className="flex flex-wrap gap-3">
@@ -401,7 +476,9 @@ export default function CreateEventPage() {
                   <button
                     onClick={() => {
                       if (currentStep < steps.length - 1) {
-                        setCurrentStep(currentStep + 1);
+                        if (validateStep(currentStep)) {
+                          setCurrentStep(currentStep + 1);
+                        }
                       } else {
                         handlePublish();
                       }

@@ -17,7 +17,7 @@ const statusStyles: Record<string, string> = {
 const quickActions = [
   { label: "Add Availability", description: "Set open dates and time slots", icon: "event_available", href: "/booking" },
   { label: "View Calendar", description: "See your full booking calendar", icon: "calendar_month", href: "/booking" },
-  { label: "Edit Venue Profile", description: "Update photos, capacity, and amenities", icon: "edit", href: "/settings" },
+  { label: "Edit Venue Profile", description: "Update name, address, capacity, and amenities", icon: "edit", href: "/dashboard/venue/edit" },
 ];
 
 function VenueContent() {
@@ -47,10 +47,13 @@ function VenueContent() {
               </p>
             </div>
             <div className="flex gap-3">
-              <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition">
-                <span className="material-icons text-sm">download</span>
-                Export Report
-              </button>
+              <Link
+                href="/dashboard/venue/edit"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition"
+              >
+                <span className="material-icons text-sm">edit</span>
+                Edit Venue
+              </Link>
               <Link
                 href="/booking"
                 className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-dark text-white text-sm font-bold transition btn-glow"
@@ -175,37 +178,11 @@ function VenueContent() {
               {/* Venue Performance */}
               <div className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6">
                 <h3 className="text-lg font-bold text-white mb-4">Venue Performance</h3>
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex items-center justify-between text-sm mb-2">
-                      <span className="text-slate-400">Avg. Rating</span>
-                      <span className="text-white font-semibold flex items-center gap-1">
-                        <span className="material-icons text-yellow-400 text-sm">star</span>
-                        4.8 / 5.0
-                      </span>
-                    </div>
-                    <div className="w-full h-2 rounded-full bg-white/5">
-                      <div className="h-full rounded-full bg-yellow-400" style={{ width: "96%" }} />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between text-sm mb-2">
-                      <span className="text-slate-400">Repeat Bookings</span>
-                      <span className="text-white font-semibold">64%</span>
-                    </div>
-                    <div className="w-full h-2 rounded-full bg-white/5">
-                      <div className="h-full rounded-full bg-primary" style={{ width: "64%" }} />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex items-center justify-between text-sm mb-2">
-                      <span className="text-slate-400">Response Time</span>
-                      <span className="text-white font-semibold text-green-400">~2 hrs</span>
-                    </div>
-                    <div className="w-full h-2 rounded-full bg-white/5">
-                      <div className="h-full rounded-full bg-green-400" style={{ width: "85%" }} />
-                    </div>
-                  </div>
+                <div className="py-6 text-center">
+                  <span className="material-icons text-3xl text-slate-700 mb-2 block">insights</span>
+                  <p className="text-sm text-slate-500">
+                    Ratings, repeat bookings and response time will appear here once your venue has activity.
+                  </p>
                 </div>
               </div>
             </div>

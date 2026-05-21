@@ -2,6 +2,9 @@
 
 Timeless is a full-stack web platform connecting artists, venues, talents, and clients in the entertainment industry. It provides marketplace discovery, event management, booking, messaging, wallet/payments, and studio services.
 
+> **Project status & roadmap:** see [`ACTION_PLAN.md`](./ACTION_PLAN.md) for the current
+> diagnosis, known blockers, and the phased plan to a fully functional demo.
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -166,13 +169,20 @@ npm install
 
 # Set up environment variables
 cp .env.local.example .env.local
-# Fill in your Firebase credentials
+# Fill in your Firebase credentials (see Environment Variables below)
 
 # Run development server
 npm run dev
 ```
 
+> **Important:** without a fully filled `.env.local`, Firebase Auth/Firestore/Storage
+> will not initialize and the app cannot log in, register, or create venues/events.
+
 ### Environment Variables
+
+All variables are required (except `MEASUREMENT_ID`, which is optional). Get the
+values from Firebase Console → Project Settings → General → Your apps → Web app →
+SDK setup and configuration → Config.
 
 ```env
 NEXT_PUBLIC_FIREBASE_API_KEY=
@@ -184,10 +194,60 @@ NEXT_PUBLIC_FIREBASE_APP_ID=
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=
 ```
 
+### Firebase Setup (one-time)
+
+Deploy the security rules and indexes so queries and writes work:
+
+```bash
+npm install -g firebase-tools     # if not already installed
+firebase login
+firebase deploy --only firestore:rules,firestore:indexes,storage
+```
+
+### Demo / Super-user Account
+
+A helper script creates a demo account (`demo@timeless.io` / `Demo1234!`) with
+`isSuperUser: true`, which unlocks every dashboard and the admin panel.
+
+```bash
+# 1. Download a service account key from
+#    Firebase Console → Project Settings → Service Accounts → Generate new private key
+#    Save it as: scripts/serviceAccountKey.json   (gitignored — never commit it)
+# 2. Run:
+node scripts/create-demo-user.js
+```
+
+### Seed Demo Data
+
+Populate the database with demo venues, talents, courses, categories and
+approvals so the marketplace, event wizard and admin panels have content.
+Uses the same `scripts/serviceAccountKey.json` as the step above.
+
+```bash
+node scripts/seed-demo.js
+```
+
+This creates 3 venue accounts and 4 talent accounts (password `Demo1234!`),
+plus 6 courses, 7 categories and 3 pending approvals. The script is idempotent.
+
+## Testing
+
+Unit tests run with [Vitest](https://vitest.dev). They currently cover the Zod
+validation schemas in `src/lib/validators.ts` (the validation contract for
+registration, event creation, bookings and services).
+
+```bash
+npm test          # run the suite once
+npm run test:watch  # re-run on file changes
+```
+
+Tests are also part of `npm run build` (`vitest run && next build`), so a
+failing test blocks the Vercel deploy.
+
 ### Build & Deploy
 
 ```bash
-# Build for production
+# Build for production (runs the test suite first, then next build)
 npm run build
 
 # Deploy to Vercel

@@ -105,6 +105,10 @@ export interface TalentWithUser {
 export interface Talent {
   id: string;
   userId: string;
+  // Denormalized from the owner's user profile so the public marketplace
+  // can render talent cards without reading the private `users` document.
+  name?: string;
+  avatar?: string;
   category: string;
   city: string;
   bio: string;

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import ProtectedRoute from "@/components/ProtectedRoute";
+import AdminRoute from "@/components/AdminRoute";
 import { useAuth } from "@/contexts/AuthContext";
 
 const navLinks = [
@@ -25,7 +25,7 @@ export default function AdminLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <ProtectedRoute>
+    <AdminRoute>
       <div className="flex min-h-screen bg-background-dark">
         {/* Mobile overlay */}
         {sidebarOpen && (
@@ -115,6 +115,6 @@ export default function AdminLayout({
           <main>{children}</main>
         </div>
       </div>
-    </ProtectedRoute>
+    </AdminRoute>
   );
 }
