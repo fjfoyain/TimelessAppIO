@@ -261,3 +261,92 @@ Esto encaja con el objetivo del equipo: el contacto y los contratos ocurren dent
 | **Pulido** | U4 (mock talents del marketplace), U6 (dependencia de CDN), A3 (algunos `aria-label`) |
 
 Para una **demo** ya no quedan bloqueantes visibles ni de privacidad. El único punto crítico restante es **S1**, que debe resolverse antes de manejar dinero real.
+
+---
+
+## 9. Flujo de negociación: plan → chat → contrato (2026-05-21)
+
+Funcionalidad pedida por negocio. Antes, en la ficha del talento, "Select Plan" iba directo a una página de contrato con **datos mock** y el botón "Contact" no creaba conversación si no existía una. Ahora el flujo está conectado de punta a punta:
+
+- **`getOrCreateConversation`** (en `firestore.ts`): busca la conversación 1:1 entre dos usuarios o la crea. Puede llevar el contexto del plan (`planContext`: talentId, planId, título, precio).
+- **Ficha del talento** (`/marketplace/[id]`): el botón "Discuss this Plan" crea/abre la conversación con el talento, publica un mensaje inicial citando el plan y lleva al chat. "Contact" hace lo mismo sin plan. Si el visitante no tiene sesión, va a `/login`.
+- **Chat** (`/messages`): acepta `?convo=<id>` para abrir la conversación correcta. Si la conversación tiene `planContext`, el panel derecho muestra el plan y un botón **"Proceed to contract"**.
+- **Contrato** (`/booking/contract`): ya **no usa datos mock** — lee el talent y el plan reales de Firestore (`getTalentWithUser` + `servicePlans`), y muestra el nombre del talento (antes mostraba por error el del comprador).
+- **Seed**: cada talent sembrado recibe ahora 2 `servicePlans`, para que el flujo tenga datos desde el primer momento.
+
+**Acción requerida:** volver a ejecutar `node scripts/seed-demo.js` para que los talents existentes reciban los `servicePlans` (el seed sobrescribe sus documentos).
+
+*Pendiente / futuras mejoras:* estados de negociación (`NegotiationStatus` ya existe en los tipos pero no se usa); que aceptar el contrato actualice ese estado; notificar al talento cuando le escriben.
+
+---
+
+## 10. Feedback del product owner (2026-05-21)
+
+Revisión de la conversación con el PO. Implementado:
+
+**Registro de artista**
+- Más géneros: reggaeton, salsa, bachata, reggae, y opción **"Other"** con texto libre.
+- Campo **tipos de evento** con los que trabaja el artista (cumpleaños, bodas, baby showers, corporativo, etc.) — chips multi-selección.
+- Se **quitó la subida de portafolio/demo del registro** — el registro es más corto; el artista lo completa en su perfil tras la aprobación.
+- `createArtistProfile` ahora guarda `eventTypes` y construye el doc sin campos `undefined`.
+
+**Gate de cuenta "Pending"**
+- Nuevo componente `AccountGate` + helper `isAccountActive`. Las **acciones de confianza** quedan bloqueadas hasta que la cuenta esté aprobada (`status === Active`); admins/super-users siempre activos.
+- Bloqueado: crear evento (`/events/create` muestra un aviso), contactar/negociar talento (botones deshabilitados en `/marketplace/[id]`), y retirar fondos (`/wallet`). El resto (explorar, editar perfil) sigue disponible — como Airbnb/Fiverr.
+
+**Validación de cuenta con documentos** *(añadido 2026-05-21)*
+- **Settings → Identity Verification** ahora es funcional: el usuario elige tipo de documento (Cédula / Pasaporte / RUC de empresa), sube el archivo (imagen o PDF, hasta 10MB) y queda "Under review".
+- El documento se guarda en Storage bajo `identity/{uid}/` — ruta **privada** (solo el dueño y los admins pueden leerla; no es pública como el resto del Storage).
+- Subir el documento crea un registro en `approvals` con `type: "Identity"`, el `userId` y la URL del documento.
+- **Panel de admin** (`/admin/approvals`): las solicitudes de identidad aparecen con un enlace "View submitted document". Al **aprobar**, `updateApprovalStatus` también pone `users/{uid}.status = Active` (se abre el gate); al **rechazar**, lo pone `Rejected` y el usuario puede volver a subir el documento.
+- Regla de Firestore de `approvals`: el admin lee todo; un usuario puede leer su propia solicitud.
+
+**Navegación**
+- Nueva página **`/venues`** para explorar venues (con búsqueda y filtro por tipo de evento).
+- Footer "Browse Venues" y la tarjeta "Venues" de `/search` ahora apuntan a `/venues` (antes abrían el marketplace de talentos).
+
+**Chat — bloqueo de contactos (estilo Airbnb)**
+- `maskContactInfo` (`src/lib/chat.ts`): enmascara teléfonos y emails en los mensajes antes de guardarlos. 8 tests en `chat.test.ts`.
+- El chat avisa al usuario cuando se ocultó un contacto.
+
+**Wallet**
+- El botón "Statement" se renombró a **"Transaction History"**.
+
+### Evaluación de las ideas que necesitan decisión (no implementadas)
+
+- **Modelo de negocio / pagos** (wallet, escrow, intermediarios, comisiones, multas, suscripción, recargas): sin resolver en la conversación. Recomendación para el MVP: **no ser intermediario de dinero** (escrow real = licencias, KYC, ser procesador de pagos). El modelo "3 servicios gratis → suscripción mensual" es más simple y viable; pago directo entre partes. Conecta con S1 (diferido).
+- **Verificación de identidad** (subir cédula/pasaporte/RUC): correcto ubicarla en Settings (ya existe el bloque visual "Identity Verification"); falta hacerla funcional. Pedir cédula en el registro fue **descartado por el propio equipo** ("too much").
+- **Página de invitaciones** (estilo Invitalo) y **blog para SEO**: el equipo los marcó como **fase siguiente**.
+- **Organizar por tipo de evento / tipo de proveedor** (estilo Invitalo): buena dirección; rediseño de navegación de tamaño medio para una iteración posterior.
+
+*Sin acción de re-seed requerida:* los cambios de registro de artista solo afectan a nuevos registros.
+
+---
+
+## 11. Páginas de exploración, blog y limpieza (2026-05-21)
+
+**Página de eventos**
+- Nueva página pública **`/events`** para explorar eventos publicados (con búsqueda).
+- Footer ("Discover Events", "Events Calendar") y la tarjeta "Events" de `/search` ahora apuntan a `/events`.
+
+**Blog (SEO)**
+- Blog estático basado en archivos: `src/data/blogPosts.ts` (3 posts iniciales) + índice `/blog` + posts `/blog/[slug]`.
+- Páginas renderizadas en el servidor con `generateMetadata` y `generateStaticParams` (title/description/OpenGraph por post) — bien para SEO.
+- Enlace "Blog" añadido al footer. Para publicar un post nuevo basta con añadir una entrada en `blogPosts.ts`.
+
+**Limpieza**
+- Los **talentos mock** ya no se mezclan en el marketplace ni en las fichas `/marketplace/[id]` — el marketplace muestra solo talentos reales de Firestore. El archivo `src/data/mockTalents.ts` se conserva (no se borró, por indicación del equipo); simplemente ya no se importa.
+
+**Navegación por tipo de evento / proveedor (estilo Invitalo)** *(añadido 2026-05-21)*
+- `eventTypes` ahora forma parte del modelo `Talent`: se captura en el registro de talento (chips), lo escribe `createTalentProfile` y el seed lo asigna a cada talento.
+- El **marketplace** filtra por tipo de evento (nuevo desplegable) y lee parámetros de URL: `/marketplace?category=…`, `?eventType=…`, `?q=…`. Envuelto en `Suspense` por `useSearchParams`.
+- La página **`/search`** se rehízo como hub de exploración: tarjetas "Browse by event type" y "Browse by provider" que llevan al marketplace ya filtrado. Taxonomía compartida en `src/lib/constants.ts`.
+
+**Limpieza** *(añadido 2026-05-21)*
+- Las 4 páginas **`/onboarding/*`** se eliminaron (eran huérfanas y redundantes con el registro).
+
+### Pendiente
+
+- **`/dashboard/projects`** (kanban): sigue estático, sin conectar a datos reales — requiere una colección `projects` con CRUD.
+- **Edición de portafolio del talento/artista** (tras la aprobación): aún sin página propia; hoy `/settings` cubre nombre, bio, avatar y link de portafolio, pero no la galería de portafolio.
+- *Re-seed recomendado:* correr de nuevo `node scripts/seed-demo.js` para que los talentos sembrados reciban `eventTypes` (necesario para que el filtro por tipo de evento muestre resultados).

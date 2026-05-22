@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/landing/Navbar";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import Footer from "@/components/landing/Footer";
 import TalentCard from "@/components/marketplace/TalentCard";
 import { useMarketplace } from "@/hooks/useFirestore";
-import { mockTalents } from "@/data/mockTalents";
+import { EVENT_TYPES } from "@/lib/constants";
 
 function checkPriceRange(rate: number | undefined, range: string): boolean {
   if (!rate) return false;
@@ -19,25 +20,28 @@ function checkPriceRange(rate: number | undefined, range: string): boolean {
   }
 }
 
-export default function MarketplacePage() {
+function MarketplaceContent() {
   const { talents: firestoreTalents, loading } = useMarketplace();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const searchParams = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
+  const [selectedCategory, setSelectedCategory] = useState(
+    searchParams.get("category") || ""
+  );
+  const [selectedEventType, setSelectedEventType] = useState(
+    searchParams.get("eventType") || ""
+  );
   const [selectedCity, setSelectedCity] = useState("");
   const [priceRange, setPriceRange] = useState("");
   const [verifiedOnly, setVerifiedOnly] = useState(false);
 
-  // Always show real Firestore talent alongside demo entries
-  const allTalents = useMemo(
-    () => [...firestoreTalents, ...mockTalents],
-    [firestoreTalents]
-  );
+  const allTalents = firestoreTalents;
 
-  // Derive categories/cities from merged data
-  const categories = useMemo(
-    () => Array.from(new Set(allTalents.map((t) => t.talent.category).filter(Boolean))),
-    [allTalents]
-  );
+  // Derive categories/cities from the live talent data
+  const categories = useMemo(() => {
+    const set = new Set(allTalents.map((t) => t.talent.category).filter(Boolean));
+    if (selectedCategory) set.add(selectedCategory);
+    return Array.from(set);
+  }, [allTalents, selectedCategory]);
   const cities = useMemo(
     () => Array.from(new Set(allTalents.map((t) => t.talent.city).filter(Boolean))),
     [allTalents]
@@ -54,13 +58,22 @@ export default function MarketplacePage() {
         (talent.bio || "").toLowerCase().includes(q);
 
       const matchesCategory = !selectedCategory || talent.category === selectedCategory;
+      const matchesEventType =
+        !selectedEventType || (talent.eventTypes || []).includes(selectedEventType);
       const matchesCity = !selectedCity || talent.city === selectedCity;
       const matchesVerified = !verifiedOnly || talent.isVerified;
       const matchesPrice = !priceRange || checkPriceRange(talent.hourlyRate, priceRange);
 
-      return matchesSearch && matchesCategory && matchesCity && matchesVerified && matchesPrice;
+      return (
+        matchesSearch &&
+        matchesCategory &&
+        matchesEventType &&
+        matchesCity &&
+        matchesVerified &&
+        matchesPrice
+      );
     });
-  }, [allTalents, searchQuery, selectedCategory, selectedCity, priceRange, verifiedOnly]);
+  }, [allTalents, searchQuery, selectedCategory, selectedEventType, selectedCity, priceRange, verifiedOnly]);
 
   return (
     <div className="min-h-screen bg-background-dark">
@@ -106,6 +119,17 @@ export default function MarketplacePage() {
               <option value="">All Categories</option>
               {categories.map((cat) => (
                 <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+
+            <select
+              value={selectedEventType}
+              onChange={(e) => setSelectedEventType(e.target.value)}
+              className="rounded-xl bg-surface-input border border-white/10 px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary transition appearance-none cursor-pointer"
+            >
+              <option value="">All Event Types</option>
+              {EVENT_TYPES.map((t) => (
+                <option key={t} value={t}>{t}</option>
               ))}
             </select>
 
@@ -178,6 +202,7 @@ export default function MarketplacePage() {
                     onClick={() => {
                       setSearchQuery("");
                       setSelectedCategory("");
+                      setSelectedEventType("");
                       setSelectedCity("");
                       setPriceRange("");
                       setVerifiedOnly(false);
@@ -195,5 +220,21 @@ export default function MarketplacePage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function MarketplacePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-background-dark flex items-center justify-center">
+          <span className="material-icons text-5xl text-primary animate-pulse">
+            storefront
+          </span>
+        </div>
+      }
+    >
+      <MarketplaceContent />
+    </Suspense>
   );
 }

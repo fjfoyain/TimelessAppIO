@@ -7,9 +7,16 @@ import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
-import { updateUserProfile, getUserSettings, updateUserSettings } from "@/lib/firestore";
-import { uploadAvatar } from "@/lib/storage";
+import {
+  updateUserProfile,
+  getUserSettings,
+  updateUserSettings,
+  submitIdentityVerification,
+  getUserVerification,
+} from "@/lib/firestore";
+import { uploadAvatar, uploadIdentityDocument } from "@/lib/storage";
 import { auth } from "@/lib/firebase";
+import { UserStatus, type Approval } from "@/types";
 
 type SectionKey = "profile" | "security" | "notifications" | "legal";
 
@@ -52,6 +59,65 @@ function SettingsContent() {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState("");
   const [uploadProgress, setUploadProgress] = useState(0);
+
+  // Identity verification state
+  const [verification, setVerification] = useState<Approval | null>(null);
+  const [idType, setIdType] = useState("National ID (Cédula)");
+  const [idFile, setIdFile] = useState<File | null>(null);
+  const [idFileName, setIdFileName] = useState("");
+  const [idProgress, setIdProgress] = useState(0);
+  const [submittingId, setSubmittingId] = useState(false);
+  const [verifMsg, setVerifMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    getUserVerification(user.id)
+      .then(setVerification)
+      .catch(() => {});
+  }, [user]);
+
+  function handleIdFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 10 * 1024 * 1024) {
+      setVerifMsg({ type: "error", text: "Document must be under 10MB." });
+      return;
+    }
+    setIdFile(file);
+    setIdFileName(file.name);
+    setVerifMsg(null);
+  }
+
+  async function handleSubmitVerification() {
+    if (!user || !idFile) return;
+    setSubmittingId(true);
+    setVerifMsg(null);
+    try {
+      const url = await uploadIdentityDocument(user.id, idFile, setIdProgress);
+      await submitIdentityVerification({
+        userId: user.id,
+        name: user.name,
+        idType,
+        documentUrl: url,
+      });
+      const latest = await getUserVerification(user.id);
+      setVerification(latest);
+      setIdFile(null);
+      setIdFileName("");
+      setVerifMsg({
+        type: "success",
+        text: "Document submitted. Our team will review it shortly.",
+      });
+    } catch (err) {
+      setVerifMsg({
+        type: "error",
+        text: err instanceof Error ? err.message : "Upload failed. Please try again.",
+      });
+    } finally {
+      setSubmittingId(false);
+      setIdProgress(0);
+    }
+  }
 
   // Initialize form from user context
   useEffect(() => {
@@ -396,13 +462,90 @@ function SettingsContent() {
                             </span>
                             <h4 className="text-white font-medium text-sm">Identity Verification</h4>
                           </div>
-                          <p className="text-xs text-slate-500 mb-3">
-                            Verify your identity to unlock premium features and build trust.
-                          </p>
-                          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-medium text-amber-400">
-                            <span className="material-icons text-xs">pending</span>
-                            Not Verified
-                          </div>
+
+                          {user?.status === UserStatus.ACTIVE || user?.isSuperUser ? (
+                            <>
+                              <p className="text-xs text-slate-500 mb-3">
+                                Your account is verified and fully active.
+                              </p>
+                              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/30 text-xs font-medium text-green-400">
+                                <span className="material-icons text-xs">verified</span>
+                                Verified
+                              </div>
+                            </>
+                          ) : verification?.status === "pending" ? (
+                            <>
+                              <p className="text-xs text-slate-500 mb-3">
+                                Your document was submitted and is being reviewed by our
+                                team. You&apos;ll get full access once it&apos;s approved.
+                              </p>
+                              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-medium text-amber-400">
+                                <span className="material-icons text-xs">hourglass_top</span>
+                                Under review
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <p className="text-xs text-slate-500 mb-3">
+                                {verification?.status === "rejected"
+                                  ? "Your previous document wasn't approved. Please upload a clear, valid document to try again."
+                                  : "Upload an identity document so our team can verify your account and unlock all features."}
+                              </p>
+
+                              <label className="block text-xs font-medium text-slate-400 mb-1.5">
+                                Document type
+                              </label>
+                              <select
+                                value={idType}
+                                onChange={(e) => setIdType(e.target.value)}
+                                className="w-full rounded-lg bg-surface-input border border-white/10 px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary mb-3"
+                              >
+                                <option>National ID (Cédula)</option>
+                                <option>Passport</option>
+                                <option>Company RUC</option>
+                              </select>
+
+                              <label className="flex items-center gap-2 px-4 py-3 rounded-xl bg-surface-input border border-white/10 text-sm text-slate-400 hover:text-white hover:border-white/20 transition cursor-pointer">
+                                <span className="material-icons text-lg">upload_file</span>
+                                <span className="truncate">
+                                  {idFileName || "Choose document — image or PDF, up to 10MB"}
+                                </span>
+                                <input
+                                  type="file"
+                                  accept="image/jpeg,image/png,image/webp,application/pdf"
+                                  onChange={handleIdFileChange}
+                                  className="hidden"
+                                />
+                              </label>
+
+                              {idProgress > 0 && idProgress < 100 && (
+                                <div className="h-1.5 w-full rounded-full bg-white/10 mt-2">
+                                  <div
+                                    className="h-1.5 rounded-full bg-primary transition-all"
+                                    style={{ width: `${idProgress}%` }}
+                                  />
+                                </div>
+                              )}
+
+                              <button
+                                onClick={handleSubmitVerification}
+                                disabled={!idFile || submittingId}
+                                className="mt-3 w-full py-2.5 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition disabled:opacity-50"
+                              >
+                                {submittingId ? "Submitting..." : "Submit for verification"}
+                              </button>
+                            </>
+                          )}
+
+                          {verifMsg && (
+                            <p
+                              className={`mt-2 text-xs ${
+                                verifMsg.type === "success" ? "text-green-400" : "text-red-400"
+                              }`}
+                            >
+                              {verifMsg.text}
+                            </p>
+                          )}
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-3">

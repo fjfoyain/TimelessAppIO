@@ -2,31 +2,25 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
-
-const browseCategories = [
-  { name: "Artists", icon: "music_note", count: "2,400+", color: "from-purple-600 to-violet-600", href: "/marketplace" },
-  { name: "Venues", icon: "location_on", count: "850+", color: "from-pink-600 to-rose-600", href: "/marketplace" },
-  { name: "Events", icon: "celebration", count: "1,200+", color: "from-cyan-600 to-blue-600", href: "/marketplace" },
-  { name: "Studios", icon: "mic", count: "340+", color: "from-amber-600 to-orange-600", href: "/studio" },
-  { name: "Services", icon: "handyman", count: "980+", color: "from-green-600 to-emerald-600", href: "/marketplace" },
-  { name: "Community", icon: "groups", count: "5,600+", color: "from-fuchsia-600 to-pink-600", href: "/marketplace" },
-];
-
-const recentSearches = ["DJ for wedding Miami", "Sound engineer NYC", "Venue 500 capacity"];
-
-const trending = [
-  { title: "Latin Music DJs", category: "Artists", searches: "12.4K searches" },
-  { title: "Rooftop Venues", category: "Venues", searches: "8.9K searches" },
-  { title: "Sound Engineers", category: "Services", searches: "7.2K searches" },
-  { title: "Music Production Classes", category: "Studio", searches: "6.1K searches" },
-  { title: "Wedding Bands", category: "Artists", searches: "5.8K searches" },
-];
+import {
+  EVENT_TYPES,
+  PROVIDER_CATEGORIES,
+  EVENT_TYPE_ICONS,
+  PROVIDER_CATEGORY_ICONS,
+} from "@/lib/constants";
 
 export default function SearchPage() {
+  const router = useRouter();
   const [query, setQuery] = useState("");
+
+  function runSearch() {
+    const q = query.trim();
+    router.push(q ? `/marketplace?q=${encodeURIComponent(q)}` : "/marketplace");
+  }
 
   return (
     <div className="min-h-screen bg-background-dark">
@@ -35,102 +29,101 @@ export default function SearchPage() {
 
       <main className="relative z-10 pt-24 pb-16">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          {/* Search Input */}
-          <div className="mb-12">
-            <div className="relative">
-              <span className="material-icons absolute left-5 top-1/2 -translate-y-1/2 text-slate-500 text-2xl">
-                search
+          {/* Header */}
+          <div className="text-center mb-10">
+            <h1 className="text-3xl md:text-5xl font-bold">
+              <span className="bg-gradient-to-r from-primary via-primary-light to-accent-cyan bg-clip-text text-transparent">
+                What are you planning?
               </span>
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search artists, venues, events, services..."
-                className="w-full pl-14 pr-6 py-5 rounded-2xl bg-surface-dark/50 backdrop-blur-xl border border-white/10 text-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/30 transition"
-              />
-              {query && (
-                <button
-                  onClick={() => setQuery("")}
-                  className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition"
-                  aria-label="Clear search"
-                >
-                  <span className="material-icons">close</span>
-                </button>
-              )}
-            </div>
+            </h1>
+            <p className="mt-3 text-slate-500 max-w-2xl mx-auto">
+              Browse by the type of event you&apos;re hosting, or jump straight to a
+              kind of provider.
+            </p>
           </div>
 
-          {/* Browse by Topic */}
+          {/* Search box */}
+          <div className="relative max-w-xl mx-auto mb-12">
+            <span className="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-xl">
+              search
+            </span>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") runSearch();
+              }}
+              placeholder="Search talent by name, skill or keyword..."
+              className="w-full rounded-xl bg-surface-input border border-white/10 pl-12 pr-24 py-3.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+            />
+            <button
+              onClick={runSearch}
+              className="absolute right-2 top-1/2 -translate-y-1/2 px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition"
+            >
+              Search
+            </button>
+          </div>
+
+          {/* Browse by event type */}
           <section className="mb-12">
-            <h2 className="text-xl font-bold text-white mb-6">Browse by Topic</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {browseCategories.map((cat) => (
+            <h2 className="text-lg font-bold text-white mb-4">Browse by event type</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {EVENT_TYPES.map((type) => (
                 <Link
-                  key={cat.name}
-                  href={cat.href}
-                  className="group bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-2xl p-5 hover:border-primary/20 hover:-translate-y-1 transition-all duration-300"
+                  key={type}
+                  href={`/marketplace?eventType=${encodeURIComponent(type)}`}
+                  className="flex flex-col items-center gap-2 p-5 rounded-2xl bg-surface-dark/50 backdrop-blur-xl border border-white/5 hover:border-primary/30 hover:bg-white/[0.03] transition group text-center"
                 >
-                  <div
-                    className={`w-12 h-12 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center mb-3`}
-                  >
-                    <span className="material-icons text-white text-xl">{cat.icon}</span>
-                  </div>
-                  <h3 className="text-white font-semibold group-hover:text-primary-light transition-colors">
-                    {cat.name}
-                  </h3>
-                  <p className="text-xs text-slate-500 mt-1">{cat.count}</p>
+                  <span className="material-icons text-3xl text-primary group-hover:scale-110 transition-transform">
+                    {EVENT_TYPE_ICONS[type] || "celebration"}
+                  </span>
+                  <span className="text-sm font-medium text-white">{type}</span>
                 </Link>
               ))}
             </div>
           </section>
 
-          {/* Recent Searches */}
-          <section className="mb-12">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-white">Recent Searches</h2>
-              <button className="text-xs text-slate-500 hover:text-primary-light transition">
-                Clear All
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {recentSearches.map((search) => (
-                <button
-                  key={search}
-                  onClick={() => setQuery(search)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-surface-dark border border-white/10 text-sm text-slate-400 hover:text-white hover:border-white/20 transition"
+          {/* Browse by provider */}
+          <section>
+            <h2 className="text-lg font-bold text-white mb-4">Browse by provider</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {PROVIDER_CATEGORIES.map((cat) => (
+                <Link
+                  key={cat}
+                  href={`/marketplace?category=${encodeURIComponent(cat)}`}
+                  className="flex flex-col items-center gap-2 p-5 rounded-2xl bg-surface-dark/50 backdrop-blur-xl border border-white/5 hover:border-primary/30 hover:bg-white/[0.03] transition group text-center"
                 >
-                  <span className="material-icons text-sm text-slate-600">history</span>
-                  {search}
-                </button>
+                  <span className="material-icons text-3xl text-accent-cyan group-hover:scale-110 transition-transform">
+                    {PROVIDER_CATEGORY_ICONS[cat] || "work"}
+                  </span>
+                  <span className="text-sm font-medium text-white">{cat}</span>
+                </Link>
               ))}
             </div>
           </section>
 
-          {/* Trending */}
-          <section>
-            <h2 className="text-xl font-bold text-white mb-6">Trending</h2>
-            <div className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden divide-y divide-white/5">
-              {trending.map((item, index) => (
-                <button
-                  key={item.title}
-                  onClick={() => setQuery(item.title)}
-                  className="w-full flex items-center gap-4 px-5 py-4 hover:bg-white/[0.02] transition text-left"
-                >
-                  <span className="text-sm font-bold text-slate-600 w-6 text-center">
-                    {index + 1}
-                  </span>
-                  <div className="flex-1">
-                    <h4 className="text-sm font-medium text-white">{item.title}</h4>
-                    <p className="text-xs text-slate-500">{item.category}</p>
-                  </div>
-                  <span className="text-xs text-slate-500 flex items-center gap-1">
-                    <span className="material-icons text-xs text-primary-light">trending_up</span>
-                    {item.searches}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </section>
+          {/* Quick links */}
+          <div className="mt-12 flex flex-wrap justify-center gap-3">
+            <Link
+              href="/marketplace"
+              className="px-5 py-2.5 rounded-lg border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition"
+            >
+              All talent
+            </Link>
+            <Link
+              href="/venues"
+              className="px-5 py-2.5 rounded-lg border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition"
+            >
+              All venues
+            </Link>
+            <Link
+              href="/events"
+              className="px-5 py-2.5 rounded-lg border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition"
+            >
+              All events
+            </Link>
+          </div>
         </div>
       </main>
 

@@ -47,5 +47,20 @@ service firebase.storage {
                    && request.auth.uid == userId
                    && request.resource.size < 50 * 1024 * 1024;
     }
+
+    // Identity documents: PRIVATE. Only the owner and admins can read them;
+    // only the owner can upload. Images or PDF, up to 10MB.
+    match /identity/{userId}/{allPaths=**} {
+      allow read: if request.auth != null && (
+        request.auth.uid == userId ||
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'ADMIN' ||
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.isSuperUser == true
+      );
+      allow write: if request.auth != null
+                   && request.auth.uid == userId
+                   && request.resource.size < 10 * 1024 * 1024
+                   && (request.resource.contentType.matches('image/.*')
+                       || request.resource.contentType == 'application/pdf');
+    }
   }
 }

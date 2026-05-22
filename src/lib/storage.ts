@@ -128,6 +128,28 @@ export async function uploadArtistPortfolio(
   return result.downloadURL;
 }
 
+// Identity documents (cédula / passport / RUC) for account verification.
+// Stored privately — never publicly readable.
+export async function uploadIdentityDocument(
+  userId: string,
+  file: File,
+  onProgress?: (progress: number) => void
+): Promise<string> {
+  const v = validateFile(file, {
+    maxSize: 10 * 1024 * 1024, // 10MB
+    allowedTypes: [...ALLOWED_IMAGE_TYPES, "application/pdf"],
+  });
+  if (!v.valid) throw new Error(v.error);
+
+  const ext = file.name.split(".").pop() || "file";
+  const result = await uploadFile(
+    file,
+    `identity/${userId}/document-${Date.now()}.${ext}`,
+    onProgress
+  );
+  return result.downloadURL;
+}
+
 // ─── Delete ──────────────────────────────────────────────────────
 
 export async function deleteFile(storagePath: string): Promise<void> {

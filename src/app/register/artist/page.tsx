@@ -3,11 +3,38 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, FormEvent, useRef, DragEvent } from "react";
+import { useState, FormEvent } from "react";
 import { signUp, getAuthErrorMessage } from "@/lib/auth";
 import { createUserProfile, createArtistProfile } from "@/lib/firestore";
-import { uploadArtistDemo } from "@/lib/storage";
 import { UserRole } from "@/types";
+
+/* ─────────── Constants ─────────── */
+
+const GENRES = [
+  { value: "techno", label: "Techno" },
+  { value: "house", label: "House" },
+  { value: "hiphop", label: "Hip Hop" },
+  { value: "rnb", label: "R&B" },
+  { value: "pop", label: "Pop" },
+  { value: "jazz", label: "Jazz" },
+  { value: "classical", label: "Classical" },
+  { value: "reggaeton", label: "Reggaeton" },
+  { value: "salsa", label: "Salsa" },
+  { value: "bachata", label: "Bachata" },
+  { value: "reggae", label: "Reggae" },
+  { value: "other", label: "Other (specify)" },
+];
+
+const EVENT_TYPES = [
+  "Birthday Parties",
+  "Weddings",
+  "Baby Showers",
+  "Bachelor / Bachelorette",
+  "Corporate Events",
+  "Private Parties",
+  "Club Nights",
+  "Festivals",
+];
 import { FirebaseError } from "firebase/app";
 
 /* ─────────── Inline SVG Icons ─────────── */
@@ -65,6 +92,8 @@ function SoundCloudIcon({ className }: { className?: string }) {
 interface FormData {
   stageName: string;
   genre: string;
+  genreOther: string;
+  eventTypes: string[];
   bio: string;
   instagram: string;
   spotify: string;
@@ -77,6 +106,7 @@ interface FormData {
 interface FormErrors {
   stageName?: string;
   genre?: string;
+  genreOther?: string;
   bio?: string;
   email?: string;
   password?: string;
@@ -91,6 +121,8 @@ export default function ArtistRegistrationPage() {
   const [form, setForm] = useState<FormData>({
     stageName: "",
     genre: "",
+    genreOther: "",
+    eventTypes: [],
     bio: "",
     instagram: "",
     spotify: "",
@@ -101,11 +133,6 @@ export default function ArtistRegistrationPage() {
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
-  const [fileName, setFileName] = useState<string>("");
-  const [isDragging, setIsDragging] = useState(false);
-  const [demoFile, setDemoFile] = useState<File | null>(null);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -123,10 +150,21 @@ export default function ArtistRegistrationPage() {
     }
   };
 
+  const toggleEventType = (type: string) => {
+    setForm((prev) => ({
+      ...prev,
+      eventTypes: prev.eventTypes.includes(type)
+        ? prev.eventTypes.filter((t) => t !== type)
+        : [...prev.eventTypes, type],
+    }));
+  };
+
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
     if (!form.stageName.trim()) newErrors.stageName = "Stage name is required.";
     if (!form.genre) newErrors.genre = "Please select a genre.";
+    else if (form.genre === "other" && !form.genreOther.trim())
+      newErrors.genreOther = "Please specify your genre.";
     if (!form.bio.trim()) newErrors.bio = "A short bio is required.";
     if (!form.email.trim()) {
       newErrors.email = "Email is required.";
@@ -161,20 +199,13 @@ export default function ArtistRegistrationPage() {
 
       await createArtistProfile(uid, {
         stageName: form.stageName,
-        genre: form.genre,
+        genre: form.genre === "other" ? form.genreOther.trim() : form.genre,
         bio: form.bio,
+        eventTypes: form.eventTypes,
         instagram: form.instagram || undefined,
         spotify: form.spotify || undefined,
         soundcloud: form.soundcloud || undefined,
       });
-
-      if (demoFile) {
-        try {
-          await uploadArtistDemo(uid, demoFile, setUploadProgress);
-        } catch {
-          console.warn("Demo upload failed, user can re-upload later");
-        }
-      }
 
       router.push("/dashboard");
     } catch (err) {
@@ -182,33 +213,6 @@ export default function ArtistRegistrationPage() {
       setErrors({ email: getAuthErrorMessage(code) });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFileName(file.name);
-      setDemoFile(file);
-    }
-  };
-
-  const handleDragOver = (e: DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file) {
-      setFileName(file.name);
-      setDemoFile(file);
     }
   };
 
@@ -322,17 +326,54 @@ export default function ArtistRegistrationPage() {
                 className={`${inputBase} ${errors.genre ? inputError : ""}`}
               >
                 <option value="">Select genre</option>
-                <option value="techno">Techno</option>
-                <option value="house">House</option>
-                <option value="hiphop">Hip Hop</option>
-                <option value="rnb">R&amp;B</option>
-                <option value="pop">Pop</option>
-                <option value="jazz">Jazz</option>
-                <option value="classical">Classical</option>
+                {GENRES.map((g) => (
+                  <option key={g.value} value={g.value}>
+                    {g.label}
+                  </option>
+                ))}
               </select>
               {errors.genre && (
                 <p className="mt-1 text-xs text-red-400">{errors.genre}</p>
               )}
+              {form.genre === "other" && (
+                <>
+                  <input
+                    name="genreOther"
+                    type="text"
+                    placeholder="Type your genre"
+                    value={form.genreOther}
+                    onChange={handleChange}
+                    className={`${inputBase} mt-2 ${errors.genreOther ? inputError : ""}`}
+                  />
+                  {errors.genreOther && (
+                    <p className="mt-1 text-xs text-red-400">{errors.genreOther}</p>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Event Types */}
+          <div>
+            <p className="text-xs font-medium text-slate-400 mb-2">
+              Event types you work with{" "}
+              <span className="text-slate-600">(optional)</span>
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {EVENT_TYPES.map((type) => (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => toggleEventType(type)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${
+                    form.eventTypes.includes(type)
+                      ? "bg-primary/20 border-primary/50 text-primary-light"
+                      : "border-gray-700 text-slate-400 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  {type}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -492,64 +533,8 @@ export default function ArtistRegistrationPage() {
             </div>
           </div>
 
-          {/* File Upload */}
-          <div>
-            <label className="block text-xs font-medium text-slate-400 mb-1.5">
-              Portfolio / Demo
-            </label>
-            <div
-              onClick={() => fileInputRef.current?.click()}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              className={`flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-6 py-8 cursor-pointer transition-colors ${
-                isDragging
-                  ? "border-primary bg-primary/5"
-                  : "border-gray-700 hover:border-gray-600"
-              }`}
-            >
-              <span className="material-icons text-3xl text-slate-500">
-                cloud_upload
-              </span>
-              {fileName ? (
-                <>
-                  <p className="text-sm text-white font-medium">{fileName}</p>
-                  {uploadProgress > 0 && uploadProgress < 100 && (
-                    <div className="w-full max-w-xs mt-2">
-                      <div className="h-1.5 w-full rounded-full bg-[#2d1f3b]">
-                        <div
-                          className="h-1.5 rounded-full bg-primary transition-all duration-300"
-                          style={{ width: `${uploadProgress}%` }}
-                        />
-                      </div>
-                      <p className="mt-1 text-xs text-slate-500 text-center">
-                        Uploading... {Math.round(uploadProgress)}%
-                      </p>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <>
-                  <p className="text-sm text-slate-400">
-                    <span className="text-primary font-medium">
-                      Upload a file
-                    </span>{" "}
-                    or drag and drop
-                  </p>
-                  <p className="text-xs text-slate-600">
-                    MP3, WAV up to 50MB
-                  </p>
-                </>
-              )}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".mp3,.wav"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-            </div>
-          </div>
+          {/* Note: portfolio / demo upload moved to the profile page —
+              artists complete it after their account is approved. */}
 
           {/* Submit Button */}
           <button

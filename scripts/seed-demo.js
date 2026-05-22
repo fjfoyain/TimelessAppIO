@@ -108,6 +108,7 @@ const TALENTS = [
     isVerified: true,
     jobsCompleted: 48,
     responseRate: 98,
+    eventTypes: ["Club Nights", "Private Parties", "Weddings", "Corporate Events"],
   },
   {
     email: "talent.marco@timeless.io",
@@ -122,6 +123,7 @@ const TALENTS = [
     isVerified: true,
     jobsCompleted: 73,
     responseRate: 95,
+    eventTypes: ["Weddings", "Corporate Events", "Birthday Parties", "Festivals"],
   },
   {
     email: "talent.sofia@timeless.io",
@@ -136,6 +138,7 @@ const TALENTS = [
     isVerified: false,
     jobsCompleted: 31,
     responseRate: 90,
+    eventTypes: ["Festivals", "Corporate Events", "Club Nights"],
   },
   {
     email: "talent.diego@timeless.io",
@@ -150,6 +153,7 @@ const TALENTS = [
     isVerified: true,
     jobsCompleted: 22,
     responseRate: 88,
+    eventTypes: ["Weddings", "Birthday Parties", "Corporate Events", "Baby Showers"],
   },
 ];
 
@@ -201,6 +205,32 @@ async function ensureAuthUser(email, displayName) {
 async function isCollectionEmpty(name) {
   const snap = await db.collection(name).limit(1).get();
   return snap.empty;
+}
+
+// Two service plans per talent so the marketplace "Discuss this Plan" flow
+// has something to work with.
+function plansFor(t) {
+  return [
+    {
+      id: "basic",
+      title: "Basic Session",
+      description: `A focused engagement with ${t.name} — ideal for smaller events.`,
+      price: t.hourlyRate * 2,
+      includes: ["2 hours of service", "Pre-event consultation", "Standard delivery"],
+    },
+    {
+      id: "pro",
+      title: "Full Experience",
+      description: `Complete coverage with ${t.name}, from planning through delivery.`,
+      price: t.hourlyRate * 5,
+      includes: [
+        "5 hours of service",
+        "Pre-event consultation",
+        "Priority scheduling",
+        "Revisions included",
+      ],
+    },
+  ];
 }
 
 // ─── Main ───────────────────────────────────────────────────────
@@ -256,12 +286,13 @@ async function main() {
       baseRate: t.hourlyRate,
       ratePer: "Hour",
       experience: t.experience,
+      eventTypes: t.eventTypes || [],
       isVerified: t.isVerified,
       jobsCompleted: t.jobsCompleted,
       responseRate: t.responseRate,
       portfolio: [],
       reviews: [],
-      servicePlans: [],
+      servicePlans: plansFor(t),
       createdAt: now(),
     });
     console.log(`  ✅  Talent: ${t.name}`);

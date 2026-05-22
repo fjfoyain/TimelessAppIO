@@ -36,9 +36,10 @@ function YouTubeIcon() {
 
 const platformLinks = [
   { label: "Marketplace", href: "/marketplace" },
-  { label: "Discover Events", href: "/search" },
+  { label: "Discover Events", href: "/events" },
   { label: "Find Artists", href: "/marketplace" },
-  { label: "Browse Venues", href: "/marketplace" },
+  { label: "Browse Venues", href: "/venues" },
+  { label: "Blog", href: "/blog" },
   { label: "Help Center", href: "/help" },
   { label: "Contact Support", href: "/contact" },
 ];
@@ -46,7 +47,7 @@ const platformLinks = [
 const studioLinks = [
   { label: "Book a Class", href: "/studio/classes" },
   { label: "Rent Studio Time", href: "/booking" },
-  { label: "Events Calendar", href: "/search" },
+  { label: "Events Calendar", href: "/events" },
   { label: "Gear List", href: "/studio#equipment" },
 ];
 

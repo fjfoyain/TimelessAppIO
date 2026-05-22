@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, FormEvent } from "react";
 import { signUp, getAuthErrorMessage } from "@/lib/auth";
 import { createUserProfile, createTalentProfile } from "@/lib/firestore";
+import { EVENT_TYPES } from "@/lib/constants";
 import { UserRole } from "@/types";
 import { FirebaseError } from "firebase/app";
 
@@ -18,6 +19,7 @@ interface TalentFormData {
   fullName: string;
   category: string;
   experience: ExperienceLevel;
+  eventTypes: string[];
   baseRate: string;
   ratePer: RatePer;
   portfolioLink: string;
@@ -51,6 +53,7 @@ export default function TalentRegistrationPage() {
     fullName: "",
     category: "",
     experience: "pro",
+    eventTypes: [],
     baseRate: "",
     ratePer: "Hour",
     portfolioLink: "",
@@ -66,6 +69,15 @@ export default function TalentRegistrationPage() {
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: false }));
     }
+  }
+
+  function toggleEventType(type: string) {
+    setForm((prev) => ({
+      ...prev,
+      eventTypes: prev.eventTypes.includes(type)
+        ? prev.eventTypes.filter((t) => t !== type)
+        : [...prev.eventTypes, type],
+    }));
   }
 
   async function handleSubmit(e: FormEvent) {
@@ -108,6 +120,7 @@ export default function TalentRegistrationPage() {
         fullName: form.fullName,
         category: form.category,
         experience: form.experience,
+        eventTypes: form.eventTypes,
         baseRate: parseFloat(form.baseRate),
         ratePer: form.ratePer,
         portfolioLink: form.portfolioLink || undefined,
@@ -309,6 +322,30 @@ export default function TalentRegistrationPage() {
                     >
                       <span className="text-sm font-semibold">{lvl.label}</span>
                       <span className="text-[11px] opacity-70">{lvl.sub}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Event Types */}
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-1.5">
+                  Event types you work with{" "}
+                  <span className="text-slate-600">(optional)</span>
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {EVENT_TYPES.map((type) => (
+                    <button
+                      key={type}
+                      type="button"
+                      onClick={() => toggleEventType(type)}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${
+                        form.eventTypes.includes(type)
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-slate-700 bg-[#231630] text-slate-400 hover:border-slate-600"
+                      }`}
+                    >
+                      {type}
                     </button>
                   ))}
                 </div>

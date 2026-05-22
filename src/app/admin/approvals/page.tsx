@@ -35,6 +35,12 @@ function typeConfig(type: ApprovalType) {
       border: "border-amber-500/20",
       icon: "event",
     },
+    Identity: {
+      color: "text-primary-light",
+      bg: "bg-primary/10",
+      border: "border-primary/20",
+      icon: "verified_user",
+    },
   };
   return map[type];
 }
@@ -130,9 +136,22 @@ export default function ApprovalsPage() {
                       </div>
 
                       {/* Description */}
-                      <p className="text-xs text-gray-500 leading-relaxed mb-4">
+                      <p className="text-xs text-gray-500 leading-relaxed mb-3">
                         {item.description}
                       </p>
+
+                      {/* Submitted document (identity verification) */}
+                      {item.documentUrl && (
+                        <a
+                          href={item.documentUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-xs font-medium text-primary-light hover:underline mb-3"
+                        >
+                          <span className="material-icons text-sm">description</span>
+                          View submitted document
+                        </a>
+                      )}
 
                       {/* Submitted date */}
                       <div className="flex items-center gap-1 text-xs text-gray-600 mb-5">

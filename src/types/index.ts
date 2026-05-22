@@ -122,6 +122,9 @@ export interface Talent {
   jobsCompleted: number;
   responseRate: number;
   availability?: string[];
+  // Event types this talent works (Weddings, Corporate, etc.) — drives the
+  // event-type filter in the marketplace.
+  eventTypes?: string[];
   badges?: Badge[];
   socials?: SocialLinks;
   isDemo?: boolean;
@@ -239,6 +242,13 @@ export interface Booking {
   createdAt?: string;
 }
 
+export interface PlanContext {
+  talentId: string;
+  planId: string;
+  planTitle: string;
+  planPrice: number;
+}
+
 export interface Conversation {
   id: string;
   participants: string[];
@@ -246,6 +256,9 @@ export interface Conversation {
   lastMessage: string;
   lastMessageTime: string;
   createdAt?: string;
+  // Set when the conversation was started from a talent's service plan,
+  // so the chat can offer a "proceed to contract" shortcut.
+  planContext?: PlanContext;
 }
 
 export interface Message {
@@ -310,7 +323,7 @@ export interface AuditLog {
   timestamp: string;
 }
 
-export type ApprovalType = "Venue" | "Talent" | "Event";
+export type ApprovalType = "Venue" | "Talent" | "Event" | "Identity";
 export type ApprovalStatus = "pending" | "approved" | "rejected";
 
 export interface Approval {
@@ -322,6 +335,10 @@ export interface Approval {
   description: string;
   status: ApprovalStatus;
   createdAt?: string;
+  // Set for account/identity verification requests: links the approval to a
+  // user and the uploaded identity document. Approving it activates the user.
+  userId?: string;
+  documentUrl?: string;
 }
 
 export interface Course {

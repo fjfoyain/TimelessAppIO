@@ -113,9 +113,10 @@ service cloud.firestore {
       allow create: if isAdmin();
     }
 
-    // Approvals: admin can read/write, any auth user can create
+    // Approvals: admins read/write all; a user may read their own
+    // verification request. Any authenticated user can create one.
     match /approvals/{approvalId} {
-      allow read: if isAdmin();
+      allow read: if isAdmin() || (isAuth() && resource.data.userId == request.auth.uid);
       allow create: if isAuth();
       allow update: if isAdmin();
     }

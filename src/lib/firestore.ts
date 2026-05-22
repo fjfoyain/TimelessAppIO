@@ -25,6 +25,7 @@ import {
   Event as AppEvent,
   Booking,
   Conversation,
+  PlanContext,
   Message,
   AppNotification,
   Service,
@@ -69,16 +70,26 @@ export async function createArtistProfile(
     stageName: string;
     genre: string;
     bio: string;
+    eventTypes: string[];
     instagram?: string;
     spotify?: string;
     soundcloud?: string;
   }
 ): Promise<void> {
-  await setDoc(doc(db, "artists", uid), {
+  // Build the doc explicitly so we never write `undefined` (Firestore rejects it).
+  const profileData: Record<string, unknown> = {
     userId: uid,
-    ...data,
+    stageName: data.stageName,
+    genre: data.genre,
+    bio: data.bio,
+    eventTypes: data.eventTypes,
     createdAt: serverTimestamp(),
-  });
+  };
+  if (data.instagram) profileData.instagram = data.instagram;
+  if (data.spotify) profileData.spotify = data.spotify;
+  if (data.soundcloud) profileData.soundcloud = data.soundcloud;
+
+  await setDoc(doc(db, "artists", uid), profileData);
 }
 
 export async function createClientProfile(
@@ -116,6 +127,7 @@ export async function createTalentProfile(
     experience: string;
     baseRate: number;
     ratePer: string;
+    eventTypes: string[];
     portfolioLink?: string;
   }
 ): Promise<void> {
@@ -132,6 +144,7 @@ export async function createTalentProfile(
     baseRate: data.baseRate,
     ratePer: data.ratePer,
     hourlyRate: data.baseRate,
+    eventTypes: data.eventTypes,
     city: "",
     bio: "",
     tags: [],
@@ -434,6 +447,48 @@ export async function createConversation(
   return ref.id;
 }
 
+// Returns the existing 1:1 conversation between two users, or creates one.
+// Optionally attaches the service-plan context that started the conversation.
+export async function getOrCreateConversation(
+  currentUserId: string,
+  currentUserName: string,
+  otherUserId: string,
+  otherUserName: string,
+  planContext?: PlanContext
+): Promise<string> {
+  const snap = await getDocs(
+    query(
+      collection(db, "conversations"),
+      where("participants", "array-contains", currentUserId)
+    )
+  );
+  const existing = snap.docs.find((d) => {
+    const parts = (d.data().participants as string[] | undefined) ?? [];
+    return parts.includes(otherUserId);
+  });
+
+  if (existing) {
+    // Attach plan context if the conversation doesn't already have one.
+    if (planContext && !existing.data().planContext) {
+      await updateDoc(existing.ref, { planContext });
+    }
+    return existing.id;
+  }
+
+  const ref = await addDoc(collection(db, "conversations"), {
+    participants: [currentUserId, otherUserId],
+    participantNames: {
+      [currentUserId]: currentUserName,
+      [otherUserId]: otherUserName,
+    },
+    lastMessage: "",
+    lastMessageTime: serverTimestamp(),
+    ...(planContext ? { planContext } : {}),
+    createdAt: serverTimestamp(),
+  });
+  return ref.id;
+}
+
 export function subscribeToConversations(
   userId: string,
   callback: (convos: Conversation[]) => void
@@ -623,7 +678,55 @@ export async function getApprovals(status?: ApprovalStatus): Promise<Approval[]>
 }
 
 export async function updateApprovalStatus(id: string, status: ApprovalStatus): Promise<void> {
-  await updateDoc(doc(db, "approvals", id), { status });
+  const ref = doc(db, "approvals", id);
+  const snap = await getDoc(ref);
+  await updateDoc(ref, { status });
+
+  // If this approval is tied to a user (identity verification), resolving it
+  // also flips the user's account status: approved → active, rejected → rejected.
+  const userId = snap.exists() ? (snap.data().userId as string | undefined) : undefined;
+  if (userId) {
+    if (status === "approved") {
+      await updateDoc(doc(db, "users", userId), { status: UserStatus.ACTIVE });
+    } else if (status === "rejected") {
+      await updateDoc(doc(db, "users", userId), { status: UserStatus.REJECTED });
+    }
+  }
+}
+
+// ─── Account / Identity Verification ─────────────────────────────
+
+// Creates a pending verification request that admins review. The uploaded
+// document lives in Storage; only its URL is stored here.
+export async function submitIdentityVerification(data: {
+  userId: string;
+  name: string;
+  idType: string;
+  documentUrl: string;
+}): Promise<string> {
+  const ref = await addDoc(collection(db, "approvals"), {
+    userId: data.userId,
+    name: data.name,
+    type: "Identity",
+    status: "pending",
+    documentUrl: data.documentUrl,
+    description: `Identity verification — ${data.idType} submitted for review.`,
+    avatar: data.name.charAt(0).toUpperCase(),
+    submittedDate: new Date().toISOString().slice(0, 10),
+    createdAt: serverTimestamp(),
+  });
+  return ref.id;
+}
+
+// Returns the user's most recent verification request, if any.
+export async function getUserVerification(userId: string): Promise<Approval | null> {
+  const snap = await getDocs(
+    query(collection(db, "approvals"), where("userId", "==", userId))
+  );
+  if (snap.empty) return null;
+  const items = snap.docs.map((d) => docToData<Approval>(d));
+  items.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+  return items[0];
 }
 
 // ─── Update Helpers (for post-upload doc updates) ────────────────

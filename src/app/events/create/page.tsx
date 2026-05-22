@@ -8,6 +8,7 @@ import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import AccountGate from "@/components/AccountGate";
 import { useAuth } from "@/contexts/AuthContext";
 import { getVenues, createEvent, updateEvent } from "@/lib/firestore";
 import { uploadEventImage } from "@/lib/storage";
@@ -159,6 +160,7 @@ export default function CreateEventPage() {
 
         <main className="relative z-10 pt-24 pb-16">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <AccountGate action="create events">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
               <div>
@@ -536,6 +538,7 @@ export default function CreateEventPage() {
                 </div>
               </div>
             </div>
+            </AccountGate>
           </div>
         </main>
 

@@ -6,6 +6,7 @@ import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { isAccountActive } from "@/components/AccountGate";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWallet, useTransactions } from "@/hooks/useFirestore";
 import type { TransactionSource } from "@/types";
@@ -290,6 +291,8 @@ function WithdrawModal({
 
 function WalletContent() {
   const { user } = useAuth();
+  // Withdrawing funds is a trust action — blocked until the account is approved.
+  const pendingApproval = !!user && !isAccountActive(user);
   const { wallet, loading: walletLoading, addFunds, withdraw } = useWallet(user?.id);
   const { transactions, loading: txLoading } = useTransactions(user?.id);
   const [showAddFunds, setShowAddFunds] = useState(false);
@@ -342,7 +345,7 @@ function WalletContent() {
                 className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition"
               >
                 <span className="material-icons text-sm">receipt_long</span>
-                Statement
+                Transaction History
               </Link>
             </div>
           </div>
@@ -373,7 +376,9 @@ function WalletContent() {
                     </button>
                     <button
                       onClick={() => setShowWithdraw(true)}
-                      className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-bold transition"
+                      disabled={pendingApproval}
+                      title={pendingApproval ? "Available once your account is approved" : undefined}
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-green-600 hover:bg-green-700 text-white text-sm font-bold transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <span className="material-icons text-sm">account_balance</span>
                       Withdraw
@@ -501,7 +506,9 @@ function WalletContent() {
                   </button>
                   <button
                     onClick={() => setShowWithdraw(true)}
-                    className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition text-left"
+                    disabled={pendingApproval}
+                    title={pendingApproval ? "Available once your account is approved" : undefined}
+                    className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition text-left disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <span className="material-icons text-primary">request_quote</span>
                     <span className="text-sm text-white font-medium">Withdraw</span>

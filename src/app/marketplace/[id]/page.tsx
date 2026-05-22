@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
@@ -7,7 +8,10 @@ import Navbar from "@/components/landing/Navbar";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import Footer from "@/components/landing/Footer";
 import { useTalentProfile } from "@/hooks/useFirestore";
-import { mockTalents } from "@/data/mockTalents";
+import { useAuth } from "@/contexts/AuthContext";
+import { isAccountActive } from "@/components/AccountGate";
+import { getOrCreateConversation, sendMessage } from "@/lib/firestore";
+import type { ServicePlan } from "@/types";
 
 function getAverageRating(reviews: { rating: number }[]): number {
   if (reviews.length === 0) return 0;
@@ -17,12 +21,11 @@ function getAverageRating(reviews: { rating: number }[]): number {
 export default function TalentProfilePage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const { user: currentUser } = useAuth();
   const { data: firestoreMatch, loading } = useTalentProfile(id);
+  const [starting, setStarting] = useState(false);
 
-  // Look up in mock data as well (demo entries have their own IDs)
-  const mockMatch = mockTalents.find((t) => t.talent.id === id);
-  const match = firestoreMatch || (!loading ? mockMatch ?? null : null);
-  const isDemo = !!match?.talent.isDemo;
+  const match = firestoreMatch;
 
   if (loading || !match) {
     return (
@@ -42,6 +45,43 @@ export default function TalentProfilePage() {
 
   const { talent, user } = match;
   const avgRating = getAverageRating(talent.reviews);
+  // A signed-in but not-yet-approved user can browse but not contact talent.
+  const pendingApproval = !!currentUser && !isAccountActive(currentUser);
+
+  // Opens (or creates) the chat with this talent. When a plan is passed, the
+  // conversation carries the plan context and an opening message is posted,
+  // so negotiation starts right in the chat.
+  async function startConversation(plan?: ServicePlan) {
+    if (!currentUser) {
+      router.push("/login");
+      return;
+    }
+    // Pending/suspended accounts can't start conversations yet.
+    if (!isAccountActive(currentUser)) return;
+    setStarting(true);
+    try {
+      const planContext = plan
+        ? { talentId: talent.id, planId: plan.id, planTitle: plan.title, planPrice: plan.price }
+        : undefined;
+      const convoId = await getOrCreateConversation(
+        currentUser.id,
+        currentUser.name,
+        talent.userId,
+        user.name,
+        planContext
+      );
+      if (plan) {
+        await sendMessage(
+          convoId,
+          currentUser.id,
+          `Hi ${user.name.split(" ")[0]}! I'm interested in your "${plan.title}" plan ($${plan.price}). I'd like to discuss the details and timeline.`
+        );
+      }
+      router.push(`/messages?convo=${convoId}`);
+    } catch {
+      setStarting(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background-dark">
@@ -50,16 +90,6 @@ export default function TalentProfilePage() {
 
       <main className="relative z-10 pt-24 pb-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Demo profile banner */}
-          {isDemo && (
-            <div className="flex items-center gap-3 mb-6 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm">
-              <span className="material-icons text-base flex-shrink-0">auto_awesome</span>
-              <span>
-                <span className="font-bold">Demo Profile</span> — This is a showcase entry illustrating the kind of world-class talent you can connect with on Timeless. Real profiles appear once verified talent accounts are created.
-              </span>
-            </div>
-          )}
-
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-sm text-slate-500 mb-8">
             <Link href="/marketplace" className="hover:text-primary transition-colors">
@@ -256,6 +286,15 @@ export default function TalentProfilePage() {
             {/* Right Column (Sticky) */}
             <div className="space-y-4">
               <div className="lg:sticky lg:top-24 space-y-4">
+                {pendingApproval && (
+                  <div className="rounded-xl bg-amber-500/10 border border-amber-500/20 p-3 text-xs text-amber-300 flex items-start gap-2">
+                    <span className="material-icons text-sm">hourglass_top</span>
+                    <span>
+                      Your account is pending approval. You&apos;ll be able to
+                      contact talent once it&apos;s active.
+                    </span>
+                  </div>
+                )}
                 {/* Service Plans */}
                 {talent.servicePlans.map((plan) => (
                   <div
@@ -279,10 +318,12 @@ export default function TalentProfilePage() {
                       ))}
                     </ul>
                     <button
-                      onClick={() => router.push(`/booking/contract?talent=${talent.id}&plan=${plan.id}`)}
-                      className="w-full mt-4 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary-dark transition btn-glow"
+                      onClick={() => startConversation(plan)}
+                      disabled={starting || pendingApproval}
+                      className="w-full mt-4 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary-dark transition btn-glow disabled:opacity-50 flex items-center justify-center gap-2"
                     >
-                      Select Plan
+                      <span className="material-icons text-sm">forum</span>
+                      {starting ? "Opening chat..." : "Discuss this Plan"}
                     </button>
                   </div>
                 ))}
@@ -295,8 +336,9 @@ export default function TalentProfilePage() {
                     Reach out to discuss your project
                   </p>
                   <button
-                    onClick={() => router.push(`/messages?to=${talent.userId}`)}
-                    className="w-full mt-4 py-3 rounded-lg border border-primary text-primary font-semibold hover:bg-primary/10 transition"
+                    onClick={() => startConversation()}
+                    disabled={starting || pendingApproval}
+                    className="w-full mt-4 py-3 rounded-lg border border-primary text-primary font-semibold hover:bg-primary/10 transition disabled:opacity-50"
                   >
                     Contact {user.name.split(" ")[0]}
                   </button>

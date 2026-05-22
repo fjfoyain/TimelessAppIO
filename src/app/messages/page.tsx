@@ -8,6 +8,7 @@ import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import { useConversations, useMessages, useBookings } from "@/hooks/useFirestore";
+import { maskContactInfo } from "@/lib/chat";
 
 function formatTime(dateString?: string): string {
   if (!dateString) return "";
@@ -33,17 +34,28 @@ function MessagesContent() {
   const { user } = useAuth();
   const searchParams = useSearchParams();
   const toUserId = searchParams.get("to");
+  const convoParam = searchParams.get("convo");
   const { conversations, loading: convosLoading } = useConversations(user?.id);
   const { bookings, loading: bookingsLoading } = useBookings(user?.id);
   const [activeConvoId, setActiveConvoId] = useState<string | undefined>(undefined);
   const { messages, loading: msgsLoading, sendMessage } = useMessages(activeConvoId);
   const [newMessage, setNewMessage] = useState("");
+  const [contactMasked, setContactMasked] = useState(false);
   const [tab, setTab] = useState<"messages" | "contracts">("messages");
   const [showChat, setShowChat] = useState(false);
   const latestBooking = bookings.length > 0 ? bookings[0] : null;
 
   useEffect(() => {
     if (convosLoading || activeConvoId) return;
+    // Opened from a talent profile ("Discuss this Plan" / "Contact").
+    if (convoParam) {
+      const byId = conversations.find((c) => c.id === convoParam);
+      if (byId) {
+        setActiveConvoId(byId.id);
+        setShowChat(true);
+        return;
+      }
+    }
     if (toUserId) {
       const match = conversations.find((c) =>
         c.participants?.includes(toUserId) ||
@@ -58,7 +70,7 @@ function MessagesContent() {
     if (conversations.length > 0) {
       setActiveConvoId(conversations[0].id);
     }
-  }, [conversations, convosLoading, activeConvoId, toUserId]);
+  }, [conversations, convosLoading, activeConvoId, toUserId, convoParam]);
 
   const activeConvo = conversations.find((c) => c.id === activeConvoId);
 
@@ -77,7 +89,10 @@ function MessagesContent() {
 
   const handleSend = async () => {
     if (!newMessage.trim() || !user?.id) return;
-    await sendMessage(user.id, newMessage.trim());
+    // Hide phone numbers / emails so deals stay on the platform.
+    const { text, masked } = maskContactInfo(newMessage.trim());
+    setContactMasked(masked);
+    await sendMessage(user.id, text);
     setNewMessage("");
   };
 
@@ -244,6 +259,13 @@ function MessagesContent() {
 
             {/* Message Input */}
             <div className="px-3 py-3 sm:px-6 sm:py-4 border-t border-white/5 bg-surface-dark/30 backdrop-blur-xl">
+              {contactMasked && (
+                <p className="mb-2 text-xs text-amber-400 flex items-center gap-1.5">
+                  <span className="material-icons text-sm">shield</span>
+                  Phone numbers and emails are hidden — keep deals on Timeless for
+                  your protection.
+                </p>
+              )}
               <div className="flex items-center gap-2 sm:gap-3">
                 <button className="w-11 h-11 flex items-center justify-center text-slate-500 hover:text-white transition shrink-0" aria-label="Attach file">
                   <span className="material-icons">attach_file</span>
@@ -251,7 +273,10 @@ function MessagesContent() {
                 <input
                   type="text"
                   value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
+                  onChange={(e) => {
+                    setNewMessage(e.target.value);
+                    if (contactMasked) setContactMasked(false);
+                  }}
                   onKeyDown={handleKeyDown}
                   placeholder="Type a message..."
                   className="flex-1 bg-surface-input border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition"
@@ -270,6 +295,27 @@ function MessagesContent() {
           {/* Right: Contract / Booking Details */}
           <div className="w-72 lg:w-80 border-l border-white/5 bg-surface-dark/30 backdrop-blur-xl p-6 overflow-y-auto hidden lg:block">
             <h3 className="text-lg font-bold text-white mb-4">Contract Details</h3>
+
+            {activeConvo?.planContext && (
+              <div className="mb-5 p-4 rounded-xl bg-primary/5 border border-primary/20">
+                <p className="text-xs font-semibold uppercase tracking-wider text-primary-light mb-2">
+                  Plan under discussion
+                </p>
+                <p className="text-sm font-semibold text-white">
+                  {activeConvo.planContext.planTitle}
+                </p>
+                <p className="text-lg font-bold text-primary mt-0.5">
+                  ${activeConvo.planContext.planPrice}
+                </p>
+                <Link
+                  href={`/booking/contract?talent=${activeConvo.planContext.talentId}&plan=${activeConvo.planContext.planId}`}
+                  className="mt-3 w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition"
+                >
+                  <span className="material-icons text-sm">draw</span>
+                  Proceed to contract
+                </Link>
+              </div>
+            )}
 
             {bookingsLoading ? (
               <div className="flex items-center justify-center py-12">
