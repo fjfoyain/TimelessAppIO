@@ -42,6 +42,9 @@ import {
   TransactionSource,
   TransactionStatus,
   Course,
+  Project,
+  ProjectStatus,
+  PortfolioItem,
 } from "@/types";
 
 interface CreateUserProfileData {
@@ -1103,4 +1106,56 @@ export async function updateEventStatus(
   status: string
 ): Promise<void> {
   await updateDoc(doc(db, "events", eventId), { status });
+}
+
+// ─── Projects (Kanban) ──────────────────────────────────────────
+
+export async function createProject(data: {
+  userId: string;
+  title: string;
+  client?: string;
+  notes?: string;
+  status?: ProjectStatus;
+}): Promise<string> {
+  const docData: Record<string, unknown> = {
+    userId: data.userId,
+    title: data.title,
+    status: data.status || "inquiry",
+    createdAt: serverTimestamp(),
+  };
+  if (data.client) docData.client = data.client;
+  if (data.notes) docData.notes = data.notes;
+
+  const ref = await addDoc(collection(db, "projects"), docData);
+  return ref.id;
+}
+
+export async function getUserProjects(userId: string): Promise<Project[]> {
+  const snap = await getDocs(
+    query(collection(db, "projects"), where("userId", "==", userId))
+  );
+  const items = snap.docs.map((d) => docToData<Project>(d));
+  // Sort newest first without needing a composite index.
+  items.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+  return items;
+}
+
+export async function updateProjectStatus(
+  id: string,
+  status: ProjectStatus
+): Promise<void> {
+  await updateDoc(doc(db, "projects", id), { status });
+}
+
+export async function deleteProject(id: string): Promise<void> {
+  await deleteDoc(doc(db, "projects", id));
+}
+
+// ─── Talent Portfolio ───────────────────────────────────────────
+
+export async function updateTalentPortfolio(
+  uid: string,
+  portfolio: PortfolioItem[]
+): Promise<void> {
+  await updateDoc(doc(db, "talents", uid), { portfolio });
 }

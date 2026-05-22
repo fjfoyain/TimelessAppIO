@@ -128,6 +128,13 @@ service cloud.firestore {
       allow update: if isOwner(userId);
     }
 
+    // Projects: private kanban — owner only.
+    match /projects/{projectId} {
+      allow read: if isAuth() && resource.data.userId == request.auth.uid;
+      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isAuth() && resource.data.userId == request.auth.uid;
+    }
+
     // Transactions: owner only. A user may only create transactions for
     // themselves. NOTE: amounts are still client-controlled — see S1 in
     // ACTION_PLAN.md (move wallet movements to Cloud Functions before

@@ -345,8 +345,21 @@ Revisión de la conversación con el PO. Implementado:
 **Limpieza** *(añadido 2026-05-21)*
 - Las 4 páginas **`/onboarding/*`** se eliminaron (eran huérfanas y redundantes con el registro).
 
-### Pendiente
+**Kanban de proyectos** *(añadido 2026-05-21)*
+- Nueva colección `projects` con CRUD (`createProject`, `getUserProjects`, `updateProjectStatus`, `deleteProject`), hook `useProjects` y reglas de Firestore (privado, solo el dueño).
+- `/dashboard/projects` reescrito: kanban real de 3 columnas (Inquiries → In Progress → Completed), con "New Project" (modal), avanzar/retroceder tarjetas y borrarlas. Ya no depende de los eventos.
 
-- **`/dashboard/projects`** (kanban): sigue estático, sin conectar a datos reales — requiere una colección `projects` con CRUD.
-- **Edición de portafolio del talento/artista** (tras la aprobación): aún sin página propia; hoy `/settings` cubre nombre, bio, avatar y link de portafolio, pero no la galería de portafolio.
-- *Re-seed recomendado:* correr de nuevo `node scripts/seed-demo.js` para que los talentos sembrados reciban `eventTypes` (necesario para que el filtro por tipo de evento muestre resultados).
+**Gestión de portafolio** *(añadido 2026-05-21)*
+- Nueva página **`/dashboard/portfolio`**: el talento sube imágenes (a Storage `portfolio/{uid}/`), les pone caption y las quita; se guardan en `talents/{uid}.portfolio` y aparecen en su ficha pública del marketplace.
+- `uploadPortfolioImage` (Storage) + `updateTalentPortfolio` (Firestore) + regla de Storage para `portfolio/{uid}/`.
+- Enlazada desde el dashboard del talento ("My Portfolio").
+
+### Acciones requeridas tras este bloque
+
+- **Re-desplegar reglas:** `firebase deploy --only firestore:rules,storage` (nuevas reglas para `projects` y para Storage `portfolio/`).
+- **Re-seed:** correr de nuevo `node scripts/seed-demo.js` para que los talentos sembrados reciban `eventTypes` (necesario para el filtro por tipo de evento del marketplace).
+
+### Pendiente (menores, de auditorías previas)
+
+- S1 (wallet manipulable — diferido hasta cobros reales), S5 (parte de `services` en Storage), A2 (contraste), P2 (metadata SEO por página).
+- El portafolio de **artistas** (colección `artists`) no tiene superficie pública aún; la página de portafolio cubre talentos.

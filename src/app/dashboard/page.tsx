@@ -48,7 +48,8 @@ const roleStats: Record<string, { label: string; value: string; icon: string }[]
 const roleActions: Record<string, { label: string; description: string; icon: string; href: string }[]> = {
   [UserRole.TALENT]: [
     { label: "Browse Marketplace", description: "Discover talent and opportunities", icon: "storefront", href: "/marketplace" },
-    { label: "Edit Profile", description: "Update your portfolio and rates", icon: "edit", href: "/settings" },
+    { label: "My Portfolio", description: "Add and manage your work samples", icon: "collections", href: "/dashboard/portfolio" },
+    { label: "Edit Profile", description: "Update your name, bio and rates", icon: "edit", href: "/settings" },
     { label: "Messages", description: "Check conversations", icon: "chat", href: "/messages" },
   ],
   [UserRole.ARTIST]: [
@@ -63,7 +64,7 @@ const roleActions: Record<string, { label: string; description: string; icon: st
   ],
   [UserRole.VENUE]: [
     { label: "Browse Marketplace", description: "Find talent for your venue", icon: "storefront", href: "/marketplace" },
-    { label: "Edit Venue", description: "Update venue details", icon: "edit", href: "/settings" },
+    { label: "Edit Venue", description: "Update venue name, address and details", icon: "edit", href: "/dashboard/venue/edit" },
     { label: "Manage Bookings", description: "View upcoming events", icon: "calendar_month", href: "/booking" },
   ],
 };

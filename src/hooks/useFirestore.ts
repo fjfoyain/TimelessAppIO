@@ -36,6 +36,10 @@ import {
   getMonthlyRevenue,
   getTopCategories,
   getMonthlyUserSignups,
+  getUserProjects,
+  createProject as fbCreateProject,
+  updateProjectStatus as fbUpdateProjectStatus,
+  deleteProject as fbDeleteProject,
 } from "@/lib/firestore";
 import type {
   Event as AppEvent,
@@ -56,6 +60,8 @@ import type {
   TalentWithUser,
   Venue,
   Course,
+  Project,
+  ProjectStatus,
 } from "@/types";
 
 // ─── Events ──────────────────────────────────────────────────────
@@ -552,4 +558,50 @@ export function useMonthlyUserSignups() {
   }, []);
 
   return { data, loading };
+}
+
+// ─── Projects (Kanban) ──────────────────────────────────────────
+
+export function useProjects(userId: string | undefined) {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const refresh = useCallback(async () => {
+    if (!userId) {
+      setProjects([]);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    try {
+      setProjects(await getUserProjects(userId));
+    } finally {
+      setLoading(false);
+    }
+  }, [userId]);
+
+  useEffect(() => { refresh(); }, [refresh]);
+
+  const createProject = async (data: {
+    title: string;
+    client?: string;
+    notes?: string;
+    status?: ProjectStatus;
+  }) => {
+    if (!userId) return;
+    await fbCreateProject({ userId, ...data });
+    await refresh();
+  };
+
+  const moveProject = async (id: string, status: ProjectStatus) => {
+    await fbUpdateProjectStatus(id, status);
+    await refresh();
+  };
+
+  const deleteProject = async (id: string) => {
+    await fbDeleteProject(id);
+    await refresh();
+  };
+
+  return { projects, loading, createProject, moveProject, deleteProject, refresh };
 }

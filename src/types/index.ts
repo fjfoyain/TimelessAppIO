@@ -341,6 +341,18 @@ export interface Approval {
   documentUrl?: string;
 }
 
+export type ProjectStatus = "inquiry" | "active" | "completed";
+
+export interface Project {
+  id: string;
+  userId: string;
+  title: string;
+  client?: string;
+  notes?: string;
+  status: ProjectStatus;
+  createdAt?: string;
+}
+
 export interface Course {
   id: string;
   title: string;

@@ -128,6 +128,27 @@ export async function uploadArtistPortfolio(
   return result.downloadURL;
 }
 
+// Portfolio images shown publicly on a talent's marketplace profile.
+export async function uploadPortfolioImage(
+  userId: string,
+  file: File,
+  onProgress?: (progress: number) => void
+): Promise<string> {
+  const v = validateFile(file, {
+    maxSize: MAX_IMAGE_SIZE,
+    allowedTypes: ALLOWED_IMAGE_TYPES,
+  });
+  if (!v.valid) throw new Error(v.error);
+
+  const ext = file.name.split(".").pop() || "jpg";
+  const result = await uploadFile(
+    file,
+    `portfolio/${userId}/${Date.now()}.${ext}`,
+    onProgress
+  );
+  return result.downloadURL;
+}
+
 // Identity documents (cédula / passport / RUC) for account verification.
 // Stored privately — never publicly readable.
 export async function uploadIdentityDocument(
