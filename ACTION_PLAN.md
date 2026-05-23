@@ -328,6 +328,7 @@ Revisión de la conversación con el PO. Implementado:
 **Página de eventos**
 - Nueva página pública **`/events`** para explorar eventos publicados (con búsqueda).
 - Footer ("Discover Events", "Events Calendar") y la tarjeta "Events" de `/search` ahora apuntan a `/events`.
+- Páginas de detalle **`/events/[id]`** y **`/venues/[id]`**: las tarjetas de las listas de eventos y venues ahora son clicables y abren la vista completa (`getEventById` / `getVenueById`).
 
 **Blog (SEO)**
 - Blog estático basado en archivos: `src/data/blogPosts.ts` (3 posts iniciales) + índice `/blog` + posts `/blog/[slug]`.

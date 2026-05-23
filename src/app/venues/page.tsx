@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
@@ -107,9 +108,10 @@ export default function VenuesPage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {filtered.map((v) => (
-                <div
+                <Link
                   key={v.id}
-                  className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6 hover:border-primary/20 transition-colors"
+                  href={`/venues/${v.id}`}
+                  className="block bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-2xl p-6 hover:border-primary/20 hover:-translate-y-0.5 transition-all"
                 >
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
@@ -147,7 +149,7 @@ export default function VenuesPage() {
                       ))}
                     </div>
                   )}
-                </div>
+                </Link>
               ))}
             </div>
           )}

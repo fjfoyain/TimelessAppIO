@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
@@ -101,9 +102,10 @@ export default function EventsPage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {filtered.map((event) => (
-                <article
+                <Link
                   key={event.id}
-                  className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden hover:border-primary/20 transition-colors"
+                  href={`/events/${event.id}`}
+                  className="block bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden hover:border-primary/20 hover:-translate-y-0.5 transition-all"
                 >
                   {event.image ? (
                     <div className="h-44 relative">
@@ -152,7 +154,7 @@ export default function EventsPage() {
                       </p>
                     )}
                   </div>
-                </article>
+                </Link>
               ))}
             </div>
           )}

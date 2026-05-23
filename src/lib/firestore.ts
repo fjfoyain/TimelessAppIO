@@ -274,6 +274,11 @@ export async function getVenues(): Promise<Venue[]> {
   return snap.docs.map((d) => docToData<Venue>(d));
 }
 
+export async function getVenueById(id: string): Promise<Venue | null> {
+  const snap = await getDoc(doc(db, "venues", id));
+  return snap.exists() ? docToData<Venue>(snap) : null;
+}
+
 // ─── Talents (marketplace) ───────────────────────────────────────
 
 export async function getAllTalents(): Promise<TalentWithUser[]> {
