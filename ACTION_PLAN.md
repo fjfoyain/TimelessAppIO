@@ -364,3 +364,38 @@ Revisión de la conversación con el PO. Implementado:
 
 - S1 (wallet manipulable — diferido hasta cobros reales), S5 (parte de `services` en Storage), A2 (contraste), P2 (metadata SEO por página).
 - El portafolio de **artistas** (colección `artists`) no tiene superficie pública aún; la página de portafolio cubre talentos.
+
+---
+
+## 12. Ciclo de cierre: negociación, firma, payout y reseñas (2026-05-22)
+
+Pedido del product owner. Implementadas las 4 piezas factibles sin tocar el procesador de pagos (S1 sigue diferido).
+
+**Negociación de tarifa en el chat (estilo inDriver)**
+- `Conversation` lleva ahora un campo `negotiation` con `currentOffer`, `proposedBy`, `acceptedBy`, `status`.
+- Funciones `proposeOffer` y `acceptOffer` en `firestore.ts` que actualizan la conversación **y** publican un mensaje en el chat ("💲 Marco proposed $200", "✅ Pancho accepted — agreed at $200"), así queda auditable en la línea de tiempo.
+- Panel del chat: muestra la oferta actual, botón "Accept" para la contraparte, y "Counter/Propose" para enviar una contraoferta. Cuando ambos aceptan, status pasa a `agreed` y se activa **"Proceed to contract"** con el precio acordado.
+
+**Contrato con firma de ambas partes**
+- Nueva colección `contracts` con `{conversationId, clientId, talentId, planId, amount, escrowFee, total, clientSignedAt?, talentSignedAt?, status}`. Reglas: solo cliente y talento pueden leer/firmar; cualquiera de los dos puede crearlo.
+- `getOrCreateContract`, `getContractById`, `signContract`. La conversación guarda `contractId` cuando se genera el contrato.
+- `/booking/contract` reescrito: lee `?convo=` (o el path legacy `?talent=&plan=`), carga/crea el contrato, muestra el estado de firma de cada parte y un único botón "Sign as client" / "Sign as talent" que firma solo tu lado. Cuando ambos firmaron → "Contract fully signed". (El cobro real espera a S1.)
+
+**Cuenta bancaria / wallet del talento**
+- Nueva colección privada `payoutMethods/{uid}` (solo dueño + admin leen).
+- Nueva página **`/dashboard/payouts`**: formulario con dos secciones — cuenta bancaria (titular, banco, número, cédula) y wallet digital (PayPal/Stripe/Binance/MetaMask/otro + handle). Enlazada desde el dashboard de TALENT y VENUE.
+- Nota visible: el procesamiento de payouts aún no está activo (S1 diferido); guardar los datos ahora deja todo listo.
+
+**Reseñas de satisfacción**
+- Nueva colección pública `reviews` (lectura libre; cada cliente solo edita las suyas).
+- `addTalentReview` y `getTalentReviews` en `firestore.ts`.
+- En el chat, cuando el contrato queda *fully signed* y el usuario es el cliente, aparece un panel "Rate this experience" (estrellas + comentario). Al enviar se guarda en `reviews`.
+- La ficha del talento `/marketplace/[id]` ahora consume `reviews` (en vez de la legacy `talent.reviews[]`) y muestra el promedio + lista de comentarios.
+
+### Acciones requeridas tras este bloque
+
+- **Re-desplegar reglas**: `firebase deploy --only firestore:rules` (nuevas reglas para `contracts`, `payoutMethods` y `reviews`).
+
+### Diferido (depende del procesador de pagos — S1)
+
+- **Propinas** del cliente y **multas** por incumplimiento: ambas implican mover dinero. Mismo blocker que el saldo del wallet. Cuando definan el procesador (Stripe, PayPal, transferencia con comprobante, suscripción…) construimos esa capa encima de los datos ya modelados (cuentas bancarias guardadas, contratos firmados con monto acordado, reseñas).

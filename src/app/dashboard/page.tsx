@@ -49,6 +49,7 @@ const roleActions: Record<string, { label: string; description: string; icon: st
   [UserRole.TALENT]: [
     { label: "Browse Marketplace", description: "Discover talent and opportunities", icon: "storefront", href: "/marketplace" },
     { label: "My Portfolio", description: "Add and manage your work samples", icon: "collections", href: "/dashboard/portfolio" },
+    { label: "Payout Methods", description: "Bank account and wallet for payouts", icon: "account_balance", href: "/dashboard/payouts" },
     { label: "Edit Profile", description: "Update your name, bio and rates", icon: "edit", href: "/settings" },
     { label: "Messages", description: "Check conversations", icon: "chat", href: "/messages" },
   ],
@@ -65,6 +66,7 @@ const roleActions: Record<string, { label: string; description: string; icon: st
   [UserRole.VENUE]: [
     { label: "Browse Marketplace", description: "Find talent for your venue", icon: "storefront", href: "/marketplace" },
     { label: "Edit Venue", description: "Update venue name, address and details", icon: "edit", href: "/dashboard/venue/edit" },
+    { label: "Payout Methods", description: "Bank account and wallet for payouts", icon: "account_balance", href: "/dashboard/payouts" },
     { label: "Manage Bookings", description: "View upcoming events", icon: "calendar_month", href: "/booking" },
   ],
 };

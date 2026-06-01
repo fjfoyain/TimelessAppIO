@@ -249,6 +249,17 @@ export interface PlanContext {
   planPrice: number;
 }
 
+// Live price negotiation between the two chat participants. Each side can
+// propose a price; both must accept the same offer for status to become
+// "agreed", which unlocks "Proceed to contract".
+export interface Negotiation {
+  currentOffer: number;
+  proposedBy: string;
+  acceptedBy: string[];
+  status: "negotiating" | "agreed";
+  updatedAt?: string;
+}
+
 export interface Conversation {
   id: string;
   participants: string[];
@@ -259,6 +270,9 @@ export interface Conversation {
   // Set when the conversation was started from a talent's service plan,
   // so the chat can offer a "proceed to contract" shortcut.
   planContext?: PlanContext;
+  negotiation?: Negotiation;
+  // Set once a contract is generated from this conversation.
+  contractId?: string;
 }
 
 export interface Message {
@@ -339,6 +353,55 @@ export interface Approval {
   // user and the uploaded identity document. Approving it activates the user.
   userId?: string;
   documentUrl?: string;
+}
+
+// ─── Contracts (dual-sign) ───────────────────────────────────────
+
+export interface Contract {
+  id: string;
+  conversationId: string;
+  clientId: string;
+  clientName: string;
+  talentId: string;
+  talentName: string;
+  planId: string;
+  planTitle: string;
+  amount: number;
+  escrowFee: number;
+  total: number;
+  clientSignedAt?: string;
+  talentSignedAt?: string;
+  status: "pending" | "fully_signed" | "cancelled";
+  createdAt?: string;
+}
+
+// ─── Talent payout method ────────────────────────────────────────
+
+export interface PayoutMethod {
+  userId: string;
+  bank?: {
+    accountHolder: string;
+    bankName: string;
+    accountNumber: string;
+    idNumber?: string;
+  };
+  wallet?: {
+    provider: "paypal" | "stripe" | "binance" | "metamask" | "other";
+    handle: string;
+  };
+  updatedAt?: string;
+}
+
+// ─── Reviews ─────────────────────────────────────────────────────
+
+export interface TalentReview {
+  id: string;
+  talentId: string;
+  clientId: string;
+  clientName: string;
+  rating: number; // 1–5
+  comment: string;
+  createdAt?: string;
 }
 
 export type ProjectStatus = "inquiry" | "active" | "completed";

@@ -45,6 +45,10 @@ import {
   Project,
   ProjectStatus,
   PortfolioItem,
+  Negotiation,
+  Contract,
+  PayoutMethod,
+  TalentReview,
 } from "@/types";
 
 interface CreateUserProfileData {
@@ -1163,4 +1167,187 @@ export async function updateTalentPortfolio(
   portfolio: PortfolioItem[]
 ): Promise<void> {
   await updateDoc(doc(db, "talents", uid), { portfolio });
+}
+
+// ─── Price Negotiation (chat) ───────────────────────────────────
+
+// Records a price proposal on the conversation and posts a system-style
+// message so it shows up in the chat history. The proposer is treated as
+// having accepted their own offer.
+export async function proposeOffer(
+  conversationId: string,
+  proposerId: string,
+  proposerName: string,
+  amount: number
+): Promise<void> {
+  const negotiation: Negotiation = {
+    currentOffer: amount,
+    proposedBy: proposerId,
+    acceptedBy: [proposerId],
+    status: "negotiating",
+  };
+  await updateDoc(doc(db, "conversations", conversationId), { negotiation });
+  await sendMessage(
+    conversationId,
+    proposerId,
+    `💲 ${proposerName} proposed $${amount}`
+  );
+}
+
+// The other participant accepts the current offer. When both accept it,
+// negotiation moves to "agreed" and the contract can be generated.
+export async function acceptOffer(
+  conversationId: string,
+  userId: string,
+  userName: string,
+  current: Negotiation
+): Promise<void> {
+  if (current.acceptedBy.includes(userId)) return;
+  const acceptedBy = [...current.acceptedBy, userId];
+  const status: Negotiation["status"] = acceptedBy.length >= 2 ? "agreed" : "negotiating";
+  await updateDoc(doc(db, "conversations", conversationId), {
+    negotiation: { ...current, acceptedBy, status },
+  });
+  await sendMessage(
+    conversationId,
+    userId,
+    status === "agreed"
+      ? `✅ ${userName} accepted — agreed at $${current.currentOffer}`
+      : `👍 ${userName} accepted $${current.currentOffer}`
+  );
+}
+
+// ─── Contracts (dual-sign) ──────────────────────────────────────
+
+const ESCROW_RATE = 0.05;
+
+export async function getOrCreateContract(data: {
+  conversationId: string;
+  clientId: string;
+  clientName: string;
+  talentId: string;
+  talentName: string;
+  planId: string;
+  planTitle: string;
+  amount: number;
+}): Promise<Contract> {
+  // Look for an existing contract for this conversation first.
+  const existing = await getDocs(
+    query(
+      collection(db, "contracts"),
+      where("conversationId", "==", data.conversationId)
+    )
+  );
+  if (!existing.empty) {
+    return docToData<Contract>(existing.docs[0]);
+  }
+
+  const escrowFee = Math.round(data.amount * ESCROW_RATE * 100) / 100;
+  const total = data.amount + escrowFee;
+  const doc1 = {
+    conversationId: data.conversationId,
+    clientId: data.clientId,
+    clientName: data.clientName,
+    talentId: data.talentId,
+    talentName: data.talentName,
+    planId: data.planId,
+    planTitle: data.planTitle,
+    amount: data.amount,
+    escrowFee,
+    total,
+    status: "pending" as const,
+    createdAt: serverTimestamp(),
+  };
+  const ref = await addDoc(collection(db, "contracts"), doc1);
+  // Link the contract back to the conversation so the chat panel can find it.
+  await updateDoc(doc(db, "conversations", data.conversationId), {
+    contractId: ref.id,
+  });
+  const snap = await getDoc(ref);
+  return docToData<Contract>(snap);
+}
+
+export async function getContractById(id: string): Promise<Contract | null> {
+  const snap = await getDoc(doc(db, "contracts", id));
+  return snap.exists() ? docToData<Contract>(snap) : null;
+}
+
+export async function getConversationById(id: string): Promise<Conversation | null> {
+  const snap = await getDoc(doc(db, "conversations", id));
+  return snap.exists() ? docToData<Conversation>(snap) : null;
+}
+
+// Marks the current user's signature timestamp. Flips status to fully_signed
+// when both client and talent have signed.
+export async function signContract(
+  contractId: string,
+  userId: string
+): Promise<Contract> {
+  const ref = doc(db, "contracts", contractId);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) throw new Error("Contract not found");
+  const current = docToData<Contract>(snap);
+
+  const updates: Record<string, unknown> = {};
+  if (userId === current.clientId && !current.clientSignedAt) {
+    updates.clientSignedAt = new Date().toISOString();
+  } else if (userId === current.talentId && !current.talentSignedAt) {
+    updates.talentSignedAt = new Date().toISOString();
+  } else {
+    return current;
+  }
+
+  const clientSigned = !!(updates.clientSignedAt || current.clientSignedAt);
+  const talentSigned = !!(updates.talentSignedAt || current.talentSignedAt);
+  if (clientSigned && talentSigned) {
+    updates.status = "fully_signed";
+  }
+
+  await updateDoc(ref, updates);
+  const updatedSnap = await getDoc(ref);
+  return docToData<Contract>(updatedSnap);
+}
+
+// ─── Talent payout methods ──────────────────────────────────────
+
+export async function getPayoutMethod(uid: string): Promise<PayoutMethod | null> {
+  const snap = await getDoc(doc(db, "payoutMethods", uid));
+  return snap.exists() ? docToData<PayoutMethod>(snap) : null;
+}
+
+export async function savePayoutMethod(
+  uid: string,
+  data: Omit<PayoutMethod, "userId" | "updatedAt">
+): Promise<void> {
+  const ref = doc(db, "payoutMethods", uid);
+  await setDoc(
+    ref,
+    { userId: uid, ...data, updatedAt: serverTimestamp() },
+    { merge: false }
+  );
+}
+
+// ─── Reviews ────────────────────────────────────────────────────
+
+export async function addTalentReview(data: {
+  talentId: string;
+  clientId: string;
+  clientName: string;
+  rating: number;
+  comment: string;
+}): Promise<string> {
+  const ref = await addDoc(collection(db, "reviews"), {
+    ...data,
+    createdAt: serverTimestamp(),
+  });
+  return ref.id;
+}
+
+export async function getTalentReviews(talentId: string): Promise<TalentReview[]> {
+  const snap = await getDocs(
+    query(collection(db, "reviews"), where("talentId", "==", talentId))
+  );
+  const items = snap.docs.map((d) => docToData<TalentReview>(d));
+  items.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+  return items;
 }

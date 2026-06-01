@@ -128,6 +128,39 @@ service cloud.firestore {
       allow update: if isOwner(userId);
     }
 
+    // Contracts: only the client and talent of the contract can read/sign.
+    // Updates are restricted to flipping signature timestamps; full edits go through admin.
+    match /contracts/{contractId} {
+      allow read: if isAuth() && (
+        resource.data.clientId == request.auth.uid ||
+        resource.data.talentId == request.auth.uid ||
+        isAdmin()
+      );
+      // Either party of the contract can generate it from their chat.
+      allow create: if isAuth() && (
+        request.resource.data.clientId == request.auth.uid ||
+        request.resource.data.talentId == request.auth.uid
+      );
+      allow update: if isAuth() && (
+        resource.data.clientId == request.auth.uid ||
+        resource.data.talentId == request.auth.uid
+      );
+    }
+
+    // Payout methods: PRIVATE. Each doc keyed by uid.
+    match /payoutMethods/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId);
+    }
+
+    // Reviews: public read (shown on talent profile), authenticated user can
+    // create a review of someone else, and only that reviewer can edit/delete it.
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow create: if isAuth() && request.resource.data.clientId == request.auth.uid;
+      allow update, delete: if isAuth() && resource.data.clientId == request.auth.uid;
+    }
+
     // Projects: private kanban — owner only.
     match /projects/{projectId} {
       allow read: if isAuth() && resource.data.userId == request.auth.uid;

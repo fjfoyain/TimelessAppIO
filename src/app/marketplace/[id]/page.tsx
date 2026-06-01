@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
@@ -10,8 +10,8 @@ import Footer from "@/components/landing/Footer";
 import { useTalentProfile } from "@/hooks/useFirestore";
 import { useAuth } from "@/contexts/AuthContext";
 import { isAccountActive } from "@/components/AccountGate";
-import { getOrCreateConversation, sendMessage } from "@/lib/firestore";
-import type { ServicePlan } from "@/types";
+import { getOrCreateConversation, sendMessage, getTalentReviews } from "@/lib/firestore";
+import type { ServicePlan, TalentReview } from "@/types";
 
 function getAverageRating(reviews: { rating: number }[]): number {
   if (reviews.length === 0) return 0;
@@ -24,6 +24,12 @@ export default function TalentProfilePage() {
   const { user: currentUser } = useAuth();
   const { data: firestoreMatch, loading } = useTalentProfile(id);
   const [starting, setStarting] = useState(false);
+  const [reviews, setReviews] = useState<TalentReview[]>([]);
+
+  useEffect(() => {
+    if (!id) return;
+    getTalentReviews(id).then(setReviews).catch(() => {});
+  }, [id]);
 
   const match = firestoreMatch;
 
@@ -44,7 +50,7 @@ export default function TalentProfilePage() {
   }
 
   const { talent, user } = match;
-  const avgRating = getAverageRating(talent.reviews);
+  const avgRating = getAverageRating(reviews);
   // A signed-in but not-yet-approved user can browse but not contact talent.
   const pendingApproval = !!currentUser && !isAccountActive(currentUser);
 
@@ -129,11 +135,11 @@ export default function TalentProfilePage() {
 
               {/* Stats Row */}
               <div className="flex flex-wrap items-center gap-6 mt-4">
-                {talent.reviews.length > 0 && (
+                {reviews.length > 0 && (
                   <div className="flex items-center gap-1">
                     <span className="material-icons text-yellow-400 text-sm">star</span>
                     <span className="text-white font-semibold">{avgRating.toFixed(1)}</span>
-                    <span className="text-slate-500 text-sm">({talent.reviews.length} reviews)</span>
+                    <span className="text-slate-500 text-sm">({reviews.length} reviews)</span>
                   </div>
                 )}
                 {talent.jobsCompleted > 0 && (
@@ -239,13 +245,13 @@ export default function TalentProfilePage() {
               )}
 
               {/* Reviews */}
-              {talent.reviews.length > 0 && (
+              {reviews.length > 0 && (
                 <section>
                   <h2 className="text-xl font-semibold text-white mb-4">
-                    Reviews ({talent.reviews.length})
+                    Reviews ({reviews.length})
                   </h2>
                   <div className="space-y-4">
-                    {talent.reviews.map((review) => (
+                    {reviews.map((review) => (
                       <div
                         key={review.id}
                         className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-xl p-3 sm:p-5"
@@ -253,11 +259,15 @@ export default function TalentProfilePage() {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold text-primary-light">
-                              {review.author.charAt(0)}
+                              {review.clientName.charAt(0)}
                             </div>
                             <div>
-                              <p className="text-sm font-semibold text-white">{review.author}</p>
-                              <p className="text-xs text-slate-500">{review.timestamp}</p>
+                              <p className="text-sm font-semibold text-white">{review.clientName}</p>
+                              {review.createdAt && (
+                                <p className="text-xs text-slate-500">
+                                  {new Date(review.createdAt).toLocaleDateString()}
+                                </p>
+                              )}
                             </div>
                           </div>
                           <div className="flex items-center gap-0.5">

@@ -9,6 +9,13 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import { useConversations, useMessages, useBookings } from "@/hooks/useFirestore";
 import { maskContactInfo } from "@/lib/chat";
+import {
+  proposeOffer,
+  acceptOffer,
+  getContractById,
+  addTalentReview,
+} from "@/lib/firestore";
+import type { Contract } from "@/types";
 
 function formatTime(dateString?: string): string {
   if (!dateString) return "";
@@ -41,6 +48,13 @@ function MessagesContent() {
   const { messages, loading: msgsLoading, sendMessage } = useMessages(activeConvoId);
   const [newMessage, setNewMessage] = useState("");
   const [contactMasked, setContactMasked] = useState(false);
+  const [offerInput, setOfferInput] = useState("");
+  const [offerBusy, setOfferBusy] = useState(false);
+  const [activeContract, setActiveContract] = useState<Contract | null>(null);
+  const [rating, setRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewBusy, setReviewBusy] = useState(false);
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
   const [tab, setTab] = useState<"messages" | "contracts">("messages");
   const [showChat, setShowChat] = useState(false);
   const latestBooking = bookings.length > 0 ? bookings[0] : null;
@@ -73,6 +87,22 @@ function MessagesContent() {
   }, [conversations, convosLoading, activeConvoId, toUserId, convoParam]);
 
   const activeConvo = conversations.find((c) => c.id === activeConvoId);
+
+  // Load the contract attached to the active conversation (if any).
+  useEffect(() => {
+    setReviewSubmitted(false);
+    if (!activeConvo?.contractId) {
+      setActiveContract(null);
+      return;
+    }
+    let cancelled = false;
+    getContractById(activeConvo.contractId).then((c) => {
+      if (!cancelled) setActiveContract(c);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [activeConvo?.contractId]);
 
   const getOtherParticipantName = (convo: typeof conversations[number]): string => {
     if (!user?.id || !convo.participantNames) return "Unknown";
@@ -107,6 +137,50 @@ function MessagesContent() {
     setActiveConvoId(id);
     setShowChat(true);
   };
+
+  async function handlePropose() {
+    if (!user || !activeConvo) return;
+    const amount = parseFloat(offerInput);
+    if (!amount || amount <= 0) return;
+    setOfferBusy(true);
+    try {
+      await proposeOffer(activeConvo.id, user.id, user.name, amount);
+      setOfferInput("");
+    } finally {
+      setOfferBusy(false);
+    }
+  }
+
+  async function handleAcceptOffer() {
+    if (!user || !activeConvo?.negotiation) return;
+    setOfferBusy(true);
+    try {
+      await acceptOffer(activeConvo.id, user.id, user.name, activeConvo.negotiation);
+    } finally {
+      setOfferBusy(false);
+    }
+  }
+
+  async function handleSubmitReview() {
+    if (!user || !activeContract) return;
+    if (rating < 1 || rating > 5) return;
+    if (!reviewComment.trim()) return;
+    setReviewBusy(true);
+    try {
+      await addTalentReview({
+        talentId: activeContract.talentId,
+        clientId: user.id,
+        clientName: user.name,
+        rating,
+        comment: reviewComment.trim(),
+      });
+      setReviewSubmitted(true);
+      setReviewComment("");
+      setRating(5);
+    } finally {
+      setReviewBusy(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background-dark flex flex-col">
@@ -296,7 +370,7 @@ function MessagesContent() {
           <div className="w-72 lg:w-80 border-l border-white/5 bg-surface-dark/30 backdrop-blur-xl p-6 overflow-y-auto hidden lg:block">
             <h3 className="text-lg font-bold text-white mb-4">Contract Details</h3>
 
-            {activeConvo?.planContext && (
+            {activeConvo?.planContext && user && (
               <div className="mb-5 p-4 rounded-xl bg-primary/5 border border-primary/20">
                 <p className="text-xs font-semibold uppercase tracking-wider text-primary-light mb-2">
                   Plan under discussion
@@ -304,18 +378,136 @@ function MessagesContent() {
                 <p className="text-sm font-semibold text-white">
                   {activeConvo.planContext.planTitle}
                 </p>
-                <p className="text-lg font-bold text-primary mt-0.5">
-                  ${activeConvo.planContext.planPrice}
+                <p className="text-[11px] text-slate-500 mt-0.5">
+                  Listed at ${activeConvo.planContext.planPrice}
                 </p>
-                <Link
-                  href={`/booking/contract?talent=${activeConvo.planContext.talentId}&plan=${activeConvo.planContext.planId}`}
-                  className="mt-3 w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition"
-                >
-                  <span className="material-icons text-sm">draw</span>
-                  Proceed to contract
-                </Link>
+
+                <div className="mt-3 pt-3 border-t border-white/10">
+                  {activeConvo.negotiation?.status === "agreed" ? (
+                    <>
+                      <p className="text-xs text-green-400 flex items-center gap-1.5">
+                        <span className="material-icons text-sm">handshake</span>
+                        Agreed at
+                        <span className="font-bold ml-1">${activeConvo.negotiation.currentOffer}</span>
+                      </p>
+                      <Link
+                        href={`/booking/contract?convo=${activeConvo.id}&amount=${activeConvo.negotiation.currentOffer}`}
+                        className="mt-3 w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition"
+                      >
+                        <span className="material-icons text-sm">draw</span>
+                        Proceed to contract
+                      </Link>
+                    </>
+                  ) : (
+                    <>
+                      {activeConvo.negotiation && (
+                        <p className="text-xs text-slate-300 mb-2">
+                          Current offer:{" "}
+                          <span className="font-bold text-white">
+                            ${activeConvo.negotiation.currentOffer}
+                          </span>{" "}
+                          <span className="text-slate-500">
+                            (
+                            {activeConvo.negotiation.proposedBy === user.id
+                              ? "you"
+                              : activeConvo.participantNames?.[
+                                  activeConvo.negotiation.proposedBy
+                                ] ?? "the other party"}
+                            )
+                          </span>
+                        </p>
+                      )}
+                      {activeConvo.negotiation &&
+                        activeConvo.negotiation.proposedBy !== user.id &&
+                        !activeConvo.negotiation.acceptedBy.includes(user.id) && (
+                          <button
+                            onClick={handleAcceptOffer}
+                            disabled={offerBusy}
+                            className="w-full py-2 rounded-lg bg-green-500/15 border border-green-500/40 text-green-300 text-xs font-semibold hover:bg-green-500/25 transition disabled:opacity-50 mb-2"
+                          >
+                            Accept ${activeConvo.negotiation.currentOffer}
+                          </button>
+                        )}
+                      {activeConvo.negotiation &&
+                        activeConvo.negotiation.proposedBy === user.id && (
+                          <p className="text-[11px] text-slate-500 mb-2">
+                            Waiting for the other side to accept...
+                          </p>
+                        )}
+                      <div className="flex gap-2">
+                        <input
+                          type="number"
+                          min="1"
+                          value={offerInput}
+                          onChange={(e) => setOfferInput(e.target.value)}
+                          placeholder={
+                            activeConvo.negotiation
+                              ? "Counter"
+                              : `Propose (e.g. ${activeConvo.planContext.planPrice})`
+                          }
+                          className="flex-1 rounded-lg bg-surface-input border border-white/10 px-3 py-2 text-white placeholder-slate-500 text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                        <button
+                          onClick={handlePropose}
+                          disabled={!offerInput || offerBusy}
+                          className="px-3 py-2 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition disabled:opacity-50"
+                        >
+                          {activeConvo.negotiation ? "Counter" : "Propose"}
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             )}
+
+            {/* Post-contract review (visible to the client once both signed) */}
+            {activeContract?.status === "fully_signed" &&
+              user?.id === activeContract.clientId && (
+                <div className="mb-5 p-4 rounded-xl bg-surface-input/40 border border-white/10">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+                    Rate this experience
+                  </p>
+                  {reviewSubmitted ? (
+                    <p className="text-xs text-green-400 flex items-center gap-1.5">
+                      <span className="material-icons text-sm">check_circle</span>
+                      Thanks — your review is live.
+                    </p>
+                  ) : (
+                    <>
+                      <div className="flex gap-1 mb-2">
+                        {[1, 2, 3, 4, 5].map((n) => (
+                          <button
+                            key={n}
+                            type="button"
+                            onClick={() => setRating(n)}
+                            aria-label={`${n} star${n > 1 ? "s" : ""}`}
+                            className="text-yellow-400 hover:scale-110 transition-transform"
+                          >
+                            <span className="material-icons text-lg">
+                              {n <= rating ? "star" : "star_border"}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                      <textarea
+                        value={reviewComment}
+                        onChange={(e) => setReviewComment(e.target.value)}
+                        placeholder="How did it go? (visible on their profile)"
+                        rows={3}
+                        className="w-full rounded-lg bg-surface-input border border-white/10 px-3 py-2 text-white placeholder-slate-500 text-xs focus:outline-none focus:ring-2 focus:ring-primary resize-y"
+                      />
+                      <button
+                        onClick={handleSubmitReview}
+                        disabled={!reviewComment.trim() || reviewBusy}
+                        className="mt-2 w-full py-2 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition disabled:opacity-50"
+                      >
+                        {reviewBusy ? "Submitting..." : "Submit review"}
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
 
             {bookingsLoading ? (
               <div className="flex items-center justify-center py-12">

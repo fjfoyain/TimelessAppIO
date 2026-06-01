@@ -1,240 +1,308 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Navbar from "@/components/landing/Navbar";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import { getTalentWithUser } from "@/lib/firestore";
-import type { ServicePlan } from "@/types";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  getOrCreateContract,
+  getContractById,
+  getConversationById,
+  getTalentWithUser,
+  signContract,
+} from "@/lib/firestore";
+import type { Contract } from "@/types";
 
-const ESCROW_RATE = 0.05; // 5% escrow fee
+function SignatureBadge({ signedAt }: { signedAt?: string }) {
+  if (signedAt) {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs text-green-400 font-medium">
+        <span className="material-icons text-sm">check_circle</span>
+        Signed
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1 text-xs text-slate-500 font-medium">
+      <span className="material-icons text-sm">schedule</span>
+      Pending
+    </span>
+  );
+}
 
 function ContractContent() {
-  const router = useRouter();
+  const { user } = useAuth();
   const params = useSearchParams();
-  const talentId = params.get("talent") ?? "";
-  const planId = params.get("plan") ?? "";
+  const convoParam = params.get("convo");
+  const amountParam = params.get("amount");
+  const talentParam = params.get("talent");
+  const planParam = params.get("plan");
 
-  const [plan, setPlan] = useState<ServicePlan | null>(null);
-  const [talentName, setTalentName] = useState("Service Provider");
-  const [loadingPlan, setLoadingPlan] = useState(true);
-
-  const [agreed, setAgreed] = useState(false);
+  const [contract, setContract] = useState<Contract | null>(null);
+  const [loading, setLoading] = useState(true);
   const [signing, setSigning] = useState(false);
-  const [done, setDone] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
 
-  // Load the real plan + talent from Firestore.
   useEffect(() => {
+    if (!user) return;
     let active = true;
-    getTalentWithUser(talentId)
-      .then((res) => {
-        if (!active || !res) return;
-        setTalentName(res.user.name);
-        setPlan(res.talent.servicePlans.find((p) => p.id === planId) ?? null);
-      })
-      .finally(() => {
-        if (active) setLoadingPlan(false);
-      });
+
+    (async () => {
+      try {
+        // Preferred flow: convo carries planContext + (possibly) agreed price.
+        if (convoParam) {
+          const convo = await getConversationById(convoParam);
+          if (!convo || !convo.planContext) {
+            if (active) setErr("Conversation or plan not found.");
+            return;
+          }
+
+          // If a contract already exists for this conversation, just load it.
+          if (convo.contractId) {
+            const c = await getContractById(convo.contractId);
+            if (active) setContract(c);
+            return;
+          }
+
+          const pc = convo.planContext;
+          const clientId =
+            convo.participants.find((p) => p !== pc.talentId) || user.id;
+          const clientName = convo.participantNames?.[clientId] || "Client";
+          const talentName = convo.participantNames?.[pc.talentId] || "Talent";
+          const agreed = convo.negotiation?.status === "agreed";
+          const amount = amountParam
+            ? parseFloat(amountParam)
+            : agreed
+            ? convo.negotiation!.currentOffer
+            : pc.planPrice;
+
+          const c = await getOrCreateContract({
+            conversationId: convo.id,
+            clientId,
+            clientName,
+            talentId: pc.talentId,
+            talentName,
+            planId: pc.planId,
+            planTitle: pc.planTitle,
+            amount,
+          });
+          if (active) setContract(c);
+          return;
+        }
+
+        // Legacy direct path: ?talent=&plan=.
+        if (talentParam && planParam) {
+          const res = await getTalentWithUser(talentParam);
+          const plan = res?.talent.servicePlans.find((p) => p.id === planParam);
+          if (!res || !plan) {
+            if (active) setErr("Plan not found.");
+            return;
+          }
+          const c = await getOrCreateContract({
+            conversationId: `direct-${talentParam}-${planParam}-${user.id}`,
+            clientId: user.id,
+            clientName: user.name,
+            talentId: talentParam,
+            talentName: res.user.name,
+            planId: planParam,
+            planTitle: plan.title,
+            amount: amountParam ? parseFloat(amountParam) : plan.price,
+          });
+          if (active) setContract(c);
+          return;
+        }
+
+        if (active) setErr("Missing contract parameters.");
+      } catch (e) {
+        if (active) {
+          setErr(e instanceof Error ? e.message : "Failed to load contract.");
+        }
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+
     return () => {
       active = false;
     };
-  }, [talentId, planId]);
+  }, [user, convoParam, amountParam, talentParam, planParam]);
 
-  const escrowFee = plan ? Math.round(plan.price * ESCROW_RATE * 100) / 100 : 0;
-  const total = plan ? plan.price + escrowFee : 0;
-
-  const handleSignAndPay = async () => {
-    if (!agreed) return;
+  async function handleSign() {
+    if (!user || !contract) return;
     setSigning(true);
-    // Simulate async signing + payment
-    await new Promise((r) => setTimeout(r, 1500));
-    setSigning(false);
-    setDone(true);
-    setTimeout(() => router.push("/dashboard"), 2500);
-  };
-
-  if (done) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] text-center gap-4">
-        <span className="material-icons text-green-400 text-6xl">check_circle</span>
-        <h2 className="text-2xl font-bold text-white">Contract Signed &amp; Payment Authorized</h2>
-        <p className="text-gray-400 text-sm">
-          Funds are held in escrow until service completion. Redirecting to your dashboard…
-        </p>
-      </div>
-    );
+    try {
+      const updated = await signContract(contract.id, user.id);
+      setContract(updated);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Failed to sign.");
+    } finally {
+      setSigning(false);
+    }
   }
 
-  if (loadingPlan) {
-    return <div className="pt-40 text-center text-gray-500">Loading plan…</div>;
+  if (loading) {
+    return <div className="pt-40 text-center text-gray-500">Loading contract...</div>;
   }
 
-  if (!plan) {
+  if (err || !contract) {
     return (
-      <div className="mx-auto max-w-lg px-4 sm:px-6 pt-32 pb-24 text-center">
-        <span className="material-icons text-5xl text-slate-700">search_off</span>
-        <h1 className="text-xl font-bold text-white mt-4">Plan not found</h1>
-        <p className="text-sm text-gray-400 mt-2">
-          This service plan is no longer available. Browse the marketplace to find another.
-        </p>
+      <div className="mx-auto max-w-lg px-4 pt-32 pb-24 text-center">
+        <span className="material-icons text-5xl text-slate-700">description</span>
+        <h1 className="text-xl font-bold text-white mt-4">
+          {err || "Contract unavailable"}
+        </h1>
         <Link
-          href="/marketplace"
-          className="inline-flex items-center gap-1 mt-6 px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition"
+          href="/messages"
+          className="inline-block mt-6 px-5 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition"
         >
-          Back to marketplace
+          Back to messages
         </Link>
       </div>
     );
   }
 
+  const iAmClient = user?.id === contract.clientId;
+  const iAmTalent = user?.id === contract.talentId;
+  const mySignedAt = iAmClient
+    ? contract.clientSignedAt
+    : iAmTalent
+    ? contract.talentSignedAt
+    : undefined;
+  const otherSignedAt = iAmClient
+    ? contract.talentSignedAt
+    : iAmTalent
+    ? contract.clientSignedAt
+    : undefined;
+  const otherName = iAmClient ? contract.talentName : contract.clientName;
+  const fullySigned = contract.status === "fully_signed";
+
   return (
     <div className="mx-auto max-w-lg px-4 sm:px-6 pt-32 pb-24">
-      {/* Back */}
       <Link
-        href={`/marketplace/${talentId}`}
+        href="/messages"
         className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-primary transition-colors mb-8"
       >
         <span className="material-icons text-base">arrow_back</span>
-        Back to Profile
+        Back to messages
       </Link>
 
-      <div className="rounded-2xl border border-white/5 bg-surface-dark p-8 space-y-8">
-        {/* Header */}
+      <div className="rounded-2xl border border-white/5 bg-surface-dark p-8 space-y-7">
         <div>
           <p className="text-xs font-semibold uppercase tracking-widest text-primary-light mb-1">
-            Contract Finalization
+            Service Agreement
           </p>
-          <h1 className="text-2xl font-bold text-white">Contract &amp; Payment</h1>
+          <h1 className="text-2xl font-bold text-white">Contract &amp; Signatures</h1>
           <p className="mt-1 text-sm text-gray-400">
-            Review the details below before signing and authorizing payment.
+            Both parties must sign before this agreement is binding on the platform.
           </p>
         </div>
 
-        {/* Provider info */}
-        <div className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/5">
-          <div className="w-10 h-10 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-sm font-bold text-primary-light">
-            {talentName.charAt(0).toUpperCase()}
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-white">{talentName}</p>
-            <p className="text-xs text-gray-500">{plan.title}</p>
-          </div>
-        </div>
-
-        {/* Selected plan */}
+        {/* Parties */}
         <div className="space-y-3">
           <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-500">
-            Selected Plan
+            Parties
           </h2>
-          <p className="text-sm font-semibold text-white">{plan.title}</p>
-          {plan.description && (
-            <p className="text-xs text-gray-400 leading-relaxed">{plan.description}</p>
-          )}
-          {plan.includes.length > 0 && (
-            <ul className="space-y-1.5 pt-1">
-              {plan.includes.map((item, i) => (
-                <li key={i} className="flex items-center gap-2 text-xs text-gray-300">
-                  <span className="material-icons text-green-400 text-sm">check_circle</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          )}
+          <div className="flex items-center justify-between p-3 rounded-xl bg-white/[0.03] border border-white/5">
+            <div>
+              <p className="text-xs text-gray-500">Client</p>
+              <p className="text-sm font-medium text-white">{contract.clientName}</p>
+              {contract.clientSignedAt && (
+                <p className="text-[10px] text-slate-500 mt-0.5">
+                  Signed {new Date(contract.clientSignedAt).toLocaleString()}
+                </p>
+              )}
+            </div>
+            <SignatureBadge signedAt={contract.clientSignedAt} />
+          </div>
+          <div className="flex items-center justify-between p-3 rounded-xl bg-white/[0.03] border border-white/5">
+            <div>
+              <p className="text-xs text-gray-500">Talent</p>
+              <p className="text-sm font-medium text-white">{contract.talentName}</p>
+              {contract.talentSignedAt && (
+                <p className="text-[10px] text-slate-500 mt-0.5">
+                  Signed {new Date(contract.talentSignedAt).toLocaleString()}
+                </p>
+              )}
+            </div>
+            <SignatureBadge signedAt={contract.talentSignedAt} />
+          </div>
         </div>
 
-        {/* Financial summary */}
-        <div className="space-y-3">
+        {/* Service */}
+        <div className="space-y-2">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-500">
+            Service
+          </h2>
+          <p className="text-sm font-semibold text-white">{contract.planTitle}</p>
+        </div>
+
+        {/* Amount */}
+        <div className="space-y-2">
           <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-500">
             Financial Summary
           </h2>
-          <div className="space-y-2 text-sm">
+          <div className="space-y-1.5 text-sm">
             <div className="flex justify-between text-gray-400">
-              <span>Subtotal</span>
-              <span className="text-white">${plan.price.toFixed(2)}</span>
+              <span>Agreed amount</span>
+              <span className="text-white">${contract.amount.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-gray-400">
-              <span>Escrow Fee (5%)</span>
-              <span className="text-white">${escrowFee.toFixed(2)}</span>
+              <span>Escrow fee (5%)</span>
+              <span className="text-white">${contract.escrowFee.toFixed(2)}</span>
             </div>
             <div className="h-px bg-white/5 my-2" />
             <div className="flex justify-between text-base font-bold">
-              <span className="text-white">Total to Pay</span>
-              <span className="text-primary">${total.toFixed(2)}</span>
+              <span className="text-white">Total</span>
+              <span className="text-primary">${contract.total.toFixed(2)}</span>
             </div>
           </div>
         </div>
 
-        {/* Payment method */}
-        <div className="space-y-2">
-          <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-500">
-            Payment Method
-          </h2>
-          <div className="flex items-center justify-between p-3 rounded-xl bg-white/[0.03] border border-white/5">
-            <div className="flex items-center gap-3">
-              <span className="material-icons text-primary text-lg">account_balance_wallet</span>
-              <div>
-                <p className="text-sm font-medium text-white">Primary Wallet</p>
-                <p className="text-xs text-gray-500">Available balance</p>
-              </div>
-            </div>
-            <Link href="/wallet" className="text-xs text-primary hover:text-primary-light transition-colors">
-              Change
-            </Link>
+        {/* Sign action */}
+        {!iAmClient && !iAmTalent ? (
+          <p className="text-xs text-amber-400">
+            You aren&apos;t a party of this contract — only the client and the talent can sign.
+          </p>
+        ) : fullySigned ? (
+          <div className="rounded-xl bg-green-500/10 border border-green-500/30 p-4 text-center">
+            <span className="material-icons text-green-400 text-3xl">verified</span>
+            <p className="text-sm font-semibold text-white mt-1">
+              Contract fully signed
+            </p>
+            <p className="text-xs text-slate-400 mt-1">
+              Payment processing will be enabled once the platform&apos;s payments go live.
+            </p>
           </div>
-        </div>
-
-        {/* Terms */}
-        <label className="flex items-start gap-3 cursor-pointer group">
-          <div
-            onClick={() => setAgreed((v) => !v)}
-            className={`mt-0.5 w-5 h-5 rounded border flex items-center justify-center shrink-0 transition-colors ${
-              agreed ? "bg-primary border-primary" : "bg-white/5 border-white/20 group-hover:border-primary/50"
-            }`}
-          >
-            {agreed && <span className="material-icons text-white text-sm">check</span>}
+        ) : mySignedAt ? (
+          <div className="rounded-xl bg-primary/5 border border-primary/20 p-4 text-center">
+            <p className="text-sm text-white">
+              You signed on {new Date(mySignedAt).toLocaleString()}.
+            </p>
+            <p className="text-xs text-slate-400 mt-1">
+              {otherSignedAt
+                ? "Both parties have signed."
+                : `Waiting for ${otherName} to sign.`}
+            </p>
           </div>
-          <span className="text-sm text-gray-400 leading-relaxed">
-            I agree to the{" "}
-            <Link href="/terms" className="text-primary underline hover:text-primary-light">
-              Terms of Service
-            </Link>{" "}
-            and authorize this payment to be held in escrow until service completion.
-          </span>
-        </label>
-
-        {/* Actions */}
-        <div className="flex gap-3 pt-2">
-          <Link
-            href={`/marketplace/${talentId}`}
-            className="flex-1 py-3 rounded-xl border border-white/10 text-sm font-semibold text-gray-400 hover:text-white hover:border-white/20 transition-colors text-center"
-          >
-            Cancel
-          </Link>
+        ) : (
           <button
-            onClick={handleSignAndPay}
-            disabled={!agreed || signing}
-            className="flex-1 py-3 rounded-xl bg-primary text-white text-sm font-semibold btn-glow hover:bg-primary-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            onClick={handleSign}
+            disabled={signing}
+            className="w-full py-3 rounded-xl bg-primary text-white text-sm font-semibold btn-glow hover:bg-primary-hover transition-colors disabled:opacity-40 flex items-center justify-center gap-2"
           >
-            {signing ? (
-              <>
-                <span className="material-icons text-base animate-spin">refresh</span>
-                Processing…
-              </>
-            ) : (
-              <>
-                <span className="material-icons text-base">draw</span>
-                Sign &amp; Pay
-              </>
-            )}
+            <span className="material-icons text-base">draw</span>
+            {signing
+              ? "Signing..."
+              : `Sign as ${iAmClient ? "client" : "talent"}`}
           </button>
-        </div>
+        )}
 
-        {/* Escrow note */}
         <p className="text-xs text-gray-600 leading-relaxed text-center">
           <span className="material-icons text-base align-middle mr-1">lock</span>
-          Funds are held in escrow and only released upon your confirmation of delivery.
+          Funds will be held in escrow once the platform&apos;s payments are live.
         </p>
       </div>
     </div>
