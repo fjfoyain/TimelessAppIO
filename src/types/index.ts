@@ -188,7 +188,7 @@ export interface EventProduct {
   image: string;
 }
 
-export type TransactionSource = "manual_transfer" | "cash" | "stripe" | "crypto";
+export type TransactionSource = "manual_transfer" | "cash" | "stripe" | "skrill" | "crypto";
 export type TransactionStatus = "completed" | "processing" | "pending";
 
 export interface Transaction {
@@ -373,6 +373,14 @@ export interface Contract {
   talentSignedAt?: string;
   status: "pending" | "fully_signed" | "cancelled";
   createdAt?: string;
+  // Payment (mock Skrill settlement). The client pays `total`; the talent is
+  // credited `amount` to their wallet; the platform keeps `escrowFee`.
+  paymentStatus?: "unpaid" | "paid";
+  paymentProvider?: "skrill";
+  paidAt?: string;
+  // Set once the talent's payout has been credited to their wallet (done in
+  // the talent's own session, so wallet/transaction writes stay owner-scoped).
+  talentPayoutRecorded?: boolean;
 }
 
 // ─── Talent payout method ────────────────────────────────────────

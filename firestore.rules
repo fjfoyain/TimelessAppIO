@@ -124,8 +124,9 @@ service cloud.firestore {
     // Wallets: owner only (previously missing — caused permissions errors)
     match /wallets/{userId} {
       allow read: if isOwner(userId) || isAdmin();
-      allow create: if isOwner(userId);
-      allow update: if isOwner(userId);
+      // Admins may credit any account's wallet (manual credit, pre-Skrill).
+      allow create: if isOwner(userId) || isAdmin();
+      allow update: if isOwner(userId) || isAdmin();
     }
 
     // Contracts: only the client and talent of the contract can read/sign.
@@ -174,7 +175,9 @@ service cloud.firestore {
     // handling real money).
     match /transactions/{transactionId} {
       allow read: if isAuth() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
+      // Owner creates their own transactions; admins may record a transaction
+      // for any user (e.g. a manual wallet credit).
+      allow create: if isAuth() && (request.resource.data.userId == request.auth.uid || isAdmin());
       allow update: if isAdmin();
     }
   }

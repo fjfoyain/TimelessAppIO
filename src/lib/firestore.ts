@@ -1308,6 +1308,159 @@ export async function signContract(
   return docToData<Contract>(updatedSnap);
 }
 
+// ─── Contract payment (mock Skrill settlement) ──────────────────
+//
+// Real money movement belongs in a Cloud Function (see S1 in ACTION_PLAN.md).
+// For the demo we simulate a Skrill checkout entirely from the client side:
+// the client records their own payment receipt and flips the contract to
+// "paid". The talent's payout is credited later, from the talent's OWN
+// session (`creditTalentPayout`), so every wallet/transaction write stays
+// owner-scoped and the Firestore security rules don't need to be relaxed.
+
+// Called from the CLIENT's session once the contract is fully signed.
+export async function payContractWithSkrill(
+  contract: Contract,
+  clientId: string
+): Promise<Contract> {
+  if (contract.clientId !== clientId) {
+    throw new Error("Only the client can pay for this contract.");
+  }
+  if (contract.status !== "fully_signed") {
+    throw new Error("Both parties must sign before payment.");
+  }
+  if (contract.paymentStatus === "paid") {
+    return contract;
+  }
+
+  // Client-side payment receipt (the funds leave via Skrill, not the Timeless
+  // balance, so this is a ledger entry — we don't decrement the wallet).
+  await addDoc(collection(db, "transactions"), {
+    userId: clientId,
+    description: `Payment — ${contract.planTitle} (Skrill)`,
+    amount: -contract.total,
+    type: "payment",
+    source: "skrill" as TransactionSource,
+    status: "completed" as TransactionStatus,
+    createdAt: serverTimestamp(),
+  });
+
+  const ref = doc(db, "contracts", contract.id);
+  await updateDoc(ref, {
+    paymentStatus: "paid",
+    paymentProvider: "skrill",
+    paidAt: new Date().toISOString(),
+  });
+  const snap = await getDoc(ref);
+  return docToData<Contract>(snap);
+}
+
+// Called from the TALENT's session when they view a paid contract whose payout
+// hasn't been credited yet. Credits the agreed amount to the talent's wallet.
+export async function creditTalentPayout(
+  contract: Contract,
+  talentId: string
+): Promise<Contract> {
+  if (contract.talentId !== talentId) {
+    throw new Error("Only the talent can receive this payout.");
+  }
+  if (contract.paymentStatus !== "paid" || contract.talentPayoutRecorded) {
+    return contract;
+  }
+
+  const walletRef = doc(db, "wallets", talentId);
+  const txRef = doc(collection(db, "transactions"));
+  await runTransaction(db, async (transaction) => {
+    const walletSnap = await transaction.get(walletRef);
+    transaction.set(txRef, {
+      userId: talentId,
+      description: `Payout — ${contract.planTitle} (Skrill)`,
+      amount: contract.amount,
+      type: "payout",
+      source: "skrill" as TransactionSource,
+      status: "completed" as TransactionStatus,
+      createdAt: serverTimestamp(),
+    });
+    if (walletSnap.exists()) {
+      transaction.update(walletRef, {
+        balance: (walletSnap.data().balance || 0) + contract.amount,
+        updatedAt: serverTimestamp(),
+      });
+    } else {
+      transaction.set(walletRef, {
+        userId: talentId,
+        balance: contract.amount,
+        escrow: 0,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+    }
+  });
+
+  const ref = doc(db, "contracts", contract.id);
+  await updateDoc(ref, { talentPayoutRecorded: true });
+  const snap = await getDoc(ref);
+  return docToData<Contract>(snap);
+}
+
+// ─── Admin: accounts & manual credit ────────────────────────────
+
+// Lists every user (admin-only; the security rules gate the reads). Sorted in
+// memory so accounts without a `createdAt` field aren't dropped by `orderBy`.
+export async function getAllUsers(): Promise<User[]> {
+  const snap = await getDocs(collection(db, "users"));
+  return snap.docs
+    .map((d) => docToData<User>(d))
+    .sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
+}
+
+// Admin sets an account's status directly (approve / suspend / reactivate).
+export async function setUserStatus(uid: string, status: UserStatus): Promise<void> {
+  await updateDoc(doc(db, "users", uid), { status });
+}
+
+// Read-only wallet fetch (does not create the doc) — for showing a balance.
+export async function getWallet(uid: string): Promise<WalletDoc | null> {
+  const snap = await getDoc(doc(db, "wallets", uid));
+  return snap.exists() ? docToData<WalletDoc>(snap) : null;
+}
+
+// Admin manually credits funds to a user's wallet (interim flow before Skrill).
+export async function adminCreditWallet(data: {
+  userId: string;
+  amount: number;
+  description: string;
+}): Promise<void> {
+  if (data.amount <= 0) throw new Error("Amount must be greater than zero.");
+  const walletRef = doc(db, "wallets", data.userId);
+  const txRef = doc(collection(db, "transactions"));
+  await runTransaction(db, async (transaction) => {
+    const walletSnap = await transaction.get(walletRef);
+    transaction.set(txRef, {
+      userId: data.userId,
+      description: data.description || "Admin credit",
+      amount: data.amount,
+      type: "deposit",
+      source: "manual_transfer" as TransactionSource,
+      status: "completed" as TransactionStatus,
+      createdAt: serverTimestamp(),
+    });
+    if (walletSnap.exists()) {
+      transaction.update(walletRef, {
+        balance: (walletSnap.data().balance || 0) + data.amount,
+        updatedAt: serverTimestamp(),
+      });
+    } else {
+      transaction.set(walletRef, {
+        userId: data.userId,
+        balance: data.amount,
+        escrow: 0,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      });
+    }
+  });
+}
+
 // ─── Talent payout methods ──────────────────────────────────────
 
 export async function getPayoutMethod(uid: string): Promise<PayoutMethod | null> {

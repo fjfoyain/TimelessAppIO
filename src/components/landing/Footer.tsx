@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import WaitlistForm from "./WaitlistForm";
+import { EVENT_TYPES, PROVIDER_CATEGORIES } from "@/lib/constants";
 
 function InstagramIcon() {
   return (
@@ -66,9 +67,9 @@ export default function Footer() {
 
       {/* Main Footer Grid */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 lg:gap-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-10">
           {/* Column 1: Brand */}
-          <div className="sm:col-span-2 lg:col-span-1">
+          <div className="col-span-2 md:col-span-3 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4 group">
               <Image
                 src="/images/logo.svg"
@@ -78,10 +79,9 @@ export default function Footer() {
                 className="h-7 w-auto"
               />
             </Link>
-            <p className="text-sm text-gray-500 leading-relaxed mb-6 max-w-xs">
-              Bridging the gap between creation and performance. The ultimate
-              ecosystem connecting artists, venues, and industry talent in one
-              seamless rhythm.
+            <p className="text-sm text-gray-400 leading-relaxed mb-6 max-w-xs">
+              The ecosystem connecting clients, talent, venues and artists for
+              every kind of event.
             </p>
             <div className="flex items-center gap-3">
               {socialLinks.map((social) => {
@@ -93,7 +93,7 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
-                    className="flex items-center justify-center w-9 h-9 rounded-full bg-white/5 text-gray-500 hover:text-primary hover:bg-white/10 transition-all duration-300"
+                    className="flex items-center justify-center w-9 h-9 rounded-full bg-white/5 text-gray-400 hover:text-primary hover:bg-white/10 transition-all duration-300"
                   >
                     <IconComponent />
                   </a>
@@ -102,7 +102,45 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 2: Platform */}
+          {/* Column 2: Event Types */}
+          <div>
+            <h4 className="text-sm font-semibold text-white mb-4 tracking-wide uppercase">
+              Event Types
+            </h4>
+            <ul className="space-y-3">
+              {EVENT_TYPES.map((type) => (
+                <li key={type}>
+                  <Link
+                    href={`/marketplace?eventType=${encodeURIComponent(type)}`}
+                    className="text-sm text-gray-400 hover:text-primary transition-colors"
+                  >
+                    {type}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 3: Providers */}
+          <div>
+            <h4 className="text-sm font-semibold text-white mb-4 tracking-wide uppercase">
+              Providers
+            </h4>
+            <ul className="space-y-3">
+              {PROVIDER_CATEGORIES.map((cat) => (
+                <li key={cat}>
+                  <Link
+                    href={`/marketplace?category=${encodeURIComponent(cat)}`}
+                    className="text-sm text-gray-400 hover:text-primary transition-colors"
+                  >
+                    {cat}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 4: Platform */}
           <div>
             <h4 className="text-sm font-semibold text-white mb-4 tracking-wide uppercase">
               Platform
@@ -112,7 +150,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-500 hover:text-primary transition-colors"
+                    className="text-sm text-gray-400 hover:text-primary transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -121,7 +159,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 3: Studio */}
+          {/* Column 5: Studio */}
           <div>
             <h4 className="text-sm font-semibold text-white mb-4 tracking-wide uppercase">
               Studio
@@ -131,7 +169,7 @@ export default function Footer() {
                 <li key={link.label}>
                   <Link
                     href={link.href}
-                    className="text-sm text-gray-500 hover:text-primary transition-colors"
+                    className="text-sm text-gray-400 hover:text-primary transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -140,12 +178,12 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 4: Newsletter */}
-          <div>
+          {/* Column 6: Newsletter */}
+          <div className="col-span-2 md:col-span-3 lg:col-span-1">
             <h4 className="text-sm font-semibold text-white mb-4 tracking-wide uppercase">
               Stay in the Loop
             </h4>
-            <p className="text-sm text-gray-500 mb-4 leading-relaxed">
+            <p className="text-sm text-gray-400 mb-4 leading-relaxed">
               Get early access, event drops, and exclusive updates straight to
               your inbox.
             </p>
