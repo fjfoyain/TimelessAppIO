@@ -2,7 +2,6 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
 import Navbar from "@/components/landing/Navbar";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import ProtectedRoute from "@/components/ProtectedRoute";
