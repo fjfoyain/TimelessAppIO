@@ -3,73 +3,112 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
 
-    // Avatars: auth user can write own; anyone can read
+    // ─── Helpers ───────────────────────────────────────────────────
+
+    function isSelf(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    function isImage() {
+      return request.resource.contentType.matches('image/.*');
+    }
+
+    // Mirrors ALLOWED_IMAGE_TYPES / ALLOWED_AUDIO_TYPES in src/lib/storage.ts.
+    // The client already validates these; this is the copy that actually holds,
+    // since the client check is bypassable.
+    function isPortfolioMedia() {
+      return request.resource.contentType.matches('image/.*')
+          || request.resource.contentType.matches('audio/.*')
+          || request.resource.contentType == 'video/mp4';
+    }
+
+    // Reads the caller's user document. `.get(key, default)` is used instead of
+    // direct field access so a user document without the field evaluates to
+    // false rather than raising and denying by accident.
+    function callerData() {
+      return firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isCallerAdmin() {
+      return request.auth != null
+        && firestore.exists(/databases/(default)/documents/users/$(request.auth.uid))
+        && (callerData().get('role', '') == 'ADMIN'
+            || callerData().get('isSuperUser', false) == true);
+    }
+
+    // ─── Avatars ───────────────────────────────────────────────────
+
     match /avatars/{userId}/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null
-                   && request.auth.uid == userId
+      allow write: if isSelf(userId)
                    && request.resource.size < 5 * 1024 * 1024
-                   && request.resource.contentType.matches('image/.*');
+                   && isImage();
     }
 
-    // Service images: authenticated can write; anyone can read
-    match /services/{serviceId}/{allPaths=**} {
+    // ─── Service images ────────────────────────────────────────────
+    //
+    // Scoped by uploader uid, not by service id: the image is uploaded before
+    // the service document exists (see src/app/services/new/page.tsx), so there
+    // is no doc to check ownership against. The path itself carries the owner.
+    // Files written under the old `services/{tempId}/` layout stay readable.
+    match /services/{userId}/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null
+      allow write: if isSelf(userId)
                    && request.resource.size < 5 * 1024 * 1024
-                   && request.resource.contentType.matches('image/.*');
+                   && isImage();
     }
 
-    // Event images: only the event's organizer can write; anyone can read.
-    // The event doc is created before its image is uploaded, so we can
-    // verify ownership against Firestore.
+    // ─── Event images ──────────────────────────────────────────────
+    //
+    // The event doc is created before its image is uploaded, so ownership is
+    // verified against Firestore.
     match /events/{eventId}/{allPaths=**} {
       allow read: if true;
       allow write: if request.auth != null
                    && request.resource.size < 5 * 1024 * 1024
-                   && request.resource.contentType.matches('image/.*')
+                   && isImage()
                    && firestore.get(/databases/(default)/documents/events/$(eventId)).data.organizerId == request.auth.uid;
     }
 
-    // Artist demos: auth user can write own; anyone can read
+    // ─── Artist demos ──────────────────────────────────────────────
+
     match /artists/{userId}/demo/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null
-                   && request.auth.uid == userId
+      allow write: if isSelf(userId)
                    && request.resource.size < 50 * 1024 * 1024
                    && request.resource.contentType.matches('audio/.*');
     }
 
-    // Artist portfolio: auth user can write own; anyone can read
+    // ─── Artist portfolio ──────────────────────────────────────────
+    //
+    // Public read, so the content type must be restricted: without it, an
+    // arbitrary HTML or executable payload would be served from a
+    // Google-trusted domain on this project's bill.
     match /artists/{userId}/portfolio/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null
-                   && request.auth.uid == userId
-                   && request.resource.size < 50 * 1024 * 1024;
+      allow write: if isSelf(userId)
+                   && request.resource.size < 50 * 1024 * 1024
+                   && isPortfolioMedia();
     }
 
-    // Talent portfolio images: owner writes own; anyone can read (public profile).
+    // ─── Talent portfolio images (public profile) ──────────────────
+
     match /portfolio/{userId}/{allPaths=**} {
       allow read: if true;
-      allow write: if request.auth != null
-                   && request.auth.uid == userId
+      allow write: if isSelf(userId)
                    && request.resource.size < 5 * 1024 * 1024
-                   && request.resource.contentType.matches('image/.*');
+                   && isImage();
     }
 
-    // Identity documents: PRIVATE. Only the owner and admins can read them;
-    // only the owner can upload. Images or PDF, up to 10MB.
+    // ─── Identity documents ────────────────────────────────────────
+    //
+    // PRIVATE. Only the owner and admins can read; only the owner can upload.
+    // Images or PDF, up to 10MB.
     match /identity/{userId}/{allPaths=**} {
-      allow read: if request.auth != null && (
-        request.auth.uid == userId ||
-        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'ADMIN' ||
-        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.isSuperUser == true
-      );
-      allow write: if request.auth != null
-                   && request.auth.uid == userId
+      allow read: if isSelf(userId) || isCallerAdmin();
+      allow write: if isSelf(userId)
                    && request.resource.size < 10 * 1024 * 1024
-                   && (request.resource.contentType.matches('image/.*')
-                       || request.resource.contentType == 'application/pdf');
+                   && (isImage() || request.resource.contentType == 'application/pdf');
     }
   }
 }

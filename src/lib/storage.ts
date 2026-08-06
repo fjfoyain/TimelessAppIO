@@ -73,8 +73,10 @@ export async function uploadAvatar(
   return result.downloadURL;
 }
 
+// Scoped by uploader uid because the image is uploaded before the service
+// document exists, so the storage rules have no doc to check ownership against.
 export async function uploadServiceImage(
-  serviceId: string,
+  userId: string,
   file: File,
   onProgress?: (progress: number) => void
 ): Promise<string> {
@@ -82,7 +84,7 @@ export async function uploadServiceImage(
   if (!v.valid) throw new Error(v.error);
 
   const ext = file.name.split(".").pop() || "jpg";
-  const result = await uploadFile(file, `services/${serviceId}/image.${ext}`, onProgress);
+  const result = await uploadFile(file, `services/${userId}/${Date.now()}.${ext}`, onProgress);
   return result.downloadURL;
 }
 
