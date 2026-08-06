@@ -4,6 +4,10 @@ Timeless is a full-stack web platform connecting artists, venues, talents, and c
 
 > **Project status & roadmap:** see [`ACTION_PLAN.md`](./ACTION_PLAN.md) for the current
 > diagnosis, known blockers, and the phased plan to a fully functional demo.
+>
+> **Taking over this project?** [`HANDOVER.md`](./HANDOVER.md) covers what gets
+> transferred, how to deploy, the security posture, and what is knowingly
+> unfinished.
 
 ## Tech Stack
 

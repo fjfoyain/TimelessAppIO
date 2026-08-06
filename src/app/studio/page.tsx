@@ -26,18 +26,6 @@ function SectionBadge({ children }: { children: React.ReactNode }) {
   );
 }
 
-function StarIcons({ count }: { count: number }) {
-  return (
-    <div className="flex gap-0.5">
-      {Array.from({ length: count }).map((_, i) => (
-        <span key={i} className="material-icons text-yellow-400 text-sm">
-          star
-        </span>
-      ))}
-    </div>
-  );
-}
-
 /* ------------------------------------------------------------------ */
 /*  Page                                                              */
 /* ------------------------------------------------------------------ */
@@ -120,9 +108,8 @@ export default function StudioPage() {
                   />
                 </div>
                 <div>
-                  <StarIcons count={5} />
                   <p className="text-xs text-gray-500">
-                    Trusted by 500+ artists
+                    Now in open beta — built with working artists
                   </p>
                 </div>
               </div>

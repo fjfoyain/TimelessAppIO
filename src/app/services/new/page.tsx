@@ -72,8 +72,7 @@ function NewServiceContent() {
     try {
       let imageUrl: string | undefined;
       if (imageFile) {
-        const tempId = `${user.id}-${Date.now()}`;
-        imageUrl = await uploadServiceImage(tempId, imageFile, (p) =>
+        imageUrl = await uploadServiceImage(user.id, imageFile, (p) =>
           setUploadProgress(Math.round(p))
         );
       }

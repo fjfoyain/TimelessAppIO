@@ -399,3 +399,52 @@ Pedido del product owner. Implementadas las 4 piezas factibles sin tocar el proc
 ### Diferido (depende del procesador de pagos — S1)
 
 - **Propinas** del cliente y **multas** por incumplimiento: ambas implican mover dinero. Mismo blocker que el saldo del wallet. Cuando definan el procesador (Stripe, PayPal, transferencia con comprobante, suscripción…) construimos esa capa encima de los datos ya modelados (cuentas bancarias guardadas, contratos firmados con monto acordado, reseñas).
+
+---
+
+## Saneado de seguridad — 2026-08-05
+
+Auditoría de las reglas de Firestore y Storage previa a una posible venta del
+activo. Contexto: un informe externo de agencia señalaba "inyección SQL" como
+riesgo crítico — inaplicable, el proyecto no usa ninguna base SQL. La auditoría
+propia sí encontró agujeros reales, todos en la capa de reglas.
+
+### Corregido
+
+| Id | Hallazgo | Fix |
+|----|----------|-----|
+| **R1** | **Escalada de privilegios.** `users/{uid}` permitía al dueño escribir `role` e `isSuperUser`, que son justamente lo que lee `isAdmin()`. Cualquier usuario registrado podía volverse admin con un `updateDoc` y desde ahí leer los documentos de identidad y datos de cobro de todos. | `role` / `isSuperUser` inmutables salvo por un admin. `AdminRoute` era solo una guarda de cliente. |
+| **R2** | **Manipulación de contratos.** Cualquiera de las dos partes podía reescribir cualquier campo, incluido `amount`, después de que la otra firmara. | `update` limitado a marcadores de firma, pago y payout, y cada parte solo toca su lado. Términos comerciales congelados. |
+| **R3** | **Suplantación en `create`.** `events`, `services`, `tickets`, `bookings`, `venues`, `approvals` y `conversations` se podían crear atribuidos a otro usuario. | Binding de propietario en creación e inmutable después. |
+| **R4** | **Auto-aprobación.** Se podía crear una solicitud de verificación ya aprobada. | `status == 'pending'` forzado en `create`. |
+| **R5** | **Reseñas.** Auto-reseña y `rating` arbitrario. | Bloqueadas; `rating` acotado a 1–5. |
+| **R6** | **Storage — defacement.** Cualquier autenticado sobrescribía las imágenes de cualquier servicio. | Ruta reorganizada a `services/{uid}/`, la ruta lleva el dueño. Cierra la parte pendiente de S5. |
+| **R7** | **Storage — payload alojado.** `artists/{uid}/portfolio` aceptaba cualquier `contentType` a 50 MB con lectura pública: HTML o ejecutables servidos desde un dominio de confianza de Google y facturados a este proyecto. | Restringido a image/audio/mp4. |
+
+### Verificación
+
+`npm run test:rules` — 51 tests contra los emuladores, uno por hallazgo,
+comprobando que el ataque **falla**, más casos de camino feliz para que endurecer
+una regla no pueda romper la app en silencio. Suite en `tests/`.
+
+### Otros cambios del bloque
+
+- Cabeceras de seguridad en `next.config.mjs` (CSP, X-Frame-Options,
+  X-Content-Type-Options, Referrer-Policy, Permissions-Policy, HSTS).
+- Retirado el claim "Trusted by 500+ artists" y las 5 estrellas de `/studio`:
+  métricas sin respaldo en un producto en beta, con exposición legal en una
+  operación de venta.
+- Nuevo `HANDOVER.md` con inventario de activos, despliegue y limitaciones.
+
+### Sigue pendiente
+
+- **S1 (wallet)** — sin cambios, sigue diferido y ahora documentado de forma
+  explícita en `HANDOVER.md` en vez de quedar implícito. Es el único hallazgo
+  crítico que sobrevive y bloquea el manejo de dinero real.
+- **A2 (contraste)** y la infracción WCAG AA del informe externo: hace falta que
+  la agencia entregue el desglose por criterio y elemento.
+
+### Acciones requeridas tras este bloque
+
+- **Re-desplegar reglas**: `npm run deploy:rules`. Las correcciones de R1–R7 no
+  tienen ningún efecto hasta que se ejecute.
