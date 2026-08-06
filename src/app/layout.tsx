@@ -3,6 +3,7 @@ import { Be_Vietnam_Pro } from "next/font/google";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import PWARegister from "@/components/PWARegister";
+import { SITE_URL, SITE_NAME } from "@/lib/site";
 import "./globals.css";
 
 const beVietnamPro = Be_Vietnam_Pro({
@@ -20,10 +21,18 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Timeless - Connect the Frequency",
+  // Without metadataBase, the relative OpenGraph and Twitter image paths below
+  // are emitted as-is and crawlers cannot resolve them.
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Timeless - Connect the Frequency",
+    // Route-level metadata sets only its own title; this frames it.
+    template: "%s | Timeless",
+  },
   description:
     "Timeless bridges the gap between creation and performance. The ultimate ecosystem connecting artists, venues, and industry talent in one seamless rhythm.",
   keywords: ["music", "artists", "venues", "talent", "events", "booking", "studio"],
+  alternates: { canonical: "/" },
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -72,6 +81,38 @@ export default function RootLayout({
         <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-167.png" />
         <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png" />
         <meta name="mobile-web-app-capable" content="yes" />
+        {/* Site-wide structured data: identifies the organization to search
+            engines and declares the on-site search endpoint. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify([
+              {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                name: SITE_NAME,
+                url: SITE_URL,
+                logo: `${SITE_URL}/icons/apple-touch-icon.png`,
+                description:
+                  "Ecosystem connecting artists, venues, and industry talent for booking, events and studio services.",
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                name: SITE_NAME,
+                url: SITE_URL,
+                potentialAction: {
+                  "@type": "SearchAction",
+                  target: {
+                    "@type": "EntryPoint",
+                    urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+                  },
+                  "query-input": "required name=search_term_string",
+                },
+              },
+            ]),
+          }}
+        />
       </head>
       <body className="bg-background-dark font-display text-white min-h-screen antialiased">
         <AuthProvider>

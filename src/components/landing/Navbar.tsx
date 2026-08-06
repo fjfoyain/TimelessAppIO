@@ -80,19 +80,31 @@ export default function Navbar({ activeTab }: NavbarProps) {
                   Dashboard
                 </Link>
                 <div className="flex items-center gap-1 pl-4 border-l border-white/10">
-                  <Link href="/messages" className="p-2 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-colors" title="Messages">
-                    <span className="material-icons text-lg">chat</span>
+                  <Link href="/messages" className="p-2 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-colors" title="Messages" aria-label="Messages">
+                    <span className="material-icons text-lg" aria-hidden="true">chat</span>
                   </Link>
-                  <Link href="/notifications" className="relative p-2 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-colors" title="Notifications">
-                    <span className="material-icons text-lg">notifications</span>
+                  <Link
+                    href="/notifications"
+                    className="relative p-2 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-colors"
+                    title="Notifications"
+                    aria-label={
+                      unreadCount > 0
+                        ? `Notifications, ${unreadCount} unread`
+                        : "Notifications"
+                    }
+                  >
+                    <span className="material-icons text-lg" aria-hidden="true">notifications</span>
                     {unreadCount > 0 && (
-                      <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-red-500 text-[10px] text-white font-bold flex items-center justify-center">
+                      <span
+                        className="absolute top-1 right-1 w-4 h-4 rounded-full bg-red-500 text-[10px] text-white font-bold flex items-center justify-center"
+                        aria-hidden="true"
+                      >
                         {unreadCount}
                       </span>
                     )}
                   </Link>
-                  <Link href="/wallet" className="p-2 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-colors" title="Wallet">
-                    <span className="material-icons text-lg">account_balance_wallet</span>
+                  <Link href="/wallet" className="p-2 rounded-lg text-gray-500 hover:text-white hover:bg-white/5 transition-colors" title="Wallet" aria-label="Wallet">
+                    <span className="material-icons text-lg" aria-hidden="true">account_balance_wallet</span>
                   </Link>
                 </div>
                 <div className="flex items-center gap-3 pl-4 border-l border-white/10">
@@ -108,8 +120,9 @@ export default function Navbar({ activeTab }: NavbarProps) {
                     onClick={handleLogout}
                     className="text-gray-500 hover:text-red-400 transition-colors"
                     title="Sign out"
+                    aria-label="Sign out"
                   >
-                    <span className="material-icons text-lg">logout</span>
+                    <span className="material-icons text-lg" aria-hidden="true">logout</span>
                   </button>
                 </div>
               </>
