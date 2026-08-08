@@ -448,3 +448,69 @@ una regla no pueda romper la app en silencio. Suite en `tests/`.
 
 - **Re-desplegar reglas**: `npm run deploy:rules`. Las correcciones de R1–R7 no
   tienen ningún efecto hasta que se ejecute.
+
+---
+
+## SEO, accesibilidad e higiene — 2026-08-05
+
+S1 (wallet) queda en espera por decisión del product owner. Este bloque cubre el
+resto del backlog posterior al saneado de seguridad.
+
+### Corrección de diagnóstico
+
+En el reporte previo dije "3 de 52 páginas tienen metadata". Estaba mal: solo miré
+`page.tsx`, y en este proyecto la metadata vive en los `layout.tsx` de cada ruta
+porque 48 de 52 páginas son `"use client"` y no pueden exportarla. La cobertura
+real de partida era 29 de 52. Ahora es completa.
+
+### SEO
+
+- **`src/lib/publicData.ts`** — lectura server-side de `talents`, `venues` y
+  `events` vía REST de Firestore. Sin credenciales: esas colecciones son
+  `allow read: if true`, así que es exactamente lo que ya ve un crawler. Cada
+  helper falla en silencio: la metadata nunca debe tumbar una página.
+- **`src/app/sitemap.ts`** — 15 rutas estáticas + posts del blog + listings reales
+  leídos de Firestore. 34 URLs con datos de producción.
+- **`src/app/robots.ts`** — `Disallow` de las 15 rutas privadas + referencia al sitemap.
+- **`metadataBase`** en el layout raíz. Sin él las imágenes de OpenGraph se emitían
+  como rutas relativas y ningún crawler podía resolverlas.
+- **Template de título `%s | Timeless`**. Ojo: un layout intermedio que declara
+  `title` como string **consume** el template y no deja ninguno para sus hijos.
+  Por eso `venues`, `events` y `marketplace` lo re-declaran como
+  `{ default, template }` — si no, las fichas quedaban sin marca en el título.
+- **Metadata por ítem** con `generateMetadata` en `/venues/[id]`, `/events/[id]` y
+  `/marketplace/[id]`. Un perfil rinde ahora como
+  "Marco Reyes — Concert Photographer in Guayaquil | Timeless", que es la forma de
+  consulta que un marketplace tiene que ganar.
+- **`noindex, nofollow`** en las 11 rutas autenticadas. `robots.txt` corta el
+  rastreo; el meta es lo que evita que se indexe una URL enlazada desde fuera.
+- **JSON-LD**: `Organization` + `WebSite` con `SearchAction` en el raíz;
+  `EventVenue`, `Event` y `Person` por ficha.
+
+### Accesibilidad
+
+Barrido de controles solo-icono sin nombre accesible. El primer detector dio 22
+falsos positivos porque descartaba las expresiones JSX `{...}`, que son
+precisamente el texto visible. Corregido el detector, los reales eran **3**, en
+`Navbar.tsx`, y los tres tenían `title`. Pasados a `aria-label` (con el contador
+de no leídas incorporado al nombre) y los iconos marcados `aria-hidden`.
+
+### Higiene
+
+- Borrado `src/data/mockTalents.ts`: 893 líneas de talentos ficticios sin una sola
+  referencia en todo `src/`.
+
+### Verificación
+
+lint limpio · 40 unit · 51 rules · build OK · smoke test de `/robots.txt`,
+`/sitemap.xml`, `noindex` en privadas y metadata por ítem contra datos reales.
+
+### Sigue pendiente
+
+- **S1 wallet** — en espera por decisión.
+- Reseñas sin transacción verificada, y sin tope de cantidad de subidas por
+  usuario: ambos necesitan Cloud Functions, así que se resuelven junto con S1.
+- CSP con `unsafe-inline` / `unsafe-eval` — endurecerla exige nonce desde
+  middleware, lo que vuelve dinámicas las 52 rutas hoy estáticas.
+- Infracción WCAG AA del informe externo: bloqueada hasta que la agencia entregue
+  el desglose por criterio y elemento.

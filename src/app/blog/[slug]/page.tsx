@@ -17,16 +17,20 @@ export function generateMetadata({
 }): Metadata {
   const post = getBlogPost(params.slug);
   if (!post) {
-    return { title: "Article not found — Timeless" };
+    return { title: "Article not found" };
   }
+  // Bare title: the root layout's `%s | Timeless` template adds the brand.
   return {
-    title: `${post.title} — Timeless Blog`,
+    title: post.title,
     description: post.excerpt,
+    alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
-      title: post.title,
+      title: `${post.title} | Timeless`,
       description: post.excerpt,
       type: "article",
+      url: `/blog/${post.slug}`,
       publishedTime: post.date,
+      authors: [post.author],
     },
   };
 }
