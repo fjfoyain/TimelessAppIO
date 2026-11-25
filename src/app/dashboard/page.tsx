@@ -93,7 +93,6 @@ function DashboardContent() {
   // Overlay real Firestore counts onto the static stats
   const realCounts: Record<string, string> = {};
   if (!eventsLoading) {
-    if (user.role === UserRole.TALENT) realCounts["Jobs Completed"] = String(events.length);
     if (user.role === UserRole.ARTIST) realCounts["Events"] = String(events.length);
     if (user.role === UserRole.CLIENT) {
       realCounts["Active Projects"] = String(events.length);
@@ -106,7 +105,6 @@ function DashboardContent() {
     if (user.role === UserRole.CLIENT) realCounts["Hired Talent"] = String(bookings.length);
   }
   if (!talentLoading && talent) {
-    realCounts["Response Rate"] = talent.responseRate ? `${talent.responseRate}%` : "—";
     if (talent.reviews && talent.reviews.length > 0) {
       const avg = talent.reviews.reduce((sum, r) => sum + r.rating, 0) / talent.reviews.length;
       realCounts["Rating"] = avg.toFixed(1);

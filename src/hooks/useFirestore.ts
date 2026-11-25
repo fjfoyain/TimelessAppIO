@@ -41,6 +41,7 @@ import {
   updateProjectStatus as fbUpdateProjectStatus,
   deleteProject as fbDeleteProject,
 } from "@/lib/firestore";
+import { useAuth } from "@/contexts/AuthContext";
 import type {
   Event as AppEvent,
   Booking,
@@ -232,15 +233,16 @@ export function useAdminStats() {
     totalUsers: 0,
     activeArtists: 0,
     venues: 0,
-    pendingApprovals: 0,
+    pendingAccounts: 0,
+    pendingPayments: 0,
   });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAdminStats().then((data) => {
-      setStats(data);
-      setLoading(false);
-    });
+    getAdminStats()
+      .then(setStats)
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   return { stats, loading };
@@ -249,6 +251,7 @@ export function useAdminStats() {
 // ─── Admin: Approvals ────────────────────────────────────────────
 
 export function useApprovals(statusFilter?: ApprovalStatus) {
+  const { user } = useAuth();
   const [approvals, setApprovals] = useState<Approval[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -264,17 +267,23 @@ export function useApprovals(statusFilter?: ApprovalStatus) {
 
   useEffect(() => { refresh(); }, [refresh]);
 
-  const approve = async (id: string) => {
-    await updateApprovalStatus(id, "approved");
-    await refresh();
+  const [error, setError] = useState("");
+
+  const resolve = async (id: string, status: ApprovalStatus) => {
+    if (!user) return;
+    setError("");
+    try {
+      await updateApprovalStatus(id, status, { id: user.id, name: user.name });
+      await refresh();
+    } catch {
+      setError("The request could not be updated. Nothing was changed.");
+    }
   };
 
-  const reject = async (id: string) => {
-    await updateApprovalStatus(id, "rejected");
-    await refresh();
-  };
+  const approve = (id: string) => resolve(id, "approved");
+  const reject = (id: string) => resolve(id, "rejected");
 
-  return { approvals, loading, approve, reject, refresh };
+  return { approvals, loading, error, approve, reject, refresh };
 }
 
 // ─── Admin: Categories ───────────────────────────────────────────
@@ -320,10 +329,10 @@ export function useAuditLogs(maxResults = 50) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAuditLogs(maxResults).then((data) => {
-      setLogs(data);
-      setLoading(false);
-    });
+    getAuditLogs(maxResults)
+      .then(setLogs)
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, [maxResults]);
 
   return { logs, loading };
@@ -471,15 +480,16 @@ export function useAnalyticsMetrics() {
     totalBookings: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    getAnalyticsMetrics().then((data) => {
-      setMetrics(data);
-      setLoading(false);
-    });
+    getAnalyticsMetrics()
+      .then(setMetrics)
+      .catch(() => setError(true))
+      .finally(() => setLoading(false));
   }, []);
 
-  return { metrics, loading };
+  return { metrics, loading, error };
 }
 
 export function useMonthlyRevenue() {
@@ -487,10 +497,10 @@ export function useMonthlyRevenue() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getMonthlyRevenue().then((result) => {
-      setData(result);
-      setLoading(false);
-    });
+    getMonthlyRevenue()
+      .then(setData)
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   return { data, loading };
@@ -501,10 +511,10 @@ export function useTopCategories() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getTopCategories().then((result) => {
-      setCategories(result);
-      setLoading(false);
-    });
+    getTopCategories()
+      .then(setCategories)
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   return { categories, loading };

@@ -47,7 +47,7 @@ function typeConfig(type: ApprovalType) {
 
 export default function ApprovalsPage() {
   const [activeTab, setActiveTab] = useState<FilterTab>("All");
-  const { approvals, loading, approve, reject } = useApprovals("pending");
+  const { approvals, loading, error, approve, reject } = useApprovals("pending");
 
   const filteredApprovals = approvals.filter((item) => {
     if (activeTab === "All") return true;
@@ -64,6 +64,12 @@ export default function ApprovalsPage() {
         <Navbar />
 
         <div className="relative z-10 pt-24 pb-16 px-6 lg:px-10">
+          {error && (
+            <p className="mb-6 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+              {error}
+            </p>
+          )}
+
           {/* Header */}
           <div className="flex items-center gap-3 mb-1">
             <h1 className="text-3xl font-bold text-white">

@@ -6,6 +6,7 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
+  deleteField,
   collection,
   query,
   where,
@@ -14,10 +15,12 @@ import {
   onSnapshot,
   serverTimestamp,
   runTransaction,
+  writeBatch,
   Unsubscribe,
   Timestamp,
 } from "firebase/firestore";
 import { db } from "./firebase";
+import { offerError } from "./negotiation";
 import {
   UserRole,
   UserStatus,
@@ -49,6 +52,7 @@ import {
   Contract,
   PayoutMethod,
   TalentReview,
+  AdminActor,
 } from "@/types";
 
 interface CreateUserProfileData {
@@ -159,6 +163,8 @@ export async function createTalentProfile(
     reviews: [],
     servicePlans: [],
     isVerified: false,
+    // Listed in the marketplace only once an admin approves the account.
+    isApproved: false,
     jobsCompleted: 0,
     responseRate: 0,
     createdAt: serverTimestamp(),
@@ -287,7 +293,11 @@ export async function getVenueById(id: string): Promise<Venue | null> {
 
 export async function getAllTalents(): Promise<TalentWithUser[]> {
   try {
-    const talentsSnap = await getDocs(collection(db, "talents"));
+    // Only approved accounts are listed. `isApproved` is written by admins
+    // alone (see firestore.rules), mirroring the private `users.status`.
+    const talentsSnap = await getDocs(
+      query(collection(db, "talents"), where("isApproved", "==", true))
+    );
 
     // Build cards purely from the public `talents` docs — the private
     // `users` collection is no longer read here (see S3 in ACTION_PLAN.md).
@@ -461,13 +471,16 @@ export async function createConversation(
 
 // Returns the existing 1:1 conversation between two users, or creates one.
 // Optionally attaches the service-plan context that started the conversation.
+// Returns the 1:1 conversation between two users, creating it if needed.
+// `planIsNew` tells the caller whether this plan was not yet the subject of
+// the thread, so the opening message is sent once per plan, not once per click.
 export async function getOrCreateConversation(
   currentUserId: string,
   currentUserName: string,
   otherUserId: string,
   otherUserName: string,
   planContext?: PlanContext
-): Promise<string> {
+): Promise<{ id: string; planIsNew: boolean }> {
   const snap = await getDocs(
     query(
       collection(db, "conversations"),
@@ -480,11 +493,18 @@ export async function getOrCreateConversation(
   });
 
   if (existing) {
-    // Attach plan context if the conversation doesn't already have one.
-    if (planContext && !existing.data().planContext) {
-      await updateDoc(existing.ref, { planContext });
+    const current = existing.data().planContext as PlanContext | undefined;
+    // A different plan becomes the subject of the thread and restarts the
+    // negotiation, so offers and the contract always refer to the plan the
+    // opening message names. Once a contract exists the subject is settled.
+    const planIsNew =
+      !!planContext &&
+      current?.planId !== planContext.planId &&
+      !existing.data().contractId;
+    if (planContext && planIsNew) {
+      await updateDoc(existing.ref, { planContext, negotiation: deleteField() });
     }
-    return existing.id;
+    return { id: existing.id, planIsNew };
   }
 
   const ref = await addDoc(collection(db, "conversations"), {
@@ -498,7 +518,7 @@ export async function getOrCreateConversation(
     ...(planContext ? { planContext } : {}),
     createdAt: serverTimestamp(),
   });
-  return ref.id;
+  return { id: ref.id, planIsNew: !!planContext };
 }
 
 export function subscribeToConversations(
@@ -660,17 +680,21 @@ export async function deleteCategory(id: string): Promise<void> {
 
 // ─── Admin: Audit Logs ───────────────────────────────────────────
 
-export async function createAuditLog(data: {
-  userId?: string;
-  userName: string;
-  action: string;
-  ipAddress: string;
-  level: "Info" | "Warning" | "Error";
-}): Promise<void> {
-  await addDoc(collection(db, "auditLogs"), {
-    ...data,
-    timestamp: serverTimestamp(),
-  });
+// Audit entries are written in the same batch/transaction as the admin
+// action they describe, so an action can never succeed without its record.
+// The client cannot know its own IP; a trustworthy one needs a server.
+function auditEntry(actor: AdminActor, action: string, level: AuditLog["level"] = "Info") {
+  return {
+    ref: doc(collection(db, "auditLogs")),
+    data: {
+      userId: actor.id,
+      userName: actor.name,
+      action,
+      ipAddress: "",
+      level,
+      timestamp: serverTimestamp(),
+    },
+  };
 }
 
 export async function getAuditLogs(maxResults = 50): Promise<AuditLog[]> {
@@ -689,20 +713,41 @@ export async function getApprovals(status?: ApprovalStatus): Promise<Approval[]>
   return snap.docs.map((d) => docToData<Approval>(d));
 }
 
-export async function updateApprovalStatus(id: string, status: ApprovalStatus): Promise<void> {
+export async function updateApprovalStatus(
+  id: string,
+  status: ApprovalStatus,
+  actor: AdminActor
+): Promise<void> {
   const ref = doc(db, "approvals", id);
   const snap = await getDoc(ref);
-  await updateDoc(ref, { status });
+  const data = snap.exists() ? snap.data() : {};
+  const batch = writeBatch(db);
+  batch.update(ref, { status });
 
   // If this approval is tied to a user (identity verification), resolving it
   // also flips the user's account status: approved → active, rejected → rejected.
-  const userId = snap.exists() ? (snap.data().userId as string | undefined) : undefined;
-  if (userId) {
-    if (status === "approved") {
-      await updateDoc(doc(db, "users", userId), { status: UserStatus.ACTIVE });
-    } else if (status === "rejected") {
-      await updateDoc(doc(db, "users", userId), { status: UserStatus.REJECTED });
-    }
+  const userId = data.userId as string | undefined;
+  if (userId && status !== "pending") {
+    const userStatus = status === "approved" ? UserStatus.ACTIVE : UserStatus.REJECTED;
+    batch.update(doc(db, "users", userId), { status: userStatus });
+    await syncTalentListing(batch, userId, userStatus);
+  }
+
+  const log = auditEntry(actor, `Approval ${status}: ${data.type ?? "request"} — ${data.name ?? id}`);
+  batch.set(log.ref, log.data);
+  await batch.commit();
+}
+
+// Mirrors the private account status onto the public talent doc, which is
+// what the marketplace query filters on.
+async function syncTalentListing(
+  batch: ReturnType<typeof writeBatch>,
+  userId: string,
+  status: UserStatus
+): Promise<void> {
+  const talentRef = doc(db, "talents", userId);
+  if ((await getDoc(talentRef)).exists()) {
+    batch.update(talentRef, { isApproved: status === UserStatus.ACTIVE });
   }
 }
 
@@ -763,19 +808,24 @@ export async function getAdminStats(): Promise<{
   totalUsers: number;
   activeArtists: number;
   venues: number;
-  pendingApprovals: number;
+  pendingAccounts: number;
+  pendingPayments: number;
 }> {
-  const [usersSnap, artistsSnap, venuesSnap, approvalsSnap] = await Promise.all([
+  const [usersSnap, venuesSnap, paymentsSnap] = await Promise.all([
     getDocs(collection(db, "users")),
-    getDocs(query(collection(db, "users"), where("role", "==", UserRole.ARTIST))),
     getDocs(collection(db, "venues")),
-    getDocs(query(collection(db, "approvals"), where("status", "==", "pending"))),
+    getDocs(query(collection(db, "transactions"), where("status", "==", "processing"))),
   ]);
+  const users = usersSnap.docs.map((d) => d.data());
   return {
-    totalUsers: usersSnap.size,
-    activeArtists: artistsSnap.size,
+    totalUsers: users.length,
+    activeArtists: users.filter(
+      (u) => u.role === UserRole.ARTIST && u.status === UserStatus.ACTIVE
+    ).length,
     venues: venuesSnap.size,
-    pendingApprovals: approvalsSnap.size,
+    // Same source as the Accounts page, so the two numbers always agree.
+    pendingAccounts: users.filter((u) => u.status === UserStatus.PENDING).length,
+    pendingPayments: paymentsSnap.size,
   };
 }
 
@@ -811,49 +861,28 @@ export function subscribeToWallet(
   });
 }
 
+// Deposits and withdrawals are REQUESTS: the user records the movement as
+// `processing` and the balance only changes when an admin verifies it
+// (`resolveTransaction`). The security rules enforce both halves.
+
 export async function recordDeposit(data: {
   userId: string;
   amount: number;
   source: TransactionSource;
   description: string;
 }): Promise<string> {
-  const walletRef = doc(db, "wallets", data.userId);
-  const txRef = doc(collection(db, "transactions"));
-
-  await runTransaction(db, async (transaction) => {
-    const walletSnap = await transaction.get(walletRef);
-    let currentBalance = 0;
-    if (walletSnap.exists()) {
-      currentBalance = walletSnap.data().balance || 0;
-    }
-
-    transaction.set(txRef, {
-      userId: data.userId,
-      description: data.description,
-      amount: data.amount,
-      type: "deposit",
-      source: data.source,
-      status: data.source === "cash" ? "completed" : "processing",
-      createdAt: serverTimestamp(),
-    });
-
-    if (walletSnap.exists()) {
-      transaction.update(walletRef, {
-        balance: currentBalance + data.amount,
-        updatedAt: serverTimestamp(),
-      });
-    } else {
-      transaction.set(walletRef, {
-        userId: data.userId,
-        balance: data.amount,
-        escrow: 0,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-    }
+  const ref = await addDoc(collection(db, "transactions"), {
+    userId: data.userId,
+    description: data.description,
+    amount: data.amount,
+    type: "deposit",
+    source: data.source,
+    status: "processing" as TransactionStatus,
+    createdAt: serverTimestamp(),
   });
-
-  return txRef.id;
+  await notifySelf(data.userId, "Deposit received for review",
+    `Your $${data.amount.toFixed(2)} deposit will be added to your balance once it is verified.`);
+  return ref.id;
 }
 
 export async function recordWithdrawal(data: {
@@ -861,38 +890,52 @@ export async function recordWithdrawal(data: {
   amount: number;
   description: string;
 }): Promise<string> {
-  const walletRef = doc(db, "wallets", data.userId);
-  const txRef = doc(collection(db, "transactions"));
+  const [walletSnap, payoutSnap, pendingSnap] = await Promise.all([
+    getDoc(doc(db, "wallets", data.userId)),
+    getDoc(doc(db, "payoutMethods", data.userId)),
+    getDocs(
+      query(
+        collection(db, "transactions"),
+        where("userId", "==", data.userId),
+        where("status", "==", "processing")
+      )
+    ),
+  ]);
 
-  await runTransaction(db, async (transaction) => {
-    const walletSnap = await transaction.get(walletRef);
+  if (!payoutSnap.exists()) {
+    throw new Error("Add a payout method before requesting a withdrawal.");
+  }
+  const balance = walletSnap.exists() ? walletSnap.data().balance || 0 : 0;
+  const alreadyRequested = pendingSnap.docs
+    .map((d) => d.data())
+    .filter((t) => t.type === "withdrawal")
+    .reduce((sum, t) => sum + Math.abs(t.amount as number), 0);
+  if (balance - alreadyRequested < data.amount) {
+    throw new Error("Insufficient available balance for this withdrawal.");
+  }
 
-    if (!walletSnap.exists()) {
-      throw new Error("Wallet not found. Please add funds first.");
-    }
-
-    const currentBalance = walletSnap.data().balance || 0;
-    if (currentBalance < data.amount) {
-      throw new Error("Insufficient balance for this withdrawal.");
-    }
-
-    transaction.set(txRef, {
-      userId: data.userId,
-      description: data.description,
-      amount: -data.amount,
-      type: "withdrawal",
-      source: "manual_transfer" as TransactionSource,
-      status: "processing" as TransactionStatus,
-      createdAt: serverTimestamp(),
-    });
-
-    transaction.update(walletRef, {
-      balance: currentBalance - data.amount,
-      updatedAt: serverTimestamp(),
-    });
+  const ref = await addDoc(collection(db, "transactions"), {
+    userId: data.userId,
+    description: data.description,
+    amount: -data.amount,
+    type: "withdrawal",
+    source: "manual_transfer" as TransactionSource,
+    status: "processing" as TransactionStatus,
+    createdAt: serverTimestamp(),
   });
+  await notifySelf(data.userId, "Withdrawal requested",
+    `Your $${data.amount.toFixed(2)} withdrawal is being reviewed.`);
+  return ref.id;
+}
 
-  return txRef.id;
+// A notification is a courtesy: failing to write it must not undo the
+// movement it describes.
+async function notifySelf(userId: string, title: string, description: string) {
+  try {
+    await createNotification({ userId, type: "payment", title, description });
+  } catch {
+    // ignored on purpose
+  }
 }
 
 export function subscribeToTransactions(
@@ -921,13 +964,6 @@ export async function getUserTransactions(
   );
   const snap = await getDocs(q);
   return snap.docs.map((d) => docToData<Transaction>(d));
-}
-
-export async function updateTransactionStatus(
-  txId: string,
-  status: TransactionStatus
-): Promise<void> {
-  await updateDoc(doc(db, "transactions", txId), { status });
 }
 
 // ─── Courses (Studio Classes) ───────────────────────────────────
@@ -1180,6 +1216,12 @@ export async function proposeOffer(
   proposerName: string,
   amount: number
 ): Promise<void> {
+  const convoSnap = await getDoc(doc(db, "conversations", conversationId));
+  const planPrice = convoSnap.data()?.planContext?.planPrice as number | undefined;
+  if (planPrice === undefined) throw new Error("This conversation has no plan to negotiate.");
+  const problem = offerError(amount, planPrice);
+  if (problem) throw new Error(problem);
+
   const negotiation: Negotiation = {
     currentOffer: amount,
     proposedBy: proposerId,
@@ -1308,100 +1350,6 @@ export async function signContract(
   return docToData<Contract>(updatedSnap);
 }
 
-// ─── Contract payment (mock Skrill settlement) ──────────────────
-//
-// Real money movement belongs in a Cloud Function (see S1 in ACTION_PLAN.md).
-// For the demo we simulate a Skrill checkout entirely from the client side:
-// the client records their own payment receipt and flips the contract to
-// "paid". The talent's payout is credited later, from the talent's OWN
-// session (`creditTalentPayout`), so every wallet/transaction write stays
-// owner-scoped and the Firestore security rules don't need to be relaxed.
-
-// Called from the CLIENT's session once the contract is fully signed.
-export async function payContractWithSkrill(
-  contract: Contract,
-  clientId: string
-): Promise<Contract> {
-  if (contract.clientId !== clientId) {
-    throw new Error("Only the client can pay for this contract.");
-  }
-  if (contract.status !== "fully_signed") {
-    throw new Error("Both parties must sign before payment.");
-  }
-  if (contract.paymentStatus === "paid") {
-    return contract;
-  }
-
-  // Client-side payment receipt (the funds leave via Skrill, not the Timeless
-  // balance, so this is a ledger entry — we don't decrement the wallet).
-  await addDoc(collection(db, "transactions"), {
-    userId: clientId,
-    description: `Payment — ${contract.planTitle} (Skrill)`,
-    amount: -contract.total,
-    type: "payment",
-    source: "skrill" as TransactionSource,
-    status: "completed" as TransactionStatus,
-    createdAt: serverTimestamp(),
-  });
-
-  const ref = doc(db, "contracts", contract.id);
-  await updateDoc(ref, {
-    paymentStatus: "paid",
-    paymentProvider: "skrill",
-    paidAt: new Date().toISOString(),
-  });
-  const snap = await getDoc(ref);
-  return docToData<Contract>(snap);
-}
-
-// Called from the TALENT's session when they view a paid contract whose payout
-// hasn't been credited yet. Credits the agreed amount to the talent's wallet.
-export async function creditTalentPayout(
-  contract: Contract,
-  talentId: string
-): Promise<Contract> {
-  if (contract.talentId !== talentId) {
-    throw new Error("Only the talent can receive this payout.");
-  }
-  if (contract.paymentStatus !== "paid" || contract.talentPayoutRecorded) {
-    return contract;
-  }
-
-  const walletRef = doc(db, "wallets", talentId);
-  const txRef = doc(collection(db, "transactions"));
-  await runTransaction(db, async (transaction) => {
-    const walletSnap = await transaction.get(walletRef);
-    transaction.set(txRef, {
-      userId: talentId,
-      description: `Payout — ${contract.planTitle} (Skrill)`,
-      amount: contract.amount,
-      type: "payout",
-      source: "skrill" as TransactionSource,
-      status: "completed" as TransactionStatus,
-      createdAt: serverTimestamp(),
-    });
-    if (walletSnap.exists()) {
-      transaction.update(walletRef, {
-        balance: (walletSnap.data().balance || 0) + contract.amount,
-        updatedAt: serverTimestamp(),
-      });
-    } else {
-      transaction.set(walletRef, {
-        userId: talentId,
-        balance: contract.amount,
-        escrow: 0,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-    }
-  });
-
-  const ref = doc(db, "contracts", contract.id);
-  await updateDoc(ref, { talentPayoutRecorded: true });
-  const snap = await getDoc(ref);
-  return docToData<Contract>(snap);
-}
-
 // ─── Admin: accounts & manual credit ────────────────────────────
 
 // Lists every user (admin-only; the security rules gate the reads). Sorted in
@@ -1414,8 +1362,22 @@ export async function getAllUsers(): Promise<User[]> {
 }
 
 // Admin sets an account's status directly (approve / suspend / reactivate).
-export async function setUserStatus(uid: string, status: UserStatus): Promise<void> {
-  await updateDoc(doc(db, "users", uid), { status });
+export async function setUserStatus(
+  uid: string,
+  status: UserStatus,
+  actor: AdminActor,
+  userName = uid
+): Promise<void> {
+  const batch = writeBatch(db);
+  batch.update(doc(db, "users", uid), { status });
+  await syncTalentListing(batch, uid, status);
+  const log = auditEntry(
+    actor,
+    `Account set to ${status}: ${userName}`,
+    status === UserStatus.SUSPENDED ? "Warning" : "Info"
+  );
+  batch.set(log.ref, log.data);
+  await batch.commit();
 }
 
 // Read-only wallet fetch (does not create the doc) — for showing a balance.
@@ -1425,14 +1387,18 @@ export async function getWallet(uid: string): Promise<WalletDoc | null> {
 }
 
 // Admin manually credits funds to a user's wallet (interim flow before Skrill).
-export async function adminCreditWallet(data: {
-  userId: string;
-  amount: number;
-  description: string;
-}): Promise<void> {
+export async function adminCreditWallet(
+  data: { userId: string; amount: number; description: string; userName?: string },
+  actor: AdminActor
+): Promise<void> {
   if (data.amount <= 0) throw new Error("Amount must be greater than zero.");
   const walletRef = doc(db, "wallets", data.userId);
   const txRef = doc(collection(db, "transactions"));
+  const log = auditEntry(
+    actor,
+    `Manual credit of $${data.amount.toFixed(2)} to ${data.userName ?? data.userId}`,
+    "Warning"
+  );
   await runTransaction(db, async (transaction) => {
     const walletSnap = await transaction.get(walletRef);
     transaction.set(txRef, {
@@ -1444,21 +1410,98 @@ export async function adminCreditWallet(data: {
       status: "completed" as TransactionStatus,
       createdAt: serverTimestamp(),
     });
-    if (walletSnap.exists()) {
-      transaction.update(walletRef, {
-        balance: (walletSnap.data().balance || 0) + data.amount,
-        updatedAt: serverTimestamp(),
-      });
-    } else {
-      transaction.set(walletRef, {
-        userId: data.userId,
-        balance: data.amount,
-        escrow: 0,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      });
-    }
+    applyToBalance(transaction, walletRef, walletSnap, data.userId, data.amount);
+    transaction.set(log.ref, log.data);
   });
+}
+
+function applyToBalance(
+  transaction: Parameters<Parameters<typeof runTransaction>[1]>[0],
+  walletRef: ReturnType<typeof doc>,
+  walletSnap: { exists(): boolean; data(): Record<string, unknown> | undefined },
+  userId: string,
+  delta: number
+) {
+  const current = walletSnap.exists() ? Number(walletSnap.data()?.balance) || 0 : 0;
+  const next = Math.round((current + delta) * 100) / 100;
+  if (next < 0) throw new Error("The wallet balance does not cover this movement.");
+  if (walletSnap.exists()) {
+    transaction.update(walletRef, { balance: next, updatedAt: serverTimestamp() });
+  } else {
+    transaction.set(walletRef, {
+      userId,
+      balance: next,
+      escrow: 0,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+  }
+}
+
+// ─── Admin: payment verification ────────────────────────────────
+
+// Every deposit/withdrawal waiting for an admin, oldest first.
+export async function getPendingTransactions(): Promise<Transaction[]> {
+  const snap = await getDocs(
+    query(collection(db, "transactions"), where("status", "==", "processing"))
+  );
+  return snap.docs
+    .map((d) => docToData<Transaction>(d))
+    .sort((a, b) => (a.createdAt || "").localeCompare(b.createdAt || ""));
+}
+
+// The only place a user-requested movement reaches the balance. Verifying
+// applies the amount (negative for withdrawals); rejecting leaves the balance
+// untouched. Either way the request is closed and cannot be resolved twice.
+export async function resolveTransaction(
+  txId: string,
+  decision: "completed" | "rejected",
+  actor: AdminActor
+): Promise<void> {
+  const txRef = doc(db, "transactions", txId);
+  let owner = "";
+  let amount = 0;
+  let type = "";
+  await runTransaction(db, async (transaction) => {
+    const txSnap = await transaction.get(txRef);
+    if (!txSnap.exists()) throw new Error("Transaction not found.");
+    const tx = txSnap.data();
+    if (tx.status !== "processing") throw new Error("This movement was already resolved.");
+    owner = tx.userId as string;
+    amount = tx.amount as number;
+    type = tx.type as string;
+
+    const walletRef = doc(db, "wallets", owner);
+    const walletSnap = await transaction.get(walletRef);
+    if (decision === "completed") {
+      applyToBalance(transaction, walletRef, walletSnap, owner, amount);
+    }
+    transaction.update(txRef, {
+      status: decision,
+      resolvedBy: actor.id,
+      resolvedAt: serverTimestamp(),
+    });
+    const log = auditEntry(
+      actor,
+      `${type} of $${Math.abs(amount).toFixed(2)} ${decision === "completed" ? "verified" : "rejected"} (tx ${txId})`,
+      decision === "completed" ? "Info" : "Warning"
+    );
+    transaction.set(log.ref, log.data);
+  });
+
+  try {
+    await createNotification({
+      userId: owner,
+      type: "payment",
+      title: decision === "completed" ? `Your ${type} was verified` : `Your ${type} was rejected`,
+      description:
+        decision === "completed"
+          ? `$${Math.abs(amount).toFixed(2)} is now reflected in your balance.`
+          : `Your $${Math.abs(amount).toFixed(2)} ${type} could not be verified. Your balance was not changed.`,
+    });
+  } catch {
+    // The movement is already resolved; the notification is a courtesy.
+  }
 }
 
 // ─── Talent payout methods ──────────────────────────────────────

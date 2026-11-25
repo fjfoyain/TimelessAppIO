@@ -148,7 +148,7 @@ export default function AuditLogsPage() {
                           {log.action}
                         </td>
                         <td className="py-3.5 px-4 text-gray-500 font-mono text-xs whitespace-nowrap">
-                          {log.ipAddress}
+                          {log.ipAddress || "—"}
                         </td>
                         <td className="py-3.5 px-4">
                           <span

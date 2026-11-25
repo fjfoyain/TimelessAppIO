@@ -20,7 +20,7 @@ function statusBadge(status: string) {
 
 function AdminContent() {
   const { stats: adminStats, loading: statsLoading } = useAdminStats();
-  const { approvals, loading: approvalsLoading, approve, reject } = useApprovals("pending");
+  const { approvals, loading: approvalsLoading, error: approvalsError, approve, reject } = useApprovals("pending");
   const { logs, loading: logsLoading } = useAuditLogs(5);
   const { data: signups, loading: signupsLoading } = useMonthlyUserSignups();
 
@@ -47,11 +47,18 @@ function AdminContent() {
       icon: "location_on",
     },
     {
-      label: "Pending Reviews",
-      value: statsLoading ? "..." : adminStats.pendingApprovals.toLocaleString(),
-      change: adminStats.pendingApprovals > 0 ? "Action Needed" : "",
-      changeType: adminStats.pendingApprovals > 0 ? "warning" : "neutral",
-      icon: "rate_review",
+      label: "Pending Accounts",
+      value: statsLoading ? "..." : adminStats.pendingAccounts.toLocaleString(),
+      change: adminStats.pendingAccounts > 0 ? "Action Needed" : "",
+      changeType: adminStats.pendingAccounts > 0 ? "warning" : "neutral",
+      icon: "manage_accounts",
+    },
+    {
+      label: "Payments to Verify",
+      value: statsLoading ? "..." : adminStats.pendingPayments.toLocaleString(),
+      change: adminStats.pendingPayments > 0 ? "Action Needed" : "",
+      changeType: adminStats.pendingPayments > 0 ? "warning" : "neutral",
+      icon: "payments",
     },
   ];
 
@@ -72,8 +79,14 @@ function AdminContent() {
             </p>
           </div>
 
+          {approvalsError && (
+            <p className="mb-6 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+              {approvalsError}
+            </p>
+          )}
+
           {/* Stat Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 mb-10">
             {stats.map((stat) => (
               <div
                 key={stat.label}
@@ -164,7 +177,7 @@ function AdminContent() {
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <h2 className="text-lg font-semibold text-white">
-                    Pending Approvals
+                    Identity Reviews
                   </h2>
                   <p className="text-xs text-gray-500 mt-1">
                     Requires admin action

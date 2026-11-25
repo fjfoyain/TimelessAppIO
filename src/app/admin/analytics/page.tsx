@@ -18,7 +18,7 @@ function formatCurrency(amount: number): string {
 }
 
 export default function AnalyticsPage() {
-  const { metrics, loading: metricsLoading } = useAnalyticsMetrics();
+  const { metrics, loading: metricsLoading, error: metricsError } = useAnalyticsMetrics();
   const { data: monthlyData, loading: chartLoading } = useMonthlyRevenue();
   const { categories, loading: catLoading } = useTopCategories();
 
@@ -65,6 +65,12 @@ export default function AnalyticsPage() {
               Platform performance metrics and insights
             </p>
           </div>
+
+          {metricsError && (
+            <p className="mb-6 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+              Analytics could not be loaded. Reload the page to try again.
+            </p>
+          )}
 
           {/* Metric Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-10">

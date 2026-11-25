@@ -514,3 +514,49 @@ lint limpio · 40 unit · 51 rules · build OK · smoke test de `/robots.txt`,
   middleware, lo que vuelve dinámicas las 52 rutas hoy estáticas.
 - Infracción WCAG AA del informe externo: bloqueada hasta que la agencia entregue
   el desglose por criterio y elemento.
+
+---
+
+## Piloto Quito — Lote 0 y Lote 1 — 2026-11-24
+
+Origen: los documentos de Alex «Lo que se implementa ahora» (oct 2026) y
+«Revisión de la app» (13 nov 2026). El plan vivo y el detalle por ítem están en
+`tasks/todo.md`.
+
+### Hecho en producción (Lote 0)
+
+La cuenta demo era el único admin y su contraseña estaba escrita en el repo.
+Ahora el admin es una cuenta real, la demo es un cliente sin privilegios, las
+cuentas de muestra tienen contraseñas nuevas (en `.env.demo.local`, fuera de
+git) y los scripts leen las contraseñas del entorno.
+
+### Escrito, pendiente de desplegar (Lote 1, rama `piloto/lote-1`)
+
+- **S1 cerrado sin Cloud Functions.** El usuario solo crea solicitudes
+  `processing`; el saldo lo escribe un admin al verificar en `/admin/payments`.
+- **Aprobación real.** `users.status`, `talents.isApproved` y
+  `talents.isVerified` solo los escribe un admin. Antes el dueño podía escribir
+  los tres. El marketplace, el sitemap y la ficha solo muestran talentos aprobados.
+- **Auditoría.** Cada acción de admin escribe su registro en el mismo batch.
+- **Chat.** Ofertas acotadas, mensaje inicial único por plan, panel con el
+  contrato de la conversación, y el contrato ya no toma el monto de la URL.
+- **Eventos.** Solo se listan los de hoy en adelante.
+- **Cifras inventadas** («48 jobs», «98% response rate») retiradas.
+- Retirado el cobro simulado de Skrill.
+
+Verificación: lint limpio · 51 unit · 70 rules · build OK · diff revisado por
+separado.
+
+### Orden de despliegue
+
+1. `node scripts/migrate-verified-wallets.js --apply` (sin `--apply` es simulacro).
+2. `npm run deploy:rules`.
+3. Merge a `main`.
+
+### Sigue pendiente
+
+- **Lote 2 — contratación**: los seis estados, desglose 15%, anticipo 25% y
+  retención. Es lo que el piloto necesita probar y aún no existe.
+- **Next 14 → 16**: la rama 14 ya no recibe parches de seguridad.
+- La validación de ofertas es de interfaz; las reglas de `conversations` y
+  `contracts` aún no validan montos. Se resuelve con el modelo del Lote 2.

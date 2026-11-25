@@ -10,6 +10,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEvents } from "@/hooks/useFirestore";
 import { deleteEvent, updateEventStatus } from "@/lib/firestore";
+import { isUpcoming } from "@/lib/events";
 import type { Event as AppEvent } from "@/types";
 
 const statusStyles: Record<string, string> = {
@@ -22,7 +23,7 @@ const statusStyles: Record<string, string> = {
   Draft: "text-slate-400 bg-slate-400/10",
 };
 
-function EventsTable({ events, title, onDelete, onCancel }: { events: AppEvent[]; title: string; onDelete: (id: string) => void; onCancel: (id: string) => void }) {
+function EventsTable({ events, title, emptyText, onDelete, onCancel }: { events: AppEvent[]; title: string; emptyText: string; onDelete: (id: string) => void; onCancel: (id: string) => void }) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
   return (
@@ -35,7 +36,7 @@ function EventsTable({ events, title, onDelete, onCancel }: { events: AppEvent[]
       {events.length === 0 ? (
         <div className="py-12 text-center">
           <span className="material-icons text-3xl text-slate-700 mb-2 block">event_busy</span>
-          <p className="text-sm text-slate-500">No events to show</p>
+          <p className="text-sm text-slate-500">{emptyText}</p>
         </div>
       ) : (
         <>
@@ -146,9 +147,8 @@ function EventsContent() {
     await refresh();
   };
 
-  const now = new Date();
-  const upcomingEvents = events.filter((e) => new Date(e.date) >= now);
-  const pastEvents = events.filter((e) => new Date(e.date) < now);
+  const upcomingEvents = events.filter((e) => isUpcoming(e.date));
+  const pastEvents = events.filter((e) => !isUpcoming(e.date));
   const completedCount = events.filter((e) => e.status === "completed").length;
 
   const stats = [
@@ -236,8 +236,8 @@ function EventsContent() {
             </div>
           ) : (
             <div className="space-y-8">
-              <EventsTable events={upcomingEvents} title="Upcoming Events" onDelete={handleDelete} onCancel={handleCancel} />
-              <EventsTable events={pastEvents} title="Past Events" onDelete={handleDelete} onCancel={handleCancel} />
+              <EventsTable events={upcomingEvents} title="Upcoming Events" emptyText="You have no upcoming events. Create one to see it here." onDelete={handleDelete} onCancel={handleCancel} />
+              <EventsTable events={pastEvents} title="Past Events" emptyText="No past events yet." onDelete={handleDelete} onCancel={handleCancel} />
             </div>
           )}
         </div>

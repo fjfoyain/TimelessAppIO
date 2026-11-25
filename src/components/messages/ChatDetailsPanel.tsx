@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import type { Conversation, Contract, Booking, User } from "@/types";
+import type { Conversation, Contract, User } from "@/types";
+import { offerBounds } from "@/lib/negotiation";
 
 interface ChatDetailsPanelProps {
   user: User | null;
@@ -9,6 +10,7 @@ interface ChatDetailsPanelProps {
   offerInput: string;
   setOfferInput: (v: string) => void;
   offerBusy: boolean;
+  offerProblem: string;
   onPropose: () => void;
   onAcceptOffer: () => void;
   activeContract: Contract | null;
@@ -19,11 +21,9 @@ interface ChatDetailsPanelProps {
   reviewBusy: boolean;
   reviewSubmitted: boolean;
   onSubmitReview: () => void;
-  bookingsLoading: boolean;
-  latestBooking: Booking | null;
 }
 
-// The negotiation + contract + review + booking panel shown beside a chat.
+// The negotiation + contract + review panel shown beside a chat.
 // Rendered in the right sidebar on desktop and inside the thread (via the
 // "Contracts" tab) on mobile, so price negotiation is reachable on every screen.
 export default function ChatDetailsPanel({
@@ -32,6 +32,7 @@ export default function ChatDetailsPanel({
   offerInput,
   setOfferInput,
   offerBusy,
+  offerProblem,
   onPropose,
   onAcceptOffer,
   activeContract,
@@ -42,8 +43,6 @@ export default function ChatDetailsPanel({
   reviewBusy,
   reviewSubmitted,
   onSubmitReview,
-  bookingsLoading,
-  latestBooking,
 }: ChatDetailsPanelProps) {
   return (
     <>
@@ -70,7 +69,7 @@ export default function ChatDetailsPanel({
                   <span className="font-bold ml-1">${activeConvo.negotiation.currentOffer}</span>
                 </p>
                 <Link
-                  href={`/booking/contract?convo=${activeConvo.id}&amount=${activeConvo.negotiation.currentOffer}`}
+                  href={`/booking/contract?convo=${activeConvo.id}`}
                   className="mt-3 w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition"
                 >
                   <span className="material-icons text-sm">draw</span>
@@ -116,7 +115,9 @@ export default function ChatDetailsPanel({
                 <div className="flex gap-2">
                   <input
                     type="number"
-                    min="1"
+                    min={offerBounds(activeConvo.planContext.planPrice).min}
+                    max={offerBounds(activeConvo.planContext.planPrice).max}
+                    aria-label="Offer amount in dollars"
                     value={offerInput}
                     onChange={(e) => setOfferInput(e.target.value)}
                     placeholder={
@@ -134,6 +135,10 @@ export default function ChatDetailsPanel({
                     {activeConvo.negotiation ? "Counter" : "Propose"}
                   </button>
                 </div>
+                <p className={`text-[11px] mt-2 ${offerProblem ? "text-red-400" : "text-slate-500"}`}>
+                  {offerProblem ||
+                    `Between $${offerBounds(activeConvo.planContext.planPrice).min} and $${offerBounds(activeConvo.planContext.planPrice).max}`}
+                </p>
               </>
             )}
           </div>
@@ -188,53 +193,53 @@ export default function ChatDetailsPanel({
           </div>
         )}
 
-      {bookingsLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-        </div>
-      ) : latestBooking ? (
+      {activeContract && activeConvo ? (
         <div className="space-y-4">
           <div className="flex items-center gap-3">
-            <span className="material-icons text-primary">event</span>
+            <span className="material-icons text-primary" aria-hidden="true">description</span>
             <div>
-              <p className="text-sm font-semibold text-white">{latestBooking.title}</p>
-              <p className="text-xs text-slate-400">ID: {latestBooking.id.slice(0, 8)}</p>
+              <p className="text-sm font-semibold text-white">{activeContract.planTitle}</p>
+              <p className="text-xs text-slate-400">
+                {activeContract.status === "fully_signed" ? "Signed by both parties" : "Waiting for signatures"}
+              </p>
             </div>
           </div>
 
-          <div className="space-y-3 text-sm">
-            <div className="flex items-center gap-2 text-slate-400">
-              <span className="material-icons text-xs">calendar_today</span>
-              {latestBooking.day}
+          <dl className="space-y-2 text-sm">
+            <div className="flex items-center justify-between">
+              <dt className="text-slate-400">Agreed price</dt>
+              <dd className="font-semibold text-white tabular-nums">${activeContract.amount}</dd>
             </div>
-            <div className="flex items-center gap-2 text-slate-400">
-              <span className="material-icons text-xs">schedule</span>
-              {latestBooking.hour}:00 ({latestBooking.duration}h)
+            <div className="flex items-center justify-between">
+              <dt className="text-slate-400">Client</dt>
+              <dd className={activeContract.clientSignedAt ? "text-green-400" : "text-slate-500"}>
+                {activeContract.clientSignedAt ? "Signed" : "Not signed"}
+              </dd>
             </div>
-          </div>
+            <div className="flex items-center justify-between">
+              <dt className="text-slate-400">Talent</dt>
+              <dd className={activeContract.talentSignedAt ? "text-green-400" : "text-slate-500"}>
+                {activeContract.talentSignedAt ? "Signed" : "Not signed"}
+              </dd>
+            </div>
+          </dl>
 
-          <div className="flex gap-2 pt-4">
-            <Link
-              href="/booking"
-              className="flex-1 py-2.5 rounded-lg border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition text-center"
-            >
-              View All
-            </Link>
-          </div>
+          <Link
+            href={`/booking/contract?convo=${activeConvo.id}`}
+            className="block py-2.5 rounded-lg border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition text-center"
+          >
+            Open contract
+          </Link>
         </div>
       ) : (
         <div className="flex flex-col items-center text-center py-8 gap-3">
-          <span className="material-icons text-3xl text-slate-700">description</span>
-          <p className="text-sm text-slate-400">No active contracts</p>
+          <span className="material-icons text-3xl text-slate-700" aria-hidden="true">description</span>
+          <p className="text-sm text-slate-400">No contract yet</p>
           <p className="text-xs text-slate-500">
-            Create a booking to generate contract details here.
+            {activeConvo?.planContext
+              ? "Agree on a price above and the contract for this conversation will appear here."
+              : "Start from a plan on a talent's profile to negotiate and generate a contract."}
           </p>
-          <Link
-            href="/booking"
-            className="mt-2 px-5 py-2 rounded-lg bg-primary/10 border border-primary/30 text-primary-light text-sm font-medium hover:bg-primary/20 transition"
-          >
-            Create Booking
-          </Link>
         </div>
       )}
     </>

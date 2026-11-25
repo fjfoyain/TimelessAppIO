@@ -172,7 +172,8 @@ export async function getPublicEvent(id: string): Promise<PublicEvent | null> {
 }
 
 export async function getPublicTalents(): Promise<PublicTalent[]> {
-  const docs = await fetchCollection("talents");
+  // Only approved accounts are public listings (mirrors getAllTalents).
+  const docs = (await fetchCollection("talents")).filter((d) => d.isApproved === true);
   return docs.map((d) => ({
     id: d.id,
     name: d.name as string | undefined,
@@ -185,7 +186,7 @@ export async function getPublicTalents(): Promise<PublicTalent[]> {
 
 export async function getPublicTalent(id: string): Promise<PublicTalent | null> {
   const d = await fetchDoc("talents", id);
-  if (!d) return null;
+  if (!d || d.isApproved !== true) return null;
   return {
     id: d.id,
     name: d.name as string | undefined,

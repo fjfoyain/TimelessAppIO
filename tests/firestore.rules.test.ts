@@ -324,3 +324,147 @@ describe("private collections", () => {
     await assertFails(deleteDoc(doc(db(ALICE), "categories", "cat1")));
   });
 });
+
+describe("wallet — the balance belongs to admins (S1)", () => {
+  const request = (over: Record<string, unknown> = {}) => ({
+    userId: ALICE,
+    type: "deposit",
+    amount: 50,
+    source: "cash",
+    status: "processing",
+    ...over,
+  });
+
+  async function seedWallet(balance: number) {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), "wallets", ALICE), { userId: ALICE, balance, escrow: 0 });
+    });
+  }
+
+  it("blocks a user setting their own balance", async () => {
+    await seedWallet(10);
+    await assertFails(updateDoc(doc(db(ALICE), "wallets", ALICE), { balance: 9999 }));
+  });
+
+  it("blocks creating a wallet that already holds money", async () => {
+    await assertFails(
+      setDoc(doc(db(ALICE), "wallets", ALICE), { userId: ALICE, balance: 500, escrow: 0 })
+    );
+  });
+
+  it("allows creating an empty wallet", async () => {
+    await assertSucceeds(
+      setDoc(doc(db(ALICE), "wallets", ALICE), { userId: ALICE, balance: 0, escrow: 0 })
+    );
+  });
+
+  it("blocks a deposit born as completed", async () => {
+    await assertFails(
+      setDoc(doc(db(ALICE), "transactions", "t1"), request({ status: "completed" }))
+    );
+  });
+
+  it("blocks a user writing a payout or refund to themselves", async () => {
+    await assertFails(setDoc(doc(db(ALICE), "transactions", "t1"), request({ type: "payout" })));
+    await assertFails(setDoc(doc(db(ALICE), "transactions", "t2"), request({ type: "refund" })));
+  });
+
+  it("blocks a negative deposit and a positive withdrawal", async () => {
+    await assertFails(setDoc(doc(db(ALICE), "transactions", "t1"), request({ amount: -50 })));
+    await assertFails(
+      setDoc(doc(db(ALICE), "transactions", "t2"), request({ type: "withdrawal", amount: 50 }))
+    );
+  });
+
+  it("blocks a request attributed to another user", async () => {
+    await assertFails(setDoc(doc(db(ALICE), "transactions", "t1"), request({ userId: BOB })));
+  });
+
+  it("blocks a user marking their own request as verified", async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), "transactions", "t1"), request());
+    });
+    await assertFails(updateDoc(doc(db(ALICE), "transactions", "t1"), { status: "completed" }));
+  });
+
+  it("blocks a withdrawal with no payout method on file", async () => {
+    await assertFails(
+      setDoc(doc(db(ALICE), "transactions", "t1"), request({ type: "withdrawal", amount: -20, source: "manual_transfer" }))
+    );
+  });
+
+  it("allows a deposit request, and a withdrawal once a payout method exists", async () => {
+    await assertSucceeds(setDoc(doc(db(ALICE), "transactions", "t1"), request()));
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), "payoutMethods", ALICE), { bank: { bankName: "X" } });
+    });
+    await assertSucceeds(
+      setDoc(doc(db(ALICE), "transactions", "t2"), request({ type: "withdrawal", amount: -20, source: "manual_transfer" }))
+    );
+  });
+
+  it("allows an admin to verify a request and credit the balance", async () => {
+    await seedWallet(0);
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), "transactions", "t1"), request());
+    });
+    await assertSucceeds(updateDoc(doc(db(ADMIN), "transactions", "t1"), { status: "completed" }));
+    await assertSucceeds(updateDoc(doc(db(ADMIN), "wallets", ALICE), { balance: 50 }));
+  });
+});
+
+describe("users — account approval is granted by admins", () => {
+  it("blocks a user approving their own account", async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), "users", "carol"), { role: "TALENT", status: "Pending" });
+    });
+    await assertFails(updateDoc(doc(db("carol"), "users", "carol"), { status: "Active" }));
+  });
+
+  it("blocks registering already active", async () => {
+    await assertFails(setDoc(doc(db("dave"), "users", "dave"), { role: "TALENT", status: "Active" }));
+  });
+
+  it("allows registering as pending and editing the profile afterwards", async () => {
+    await assertSucceeds(setDoc(doc(db("dave"), "users", "dave"), { role: "TALENT", status: "Pending" }));
+    await assertSucceeds(updateDoc(doc(db("dave"), "users", "dave"), { name: "Dave" }));
+  });
+
+  it("allows an admin to approve an account", async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), "users", "carol"), { role: "TALENT", status: "Pending" });
+    });
+    await assertSucceeds(updateDoc(doc(db(ADMIN), "users", "carol"), { status: "Active" }));
+  });
+});
+
+describe("talents — listing and badge are granted by admins", () => {
+  it("blocks registering already approved or verified", async () => {
+    await assertFails(setDoc(doc(db(ALICE), "talents", ALICE), { userId: ALICE, isApproved: true }));
+    await assertFails(setDoc(doc(db(ALICE), "talents", ALICE), { userId: ALICE, isVerified: true }));
+  });
+
+  it("blocks a talent approving or verifying themselves", async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), "talents", ALICE), { userId: ALICE, isApproved: false, isVerified: false });
+    });
+    await assertFails(updateDoc(doc(db(ALICE), "talents", ALICE), { isApproved: true }));
+    await assertFails(updateDoc(doc(db(ALICE), "talents", ALICE), { isVerified: true }));
+  });
+
+  it("allows a talent to edit their profile and an admin to approve it", async () => {
+    await assertSucceeds(
+      setDoc(doc(db(ALICE), "talents", ALICE), { userId: ALICE, isApproved: false, isVerified: false })
+    );
+    await assertSucceeds(updateDoc(doc(db(ALICE), "talents", ALICE), { bio: "DJ in Quito" }));
+    await assertSucceeds(updateDoc(doc(db(ADMIN), "talents", ALICE), { isApproved: true }));
+  });
+});
+
+describe("notifications — admins may notify a user", () => {
+  it("allows an admin to notify another user", async () => {
+    await assertSucceeds(
+      setDoc(doc(db(ADMIN), "notifications", "n1"), { userId: ALICE, title: "Deposit verified" })
+    );
+  });
+});

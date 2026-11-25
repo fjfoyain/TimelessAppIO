@@ -37,7 +37,6 @@ function ContractContent() {
   const { user } = useAuth();
   const params = useSearchParams();
   const convoParam = params.get("convo");
-  const amountParam = params.get("amount");
   const talentParam = params.get("talent");
   const planParam = params.get("plan");
 
@@ -73,11 +72,9 @@ function ContractContent() {
           const clientName = convo.participantNames?.[clientId] || "Client";
           const talentName = convo.participantNames?.[pc.talentId] || "Talent";
           const agreed = convo.negotiation?.status === "agreed";
-          const amount = amountParam
-            ? parseFloat(amountParam)
-            : agreed
-            ? convo.negotiation!.currentOffer
-            : pc.planPrice;
+          // The price comes from the negotiation both parties accepted, never
+          // from the URL, which either of them could edit.
+          const amount = agreed ? convo.negotiation!.currentOffer : pc.planPrice;
 
           const c = await getOrCreateContract({
             conversationId: convo.id,
@@ -109,7 +106,7 @@ function ContractContent() {
             talentName: res.user.name,
             planId: planParam,
             planTitle: plan.title,
-            amount: amountParam ? parseFloat(amountParam) : plan.price,
+            amount: plan.price,
           });
           if (active) setContract(c);
           return;
@@ -128,7 +125,7 @@ function ContractContent() {
     return () => {
       active = false;
     };
-  }, [user, convoParam, amountParam, talentParam, planParam]);
+  }, [user, convoParam, talentParam, planParam]);
 
   async function handleSign() {
     if (!user || !contract) return;

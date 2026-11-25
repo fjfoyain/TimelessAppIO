@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 const navLinks = [
   { label: "Dashboard", href: "/admin", icon: "dashboard" },
   { label: "Accounts", href: "/admin/accounts", icon: "manage_accounts" },
+  { label: "Payments", href: "/admin/payments", icon: "payments" },
   { label: "Analytics", href: "/admin/analytics", icon: "analytics" },
   { label: "Audit Logs", href: "/admin/logs", icon: "receipt_long" },
   { label: "Approvals", href: "/admin/approvals", icon: "verified" },

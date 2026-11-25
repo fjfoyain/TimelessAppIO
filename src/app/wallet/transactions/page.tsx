@@ -15,6 +15,7 @@ const statusColors: Record<string, string> = {
   completed: "text-green-400 bg-green-400/10",
   processing: "text-yellow-400 bg-yellow-400/10",
   pending: "text-slate-400 bg-slate-400/10",
+  rejected: "text-red-400 bg-red-400/10",
 };
 
 function formatCurrency(amount: number): string {

@@ -122,17 +122,12 @@ has to go through your UI to reach Firebase.
 
 These are real and a buyer should price them in.
 
-**Wallet balances are client-controlled (the significant one).** Deposits and
-withdrawals are computed in the browser and written straight to
-`wallets/{uid}`, so the owner of an account can set their own balance to any
-value. This is tracked as **S1** in `ACTION_PLAN.md` and was consciously
-deferred while the balance is play money and no payment processor is connected.
-Fixing it means moving every wallet and transaction write into Cloud Functions
-and making both collections read-only for clients. **This must be done before
-the platform handles real money.** There is no `functions/` directory yet.
-
-**Payments are not live.** The Skrill flow is a mock settlement recorded from
-the client session. No processor is integrated, no funds move.
+**Money is verified by hand.** A user can only *request* a deposit or a
+withdrawal; the balance changes when an admin verifies the request in
+`/admin/payments`. The security rules enforce both halves (the former **S1**
+finding, closed 2026-11-24). No payment processor is integrated and no funds
+move through the platform: an admin confirms a transfer that happened outside
+it. There is still no `functions/` directory.
 
 **One WCAG AA violation is outstanding.** An external accessibility audit
 reported 4 violations, 1 of them level AA, but delivered no breakdown of which

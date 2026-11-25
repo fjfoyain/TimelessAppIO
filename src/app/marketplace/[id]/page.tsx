@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
@@ -10,6 +10,7 @@ import Footer from "@/components/landing/Footer";
 import { useTalentProfile } from "@/hooks/useFirestore";
 import { useAuth } from "@/contexts/AuthContext";
 import { isAccountActive } from "@/components/AccountGate";
+import { UserRole } from "@/types";
 import { getOrCreateConversation, sendMessage, getTalentReviews } from "@/lib/firestore";
 import type { ServicePlan, TalentReview } from "@/types";
 
@@ -24,6 +25,9 @@ export default function TalentProfilePage() {
   const { user: currentUser } = useAuth();
   const { data: firestoreMatch, loading } = useTalentProfile(id);
   const [starting, setStarting] = useState(false);
+  // State updates land after the next render, so a fast double click would
+  // start two conversations; the ref closes that window.
+  const startingRef = useRef(false);
   const [reviews, setReviews] = useState<TalentReview[]>([]);
 
   useEffect(() => {
@@ -32,6 +36,33 @@ export default function TalentProfilePage() {
   }, [id]);
 
   const match = firestoreMatch;
+
+  // A profile that is not approved yet is visible only to its owner and admins.
+  const canSee =
+    !!match &&
+    (match.talent.isApproved === true ||
+      currentUser?.id === match.talent.userId ||
+      currentUser?.role === UserRole.ADMIN ||
+      currentUser?.isSuperUser === true);
+
+  if (!loading && !canSee) {
+    return (
+      <div className="min-h-screen bg-background-dark">
+        <AnimatedBackground />
+        <Navbar />
+        <main className="relative z-10 pt-24 pb-16 flex items-center justify-center">
+          <div className="text-center">
+            <span className="material-icons text-5xl text-slate-600">person_off</span>
+            <p className="text-white font-semibold mt-4">This profile is not available</p>
+            <Link href="/marketplace" className="inline-block mt-4 text-sm text-primary hover:underline">
+              Back to the marketplace
+            </Link>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (loading || !match) {
     return (
@@ -64,19 +95,21 @@ export default function TalentProfilePage() {
     }
     // Pending/suspended accounts can't start conversations yet.
     if (!isAccountActive(currentUser)) return;
+    if (startingRef.current) return;
+    startingRef.current = true;
     setStarting(true);
     try {
       const planContext = plan
         ? { talentId: talent.id, planId: plan.id, planTitle: plan.title, planPrice: plan.price }
         : undefined;
-      const convoId = await getOrCreateConversation(
+      const { id: convoId, planIsNew } = await getOrCreateConversation(
         currentUser.id,
         currentUser.name,
         talent.userId,
         user.name,
         planContext
       );
-      if (plan) {
+      if (plan && planIsNew) {
         await sendMessage(
           convoId,
           currentUser.id,
@@ -85,6 +118,7 @@ export default function TalentProfilePage() {
       }
       router.push(`/messages?convo=${convoId}`);
     } catch {
+      startingRef.current = false;
       setStarting(false);
     }
   }
@@ -141,12 +175,6 @@ export default function TalentProfilePage() {
                     <span className="text-white font-semibold">{avgRating.toFixed(1)}</span>
                     <span className="text-slate-500 text-sm">({reviews.length} reviews)</span>
                   </div>
-                )}
-                {talent.jobsCompleted > 0 && (
-                  <div className="text-sm text-slate-400">{talent.jobsCompleted} jobs completed</div>
-                )}
-                {talent.responseRate > 0 && (
-                  <div className="text-sm text-slate-400">{talent.responseRate}% response rate</div>
                 )}
               </div>
 

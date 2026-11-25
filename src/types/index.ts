@@ -121,6 +121,8 @@ export interface Talent {
   hourlyRate?: number;
   jobsCompleted: number;
   responseRate: number;
+  // Set by an admin when the account is approved; gates the marketplace listing.
+  isApproved?: boolean;
   availability?: string[];
   // Event types this talent works (Weddings, Corporate, etc.) — drives the
   // event-type filter in the marketplace.
@@ -189,7 +191,7 @@ export interface EventProduct {
 }
 
 export type TransactionSource = "manual_transfer" | "cash" | "stripe" | "skrill" | "crypto";
-export type TransactionStatus = "completed" | "processing" | "pending";
+export type TransactionStatus = "completed" | "processing" | "pending" | "rejected";
 
 export interface Transaction {
   id: string;
@@ -326,6 +328,12 @@ export interface Category {
 }
 
 export type LogLevel = "Info" | "Warning" | "Error";
+
+// The admin performing an action — recorded in the audit log.
+export interface AdminActor {
+  id: string;
+  name: string;
+}
 
 export interface AuditLog {
   id: string;

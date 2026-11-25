@@ -7,6 +7,7 @@ import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import { getEvents } from "@/lib/firestore";
+import { isUpcoming } from "@/lib/events";
 import type { Event as AppEvent } from "@/types";
 
 function formatDate(date: string): string {
@@ -34,10 +35,11 @@ export default function EventsPage() {
   }, []);
 
   const filtered = useMemo(() => {
-    // Only show events that are open to the public.
-    const published = events.filter(
-      (e) => !e.status || e.status === "published"
-    );
+    // Only show events that are open to the public and still to come,
+    // soonest first.
+    const published = events
+      .filter((e) => (!e.status || e.status === "published") && isUpcoming(e.date))
+      .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
     const q = query.toLowerCase();
     if (!q) return published;
     return published.filter(
@@ -94,9 +96,7 @@ export default function EventsPage() {
                 event_busy
               </span>
               <p className="text-slate-500">
-                {events.length === 0
-                  ? "No events have been published yet."
-                  : "No events match your search."}
+                {query ? "No events match your search." : "No upcoming events right now."}
               </p>
             </div>
           ) : (

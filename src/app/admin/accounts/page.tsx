@@ -11,7 +11,8 @@ import {
   getWallet,
   adminCreditWallet,
 } from "@/lib/firestore";
-import { UserStatus, type User } from "@/types";
+import { useAuth } from "@/contexts/AuthContext";
+import { UserStatus, type AdminActor, type User } from "@/types";
 
 const statusStyle: Record<string, string> = {
   [UserStatus.ACTIVE]: "bg-green-500/10 text-green-400 border-green-500/20",
@@ -28,10 +29,12 @@ function formatCurrency(n: number): string {
 
 function CreditModal({
   target,
+  actor,
   onClose,
   onCredited,
 }: {
   target: User;
+  actor: AdminActor;
   onClose: () => void;
   onCredited: () => void;
 }) {
@@ -56,11 +59,15 @@ function CreditModal({
     setSaving(true);
     setError("");
     try {
-      await adminCreditWallet({
-        userId: target.id,
-        amount: parsed,
-        description: description.trim() || "Admin credit",
-      });
+      await adminCreditWallet(
+        {
+          userId: target.id,
+          userName: target.name,
+          amount: parsed,
+          description: description.trim() || "Admin credit",
+        },
+        actor
+      );
       onCredited();
       onClose();
     } catch (err) {
@@ -153,6 +160,8 @@ function CreditModal({
 // ─── Page ───────────────────────────────────────────────────────
 
 function AccountsContent() {
+  const { user: admin } = useAuth();
+  const actor: AdminActor = { id: admin?.id ?? "", name: admin?.name ?? "Admin" };
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState("");
@@ -180,9 +189,11 @@ function AccountsContent() {
   async function changeStatus(u: User, status: UserStatus) {
     setBusyId(u.id);
     try {
-      await setUserStatus(u.id, status);
+      await setUserStatus(u.id, status, actor, u.name);
       setUsers((prev) => prev.map((x) => (x.id === u.id ? { ...x, status } : x)));
       flash(`${u.name} is now ${status}.`);
+    } catch {
+      flash(`Could not update ${u.name}. Nothing was changed.`);
     } finally {
       setBusyId(null);
     }
@@ -314,6 +325,7 @@ function AccountsContent() {
       {creditTarget && (
         <CreditModal
           target={creditTarget}
+          actor={actor}
           onClose={() => setCreditTarget(null)}
           onCredited={() => flash(`Credited ${creditTarget.name}.`)}
         />

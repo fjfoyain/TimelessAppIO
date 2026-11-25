@@ -87,7 +87,6 @@ export default function TalentCard({ talent, user }: TalentWithUser) {
             ) : (
               <span className="text-sm font-semibold text-amber-400">Rate: TBS</span>
             )}
-            <span className="text-xs text-slate-500">{talent.jobsCompleted} jobs</span>
           </div>
         </div>
       </div>

@@ -6,7 +6,7 @@ import Navbar from "@/components/landing/Navbar";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
-import { useConversations, useMessages, useBookings } from "@/hooks/useFirestore";
+import { useConversations, useMessages } from "@/hooks/useFirestore";
 import { maskContactInfo } from "@/lib/chat";
 import ChatDetailsPanel from "@/components/messages/ChatDetailsPanel";
 import {
@@ -43,13 +43,13 @@ function MessagesContent() {
   const toUserId = searchParams.get("to");
   const convoParam = searchParams.get("convo");
   const { conversations, loading: convosLoading } = useConversations(user?.id);
-  const { bookings, loading: bookingsLoading } = useBookings(user?.id);
   const [activeConvoId, setActiveConvoId] = useState<string | undefined>(undefined);
   const { messages, loading: msgsLoading, sendMessage } = useMessages(activeConvoId);
   const [newMessage, setNewMessage] = useState("");
   const [contactMasked, setContactMasked] = useState(false);
   const [offerInput, setOfferInput] = useState("");
   const [offerBusy, setOfferBusy] = useState(false);
+  const [offerProblem, setOfferProblem] = useState("");
   const [activeContract, setActiveContract] = useState<Contract | null>(null);
   const [rating, setRating] = useState(5);
   const [reviewComment, setReviewComment] = useState("");
@@ -57,7 +57,6 @@ function MessagesContent() {
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
   const [tab, setTab] = useState<"messages" | "contracts">("messages");
   const [showChat, setShowChat] = useState(false);
-  const latestBooking = bookings.length > 0 ? bookings[0] : null;
 
   useEffect(() => {
     if (convosLoading || activeConvoId) return;
@@ -87,6 +86,10 @@ function MessagesContent() {
   }, [conversations, convosLoading, activeConvoId, toUserId, convoParam]);
 
   const activeConvo = conversations.find((c) => c.id === activeConvoId);
+
+  useEffect(() => {
+    setOfferProblem("");
+  }, [activeConvoId, offerInput]);
 
   // Load the contract attached to the active conversation (if any).
   useEffect(() => {
@@ -140,12 +143,13 @@ function MessagesContent() {
 
   async function handlePropose() {
     if (!user || !activeConvo) return;
-    const amount = parseFloat(offerInput);
-    if (!amount || amount <= 0) return;
     setOfferBusy(true);
+    setOfferProblem("");
     try {
-      await proposeOffer(activeConvo.id, user.id, user.name, amount);
+      await proposeOffer(activeConvo.id, user.id, user.name, parseFloat(offerInput));
       setOfferInput("");
+    } catch (err) {
+      setOfferProblem(err instanceof Error ? err.message : "The offer could not be sent.");
     } finally {
       setOfferBusy(false);
     }
@@ -189,6 +193,7 @@ function MessagesContent() {
       offerInput={offerInput}
       setOfferInput={setOfferInput}
       offerBusy={offerBusy}
+      offerProblem={offerProblem}
       onPropose={handlePropose}
       onAcceptOffer={handleAcceptOffer}
       activeContract={activeContract}
@@ -199,8 +204,6 @@ function MessagesContent() {
       reviewBusy={reviewBusy}
       reviewSubmitted={reviewSubmitted}
       onSubmitReview={handleSubmitReview}
-      bookingsLoading={bookingsLoading}
-      latestBooking={latestBooking}
     />
   );
 

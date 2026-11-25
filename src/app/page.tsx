@@ -11,6 +11,7 @@ import Footer from "@/components/landing/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEvents } from "@/hooks/useFirestore";
 import { getVenues } from "@/lib/firestore";
+import { isUpcoming } from "@/lib/events";
 import {
   EVENT_TYPES,
   PROVIDER_CATEGORIES,
@@ -237,7 +238,7 @@ function ExploreRails() {
   const topVenues = useMemo(() => venues.slice(0, 4), [venues]);
   const upcomingEvents = useMemo(() => {
     return events
-      .filter((e) => !e.status || e.status === "published")
+      .filter((e) => (!e.status || e.status === "published") && isUpcoming(e.date))
       .sort((a, b) => (a.date || "").localeCompare(b.date || ""))
       .slice(0, 4);
   }, [events]);

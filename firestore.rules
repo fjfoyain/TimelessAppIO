@@ -40,18 +40,22 @@ service cloud.firestore {
     // `role` and `isSuperUser` are what isAdmin() reads, so a user who could
     // write them could promote themselves to admin and then read every user's
     // identity documents and payout data. They are immutable except by an admin.
+    // `status` is the account approval: an account is born Pending and only an
+    // admin moves it, otherwise anyone could approve themselves.
     match /users/{userId} {
       allow read: if isOwner(userId) || isAdmin();
 
       allow create: if isOwner(userId)
                     && request.resource.data.get('role', '') != 'ADMIN'
-                    && request.resource.data.get('isSuperUser', false) == false;
+                    && request.resource.data.get('isSuperUser', false) == false
+                    && request.resource.data.get('status', 'Pending') == 'Pending';
 
       allow update: if isAdmin()
                     || (isOwner(userId)
                         && request.resource.data.get('role', '') == resource.data.get('role', '')
                         && request.resource.data.get('isSuperUser', false)
-                           == resource.data.get('isSuperUser', false));
+                           == resource.data.get('isSuperUser', false)
+                        && request.resource.data.get('status', '') == resource.data.get('status', ''));
     }
 
     // ─── Role-specific profiles ────────────────────────────────────
@@ -66,9 +70,18 @@ service cloud.firestore {
       allow write: if isOwner(userId);
     }
 
+    // Public for the marketplace. `isApproved` decides whether a profile is
+    // listed and `isVerified` is a trust badge: both are granted by an admin,
+    // so the owner can neither set them at creation nor change them later.
     match /talents/{userId} {
-      allow read: if true; // Public for marketplace
-      allow write: if isOwner(userId) || isAdmin();
+      allow read: if true;
+      allow create: if isAdmin()
+                    || (isOwner(userId)
+                        && request.resource.data.get('isApproved', false) == false
+                        && request.resource.data.get('isVerified', false) == false);
+      allow update: if isAdmin()
+                    || (isOwner(userId) && !changed().hasAny(['isApproved', 'isVerified']));
+      allow delete: if isOwner(userId) || isAdmin();
     }
 
     // Venue docs are keyed by the owner's uid (see createVenueProfile), so the
@@ -129,11 +142,13 @@ service cloud.firestore {
 
     // ─── Notifications ─────────────────────────────────────────────
     //
-    // Owner only. A user may only create notifications addressed to themselves
-    // (cross-user notifications must be server-side).
+    // Owner only. A user may only create notifications addressed to themselves;
+    // an admin may notify anyone (e.g. "your deposit was verified"). Other
+    // cross-user notifications must be server-side.
     match /notifications/{notifId} {
       allow read: if isAuth() && resource.data.userId == request.auth.uid;
-      allow create: if isAuth() && request.resource.data.userId == request.auth.uid;
+      allow create: if isAuth()
+                    && (request.resource.data.userId == request.auth.uid || isAdmin());
       allow update: if isAuth() && resource.data.userId == request.auth.uid;
     }
 
@@ -184,14 +199,17 @@ service cloud.firestore {
 
     // ─── Wallets ───────────────────────────────────────────────────
     //
-    // KNOWN LIMITATION (S1 in ACTION_PLAN.md): the balance is computed in the
-    // browser, so the owner can set it to any value. Acceptable while the
-    // balance is play money; must move to Cloud Functions before real funds.
-    // Disclosed to the buyer in HANDOVER.md rather than hidden.
+    // The balance is written by admins only, when they verify a movement (see
+    // Transactions below). The owner may create their own wallet, but only
+    // empty, and can never update it.
     match /wallets/{userId} {
       allow read: if isOwner(userId) || isAdmin();
-      allow create: if isOwner(userId) || isAdmin();
-      allow update: if isOwner(userId) || isAdmin();
+      allow create: if isAdmin()
+                    || (isOwner(userId)
+                        && request.resource.data.userId == userId
+                        && request.resource.data.balance == 0
+                        && request.resource.data.escrow == 0);
+      allow update: if isAdmin();
     }
 
     // ─── Contracts ─────────────────────────────────────────────────
@@ -262,11 +280,25 @@ service cloud.firestore {
 
     // ─── Transactions ──────────────────────────────────────────────
     //
-    // Owner only. See the wallets note above: amounts are still
-    // client-controlled (S1). Ledger entries are append-only for users.
+    // A user can only REQUEST a deposit or a withdrawal: the entry is born
+    // `processing` and has no effect on the balance. Only an admin can resolve
+    // it, and only an admin can write any other kind of movement. A withdrawal
+    // also requires a saved payout method, so the money has a destination.
+    function isOwnRequest() {
+      let d = request.resource.data;
+      return d.userId == request.auth.uid
+        && d.status == 'processing'
+        && d.amount is number
+        && d.source in ['manual_transfer', 'cash']
+        && ((d.type == 'deposit' && d.amount > 0)
+            || (d.type == 'withdrawal'
+                && d.amount < 0
+                && exists(/databases/$(database)/documents/payoutMethods/$(request.auth.uid))));
+    }
+
     match /transactions/{transactionId} {
       allow read: if isAuth() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isAuth() && (request.resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuth() && (isOwnRequest() || isAdmin());
       allow update: if isAdmin();
     }
   }

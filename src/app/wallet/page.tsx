@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
@@ -9,12 +9,14 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { isAccountActive } from "@/components/AccountGate";
 import { useAuth } from "@/contexts/AuthContext";
 import { useWallet, useTransactions } from "@/hooks/useFirestore";
-import type { TransactionSource } from "@/types";
+import { getPayoutMethod } from "@/lib/firestore";
+import type { PayoutMethod, TransactionSource } from "@/types";
 
 const statusColors: Record<string, string> = {
   completed: "text-green-400 bg-green-400/10",
   processing: "text-yellow-400 bg-yellow-400/10",
   pending: "text-slate-400 bg-slate-400/10",
+  rejected: "text-red-400 bg-red-400/10",
 };
 
 function formatCurrency(amount: number): string {
@@ -151,6 +153,10 @@ function AddFundsModal({
             />
           </div>
 
+          <p className="text-xs text-slate-500">
+            Your balance updates once Timeless confirms the payment was received.
+          </p>
+
           {error && <p className="text-sm text-red-400">{error}</p>}
 
           <div className="flex gap-3 pt-2">
@@ -165,7 +171,7 @@ function AddFundsModal({
               disabled={saving}
               className="flex-1 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-sm font-bold transition disabled:opacity-50"
             >
-              {saving ? "Processing..." : "Add Funds"}
+              {saving ? "Sending..." : "Report deposit"}
             </button>
           </div>
         </div>
@@ -176,17 +182,26 @@ function AddFundsModal({
 
 // ─── Withdraw Modal ─────────────────────────────────────────────
 
+function payoutLabel(method: PayoutMethod): string {
+  if (method.bank) return `${method.bank.bankName} · ${method.bank.accountNumber}`;
+  if (method.wallet) return `${method.wallet.provider} · ${method.wallet.handle}`;
+  return "";
+}
+
 function WithdrawModal({
   balance,
+  payout,
   onClose,
   onSubmit,
 }: {
   balance: number;
+  // undefined while loading, null when the user has not saved one yet.
+  payout: PayoutMethod | null | undefined;
   onClose: () => void;
   onSubmit: (amount: number, description: string) => Promise<void>;
 }) {
   const [amount, setAmount] = useState("");
-  const [description, setDescription] = useState("Withdrawal to bank account");
+  const [description, setDescription] = useState("Withdrawal");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
@@ -229,10 +244,33 @@ function WithdrawModal({
           </button>
         </div>
 
+        {!payout || !payoutLabel(payout) ? (
+          <div className="space-y-5">
+            <p className="text-sm text-slate-400">
+              {payout === undefined
+                ? "Checking your payout method..."
+                : "Add the bank account or wallet where you want to receive your money. Withdrawals are sent there."}
+            </p>
+            {payout !== undefined && (
+              <Link
+                href="/dashboard/payouts"
+                className="block text-center px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-sm font-bold transition"
+              >
+                Add payout method
+              </Link>
+            )}
+          </div>
+        ) : (
         <div className="space-y-5">
-          <div className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/5">
-            <span className="text-sm text-slate-400">Available Balance</span>
-            <span className="text-sm font-bold text-white">${formatCurrency(balance)}</span>
+          <div className="p-3 rounded-xl bg-white/5 border border-white/5 space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-slate-400">Available</span>
+              <span className="text-sm font-bold text-white">${formatCurrency(balance)}</span>
+            </div>
+            <div className="flex items-center justify-between gap-4">
+              <span className="text-sm text-slate-400">Sent to</span>
+              <span className="text-sm text-white truncate">{payoutLabel(payout)}</span>
+            </div>
           </div>
 
           <div>
@@ -278,10 +316,11 @@ function WithdrawModal({
               disabled={saving}
               className="flex-1 px-4 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm font-bold transition disabled:opacity-50"
             >
-              {saving ? "Processing..." : "Withdraw"}
+              {saving ? "Sending..." : "Request withdrawal"}
             </button>
           </div>
         </div>
+        )}
       </div>
     </div>
   );
@@ -297,16 +336,33 @@ function WalletContent() {
   const { transactions, loading: txLoading } = useTransactions(user?.id);
   const [showAddFunds, setShowAddFunds] = useState(false);
   const [showWithdraw, setShowWithdraw] = useState(false);
+  const [payout, setPayout] = useState<PayoutMethod | null | undefined>(undefined);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    getPayoutMethod(user.id)
+      .then(setPayout)
+      .catch(() => setPayout(null));
+  }, [user?.id]);
 
   const balance = wallet?.balance ?? 0;
   const escrow = wallet?.escrow ?? 0;
   const recentTx = transactions.slice(0, 5);
   const loading = walletLoading || txLoading;
 
-  // Compute breakdowns from real transactions
-  const deposits = transactions.filter((t) => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
-  const withdrawals = transactions.filter((t) => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
-  const pending = transactions.filter((t) => t.status === "pending" || t.status === "processing").reduce((sum, t) => sum + Math.abs(t.amount), 0);
+  // Money that moved (verified) is kept apart from money still under review,
+  // and what is coming in is never added to what is going out.
+  const total = (verified: boolean, incoming: boolean) =>
+    transactions
+      .filter((t) => (t.status === "completed") === verified && t.status !== "rejected")
+      .filter((t) => t.amount > 0 === incoming)
+      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+  const deposits = total(true, true);
+  const withdrawals = total(true, false);
+  const pendingIn = total(false, true);
+  const pendingOut = total(false, false);
+  // Requested withdrawals are already spoken for.
+  const available = Math.max(0, balance - pendingOut);
 
   if (loading) {
     return (
@@ -358,9 +414,14 @@ function WalletContent() {
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] -mr-20 -mt-20" />
                 <div className="relative">
                   <p className="text-slate-400 text-sm font-medium uppercase tracking-wider mb-2">
-                    Total Balance
+                    Available Balance
                   </p>
-                  <p className="text-4xl md:text-5xl font-black text-white">${formatCurrency(balance)}</p>
+                  <p className="text-4xl md:text-5xl font-black text-white">${formatCurrency(available)}</p>
+                  {pendingIn > 0 && (
+                    <p className="text-slate-400 text-sm mt-2">
+                      ${formatCurrency(pendingIn)} more once your deposits are verified
+                    </p>
+                  )}
                   {escrow > 0 && (
                     <p className="text-yellow-400 text-sm mt-2">
                       ${formatCurrency(escrow)} in escrow
@@ -388,7 +449,7 @@ function WalletContent() {
               </div>
 
               {/* Earnings Breakdown */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
                 <div className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-xl p-5">
                   <div className="flex items-center gap-2 text-slate-400 mb-2">
                     <span className="material-icons text-green-400 text-sm">arrow_downward</span>
@@ -406,9 +467,16 @@ function WalletContent() {
                 <div className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-xl p-5">
                   <div className="flex items-center gap-2 text-slate-400 mb-2">
                     <span className="material-icons text-yellow-400 text-sm">schedule</span>
-                    <span className="text-xs font-medium uppercase tracking-wider">Processing</span>
+                    <span className="text-xs font-medium uppercase tracking-wider">Deposits in review</span>
                   </div>
-                  <p className="text-2xl font-bold text-white">${formatCurrency(pending)}</p>
+                  <p className="text-2xl font-bold text-white">${formatCurrency(pendingIn)}</p>
+                </div>
+                <div className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-xl p-5">
+                  <div className="flex items-center gap-2 text-slate-400 mb-2">
+                    <span className="material-icons text-yellow-400 text-sm">schedule</span>
+                    <span className="text-xs font-medium uppercase tracking-wider">Withdrawals in review</span>
+                  </div>
+                  <p className="text-2xl font-bold text-white">${formatCurrency(pendingOut)}</p>
                 </div>
               </div>
 
@@ -538,7 +606,8 @@ function WalletContent() {
       )}
       {showWithdraw && (
         <WithdrawModal
-          balance={balance}
+          balance={available}
+          payout={payout}
           onClose={() => setShowWithdraw(false)}
           onSubmit={withdraw}
         />
