@@ -208,17 +208,17 @@ firebase login
 firebase deploy --only firestore:rules,firestore:indexes,storage
 ```
 
-### Demo / Super-user Account
+### Admin Account
 
-A helper script creates a demo account (`demo@timeless.io` / `Demo1234!`) with
-`isSuperUser: true`, which unlocks every dashboard and the admin panel.
+A helper script grants admin access to an account, creating it if it does not
+exist yet. Credentials are passed through the environment, never committed.
 
 ```bash
 # 1. Download a service account key from
 #    Firebase Console → Project Settings → Service Accounts → Generate new private key
 #    Save it as: scripts/serviceAccountKey.json   (gitignored — never commit it)
 # 2. Run:
-node scripts/create-demo-user.js
+ADMIN_EMAIL=you@example.com node scripts/create-admin.js
 ```
 
 ### Seed Demo Data
@@ -228,11 +228,11 @@ approvals so the marketplace, event wizard and admin panels have content.
 Uses the same `scripts/serviceAccountKey.json` as the step above.
 
 ```bash
-node scripts/seed-demo.js
+SEED_PASSWORD='choose-one' node scripts/seed-demo.js
 ```
 
-This creates 3 venue accounts and 4 talent accounts (password `Demo1234!`),
-plus 6 courses, 7 categories and 3 pending approvals. The script is idempotent.
+This creates 3 venue accounts and 4 talent accounts (with the password given in
+`SEED_PASSWORD`; accounts that already exist keep theirs), plus 6 courses, 7 categories and 3 pending approvals. The script is idempotent.
 
 ## Testing
 

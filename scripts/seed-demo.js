@@ -25,7 +25,8 @@
  * Idempotent: re-running it reuses existing Auth users and overwrites their
  * Firestore docs, and skips collections that already contain data.
  *
- * Default password for every seeded account:  Demo1234!
+ * Accounts that do not exist yet are created with the password in the
+ * SEED_PASSWORD environment variable. Existing accounts keep their password.
  */
 
 const path = require("path");
@@ -58,7 +59,7 @@ const auth = admin.auth();
 const db = admin.firestore();
 const now = () => admin.firestore.FieldValue.serverTimestamp();
 
-const DEFAULT_PASSWORD = "Demo1234!";
+const DEFAULT_PASSWORD = process.env.SEED_PASSWORD;
 
 // ─── Demo data ──────────────────────────────────────────────────
 
@@ -106,8 +107,6 @@ const TALENTS = [
     hourlyRate: 180,
     experience: "veteran",
     isVerified: true,
-    jobsCompleted: 48,
-    responseRate: 98,
     eventTypes: ["Club Nights", "Private Parties", "Weddings", "Corporate Events"],
   },
   {
@@ -121,8 +120,6 @@ const TALENTS = [
     hourlyRate: 120,
     experience: "pro",
     isVerified: true,
-    jobsCompleted: 73,
-    responseRate: 95,
     eventTypes: ["Weddings", "Corporate Events", "Birthday Parties", "Festivals"],
   },
   {
@@ -136,8 +133,6 @@ const TALENTS = [
     hourlyRate: 150,
     experience: "veteran",
     isVerified: false,
-    jobsCompleted: 31,
-    responseRate: 90,
     eventTypes: ["Festivals", "Corporate Events", "Club Nights"],
   },
   {
@@ -151,8 +146,6 @@ const TALENTS = [
     hourlyRate: 140,
     experience: "pro",
     isVerified: true,
-    jobsCompleted: 22,
-    responseRate: 88,
     eventTypes: ["Weddings", "Birthday Parties", "Corporate Events", "Baby Showers"],
   },
 ];
@@ -190,6 +183,9 @@ async function ensureAuthUser(email, displayName) {
     return existing.uid;
   } catch (err) {
     if (err.code === "auth/user-not-found") {
+      if (!DEFAULT_PASSWORD) {
+        throw new Error(`${email} does not exist yet. Set SEED_PASSWORD to create it.`);
+      }
       const created = await auth.createUser({
         email,
         password: DEFAULT_PASSWORD,
@@ -288,8 +284,10 @@ async function main() {
       experience: t.experience,
       eventTypes: t.eventTypes || [],
       isVerified: t.isVerified,
-      jobsCompleted: t.jobsCompleted,
-      responseRate: t.responseRate,
+      // Sample profiles are approved listings; real ones start unapproved.
+      isApproved: true,
+      jobsCompleted: 0,
+      responseRate: 0,
       portfolio: [],
       reviews: [],
       servicePlans: plansFor(t),
@@ -335,7 +333,6 @@ async function main() {
   console.log(`
   ──────────────────────────────────────────
   Seed complete.
-    Seeded accounts password:  ${DEFAULT_PASSWORD}
     Venue logins:   ${VENUES.map((v) => v.email).join(", ")}
     Talent logins:  ${TALENTS.map((t) => t.email).join(", ")}
   ──────────────────────────────────────────
