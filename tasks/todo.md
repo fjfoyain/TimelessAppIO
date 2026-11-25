@@ -1,7 +1,7 @@
 # Piloto Quito — plan a partir de los documentos de Alex
 
 Fuentes: «Lo que se implementa ahora» (oct 2026) y «Revisión de la app» (13 nov 2026).
-Estado: Lotes 0 y 1 en producción; Lotes 2 y 3 commiteados en `piloto/lote-2`, sin desplegar — 2026-11-24.
+Estado: Lotes 0, 1, 2 y 3 en producción — 2026-11-24. Queda la lista «Por revisar».
 
 Contexto que condiciona todo: lo desplegado es el código de agosto. Nada de lo
 acordado el 8 de octubre está construido todavía.
@@ -63,7 +63,7 @@ Chat y eventos:
 Desplegado el 2026-11-24: migración aplicada (7 talentos listados, «dfsdf» oculto, 1 depósito en efectivo
 devuelto a revisión, saldo de la demo de $30 a $0), reglas publicadas y `main` empujado.
 
-## Lote 2 — Contratación — escrito y probado, SIN desplegar
+## Lote 2 — Contratación — en producción desde 2026-11-24
 
 - [x] K1. `contrataciones/{id}` + `transiciones/{seq}`; el dinero va en `transactions` con `contratacionId`.
 - [x] K2. Los seis estados más Cancelada y Expirada. Las reglas de Firestore son la máquina de estados.
@@ -86,7 +86,7 @@ devuelto a revisión, saldo de la demo de $30 a $0), reglas publicadas y `main` 
 Verificación: 75 pruebas unitarias · 150 de reglas (incluye el flujo completo ejecutando el código real de la
 app contra las reglas) · lint · build.
 
-## Lote 3 — Lanzamiento por nicho — escrito, SIN desplegar
+## Lote 3 — Lanzamiento por nicho — en producción desde 2026-11-24
 
 - [x] N1. `LAUNCH_SCOPE` (DJ / Producer, Quito) limita marketplace, sitemap, portada, búsqueda y registro.
       Ponerlo en `null` reabre todas las categorías y ciudades.
@@ -96,8 +96,8 @@ app contra las reglas) · lint · build.
 - [x] N5. El registro de talento ofrece la categoría DJ (antes no existía) y pide ciudad.
 
 Para desplegar los Lotes 2 y 3 (no hace falta migrar datos):
-- [ ] D4. `npm run deploy:rules`.
-- [ ] D5. Merge de `piloto/lote-2` a `main` y push.
+- [x] D4. `npm run deploy:rules`.
+- [x] D5. Merge de `piloto/lote-2` a `main` y push. Comprobado: `/dashboard/plans` responde y el marketplace lista solo DJs en Quito.
 
 ## Por revisar antes de dar el piloto por listo
 
@@ -124,6 +124,7 @@ Verificación pendiente:
 - [ ] R15. Recorrido manual completo con las cuentas demo de cliente y DJ más el admin.
 - [ ] R16. Resultado de la revisión adversarial de las reglas del Lote 2 (en curso al escribir esto).
 - [ ] R17. Páginas de evento en blanco (E3): hoy renderizan bien en producción; no se encontró la causa.
+- [ ] R19. La tarjeta del marketplace muestra «★ 0.0» cuando un DJ no tiene reseñas; mejor ocultarla.
 - [ ] R18. Sin servidor, los plazos no se disparan solos: alguien tiene que abrir la contratación o el admin barrer «Overdue».
 
 ## Fuera de alcance: Studio es una página aparte que no gestionamos

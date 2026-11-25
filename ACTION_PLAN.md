@@ -563,7 +563,7 @@ separado.
 
 ---
 
-## Piloto Quito — Lotes 2 y 3 — 2026-11-24 (rama `piloto/lote-2`, sin desplegar)
+## Piloto Quito — Lotes 2 y 3 — 2026-11-24 (en producción)
 
 Los Lotes 0 y 1 están en producción desde el 2026-11-24. El detalle por ítem y
 la lista de cosas por revisar están en `tasks/todo.md`.
