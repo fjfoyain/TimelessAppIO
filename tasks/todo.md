@@ -1,7 +1,7 @@
 # Piloto Quito — plan a partir de los documentos de Alex
 
 Fuentes: «Lo que se implementa ahora» (oct 2026) y «Revisión de la app» (13 nov 2026).
-Estado: Lote 0 hecho; Lote 1 escrito sin desplegar; Lotes 2–3 propuestos — 2026-11-24.
+Estado: Lotes 0 y 1 en producción; Lotes 2 y 3 commiteados en `piloto/lote-2`, sin desplegar — 2026-11-24.
 
 Contexto que condiciona todo: lo desplegado es el código de agosto. Nada de lo
 acordado el 8 de octubre está construido todavía.
@@ -27,7 +27,7 @@ acordado el 8 de octubre está construido todavía.
 - [ ] S5d. Cloudflare: los registros hacia Vercel están con proxy activo; HANDOVER.md pide «DNS only».
 - [ ] S6d. Rotar la clave de servicio de Firebase (`scripts/serviceAccountKey.json`) si se compartió alguna vez.
 
-## Lote 1 — Cerrar agujeros y quitar datos falsos — código listo en `piloto/lote-1`, sin desplegar
+## Lote 1 — Cerrar agujeros y quitar datos falsos — en producción desde 2026-11-24
 
 Billetera (cierra S1 solo con reglas, sin Cloud Functions):
 - [x] W1. Reglas: el usuario solo crea solicitudes en `processing`; `wallets.balance` solo lo escribe un admin.
@@ -60,36 +60,71 @@ Chat y eventos:
 - [x] E2. Dashboard: estados vacíos explícitos; un evento de hoy ya no cae en «Past».
 - [ ] E3. Páginas de evento en blanco: sin causa en el código, hay que reproducirlo en producción.
 
-Para desplegar el Lote 1 (en este orden, todo junto):
-- [ ] D1. `node scripts/migrate-verified-wallets.js --apply` — simulacro del 2026-11-24: lista 7 talentos, oculta «dfsdf»,
-      devuelve a revisión 1 depósito en efectivo de $1 y deja el saldo de la demo en $0 (eran $30 sin verificar).
-      Va primero: sin el campo `isApproved` el marketplace nuevo saldría vacío.
-- [ ] D2. `npm run deploy:rules`.
-- [ ] D3. Merge a `main` (Vercel despliega la app).
+Desplegado el 2026-11-24: migración aplicada (7 talentos listados, «dfsdf» oculto, 1 depósito en efectivo
+devuelto a revisión, saldo de la demo de $30 a $0), reglas publicadas y `main` empujado.
 
-## Lote 2 — Contratación (lo que el piloto necesita probar)
+## Lote 2 — Contratación — escrito y probado, SIN desplegar
 
-Se diseña aparte antes de escribir código. Alcance:
-- [ ] K1. Colecciones Contratación / Transición / Movimiento con sus reglas y tests.
-- [ ] K2. Estados: Solicitada → En negociación → Aceptada → Confirmada → Realizada → Liquidada, más Cancelada y Expirada.
-- [ ] K3. Solicitud con fecha, tipo y tamaño del evento (dos selecciones rápidas).
-- [ ] K4. Desglose visible antes de aceptar: precio, comisión 15%, lo que recibe el DJ.
-      Sustituye el «Escrow fee 5%» actual, que se suma encima del precio.
-- [ ] K5. Anticipo 25%: comisión a Timeless y el resto retenido hasta Realizada.
-- [ ] K6. Confirmada = anticipo verificado por un admin (misma pantalla que W4).
-- [ ] K7. Realizada la confirma el cliente; liquidación automática a los 7 días sin disputa.
-- [ ] K8. Tabla de cancelaciones (más de 7 días / 7 días o menos / cancela el DJ).
-- [ ] K9. Precio de lista y precio acordado guardados en cada contratación (propuesta 3.1).
-- [ ] K10. Plazos según tamaño (propuesta 3.2), evaluados al leer mientras no haya servidor.
-- [ ] K11. El «Project Manager» refleja el estado de las contrataciones; deja de moverse a mano.
-- [ ] K12. Notificaciones a la contraparte en cada transición.
+- [x] K1. `contrataciones/{id}` + `transiciones/{seq}`; el dinero va en `transactions` con `contratacionId`.
+- [x] K2. Los seis estados más Cancelada y Expirada. Las reglas de Firestore son la máquina de estados.
+- [x] K3. Solicitud con fecha, hora, tipo y tamaño del evento (personas, tickets o m²).
+- [x] K4. Desglose visible antes de enviar y antes de aceptar. Retirado el «Escrow fee 5%».
+- [x] K5. Anticipo 25% = comisión 15% + parte retenida. Todo en centavos enteros, sin redondeos.
+- [x] K6. Confirmada = un admin verificó el anticipo, desde la cola de `/admin/payments`.
+- [x] K7. Realizada la confirma el cliente; a los 7 días del evento sin disputa, cualquiera de las partes.
+      Liquidada la ejecuta un admin, porque solo un admin escribe saldos.
+- [x] K8. Cancelaciones con el reparto acordado; el movimiento pendiente nace con la cancelación.
+- [x] K9. Precio de lista y precio acordado guardados en cada contratación.
+- [x] K10. Plazos por tamaño, comprobados contra la hora del servidor al actuar.
+- [x] K11. `/dashboard/projects` es ahora el tablero de contrataciones; ya no se mueve a mano.
+- [x] K12. Notificación a la contraparte en cada paso, con id fijo para que no sirva de spam.
+- [x] K13. Disputas: una parte la abre hasta 7 días después del evento; un admin la resuelve.
+- [x] K14. Editor de planes del DJ (`/dashboard/plans`). Sin esto ningún DJ real era contratable.
+- [x] K15. Reseñas atadas a una contratación realizada: una por contratación.
+- [x] K16. Las ofertas salen del chat; el contrato de doble firma queda en solo lectura.
 
-## Lote 3 — Lanzamiento por nicho
+Verificación: 75 pruebas unitarias · 150 de reglas (incluye el flujo completo ejecutando el código real de la
+app contra las reglas) · lint · build.
 
-- [ ] N1. Configuración de lanzamiento: solo DJs, solo Quito.
-- [ ] N2. Footer: «Event Types» y «Providers» bajo un solo título.
-- [ ] N3. Textos que prometen lo que no existe («sign the contract» en la portada).
-- [ ] N4. «Talent» vs «Artist»: solo Talent aparece en el marketplace; decidir si se unifican.
+## Lote 3 — Lanzamiento por nicho — escrito, SIN desplegar
+
+- [x] N1. `LAUNCH_SCOPE` (DJ / Producer, Quito) limita marketplace, sitemap, portada, búsqueda y registro.
+      Ponerlo en `null` reabre todas las categorías y ciudades.
+- [x] N2. Pie de página: una sola columna «Discover our talent».
+- [x] N3. Portada: fuera «sign the contract»; ahora describe precio, desglose y anticipo.
+- [x] N4. El registro dice qué rol se lista y se contrata (Talent) y cuál no (Artist). Unificarlos sigue pendiente de decisión.
+- [x] N5. El registro de talento ofrece la categoría DJ (antes no existía) y pide ciudad.
+
+Para desplegar los Lotes 2 y 3 (no hace falta migrar datos):
+- [ ] D4. `npm run deploy:rules`.
+- [ ] D5. Merge de `piloto/lote-2` a `main` y push.
+
+## Por revisar antes de dar el piloto por listo
+
+Decisiones de producto que tomé por defecto (confirmar con David y Alex):
+- [ ] R1. Lo retenido del DJ y los reembolsos se acreditan al saldo de Timeless; el cliente necesita método de cobro para retirar.
+- [ ] R2. Precios y ofertas en dólares enteros; oferta entre 50% y 200% del precio de lista.
+- [ ] R3. Tamaño por rangos; corte chico/grande en 100 personas, 100 tickets y 150 m².
+- [ ] R4. Se pide hora de inicio (20:00 por defecto); los 7 días se miden desde esa hora.
+- [ ] R5. El DJ puede cancelar hasta la hora del evento sin penalización; el cliente recupera todo el anticipo.
+- [ ] R6. Reportar el anticipo detiene el reloj de Aceptada hasta que un admin lo resuelva.
+- [ ] R7. Disputa: ventana de 7 días tras el evento, una por contratación; el admin elige descartar, pagar al DJ o reembolsar al cliente.
+- [ ] R8. Textos de la app en inglés, como el resto. ¿El piloto en Quito los necesita en español?
+
+Datos de producción:
+- [ ] R9. Con el alcance activo el marketplace solo muestra a «Luna Vega» (demo). Felipe Ponce, David Chávez y
+      Pancho están como Event Promoter / Videographer y sin ciudad: quedan fuera hasta corregir categoría y ciudad.
+- [ ] R10. DJ Pancho, Nebulossa, LYVAR y Dj Chavezura se registraron como Artist: no aparecen ni son contratables.
+- [ ] R11. Ningún DJ real tiene planes; cada uno debe crearlos en «My Plans».
+- [ ] R12. 4 conversaciones con ofertas de prueba antiguas (una de $2000): se ignoran, no se migran. 1 proyecto del tablero manual queda sin pantalla.
+- [ ] R13. Cuentas repetidas de un mismo artista (LYVAR ×2, Dj Chavezura ×2): decidir cuál se conserva.
+
+Verificación pendiente:
+- [ ] R14. Ninguna pantalla nueva se ha visto en un navegador con sesión: contratación, tablero, planes, cola de admin, billetera.
+- [ ] R15. Recorrido manual completo con las cuentas demo de cliente y DJ más el admin.
+- [ ] R16. Resultado de la revisión adversarial de las reglas del Lote 2 (en curso al escribir esto).
+- [ ] R17. Páginas de evento en blanco (E3): hoy renderizan bien en producción; no se encontró la causa.
+- [ ] R18. Sin servidor, los plazos no se disparan solos: alguien tiene que abrir la contratación o el admin barrer «Overdue».
 
 ## Fuera de alcance: Studio es una página aparte que no gestionamos
 

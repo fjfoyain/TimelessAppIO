@@ -560,3 +560,44 @@ separado.
 - **Next 14 → 16**: la rama 14 ya no recibe parches de seguridad.
 - La validación de ofertas es de interfaz; las reglas de `conversations` y
   `contracts` aún no validan montos. Se resuelve con el modelo del Lote 2.
+
+---
+
+## Piloto Quito — Lotes 2 y 3 — 2026-11-24 (rama `piloto/lote-2`, sin desplegar)
+
+Los Lotes 0 y 1 están en producción desde el 2026-11-24. El detalle por ítem y
+la lista de cosas por revisar están en `tasks/todo.md`.
+
+### Contratación (Lote 2)
+
+- Colecciones `contrataciones/{id}` y `contrataciones/{id}/transiciones/{seq}`.
+  El dinero se registra en `transactions` con `contratacionId`.
+- No hay servidor: `firestore.rules` es la máquina de estados. Cada escritura es
+  un paso (`seq` + 1) con su transición inmutable en la misma petición, y
+  `updatedAt` es siempre la hora del servidor, de la que salen los plazos.
+- Montos en centavos enteros y precio acordado en dólares enteros, para que el
+  15% y el 25% se comprueben de forma exacta.
+- Las partes solo crean movimientos `processing`. Confirmada (anticipo
+  verificado) y Liquidada (retenido liberado) son pasos de admin.
+- `src/lib/contratacion.ts` es el módulo puro que la interfaz usa para ofrecer
+  solo lo que las reglas aceptan; un test compara sus constantes con las reglas.
+- `tests/contrataciones.flow.rules.test.ts` ejecuta la capa de datos real contra
+  las reglas reales, de la solicitud a la liquidación.
+
+Sustituye: las ofertas en `conversations.negotiation` (ya no se pueden
+escribir), el contrato de doble firma (`contracts`, solo lectura) y el tablero
+manual de proyectos.
+
+### Lanzamiento por nicho (Lote 3)
+
+`LAUNCH_SCOPE` en `src/lib/constants.ts` limita marketplace, sitemap, portada,
+búsqueda y registro a DJs en Quito. `null` lo reabre todo.
+
+### Verificación
+
+lint · 75 unit · 150 rules · build. Ninguna pantalla nueva se ha comprobado en
+un navegador con sesión.
+
+### Despliegue
+
+`npm run deploy:rules` y luego merge a `main`. No requiere migrar datos.
