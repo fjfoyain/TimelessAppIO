@@ -14,8 +14,8 @@ Aquí queda solo lo que falta.
 - [ ] **DJ reales contratables.** Hoy el marketplace solo lista a la DJ de muestra. Cada DJ debe ser «Talent»,
       con categoría DJ, ciudad Quito y al menos un plan. Quien ya es talento lo corrige en «My Listing & Plans»;
       quien se registró como «Artist» (DJ Pancho, Nebulossa, LYVAR, Dj Chavezura) necesita la decisión de la pregunta 8.
-- [ ] **Recorrido manual completo con sesión.** Ninguna pantalla con sesión se ha probado a mano, tampoco con
-      Next 16. La lista de pasos está en el PDF, sección 9.
+- [ ] **Revisar pantallas y funcionalidad.** Recorrer la app con las cuentas demo (cliente, DJ y admin), también
+      tras la actualización a Next 16. La lista de pasos está en el PDF, sección 9.
 
 ## 2. Esperan respuesta de David y Alex (PDF, sección 7)
 
