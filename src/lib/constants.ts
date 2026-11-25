@@ -43,3 +43,24 @@ export const PROVIDER_CATEGORY_ICONS: Record<string, string> = {
   "Lighting Technician": "wb_incandescent",
   "Event Promoter": "campaign",
 };
+
+// ─── Launch scope ────────────────────────────────────────────────
+//
+// The pilot launches with one category in one city. While this is set, the
+// marketplace, the sitemap, the browse hubs and talent registration only deal
+// with that niche. Profiles outside it keep existing and stay reachable by
+// link; they are simply not listed. Set to `null` to open every category and
+// city again — nothing else has to change.
+export const LAUNCH_SCOPE: { category: string; city: string } | null = {
+  category: "DJ / Producer",
+  city: "Quito",
+};
+
+export const CITIES = ["Quito", "Guayaquil", "Cuenca"];
+
+export const ACTIVE_PROVIDER_CATEGORIES = LAUNCH_SCOPE ? [LAUNCH_SCOPE.category] : PROVIDER_CATEGORIES;
+export const ACTIVE_CITIES = LAUNCH_SCOPE ? [LAUNCH_SCOPE.city] : CITIES;
+
+export function inLaunchScope(talent: { category?: string; city?: string }): boolean {
+  return !LAUNCH_SCOPE || (talent.category === LAUNCH_SCOPE.category && talent.city === LAUNCH_SCOPE.city);
+}

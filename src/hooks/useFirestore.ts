@@ -42,6 +42,15 @@ import {
   deleteProject as fbDeleteProject,
 } from "@/lib/firestore";
 import { useAuth } from "@/contexts/AuthContext";
+import {
+  subscribeContratacion,
+  subscribeContrataciones,
+  subscribeMovimientos,
+  subscribeTransiciones,
+  type Movimiento,
+  type MovimientoTipo,
+} from "@/lib/contrataciones";
+import type { Contratacion, Transicion } from "@/lib/contratacion";
 import type {
   Event as AppEvent,
   Booking,
@@ -614,4 +623,52 @@ export function useProjects(userId: string | undefined) {
   };
 
   return { projects, loading, createProject, moveProject, deleteProject, refresh };
+}
+
+// ─── Hiring flow (contrataciones) ───────────────────────────────
+
+export function useContrataciones(userId: string | undefined) {
+  const [items, setItems] = useState<Contratacion[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!userId) return;
+    return subscribeContrataciones(userId, (data) => {
+      setItems(data);
+      setLoading(false);
+    });
+  }, [userId]);
+
+  return { items, loading };
+}
+
+// One hiring with its history and money movements, all live.
+export function useContratacion(cid: string | undefined) {
+  const [item, setItem] = useState<Contratacion | null>(null);
+  const [transiciones, setTransiciones] = useState<Transicion[]>([]);
+  const [movimientos, setMovimientos] = useState<Partial<Record<MovimientoTipo, Movimiento>>>({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!cid) return;
+    setLoading(true);
+    const unsubs = [
+      subscribeContratacion(
+        cid,
+        (data) => {
+          setItem(data);
+          setLoading(false);
+        },
+        () => {
+          setItem(null);
+          setLoading(false);
+        }
+      ),
+      subscribeTransiciones(cid, setTransiciones),
+      subscribeMovimientos(cid, setMovimientos),
+    ];
+    return () => unsubs.forEach((u) => u());
+  }, [cid]);
+
+  return { item, transiciones, movimientos, loading };
 }

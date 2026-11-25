@@ -14,7 +14,7 @@ import { getVenues } from "@/lib/firestore";
 import { isUpcoming } from "@/lib/events";
 import {
   EVENT_TYPES,
-  PROVIDER_CATEGORIES,
+  ACTIVE_PROVIDER_CATEGORIES,
   EVENT_TYPE_ICONS,
   PROVIDER_CATEGORY_ICONS,
 } from "@/lib/constants";
@@ -71,7 +71,7 @@ const howItWorks = [
   {
     icon: "verified_user",
     title: "Chat & book securely",
-    body: "Negotiate the price, sign the contract and keep everything inside Timeless — no surprises.",
+    body: "Agree on the price, see exactly where every dollar goes, and lock in the date with a 25% deposit.",
   },
 ] as const;
 
@@ -203,7 +203,7 @@ function DiscoverySection() {
           </Link>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-          {PROVIDER_CATEGORIES.map((cat) => (
+          {ACTIVE_PROVIDER_CATEGORIES.map((cat) => (
             <Link
               key={cat}
               href={`/marketplace?category=${encodeURIComponent(cat)}`}

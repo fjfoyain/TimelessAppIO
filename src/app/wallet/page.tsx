@@ -354,6 +354,7 @@ function WalletContent() {
   // and what is coming in is never added to what is going out.
   const total = (verified: boolean, incoming: boolean) =>
     transactions
+      .filter((t) => t.type !== "payment" && t.type !== "commission")
       .filter((t) => (t.status === "completed") === verified && t.status !== "rejected")
       .filter((t) => t.amount > 0 === incoming)
       .reduce((sum, t) => sum + Math.abs(t.amount), 0);
@@ -419,7 +420,7 @@ function WalletContent() {
                   <p className="text-4xl md:text-5xl font-black text-white">${formatCurrency(available)}</p>
                   {pendingIn > 0 && (
                     <p className="text-slate-400 text-sm mt-2">
-                      ${formatCurrency(pendingIn)} more once your deposits are verified
+                      ${formatCurrency(pendingIn)} more once it is verified
                     </p>
                   )}
                   {escrow > 0 && (
@@ -467,7 +468,7 @@ function WalletContent() {
                 <div className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-xl p-5">
                   <div className="flex items-center gap-2 text-slate-400 mb-2">
                     <span className="material-icons text-yellow-400 text-sm">schedule</span>
-                    <span className="text-xs font-medium uppercase tracking-wider">Deposits in review</span>
+                    <span className="text-xs font-medium uppercase tracking-wider">Incoming, in review</span>
                   </div>
                   <p className="text-2xl font-bold text-white">${formatCurrency(pendingIn)}</p>
                 </div>

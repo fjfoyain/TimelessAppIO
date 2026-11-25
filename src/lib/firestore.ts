@@ -6,7 +6,6 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
-  deleteField,
   collection,
   query,
   where,
@@ -20,7 +19,6 @@ import {
   Timestamp,
 } from "firebase/firestore";
 import { db } from "./firebase";
-import { offerError } from "./negotiation";
 import {
   UserRole,
   UserStatus,
@@ -28,7 +26,6 @@ import {
   Event as AppEvent,
   Booking,
   Conversation,
-  PlanContext,
   Message,
   AppNotification,
   Service,
@@ -48,8 +45,7 @@ import {
   Project,
   ProjectStatus,
   PortfolioItem,
-  Negotiation,
-  Contract,
+  ServicePlan,
   PayoutMethod,
   TalentReview,
   AdminActor,
@@ -135,6 +131,7 @@ export async function createTalentProfile(
   data: {
     fullName: string;
     category: string;
+    city: string;
     experience: string;
     baseRate: number;
     ratePer: string;
@@ -156,7 +153,7 @@ export async function createTalentProfile(
     ratePer: data.ratePer,
     hourlyRate: data.baseRate,
     eventTypes: data.eventTypes,
-    city: "",
+    city: data.city,
     bio: "",
     tags: [],
     portfolio: [],
@@ -472,15 +469,12 @@ export async function createConversation(
 // Returns the existing 1:1 conversation between two users, or creates one.
 // Optionally attaches the service-plan context that started the conversation.
 // Returns the 1:1 conversation between two users, creating it if needed.
-// `planIsNew` tells the caller whether this plan was not yet the subject of
-// the thread, so the opening message is sent once per plan, not once per click.
 export async function getOrCreateConversation(
   currentUserId: string,
   currentUserName: string,
   otherUserId: string,
-  otherUserName: string,
-  planContext?: PlanContext
-): Promise<{ id: string; planIsNew: boolean }> {
+  otherUserName: string
+): Promise<string> {
   const snap = await getDocs(
     query(
       collection(db, "conversations"),
@@ -491,21 +485,7 @@ export async function getOrCreateConversation(
     const parts = (d.data().participants as string[] | undefined) ?? [];
     return parts.includes(otherUserId);
   });
-
-  if (existing) {
-    const current = existing.data().planContext as PlanContext | undefined;
-    // A different plan becomes the subject of the thread and restarts the
-    // negotiation, so offers and the contract always refer to the plan the
-    // opening message names. Once a contract exists the subject is settled.
-    const planIsNew =
-      !!planContext &&
-      current?.planId !== planContext.planId &&
-      !existing.data().contractId;
-    if (planContext && planIsNew) {
-      await updateDoc(existing.ref, { planContext, negotiation: deleteField() });
-    }
-    return { id: existing.id, planIsNew };
-  }
+  if (existing) return existing.id;
 
   const ref = await addDoc(collection(db, "conversations"), {
     participants: [currentUserId, otherUserId],
@@ -515,10 +495,9 @@ export async function getOrCreateConversation(
     },
     lastMessage: "",
     lastMessageTime: serverTimestamp(),
-    ...(planContext ? { planContext } : {}),
     createdAt: serverTimestamp(),
   });
-  return { id: ref.id, planIsNew: !!planContext };
+  return ref.id;
 }
 
 export function subscribeToConversations(
@@ -683,7 +662,7 @@ export async function deleteCategory(id: string): Promise<void> {
 // Audit entries are written in the same batch/transaction as the admin
 // action they describe, so an action can never succeed without its record.
 // The client cannot know its own IP; a trustworthy one needs a server.
-function auditEntry(actor: AdminActor, action: string, level: AuditLog["level"] = "Info") {
+export function auditEntry(actor: AdminActor, action: string, level: AuditLog["level"] = "Info") {
   return {
     ref: doc(collection(db, "auditLogs")),
     data: {
@@ -1205,149 +1184,10 @@ export async function updateTalentPortfolio(
   await updateDoc(doc(db, "talents", uid), { portfolio });
 }
 
-// ─── Price Negotiation (chat) ───────────────────────────────────
-
-// Records a price proposal on the conversation and posts a system-style
-// message so it shows up in the chat history. The proposer is treated as
-// having accepted their own offer.
-export async function proposeOffer(
-  conversationId: string,
-  proposerId: string,
-  proposerName: string,
-  amount: number
-): Promise<void> {
-  const convoSnap = await getDoc(doc(db, "conversations", conversationId));
-  const planPrice = convoSnap.data()?.planContext?.planPrice as number | undefined;
-  if (planPrice === undefined) throw new Error("This conversation has no plan to negotiate.");
-  const problem = offerError(amount, planPrice);
-  if (problem) throw new Error(problem);
-
-  const negotiation: Negotiation = {
-    currentOffer: amount,
-    proposedBy: proposerId,
-    acceptedBy: [proposerId],
-    status: "negotiating",
-  };
-  await updateDoc(doc(db, "conversations", conversationId), { negotiation });
-  await sendMessage(
-    conversationId,
-    proposerId,
-    `💲 ${proposerName} proposed $${amount}`
-  );
-}
-
-// The other participant accepts the current offer. When both accept it,
-// negotiation moves to "agreed" and the contract can be generated.
-export async function acceptOffer(
-  conversationId: string,
-  userId: string,
-  userName: string,
-  current: Negotiation
-): Promise<void> {
-  if (current.acceptedBy.includes(userId)) return;
-  const acceptedBy = [...current.acceptedBy, userId];
-  const status: Negotiation["status"] = acceptedBy.length >= 2 ? "agreed" : "negotiating";
-  await updateDoc(doc(db, "conversations", conversationId), {
-    negotiation: { ...current, acceptedBy, status },
-  });
-  await sendMessage(
-    conversationId,
-    userId,
-    status === "agreed"
-      ? `✅ ${userName} accepted — agreed at $${current.currentOffer}`
-      : `👍 ${userName} accepted $${current.currentOffer}`
-  );
-}
-
-// ─── Contracts (dual-sign) ──────────────────────────────────────
-
-const ESCROW_RATE = 0.05;
-
-export async function getOrCreateContract(data: {
-  conversationId: string;
-  clientId: string;
-  clientName: string;
-  talentId: string;
-  talentName: string;
-  planId: string;
-  planTitle: string;
-  amount: number;
-}): Promise<Contract> {
-  // Look for an existing contract for this conversation first.
-  const existing = await getDocs(
-    query(
-      collection(db, "contracts"),
-      where("conversationId", "==", data.conversationId)
-    )
-  );
-  if (!existing.empty) {
-    return docToData<Contract>(existing.docs[0]);
-  }
-
-  const escrowFee = Math.round(data.amount * ESCROW_RATE * 100) / 100;
-  const total = data.amount + escrowFee;
-  const doc1 = {
-    conversationId: data.conversationId,
-    clientId: data.clientId,
-    clientName: data.clientName,
-    talentId: data.talentId,
-    talentName: data.talentName,
-    planId: data.planId,
-    planTitle: data.planTitle,
-    amount: data.amount,
-    escrowFee,
-    total,
-    status: "pending" as const,
-    createdAt: serverTimestamp(),
-  };
-  const ref = await addDoc(collection(db, "contracts"), doc1);
-  // Link the contract back to the conversation so the chat panel can find it.
-  await updateDoc(doc(db, "conversations", data.conversationId), {
-    contractId: ref.id,
-  });
-  const snap = await getDoc(ref);
-  return docToData<Contract>(snap);
-}
-
-export async function getContractById(id: string): Promise<Contract | null> {
-  const snap = await getDoc(doc(db, "contracts", id));
-  return snap.exists() ? docToData<Contract>(snap) : null;
-}
-
-export async function getConversationById(id: string): Promise<Conversation | null> {
-  const snap = await getDoc(doc(db, "conversations", id));
-  return snap.exists() ? docToData<Conversation>(snap) : null;
-}
-
-// Marks the current user's signature timestamp. Flips status to fully_signed
-// when both client and talent have signed.
-export async function signContract(
-  contractId: string,
-  userId: string
-): Promise<Contract> {
-  const ref = doc(db, "contracts", contractId);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) throw new Error("Contract not found");
-  const current = docToData<Contract>(snap);
-
-  const updates: Record<string, unknown> = {};
-  if (userId === current.clientId && !current.clientSignedAt) {
-    updates.clientSignedAt = new Date().toISOString();
-  } else if (userId === current.talentId && !current.talentSignedAt) {
-    updates.talentSignedAt = new Date().toISOString();
-  } else {
-    return current;
-  }
-
-  const clientSigned = !!(updates.clientSignedAt || current.clientSignedAt);
-  const talentSigned = !!(updates.talentSignedAt || current.talentSignedAt);
-  if (clientSigned && talentSigned) {
-    updates.status = "fully_signed";
-  }
-
-  await updateDoc(ref, updates);
-  const updatedSnap = await getDoc(ref);
-  return docToData<Contract>(updatedSnap);
+// The plans a client can request from the talent's profile. Prices are whole
+// dollars: the hiring flow's split depends on it and the rules check it.
+export async function updateTalentPlans(uid: string, servicePlans: ServicePlan[]): Promise<void> {
+  await updateDoc(doc(db, "talents", uid), { servicePlans });
 }
 
 // ─── Admin: accounts & manual credit ────────────────────────────
@@ -1415,7 +1255,7 @@ export async function adminCreditWallet(
   });
 }
 
-function applyToBalance(
+export function applyToBalance(
   transaction: Parameters<Parameters<typeof runTransaction>[1]>[0],
   walletRef: ReturnType<typeof doc>,
   walletSnap: { exists(): boolean; data(): Record<string, unknown> | undefined },
@@ -1467,6 +1307,9 @@ export async function resolveTransaction(
     if (!txSnap.exists()) throw new Error("Transaction not found.");
     const tx = txSnap.data();
     if (tx.status !== "processing") throw new Error("This movement was already resolved.");
+    // Movements of a hiring are settled together with the hiring's own step
+    // (see contrataciones.ts); resolving one here would skip that step.
+    if (tx.contratacionId) throw new Error("This movement belongs to a booking; settle it from the bookings queue.");
     owner = tx.userId as string;
     amount = tx.amount as number;
     type = tx.type as string;
@@ -1524,20 +1367,6 @@ export async function savePayoutMethod(
 }
 
 // ─── Reviews ────────────────────────────────────────────────────
-
-export async function addTalentReview(data: {
-  talentId: string;
-  clientId: string;
-  clientName: string;
-  rating: number;
-  comment: string;
-}): Promise<string> {
-  const ref = await addDoc(collection(db, "reviews"), {
-    ...data,
-    createdAt: serverTimestamp(),
-  });
-  return ref.id;
-}
 
 export async function getTalentReviews(talentId: string): Promise<TalentReview[]> {
   const snap = await getDocs(

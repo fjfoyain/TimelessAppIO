@@ -1,269 +1,174 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { useAuth } from "@/contexts/AuthContext";
-import { useProjects } from "@/hooks/useFirestore";
-import type { Project, ProjectStatus } from "@/types";
+import { useContrataciones } from "@/hooks/useFirestore";
+import {
+  ESTADO_LABELS,
+  acciones,
+  dollars,
+  rolDe,
+  venceEn,
+  type Contratacion,
+  type Estado,
+} from "@/lib/contratacion";
 
-const COLUMNS: {
-  status: ProjectStatus;
-  title: string;
-  icon: string;
-  color: string;
-  border: string;
-}[] = [
-  { status: "inquiry", title: "Inquiries", icon: "inbox", color: "text-cyan-400", border: "border-cyan-400/30" },
-  { status: "active", title: "In Progress", icon: "pending_actions", color: "text-primary-light", border: "border-primary/30" },
-  { status: "completed", title: "Completed", icon: "task_alt", color: "text-green-400", border: "border-green-400/30" },
+// The board mirrors the real state of each booking. Cards move when the
+// booking does — nobody drags them.
+const COLUMNS: { title: string; hint: string; states: Estado[] }[] = [
+  { title: "Requests", hint: "Waiting for an answer or negotiating", states: ["solicitada", "negociacion"] },
+  { title: "Awaiting deposit", hint: "Price agreed, deposit not verified yet", states: ["aceptada"] },
+  { title: "Confirmed", hint: "Deposit verified, date locked in", states: ["confirmada"] },
+  { title: "Completed", hint: "Service delivered", states: ["realizada", "liquidada"] },
 ];
+const CLOSED: Estado[] = ["cancelada", "expirada"];
 
-const ORDER: ProjectStatus[] = ["inquiry", "active", "completed"];
+function eventDate(ms: number): string {
+  return new Date(ms).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
 
-function ProjectsContent() {
+function Card({ c, uid, now }: { c: Contratacion; uid: string; now: number }) {
+  const rol = rolDe(c, uid);
+  const other = rol === "cliente" ? c.talentName : c.clientName;
+  // "Your move" = there is something to do besides walking away.
+  const myMove = acciones(c, uid, now).some((a) => a !== "cancelar");
+  const deadline = venceEn(c);
+  const hoursLeft = deadline === null ? null : Math.floor((deadline - now) / 3_600_000);
+
+  return (
+    <Link
+      href={`/contrataciones/${c.id}`}
+      className="block rounded-xl border border-white/10 bg-background-dark/60 p-4 hover:border-primary/40 transition group"
+    >
+      <div className="flex items-start justify-between gap-2">
+        <p className="text-sm font-semibold text-white truncate group-hover:text-primary-light transition">{c.plan.title}</p>
+        <p className="text-sm font-semibold text-white tabular-nums shrink-0">
+          {dollars(c.agreedCents ?? c.oferta.amountCents)}
+        </p>
+      </div>
+      <p className="text-xs text-slate-400 mt-0.5 truncate">
+        {rol === "cliente" ? "with" : "for"} {other} · {eventDate(c.event.at)}
+      </p>
+      <div className="flex items-center justify-between gap-2 mt-3">
+        <span className="text-[11px] text-slate-500">{ESTADO_LABELS[c.status]}{c.disputa?.abierta ? " · dispute open" : ""}</span>
+        {myMove ? (
+          <span className="text-[11px] font-semibold text-primary-light bg-primary/10 border border-primary/30 rounded-full px-2 py-0.5">
+            Your move
+          </span>
+        ) : hoursLeft !== null && hoursLeft >= 0 ? (
+          <span className={`text-[11px] tabular-nums ${hoursLeft < 12 ? "text-amber-400" : "text-slate-600"}`}>
+            {hoursLeft >= 48 ? `${Math.floor(hoursLeft / 24)}d left` : `${hoursLeft}h left`}
+          </span>
+        ) : null}
+      </div>
+    </Link>
+  );
+}
+
+function Content() {
   const { user } = useAuth();
-  const { projects, loading, createProject, moveProject, deleteProject } =
-    useProjects(user?.id);
+  const { items, loading } = useContrataciones(user?.id);
+  const [showClosed, setShowClosed] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 60_000);
+    return () => clearInterval(id);
+  }, []);
 
-  const [showForm, setShowForm] = useState(false);
-  const [title, setTitle] = useState("");
-  const [client, setClient] = useState("");
-  const [notes, setNotes] = useState("");
-  const [saving, setSaving] = useState(false);
-
-  async function handleCreate(e: FormEvent) {
-    e.preventDefault();
-    if (!title.trim()) return;
-    setSaving(true);
-    try {
-      await createProject({
-        title: title.trim(),
-        client: client.trim() || undefined,
-        notes: notes.trim() || undefined,
-      });
-      setTitle("");
-      setClient("");
-      setNotes("");
-      setShowForm(false);
-    } finally {
-      setSaving(false);
-    }
-  }
+  const closed = useMemo(() => items.filter((c) => CLOSED.includes(c.status)), [items]);
+  const uid = user?.id ?? "";
 
   return (
     <div className="min-h-screen bg-background-dark">
       <AnimatedBackground />
       <Navbar />
-
       <main className="relative z-10 pt-24 pb-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="flex flex-wrap justify-between items-end gap-4 mb-8">
+          <div className="flex items-end justify-between gap-4 mb-8">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-white">Project Manager</h1>
-              <p className="text-slate-500 mt-1">
-                Track inquiries, active projects and completed work in one place.
-              </p>
+              <h1 className="text-3xl md:text-4xl font-bold text-white">Bookings</h1>
+              <p className="text-slate-500 mt-1">Every request you sent or received, by where it stands.</p>
             </div>
-            <button
-              onClick={() => setShowForm(true)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-dark text-white text-sm font-bold transition btn-glow"
-            >
-              <span className="material-icons text-sm">add</span>
-              New Project
-            </button>
+            <Link href="/marketplace" className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary hover:bg-primary-dark text-white text-sm font-semibold transition">
+              <span className="material-icons text-sm" aria-hidden="true">search</span>
+              Find a DJ
+            </Link>
           </div>
 
           {loading ? (
-            <div className="py-20 text-center">
-              <span className="material-icons text-4xl text-primary animate-spin">refresh</span>
+            <div className="py-24 text-center">
+              <span className="material-icons text-4xl text-primary animate-spin" aria-hidden="true">refresh</span>
+            </div>
+          ) : items.length === 0 ? (
+            <div className="rounded-2xl border border-white/10 bg-surface-dark/50 py-20 text-center">
+              <span className="material-icons text-4xl text-slate-700" aria-hidden="true">event_available</span>
+              <p className="text-white font-semibold mt-3">No bookings yet</p>
+              <p className="text-sm text-slate-500 mt-1 max-w-sm mx-auto">
+                Pick a plan on a DJ&apos;s profile and send a request. It will show up here and move as it progresses.
+              </p>
+              <Link href="/marketplace" className="inline-block mt-5 px-5 py-2.5 rounded-lg bg-primary hover:bg-primary-dark text-white text-sm font-semibold transition">
+                Browse the marketplace
+              </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {COLUMNS.map((col) => {
-                const items = projects.filter((p) => p.status === col.status);
-                return (
-                  <div key={col.status} className="space-y-4">
-                    <div className="flex items-center gap-2">
-                      <span className={`material-icons text-lg ${col.color}`}>{col.icon}</span>
-                      <h2 className="text-sm font-bold text-white uppercase tracking-wider">
-                        {col.title}
-                      </h2>
-                      <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold ${col.color} bg-white/5`}>
-                        {items.length}
-                      </span>
-                    </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                {COLUMNS.map((col) => {
+                  const cards = items.filter((c) => col.states.includes(c.status));
+                  return (
+                    <section key={col.title} aria-label={col.title} className="rounded-2xl border border-white/5 bg-surface-dark/40 p-4">
+                      <div className="flex items-baseline justify-between mb-1">
+                        <h2 className="text-sm font-semibold text-white">{col.title}</h2>
+                        <span className="text-xs text-slate-500 tabular-nums">{cards.length}</span>
+                      </div>
+                      <p className="text-[11px] text-slate-600 mb-3">{col.hint}</p>
+                      <div className="space-y-3">
+                        {cards.length === 0 ? (
+                          <p className="text-xs text-slate-600 py-6 text-center border border-dashed border-white/5 rounded-xl">Nothing here</p>
+                        ) : (
+                          cards.map((c) => <Card key={c.id} c={c} uid={uid} now={now} />)
+                        )}
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
 
-                    <div className={`space-y-3 p-4 rounded-2xl bg-surface-dark/30 border ${col.border} min-h-[200px]`}>
-                      {items.length === 0 ? (
-                        <p className="py-8 text-center text-xs text-slate-600">
-                          No projects here
-                        </p>
-                      ) : (
-                        items.map((project) => (
-                          <ProjectCard
-                            key={project.id}
-                            project={project}
-                            onMove={moveProject}
-                            onDelete={deleteProject}
-                          />
-                        ))
-                      )}
+              {closed.length > 0 && (
+                <div className="mt-8">
+                  <button
+                    onClick={() => setShowClosed((v) => !v)}
+                    aria-expanded={showClosed}
+                    className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition"
+                  >
+                    <span className="material-icons text-base" aria-hidden="true">{showClosed ? "expand_less" : "expand_more"}</span>
+                    Cancelled and expired ({closed.length})
+                  </button>
+                  {showClosed && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 mt-3">
+                      {closed.map((c) => <Card key={c.id} c={c} uid={uid} now={now} />)}
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  )}
+                </div>
+              )}
+            </>
           )}
         </div>
       </main>
-
-      {/* New Project modal */}
-      {showForm && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
-          onClick={() => setShowForm(false)}
-        >
-          <form
-            onClick={(e) => e.stopPropagation()}
-            onSubmit={handleCreate}
-            className="w-full max-w-md bg-surface-dark border border-white/10 rounded-2xl p-6 space-y-4"
-          >
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-white">New Project</h3>
-              <button
-                type="button"
-                onClick={() => setShowForm(false)}
-                className="text-slate-500 hover:text-white transition"
-                aria-label="Close"
-              >
-                <span className="material-icons">close</span>
-              </button>
-            </div>
-
-            <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-medium text-white">Project title</span>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Rooftop launch party"
-                className="rounded-xl bg-surface-input border border-white/10 px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </label>
-
-            <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-medium text-white">
-                Client <span className="text-slate-600">(optional)</span>
-              </span>
-              <input
-                type="text"
-                value={client}
-                onChange={(e) => setClient(e.target.value)}
-                placeholder="Who is this for?"
-                className="rounded-xl bg-surface-input border border-white/10 px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </label>
-
-            <label className="flex flex-col gap-1.5">
-              <span className="text-sm font-medium text-white">
-                Notes <span className="text-slate-600">(optional)</span>
-              </span>
-              <textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                rows={3}
-                placeholder="Anything to remember..."
-                className="rounded-xl bg-surface-input border border-white/10 px-4 py-2.5 text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-y"
-              />
-            </label>
-
-            <button
-              type="submit"
-              disabled={!title.trim() || saving}
-              className="w-full py-3 rounded-lg bg-primary text-white font-bold hover:bg-primary-dark transition btn-glow disabled:opacity-50"
-            >
-              {saving ? "Creating..." : "Create Project"}
-            </button>
-          </form>
-        </div>
-      )}
-
       <Footer />
     </div>
   );
 }
 
-function ProjectCard({
-  project,
-  onMove,
-  onDelete,
-}: {
-  project: Project;
-  onMove: (id: string, status: ProjectStatus) => void;
-  onDelete: (id: string) => void;
-}) {
-  const idx = ORDER.indexOf(project.status);
-  const prev = idx > 0 ? ORDER[idx - 1] : null;
-  const next = idx < ORDER.length - 1 ? ORDER[idx + 1] : null;
-
-  return (
-    <div className="bg-surface-dark/50 backdrop-blur-xl border border-white/5 rounded-xl p-4 group">
-      <div className="flex items-start justify-between gap-2">
-        <h3 className="text-sm font-semibold text-white leading-tight">
-          {project.title}
-        </h3>
-        <button
-          onClick={() => onDelete(project.id)}
-          className="p-1 rounded-lg hover:bg-red-500/10 transition opacity-0 group-hover:opacity-100"
-          aria-label="Delete project"
-        >
-          <span className="material-icons text-sm text-slate-500 hover:text-red-400">delete</span>
-        </button>
-      </div>
-
-      {project.client && (
-        <div className="flex items-center gap-2 mt-2">
-          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
-            <span className="material-icons text-primary text-xs">person</span>
-          </div>
-          <span className="text-xs text-slate-400">{project.client}</span>
-        </div>
-      )}
-
-      {project.notes && (
-        <p className="text-xs text-slate-500 mt-2 leading-relaxed">{project.notes}</p>
-      )}
-
-      <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/5">
-        <button
-          onClick={() => prev && onMove(project.id, prev)}
-          disabled={!prev}
-          className="flex items-center gap-1 text-xs text-slate-400 hover:text-white transition disabled:opacity-30 disabled:pointer-events-none"
-        >
-          <span className="material-icons text-sm">chevron_left</span>
-          Back
-        </button>
-        <button
-          onClick={() => next && onMove(project.id, next)}
-          disabled={!next}
-          className="flex items-center gap-1 text-xs text-primary hover:text-primary-light transition disabled:opacity-30 disabled:pointer-events-none"
-        >
-          Advance
-          <span className="material-icons text-sm">chevron_right</span>
-        </button>
-      </div>
-    </div>
-  );
-}
-
-export default function ProjectsDashboardPage() {
+export default function BookingsPage() {
   return (
     <ProtectedRoute>
-      <ProjectsContent />
+      <Content />
     </ProtectedRoute>
   );
 }

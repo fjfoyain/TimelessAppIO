@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import WaitlistForm from "./WaitlistForm";
-import { EVENT_TYPES, PROVIDER_CATEGORIES } from "@/lib/constants";
+import { EVENT_TYPES, LAUNCH_SCOPE } from "@/lib/constants";
 
 function InstagramIcon() {
   return (
@@ -67,7 +67,7 @@ export default function Footer() {
 
       {/* Main Footer Grid */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 lg:gap-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 lg:gap-10">
           {/* Column 1: Brand */}
           <div className="col-span-2 md:col-span-3 lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4 group">
@@ -102,38 +102,24 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 2: Event Types */}
+          {/* Column 2: Discover our talent — one list, filtered by occasion */}
           <div>
             <h4 className="text-sm font-semibold text-white mb-4 tracking-wide uppercase">
-              Event Types
+              Discover our talent
             </h4>
             <ul className="space-y-3">
+              <li>
+                <Link href="/marketplace" className="text-sm text-gray-400 hover:text-primary transition-colors">
+                  All {LAUNCH_SCOPE ? `DJs in ${LAUNCH_SCOPE.city}` : "talent"}
+                </Link>
+              </li>
               {EVENT_TYPES.map((type) => (
                 <li key={type}>
                   <Link
                     href={`/marketplace?eventType=${encodeURIComponent(type)}`}
                     className="text-sm text-gray-400 hover:text-primary transition-colors"
                   >
-                    {type}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Column 3: Providers */}
-          <div>
-            <h4 className="text-sm font-semibold text-white mb-4 tracking-wide uppercase">
-              Providers
-            </h4>
-            <ul className="space-y-3">
-              {PROVIDER_CATEGORIES.map((cat) => (
-                <li key={cat}>
-                  <Link
-                    href={`/marketplace?category=${encodeURIComponent(cat)}`}
-                    className="text-sm text-gray-400 hover:text-primary transition-colors"
-                  >
-                    {cat}
+                    For {type.toLowerCase()}
                   </Link>
                 </li>
               ))}

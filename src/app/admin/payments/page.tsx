@@ -6,6 +6,7 @@ import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import { useAuth } from "@/contexts/AuthContext";
+import BookingsQueue from "@/components/admin/BookingsQueue";
 import {
   getAllUsers,
   getPayoutMethod,
@@ -52,7 +53,7 @@ function PaymentsContent() {
     setError("");
     try {
       const [txs, allUsers] = await Promise.all([getPendingTransactions(), getAllUsers()]);
-      setPending(txs);
+      setPending(txs.filter((t) => !t.contratacionId));
       setUsers(Object.fromEntries(allUsers.map((u) => [u.id, u])));
 
       // A withdrawal needs its destination and the balance that must cover it.
@@ -119,6 +120,11 @@ function PaymentsContent() {
             withdrawal once you have sent it.
           </p>
         </div>
+
+        <BookingsQueue />
+
+        <h2 className="text-lg font-semibold text-white mb-1">Wallet requests</h2>
+        <p className="text-sm text-gray-500 mb-4">Deposits and withdrawals users asked for.</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           {tabs.map((t) => (

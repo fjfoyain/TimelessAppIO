@@ -1,246 +1,77 @@
 "use client";
 
 import Link from "next/link";
-import type { Conversation, Contract, User } from "@/types";
-import { offerBounds } from "@/lib/negotiation";
+import { useContrataciones } from "@/hooks/useFirestore";
+import { ESTADO_LABELS, acciones, dollars, type Estado } from "@/lib/contratacion";
 
-interface ChatDetailsPanelProps {
-  user: User | null;
-  activeConvo?: Conversation;
-  offerInput: string;
-  setOfferInput: (v: string) => void;
-  offerBusy: boolean;
-  offerProblem: string;
-  onPropose: () => void;
-  onAcceptOffer: () => void;
-  activeContract: Contract | null;
-  rating: number;
-  setRating: (n: number) => void;
-  reviewComment: string;
-  setReviewComment: (v: string) => void;
-  reviewBusy: boolean;
-  reviewSubmitted: boolean;
-  onSubmitReview: () => void;
-}
+const CLOSED: Estado[] = ["cancelada", "expirada"];
 
-// The negotiation + contract + review panel shown beside a chat.
-// Rendered in the right sidebar on desktop and inside the thread (via the
-// "Contracts" tab) on mobile, so price negotiation is reachable on every screen.
+// The bookings between the two people in this chat. Rendered in the right
+// sidebar on desktop and under the "Bookings" tab on mobile. Offers, deposit
+// and history live on the booking itself, where every step is recorded.
 export default function ChatDetailsPanel({
-  user,
-  activeConvo,
-  offerInput,
-  setOfferInput,
-  offerBusy,
-  offerProblem,
-  onPropose,
-  onAcceptOffer,
-  activeContract,
-  rating,
-  setRating,
-  reviewComment,
-  setReviewComment,
-  reviewBusy,
-  reviewSubmitted,
-  onSubmitReview,
-}: ChatDetailsPanelProps) {
+  userId,
+  otherUserId,
+  otherName,
+}: {
+  userId?: string;
+  otherUserId?: string;
+  otherName: string;
+}) {
+  const { items, loading } = useContrataciones(userId);
+  const between = items.filter((c) => otherUserId && c.parties.includes(otherUserId));
+  const now = Date.now();
+
   return (
     <>
-      <h3 className="text-lg font-bold text-white mb-4">Contract Details</h3>
+      <h3 className="text-lg font-bold text-white mb-4">Bookings</h3>
 
-      {activeConvo?.planContext && user && (
-        <div className="mb-5 p-4 rounded-xl bg-primary/5 border border-primary/20">
-          <p className="text-xs font-semibold uppercase tracking-wider text-primary-light mb-2">
-            Plan under discussion
-          </p>
-          <p className="text-sm font-semibold text-white">
-            {activeConvo.planContext.planTitle}
-          </p>
-          <p className="text-[11px] text-slate-400 mt-0.5">
-            Listed at ${activeConvo.planContext.planPrice}
-          </p>
-
-          <div className="mt-3 pt-3 border-t border-white/10">
-            {activeConvo.negotiation?.status === "agreed" ? (
-              <>
-                <p className="text-xs text-green-400 flex items-center gap-1.5">
-                  <span className="material-icons text-sm">handshake</span>
-                  Agreed at
-                  <span className="font-bold ml-1">${activeConvo.negotiation.currentOffer}</span>
-                </p>
-                <Link
-                  href={`/booking/contract?convo=${activeConvo.id}`}
-                  className="mt-3 w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary-dark transition"
-                >
-                  <span className="material-icons text-sm">draw</span>
-                  Proceed to contract
-                </Link>
-              </>
-            ) : (
-              <>
-                {activeConvo.negotiation && (
-                  <p className="text-xs text-slate-300 mb-2">
-                    Current offer:{" "}
-                    <span className="font-bold text-white">
-                      ${activeConvo.negotiation.currentOffer}
-                    </span>{" "}
-                    <span className="text-slate-400">
-                      (
-                      {activeConvo.negotiation.proposedBy === user.id
-                        ? "you"
-                        : activeConvo.participantNames?.[
-                            activeConvo.negotiation.proposedBy
-                          ] ?? "the other party"}
-                      )
-                    </span>
-                  </p>
-                )}
-                {activeConvo.negotiation &&
-                  activeConvo.negotiation.proposedBy !== user.id &&
-                  !activeConvo.negotiation.acceptedBy.includes(user.id) && (
-                    <button
-                      onClick={onAcceptOffer}
-                      disabled={offerBusy}
-                      className="w-full py-2 rounded-lg bg-green-500/15 border border-green-500/40 text-green-300 text-xs font-semibold hover:bg-green-500/25 transition disabled:opacity-50 mb-2"
-                    >
-                      Accept ${activeConvo.negotiation.currentOffer}
-                    </button>
-                  )}
-                {activeConvo.negotiation &&
-                  activeConvo.negotiation.proposedBy === user.id && (
-                    <p className="text-[11px] text-slate-400 mb-2">
-                      Waiting for the other side to accept...
-                    </p>
-                  )}
-                <div className="flex gap-2">
-                  <input
-                    type="number"
-                    min={offerBounds(activeConvo.planContext.planPrice).min}
-                    max={offerBounds(activeConvo.planContext.planPrice).max}
-                    aria-label="Offer amount in dollars"
-                    value={offerInput}
-                    onChange={(e) => setOfferInput(e.target.value)}
-                    placeholder={
-                      activeConvo.negotiation
-                        ? "Counter"
-                        : `Propose (e.g. ${activeConvo.planContext.planPrice})`
-                    }
-                    className="flex-1 rounded-lg bg-surface-input border border-white/10 px-3 py-2 text-white placeholder-slate-500 text-xs focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  <button
-                    onClick={onPropose}
-                    disabled={!offerInput || offerBusy}
-                    className="px-3 py-2 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition disabled:opacity-50"
-                  >
-                    {activeConvo.negotiation ? "Counter" : "Propose"}
-                  </button>
-                </div>
-                <p className={`text-[11px] mt-2 ${offerProblem ? "text-red-400" : "text-slate-500"}`}>
-                  {offerProblem ||
-                    `Between $${offerBounds(activeConvo.planContext.planPrice).min} and $${offerBounds(activeConvo.planContext.planPrice).max}`}
-                </p>
-              </>
-            )}
-          </div>
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
         </div>
-      )}
-
-      {/* Post-contract review (visible to the client once both signed) */}
-      {activeContract?.status === "fully_signed" &&
-        user?.id === activeContract.clientId && (
-          <div className="mb-5 p-4 rounded-xl bg-surface-input/40 border border-white/10">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
-              Rate this experience
-            </p>
-            {reviewSubmitted ? (
-              <p className="text-xs text-green-400 flex items-center gap-1.5">
-                <span className="material-icons text-sm">check_circle</span>
-                Thanks — your review is live.
-              </p>
-            ) : (
-              <>
-                <div className="flex gap-1 mb-2">
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <button
-                      key={n}
-                      type="button"
-                      onClick={() => setRating(n)}
-                      aria-label={`${n} star${n > 1 ? "s" : ""}`}
-                      className="text-yellow-400 hover:scale-110 transition-transform"
-                    >
-                      <span className="material-icons text-lg">
-                        {n <= rating ? "star" : "star_border"}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-                <textarea
-                  value={reviewComment}
-                  onChange={(e) => setReviewComment(e.target.value)}
-                  placeholder="How did it go? (visible on their profile)"
-                  rows={3}
-                  className="w-full rounded-lg bg-surface-input border border-white/10 px-3 py-2 text-white placeholder-slate-500 text-xs focus:outline-none focus:ring-2 focus:ring-primary resize-y"
-                />
-                <button
-                  onClick={onSubmitReview}
-                  disabled={!reviewComment.trim() || reviewBusy}
-                  className="mt-2 w-full py-2 rounded-lg bg-primary text-white text-xs font-semibold hover:bg-primary-dark transition disabled:opacity-50"
-                >
-                  {reviewBusy ? "Submitting..." : "Submit review"}
-                </button>
-              </>
-            )}
-          </div>
-        )}
-
-      {activeContract && activeConvo ? (
-        <div className="space-y-4">
-          <div className="flex items-center gap-3">
-            <span className="material-icons text-primary" aria-hidden="true">description</span>
-            <div>
-              <p className="text-sm font-semibold text-white">{activeContract.planTitle}</p>
-              <p className="text-xs text-slate-400">
-                {activeContract.status === "fully_signed" ? "Signed by both parties" : "Waiting for signatures"}
-              </p>
-            </div>
-          </div>
-
-          <dl className="space-y-2 text-sm">
-            <div className="flex items-center justify-between">
-              <dt className="text-slate-400">Agreed price</dt>
-              <dd className="font-semibold text-white tabular-nums">${activeContract.amount}</dd>
-            </div>
-            <div className="flex items-center justify-between">
-              <dt className="text-slate-400">Client</dt>
-              <dd className={activeContract.clientSignedAt ? "text-green-400" : "text-slate-500"}>
-                {activeContract.clientSignedAt ? "Signed" : "Not signed"}
-              </dd>
-            </div>
-            <div className="flex items-center justify-between">
-              <dt className="text-slate-400">Talent</dt>
-              <dd className={activeContract.talentSignedAt ? "text-green-400" : "text-slate-500"}>
-                {activeContract.talentSignedAt ? "Signed" : "Not signed"}
-              </dd>
-            </div>
-          </dl>
-
-          <Link
-            href={`/booking/contract?convo=${activeConvo.id}`}
-            className="block py-2.5 rounded-lg border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition text-center"
-          >
-            Open contract
-          </Link>
+      ) : between.length === 0 ? (
+        <div className="flex flex-col items-center text-center py-8 gap-3">
+          <span className="material-icons text-3xl text-slate-700" aria-hidden="true">event_available</span>
+          <p className="text-sm text-slate-400">No bookings with {otherName} yet</p>
+          <p className="text-xs text-slate-500">
+            A booking starts from a plan on a DJ&apos;s profile. Its price, deposit and history will show up here.
+          </p>
         </div>
       ) : (
-        <div className="flex flex-col items-center text-center py-8 gap-3">
-          <span className="material-icons text-3xl text-slate-700" aria-hidden="true">description</span>
-          <p className="text-sm text-slate-400">No contract yet</p>
-          <p className="text-xs text-slate-500">
-            {activeConvo?.planContext
-              ? "Agree on a price above and the contract for this conversation will appear here."
-              : "Start from a plan on a talent's profile to negotiate and generate a contract."}
-          </p>
-        </div>
+        <ul className="space-y-3">
+          {between.map((c) => {
+            const myMove = userId ? acciones(c, userId, now).some((a) => a !== "cancelar") : false;
+            return (
+              <li key={c.id}>
+                <Link
+                  href={`/contrataciones/${c.id}`}
+                  className={`block rounded-xl border p-4 transition hover:border-primary/40 ${
+                    CLOSED.includes(c.status) ? "border-white/5 opacity-60" : "border-white/10 bg-white/[0.02]"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-sm font-semibold text-white truncate">{c.plan.title}</p>
+                    <p className="text-sm font-semibold text-white tabular-nums shrink-0">
+                      {dollars(c.agreedCents ?? c.oferta.amountCents)}
+                    </p>
+                  </div>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    {new Date(c.event.at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                  </p>
+                  <div className="flex items-center justify-between mt-3">
+                    <span className="text-[11px] text-slate-500">{ESTADO_LABELS[c.status]}</span>
+                    {myMove && (
+                      <span className="text-[11px] font-semibold text-primary-light bg-primary/10 border border-primary/30 rounded-full px-2 py-0.5">
+                        Your move
+                      </span>
+                    )}
+                  </div>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
       )}
     </>
   );

@@ -123,14 +123,18 @@ service cloud.firestore {
 
     // ─── Conversations ─────────────────────────────────────────────
     //
-    // Only participants may read or write, and the participant list is frozen
-    // after creation so nobody can add themselves to someone else's thread.
+    // Only participants may read or write, and after creation the only thing
+    // that changes is the preview of the last message. Price offers used to
+    // live here, where either participant could write any figure; they now
+    // belong to the hiring (see Contrataciones), where every step is checked.
     match /conversations/{convoId} {
       allow read: if isAuth() && request.auth.uid in resource.data.participants;
-      allow create: if isAuth() && request.auth.uid in request.resource.data.participants;
+      allow create: if isAuth()
+                    && request.auth.uid in request.resource.data.participants
+                    && !request.resource.data.keys().hasAny(['negotiation', 'contractId']);
       allow update: if isAuth()
                     && request.auth.uid in resource.data.participants
-                    && request.resource.data.participants == resource.data.participants;
+                    && changed().hasOnly(['lastMessage', 'lastMessageTime']);
 
       match /messages/{messageId} {
         allow read: if isAuth() && request.auth.uid in
@@ -142,14 +146,36 @@ service cloud.firestore {
 
     // ─── Notifications ─────────────────────────────────────────────
     //
-    // Owner only. A user may only create notifications addressed to themselves;
-    // an admin may notify anyone (e.g. "your deposit was verified"). Other
-    // cross-user notifications must be server-side.
+    // A user may notify themselves and an admin may notify anyone. The one
+    // cross-user case is a hiring step: the notification must be created in
+    // the same request as the step it announces (the hiring's updatedAt is
+    // this request's time), go to the other party, and use a fixed id — so
+    // there is at most one per step and it cannot be used to spam.
+    function notificaContraparte(notifId) {
+      let d = request.resource.data;
+      let c = getAfter(cPath(d.contratacionId)).data;
+      return d.keys().hasOnly(['userId', 'type', 'contratacionId', 'seq', 'title',
+                               'description', 'isNew', 'createdAt'])
+        && notifId == d.contratacionId + '_' + string(d.seq) + '_' + d.userId
+        && c.updatedAt == request.time && d.seq == c.seq
+        && request.auth.uid in c.parties && d.userId in c.parties
+        && d.userId != request.auth.uid
+        && d.isNew == true && d.createdAt == request.time
+        && d.title is string && d.title.size() <= 80
+        && d.description is string && d.description.size() <= 300;
+    }
+
     match /notifications/{notifId} {
       allow read: if isAuth() && resource.data.userId == request.auth.uid;
-      allow create: if isAuth()
-                    && (request.resource.data.userId == request.auth.uid || isAdmin());
-      allow update: if isAuth() && resource.data.userId == request.auth.uid;
+      allow create: if isAuth() && (
+        request.resource.data.userId == request.auth.uid
+        || (request.resource.data.get('type', '') == 'contratacion' && notificaContraparte(notifId))
+        || isAdmin());
+      // Only the read flag may change: a user who could rewrite `userId`
+      // could hand their notification to somebody else.
+      allow update: if isAuth()
+                    && resource.data.userId == request.auth.uid
+                    && changed().hasOnly(['isNew']);
     }
 
     // ─── Services ──────────────────────────────────────────────────
@@ -212,37 +238,17 @@ service cloud.firestore {
       allow update: if isAdmin();
     }
 
-    // ─── Contracts ─────────────────────────────────────────────────
+    // ─── Contracts (legacy) ────────────────────────────────────────
     //
-    // Only the two parties can see a contract. Once created, the commercial
-    // terms (amount, escrowFee, total, the parties themselves) are frozen: an
-    // update may only touch signature, payment and payout markers, and each
-    // party may only touch its own side. This is what stops a talent from
-    // raising the amount after the client has signed.
+    // The dual-signature contract was replaced by the hiring flow. Existing
+    // documents stay readable by their two parties; nothing new is written.
     match /contracts/{contractId} {
       allow read: if isAuth() && (
         resource.data.clientId == request.auth.uid ||
         resource.data.talentId == request.auth.uid ||
         isAdmin()
       );
-
-      allow create: if isAuth() && (
-        request.resource.data.clientId == request.auth.uid ||
-        request.resource.data.talentId == request.auth.uid
-      );
-
-      allow update: if isAuth()
-        && (resource.data.clientId == request.auth.uid
-            || resource.data.talentId == request.auth.uid)
-        && changed().hasOnly([
-             'clientSignedAt', 'talentSignedAt', 'status',
-             'paymentStatus', 'paymentProvider', 'paidAt',
-             'talentPayoutRecorded'
-           ])
-        && (resource.data.clientId == request.auth.uid
-            || !changed().hasAny(['clientSignedAt', 'paymentStatus', 'paymentProvider', 'paidAt']))
-        && (resource.data.talentId == request.auth.uid
-            || !changed().hasAny(['talentSignedAt', 'talentPayoutRecorded']));
+      allow create, update: if false;
     }
 
     // ─── Payout methods ────────────────────────────────────────────
@@ -255,8 +261,17 @@ service cloud.firestore {
 
     // ─── Reviews ───────────────────────────────────────────────────
     //
-    // Public read (shown on the talent profile). A user reviews someone else,
-    // never themselves, and only the reviewer can edit their own review.
+    // Public read (shown on the talent profile). A review belongs to a hiring
+    // that actually took place: its id is the hiring's id, so there is one per
+    // hiring, written by that hiring's client about that hiring's talent.
+    function resenaDeContratacion(reviewId) {
+      let d = request.resource.data;
+      let c = get(cPath(reviewId)).data;
+      return c.clientId == request.auth.uid
+        && c.talentId == d.talentId
+        && c.status in ['realizada', 'liquidada'];
+    }
+
     match /reviews/{reviewId} {
       allow read: if true;
       allow create: if isAuth()
@@ -264,7 +279,8 @@ service cloud.firestore {
                     && request.resource.data.talentId != request.auth.uid
                     && request.resource.data.rating is number
                     && request.resource.data.rating >= 1
-                    && request.resource.data.rating <= 5;
+                    && request.resource.data.rating <= 5
+                    && resenaDeContratacion(reviewId);
       allow update, delete: if (isAuth() && resource.data.clientId == request.auth.uid)
                             || isAdmin();
     }
@@ -278,12 +294,16 @@ service cloud.firestore {
       allow update, delete: if isAuth() && resource.data.userId == request.auth.uid;
     }
 
-    // ─── Transactions ──────────────────────────────────────────────
+    // ─── Transactions (the money ledger) ───────────────────────────
     //
-    // A user can only REQUEST a deposit or a withdrawal: the entry is born
-    // `processing` and has no effect on the balance. Only an admin can resolve
-    // it, and only an admin can write any other kind of movement. A withdrawal
-    // also requires a saved payout method, so the money has a destination.
+    // Nothing a user writes here moves money: every entry a user can create is
+    // born `processing`, and only an admin resolves it.
+    //
+    //   - A deposit or withdrawal request for their own wallet.
+    //   - `{hiring}_anticipo`: the client reports having paid the deposit.
+    //   - `{hiring}_pago_dj` / `{hiring}_reembolso`: what a hiring step owes,
+    //     created in the same request as that step, for exactly the amount the
+    //     step's split says. The fixed ids make a second one impossible.
     function isOwnRequest() {
       let d = request.resource.data;
       return d.userId == request.auth.uid
@@ -296,10 +316,395 @@ service cloud.firestore {
                 && exists(/databases/$(database)/documents/payoutMethods/$(request.auth.uid))));
     }
 
+    // `amount` (dollars) is kept for display; `amountCents` is the value.
+    function centsMirror(d) {
+      return d.amount is number && math.abs(d.amount * 100 - d.amountCents) < 1;
+    }
+
+    function esReporteAnticipo(txId) {
+      let d = request.resource.data;
+      let c = get(cPath(d.contratacionId)).data;
+      return txId == d.contratacionId + '_anticipo'
+        && d.keys().hasOnly(['userId', 'contratacionId', 'type', 'amountCents', 'amount',
+                             'source', 'status', 'reference', 'description', 'createdAt'])
+        && d.type == 'payment' && d.status == 'processing'
+        && d.source in ['manual_transfer', 'cash']
+        && d.userId == request.auth.uid && c.clientId == request.auth.uid
+        && c.status == 'aceptada' && !vencido(c)
+        && d.amountCents == c.desglose.depositCents && centsMirror(d)
+        && d.createdAt == request.time;
+    }
+
+    // After an admin rejects the report, the client may send it again.
+    function reintentoAnticipo(txId) {
+      let o = resource.data;
+      let n = request.resource.data;
+      let c = get(cPath(o.contratacionId)).data;
+      return txId == o.contratacionId + '_anticipo'
+        && o.userId == request.auth.uid && o.status == 'rejected'
+        && n.status == 'processing' && n.source in ['manual_transfer', 'cash']
+        && n.createdAt == request.time
+        && changed().hasOnly(['status', 'source', 'reference', 'createdAt'])
+        && c.status == 'aceptada' && !vencido(c);
+    }
+
+    function esMovimientoDeContratacion(txId) {
+      let d = request.resource.data;
+      let c = getAfter(cPath(d.contratacionId)).data;
+      return d.keys().hasOnly(['userId', 'contratacionId', 'type', 'amountCents', 'amount',
+                               'source', 'status', 'description', 'createdAt'])
+        && c.updatedAt == request.time
+        && request.auth.uid in c.parties
+        && d.status == 'processing' && d.source == 'contratacion'
+        && d.amountCents is int && d.amountCents > 0 && centsMirror(d)
+        && d.createdAt == request.time
+        && ((txId == d.contratacionId + '_pago_dj' && d.type == 'payout'
+               && d.userId == c.talentId && d.amountCents == c.reparto.djCents)
+            || (txId == d.contratacionId + '_reembolso' && d.type == 'refund'
+               && d.userId == c.clientId && d.amountCents == c.reparto.clienteCents));
+    }
+
+    function esParteDelMovimiento() {
+      return 'contratacionId' in resource.data
+        && request.auth.uid in get(cPath(resource.data.contratacionId)).data.parties;
+    }
+
     match /transactions/{transactionId} {
-      allow read: if isAuth() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow create: if isAuth() && (isOwnRequest() || isAdmin());
-      allow update: if isAdmin();
+      // Both parties of a hiring may open its movements by id (deposit, payout,
+      // refund): each sees where the money stands. A movement that does not
+      // exist yet reads as "nothing there", not as an error.
+      allow get: if isAuth()
+                 && (resource == null
+                     || resource.data.userId == request.auth.uid
+                     || isAdmin()
+                     || esParteDelMovimiento());
+      allow list: if isAuth() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuth() && (
+        (transactionId.matches('.+_anticipo') && esReporteAnticipo(transactionId))
+        || (transactionId.matches('.+_(pago_dj|reembolso)') && esMovimientoDeContratacion(transactionId))
+        || (!request.resource.data.keys().hasAny(['contratacionId']) && isOwnRequest())
+        || isAdmin());
+      allow update: if isAuth() && (
+        isAdmin()
+        || (transactionId.matches('.+_anticipo') && reintentoAnticipo(transactionId)));
+    }
+
+    // ─── Contrataciones (the hiring flow) ──────────────────────────
+    //
+    // Solicitada → Negociación → Aceptada → Confirmada → Realizada → Liquidada,
+    // or Cancelada / Expirada. There is no server, so these rules ARE the state
+    // machine: who may take each step, when, and with which figures.
+    //
+    // Invariants:
+    //   - Every write is one step: `seq` grows by one and a matching, immutable
+    //     Transición `{seq}` is created in the same request. No step without
+    //     its record, no record without its step.
+    //   - `updatedAt` is always this request's server time. Deadlines are
+    //     computed from it here, never read from a client-written field.
+    //   - Money is integer cents and the agreed price is whole dollars, so the
+    //     15% / 25% split is checked exactly, by multiplication only.
+    //   - Parties never write a balance or a resolved movement. Confirmada and
+    //     Liquidada are admin steps because they assert money really moved.
+    //
+    // src/lib/contratacion.ts mirrors this for the UI; a unit test compares
+    // the constants on both sides.
+
+    function cPath(cid) {
+      return /databases/$(database)/documents/contrataciones/$(cid);
+    }
+    function tPath(cid, seq) {
+      return /databases/$(database)/documents/contrataciones/$(cid)/transiciones/$(string(seq));
+    }
+    function txPath(txId) {
+      return /databases/$(database)/documents/transactions/$(txId);
+    }
+
+    // Hours a hiring may sit in a state before it can be expired.
+    function plazoHoras(status, bucket) {
+      return {
+        'solicitada': {'chico': 72, 'grande': 72},
+        'negociacion': {'chico': 168, 'grande': 720},
+        'aceptada': {'chico': 72, 'grande': 168}
+      }[status][bucket];
+    }
+
+    // Lazy timer: nothing fires on its own, so whoever acts next is checked
+    // against the server clock. The event itself is always a deadline.
+    function vencido(c) {
+      return request.time >= c.event.at
+        || request.time > c.updatedAt + duration.value(plazoHoras(c.status, c.event.bucket), 'h');
+    }
+
+    function bucketDe(kind, range) {
+      return {
+        'personas': {'hasta50': 'chico', 'hasta100': 'chico', 'hasta300': 'grande', 'mas300': 'grande'},
+        'tickets': {'hasta50': 'chico', 'hasta100': 'chico', 'hasta300': 'grande', 'mas300': 'grande'},
+        'm2': {'hasta80': 'chico', 'hasta150': 'chico', 'hasta400': 'grande', 'mas400': 'grande'}
+      }[kind][range];
+    }
+
+    function anticipoPendiente(cid) {
+      return exists(txPath(cid + '_anticipo'))
+        && get(txPath(cid + '_anticipo')).data.status == 'processing';
+    }
+
+    // When a step owes money, the movement for exactly that amount must exist
+    // once the request is applied.
+    function movimiento(txId, cents) {
+      return cents == 0 || getAfter(txPath(txId)).data.amountCents == cents;
+    }
+
+    function reparto(cliente, timeless, dj) {
+      return {'clienteCents': cliente, 'timelessCents': timeless, 'djCents': dj};
+    }
+
+    function ofertaValida(of, listCents) {
+      return of.keys().hasOnly(['amountCents', 'by']) && of.keys().hasAll(['amountCents', 'by'])
+        && of.amountCents is int && of.amountCents % 100 == 0
+        && of.amountCents * 2 >= listCents && of.amountCents <= listCents * 2
+        && of.by == request.auth.uid;
+    }
+
+    function desgloseValido(d, agreed, cPct, dPct) {
+      let k = ['commissionCents', 'talentNetCents', 'depositCents', 'heldCents', 'directCents'];
+      return d.keys().hasOnly(k) && d.keys().hasAll(k)
+        && agreed is int && agreed % 100 == 0
+        && d.commissionCents is int && d.depositCents is int && d.talentNetCents is int
+        && d.heldCents is int && d.directCents is int
+        && d.commissionCents * 100 == agreed * cPct
+        && d.depositCents * 100 == agreed * dPct
+        && d.talentNetCents == agreed - d.commissionCents
+        && d.heldCents == d.depositCents - d.commissionCents
+        && d.directCents == agreed - d.depositCents;
+    }
+
+    function transicionEscrita(cid, n, from) {
+      let t = getAfter(tPath(cid, n.seq)).data;
+      return t.from == from && t.to == n.status
+        && t.by == request.auth.uid && t.at == request.time;
+    }
+
+    function cambia(keys) {
+      return changed().hasOnly(keys.concat(['status', 'seq', 'updatedAt']));
+    }
+    function desde(s) { return resource.data.status == s; }
+    function hacia(s) { return request.resource.data.status == s; }
+    function soyCliente() { return request.auth.uid == resource.data.clientId; }
+    function soyDJ() { return request.auth.uid == resource.data.talentId; }
+    function sinDisputa(c) { return !c.get('disputa', {'abierta': false}).abierta; }
+
+    function solicitudValida(cid) {
+      let n = request.resource.data;
+      let me = callerDoc();
+      let talent = get(/databases/$(database)/documents/talents/$(n.talentId)).data;
+      let plan = talent.servicePlans[n.plan.index];
+      return n.keys().hasOnly(['clientId', 'talentId', 'parties', 'clientName', 'talentName',
+               'conversationId', 'plan', 'listCents', 'commissionPct', 'depositPct', 'event',
+               'status', 'seq', 'oferta', 'createdAt', 'updatedAt'])
+        && n.clientId == request.auth.uid && n.talentId != n.clientId
+        && n.parties == [n.clientId, n.talentId]
+        && me.get('status', '') == 'Active' && n.clientName == me.get('name', '')
+        && talent.get('isApproved', false) == true && n.talentName == talent.get('name', '')
+        && n.plan.keys().hasOnly(['id', 'title', 'index']) && n.plan.index is int
+        && n.plan.id == plan.id && n.plan.title == plan.title
+        && plan.price is int && n.listCents == plan.price * 100
+        && n.commissionPct == 15 && n.depositPct == 25
+        && n.event.keys().hasOnly(['at', 'type', 'sizeKind', 'sizeRange', 'bucket'])
+        && n.event.at is timestamp && n.event.at > request.time
+        && n.event.at < request.time + duration.value(540, 'd')
+        && n.event.type in ['boda', 'cumpleanos', 'fiesta_privada', 'corporativo',
+                            'discoteca', 'festival', 'otro']
+        && n.event.bucket == bucketDe(n.event.sizeKind, n.event.sizeRange)
+        && n.status == 'solicitada' && n.seq == 1
+        && ofertaValida(n.oferta, n.listCents)
+        && n.createdAt == request.time && n.updatedAt == request.time
+        && transicionEscrita(cid, n, null);
+    }
+
+    function pasoValido(cid) {
+      let n = request.resource.data;
+      return n.seq == resource.data.seq + 1 && n.seq <= 60
+        && n.updatedAt == request.time
+        && transicionEscrita(cid, n, resource.data.status);
+    }
+
+    // The DJ answers a request; afterwards offers alternate.
+    function contraoferta() {
+      let o = resource.data;
+      return hacia('negociacion')
+        && ((desde('solicitada') && soyDJ())
+            || (desde('negociacion') && o.oferta.by != request.auth.uid))
+        && !vencido(o) && cambia(['oferta'])
+        && ofertaValida(request.resource.data.oferta, o.listCents);
+    }
+
+    // Accepting the OTHER side's standing offer freezes the price. Requiring
+    // agreedCents == the stored offer also defeats a counter-offer racing in.
+    function aceptar() {
+      let o = resource.data;
+      let n = request.resource.data;
+      return hacia('aceptada') && (desde('solicitada') || desde('negociacion'))
+        && o.oferta.by != request.auth.uid && !vencido(o)
+        && cambia(['agreedCents', 'desglose'])
+        && n.agreedCents == o.oferta.amountCents
+        && desgloseValido(n.desglose, n.agreedCents, o.commissionPct, o.depositPct);
+    }
+
+    // The client confirms the service once the event has started; after 7
+    // days without a dispute either party may.
+    function realizar(cid) {
+      let o = resource.data;
+      return hacia('realizada') && desde('confirmada') && sinDisputa(o)
+        && ((soyCliente() && request.time >= o.event.at)
+            || request.time >= o.event.at + duration.value(7, 'd'))
+        && cambia(['reparto'])
+        && request.resource.data.reparto
+             == reparto(0, o.desglose.commissionCents, o.desglose.heldCents)
+        && movimiento(cid + '_pago_dj', o.desglose.heldCents);
+    }
+
+    function abrirDisputa() {
+      let o = resource.data;
+      let d = request.resource.data.disputa;
+      return hacia('confirmada') && desde('confirmada') && !('disputa' in o)
+        && request.time >= o.event.at
+        && request.time < o.event.at + duration.value(7, 'd')
+        && cambia(['disputa'])
+        && d.keys().hasOnly(['abierta', 'by', 'at', 'motivo'])
+        && d.abierta == true && d.by == request.auth.uid && d.at == request.time
+        && d.motivo is string && d.motivo.size() > 0 && d.motivo.size() <= 1000;
+    }
+
+    function cancelacionValida(rol) {
+      let c = request.resource.data.cancelacion;
+      return c.keys().hasOnly(['by', 'rol', 'motivo'])
+        && c.by == request.auth.uid && c.rol == rol
+        && c.get('motivo', '') is string && c.get('motivo', '').size() <= 500;
+    }
+
+    // Before the deposit is verified, cancelling costs nothing. After it:
+    //   DJ cancels                     → the client recovers the whole deposit
+    //   client, more than 7 days ahead → the client recovers the held part
+    //   client, 7 days or less         → the DJ keeps the held part
+    function cancelar(cid) {
+      let o = resource.data;
+      let n = request.resource.data;
+      let d = o.get('desglose', {});
+      let masDe7 = request.time < o.event.at - duration.value(7, 'd');
+      return hacia('cancelada')
+        && ((soyCliente() && cancelacionValida('cliente')) || (soyDJ() && cancelacionValida('dj')))
+        && (
+          ((desde('solicitada') || desde('negociacion')) && !vencido(o) && cambia(['cancelacion']))
+          || (desde('aceptada') && !vencido(o) && !anticipoPendiente(cid) && cambia(['cancelacion']))
+          || (desde('confirmada') && request.time < o.event.at
+              && cambia(['cancelacion', 'reparto'])
+              && ((soyDJ() && n.reparto == reparto(d.depositCents, 0, 0)
+                     && movimiento(cid + '_reembolso', d.depositCents))
+                  || (soyCliente() && masDe7
+                     && n.reparto == reparto(d.heldCents, d.commissionCents, 0)
+                     && movimiento(cid + '_reembolso', d.heldCents))
+                  || (soyCliente() && !masDe7
+                     && n.reparto == reparto(0, d.commissionCents, d.heldCents)
+                     && movimiento(cid + '_pago_dj', d.heldCents)))));
+    }
+
+    // A reported deposit stops the clock: a client who already paid does not
+    // lose the booking because verification took a day.
+    function expirar(cid) {
+      return hacia('expirada') && cambia([])
+        && (desde('solicitada') || desde('negociacion')
+            || (desde('aceptada') && !anticipoPendiente(cid)))
+        && vencido(resource.data);
+    }
+
+    // Dispatching on the target state keeps each request well inside the
+    // rules engine's limit of 1000 evaluated expressions.
+    function transicionDeParte(cid) {
+      let to = request.resource.data.status;
+      return (soyCliente() || soyDJ())
+        && ((to == 'negociacion' && contraoferta())
+            || (to == 'aceptada' && aceptar())
+            || (to == 'realizada' && realizar(cid))
+            || (to == 'confirmada' && abrirDisputa())
+            || (to == 'cancelada' && cancelar(cid))
+            || (to == 'expirada' && expirar(cid)));
+    }
+
+    // An admin resolving a dispute may split the deposit freely, as long as
+    // the three parts add up to it and each owed part has its movement.
+    function repartoLibre(cid, r, deposit) {
+      return r.keys().hasOnly(['clienteCents', 'timelessCents', 'djCents'])
+        && r.clienteCents is int && r.timelessCents is int && r.djCents is int
+        && r.clienteCents >= 0 && r.timelessCents >= 0 && r.djCents >= 0
+        && r.clienteCents + r.timelessCents + r.djCents == deposit
+        && movimiento(cid + '_reembolso', r.clienteCents)
+        && movimiento(cid + '_pago_dj', r.djCents);
+    }
+
+    function transicionDeAdmin(cid) {
+      let o = resource.data;
+      let n = request.resource.data;
+      return
+        // Deposit verified.
+        (hacia('confirmada') && desde('aceptada') && cambia([])
+           && getAfter(txPath(cid + '_anticipo')).data.status == 'completed'
+           && getAfter(txPath(cid + '_anticipo')).data.amountCents == o.desglose.depositCents)
+        // Dispute dismissed.
+        || (hacia('confirmada') && desde('confirmada') && cambia(['disputa'])
+           && o.disputa.abierta == true && n.disputa.abierta == false
+           && n.disputa.diff(o.disputa).affectedKeys().hasOnly(['abierta']))
+        // Dispute resolved for the DJ, or completion forced.
+        || (hacia('realizada') && desde('confirmada') && cambia(['reparto', 'disputa'])
+           && n.reparto == reparto(0, o.desglose.commissionCents, o.desglose.heldCents)
+           && movimiento(cid + '_pago_dj', o.desglose.heldCents))
+        // Held deposit released to the DJ.
+        || (hacia('liquidada') && desde('realizada') && cambia([])
+           && getAfter(txPath(cid + '_pago_dj')).data.status == 'completed')
+        || (hacia('cancelada')
+           && (desde('solicitada') || desde('negociacion') || desde('aceptada'))
+           && cambia(['cancelacion']) && cancelacionValida('admin'))
+        // Dispute resolved with a custom split.
+        || (hacia('cancelada') && desde('confirmada')
+           && cambia(['cancelacion', 'reparto', 'disputa'])
+           && cancelacionValida('admin')
+           && repartoLibre(cid, n.reparto, o.desglose.depositCents))
+        || (hacia('expirada')
+           && (desde('solicitada') || desde('negociacion') || desde('aceptada'))
+           && cambia([]));
+    }
+
+    // A Transición can only be created together with its step: the hiring was
+    // written in this same request (its updatedAt is this request's time) and
+    // carries this seq. The hiring's own rule checks `from`.
+    function transicionValida(cid, seq) {
+      let t = request.resource.data;
+      let c = getAfter(cPath(cid)).data;
+      return t.keys().hasOnly(['seq', 'from', 'to', 'kind', 'by', 'rol', 'at', 'offerCents', 'motivo'])
+        && c.updatedAt == request.time
+        && seq == string(c.seq) && t.seq == c.seq && t.to == c.status
+        && t.by == request.auth.uid && t.at == request.time
+        && t.kind in ['solicitud', 'oferta', 'aceptacion', 'confirmacion', 'disputa',
+                      'realizacion', 'liquidacion', 'cancelacion', 'expiracion']
+        && (!('offerCents' in t) || t.offerCents == c.oferta.amountCents)
+        && (!('motivo' in t) || (t.motivo is string && t.motivo.size() <= 1000))
+        && ((t.rol == 'cliente' && c.clientId == request.auth.uid)
+            || (t.rol == 'dj' && c.talentId == request.auth.uid)
+            || (t.rol == 'admin' && isAdmin()));
+    }
+
+    match /contrataciones/{cid} {
+      allow read: if isAuth() && (request.auth.uid in resource.data.parties || isAdmin());
+      allow create: if isAuth() && solicitudValida(cid);
+      allow update: if isAuth() && pasoValido(cid)
+                    && (transicionDeParte(cid) || (isAdmin() && transicionDeAdmin(cid)));
+      allow delete: if false;
+
+      match /transiciones/{seq} {
+        allow read: if isAuth()
+                    && (request.auth.uid in get(cPath(cid)).data.parties || isAdmin());
+        allow create: if isAuth() && transicionValida(cid, seq);
+        allow update, delete: if false;
+      }
     }
   }
 }

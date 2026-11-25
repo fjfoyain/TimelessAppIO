@@ -12,6 +12,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { isAccountActive } from "@/components/AccountGate";
 import { UserRole } from "@/types";
 import { getOrCreateConversation, sendMessage, getTalentReviews } from "@/lib/firestore";
+import { findOpenContratacion, solicitar } from "@/lib/contrataciones";
+import SolicitudModal, { type SolicitudInput } from "@/components/contratacion/SolicitudModal";
 import type { ServicePlan, TalentReview } from "@/types";
 
 function getAverageRating(reviews: { rating: number }[]): number {
@@ -25,6 +27,7 @@ export default function TalentProfilePage() {
   const { user: currentUser } = useAuth();
   const { data: firestoreMatch, loading } = useTalentProfile(id);
   const [starting, setStarting] = useState(false);
+  const [requesting, setRequesting] = useState<ServicePlan | null>(null);
   // State updates land after the next render, so a fast double click would
   // start two conversations; the ref closes that window.
   const startingRef = useRef(false);
@@ -85,42 +88,67 @@ export default function TalentProfilePage() {
   // A signed-in but not-yet-approved user can browse but not contact talent.
   const pendingApproval = !!currentUser && !isAccountActive(currentUser);
 
-  // Opens (or creates) the chat with this talent. When a plan is passed, the
-  // conversation carries the plan context and an opening message is posted,
-  // so negotiation starts right in the chat.
-  async function startConversation(plan?: ServicePlan) {
+  function guard(): boolean {
     if (!currentUser) {
       router.push("/login");
-      return;
+      return false;
     }
-    // Pending/suspended accounts can't start conversations yet.
-    if (!isAccountActive(currentUser)) return;
-    if (startingRef.current) return;
+    // Pending/suspended accounts can't contact or book talent yet.
+    return isAccountActive(currentUser);
+  }
+
+  // "Contact": opens (or creates) the chat with this talent.
+  async function startConversation() {
+    if (!guard() || !currentUser || startingRef.current) return;
     startingRef.current = true;
     setStarting(true);
     try {
-      const planContext = plan
-        ? { talentId: talent.id, planId: plan.id, planTitle: plan.title, planPrice: plan.price }
-        : undefined;
-      const { id: convoId, planIsNew } = await getOrCreateConversation(
-        currentUser.id,
-        currentUser.name,
-        talent.userId,
-        user.name,
-        planContext
-      );
-      if (plan && planIsNew) {
-        await sendMessage(
-          convoId,
-          currentUser.id,
-          `Hi ${user.name.split(" ")[0]}! I'm interested in your "${plan.title}" plan ($${plan.price}). I'd like to discuss the details and timeline.`
-        );
-      }
+      const convoId = await getOrCreateConversation(currentUser.id, currentUser.name, talent.userId, user.name);
       router.push(`/messages?convo=${convoId}`);
     } catch {
       startingRef.current = false;
       setStarting(false);
     }
+  }
+
+  // A plan is booked through a request: one open request per client and
+  // talent, so asking again opens the one already under way.
+  async function openRequest(plan: ServicePlan) {
+    if (!guard() || !currentUser || startingRef.current) return;
+    startingRef.current = true;
+    setStarting(true);
+    try {
+      const open = await findOpenContratacion(currentUser.id, talent.userId);
+      if (open) {
+        router.push(`/contrataciones/${open.id}`);
+        return;
+      }
+      setRequesting(plan);
+    } finally {
+      startingRef.current = false;
+      setStarting(false);
+    }
+  }
+
+  async function sendRequest(input: SolicitudInput) {
+    if (!currentUser || !requesting) return;
+    const conversationId = await getOrCreateConversation(currentUser.id, currentUser.name, talent.userId, user.name);
+    const cid = await solicitar({
+      client: { id: currentUser.id, name: currentUser.name },
+      talent: { id: talent.userId, name: user.name },
+      plan: requesting,
+      planIndex: talent.servicePlans.findIndex((p) => p.id === requesting.id),
+      event: { at: input.eventAt, type: input.eventType, sizeKind: input.sizeKind, sizeRange: input.sizeRange },
+      offerCents: input.offerCents,
+      conversationId,
+    });
+    // The request is already saved; the chat line is only a pointer to it.
+    await sendMessage(
+      conversationId,
+      currentUser.id,
+      `📋 I sent you a booking request for "${requesting.title}" on ${input.eventAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}.`
+    ).catch(() => {});
+    router.push(`/contrataciones/${cid}`);
   }
 
   return (
@@ -356,12 +384,12 @@ export default function TalentProfilePage() {
                       ))}
                     </ul>
                     <button
-                      onClick={() => startConversation(plan)}
+                      onClick={() => openRequest(plan)}
                       disabled={starting || pendingApproval}
                       className="w-full mt-4 py-3 rounded-lg bg-primary text-white font-semibold hover:bg-primary-dark transition btn-glow disabled:opacity-50 flex items-center justify-center gap-2"
                     >
-                      <span className="material-icons text-sm">forum</span>
-                      {starting ? "Opening chat..." : "Discuss this Plan"}
+                      <span className="material-icons text-sm" aria-hidden="true">event_available</span>
+                      {starting ? "Opening..." : "Request this plan"}
                     </button>
                   </div>
                 ))}
@@ -386,6 +414,15 @@ export default function TalentProfilePage() {
           </div>
         </div>
       </main>
+
+      {requesting && (
+        <SolicitudModal
+          plan={requesting}
+          talentName={user.name}
+          onClose={() => setRequesting(null)}
+          onSubmit={sendRequest}
+        />
+      )}
 
       <Footer />
     </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
@@ -15,9 +16,11 @@ const typeIcons: Record<NotificationType, { icon: string; color: string; bg: str
   payment: { icon: "payments", color: "text-green-400", bg: "bg-green-400/10" },
   security: { icon: "shield", color: "text-amber-400", bg: "bg-amber-400/10" },
   draft: { icon: "edit_note", color: "text-slate-400", bg: "bg-slate-400/10" },
+  contratacion: { icon: "event_available", color: "text-primary-light", bg: "bg-primary/10" },
 };
 
 const tabs = ["All Notifications", "Contracts", "Messages", "Payments"];
+// "Contracts" is the tab for everything about a booking.
 
 function NotificationsContent() {
   const { user } = useAuth();
@@ -26,7 +29,7 @@ function NotificationsContent() {
 
   const filteredNotifications = notifications.filter((n) => {
     if (activeTab === "All Notifications") return true;
-    if (activeTab === "Contracts") return n.type === "contract" || n.type === "draft";
+    if (activeTab === "Contracts") return n.type === "contract" || n.type === "draft" || n.type === "contratacion";
     if (activeTab === "Messages") return n.type === "message";
     if (activeTab === "Payments") return n.type === "payment";
     return true;
@@ -103,7 +106,7 @@ function NotificationsContent() {
                   {/* Notification Groups */}
                   <div className="space-y-3">
                     {filteredNotifications.map((n) => {
-                      const style = typeIcons[n.type];
+                      const style = typeIcons[n.type] ?? typeIcons.contract;
                       return (
                         <div
                           key={n.id}
@@ -129,6 +132,15 @@ function NotificationsContent() {
                               <p className="text-xs text-slate-600 mt-2">
                                 {n.createdAt ? new Date(n.createdAt).toLocaleString() : ""}
                               </p>
+
+                              {n.contratacionId && (
+                                <Link
+                                  href={`/contrataciones/${n.contratacionId}`}
+                                  className="inline-block mt-3 px-3 py-1.5 rounded-lg text-xs font-medium bg-primary hover:bg-primary-dark text-white transition"
+                                >
+                                  Open booking
+                                </Link>
+                              )}
 
                               {n.actions && (
                                 <div className="flex gap-2 mt-3">

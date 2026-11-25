@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useState, FormEvent } from "react";
 import { signUp, getAuthErrorMessage } from "@/lib/auth";
 import { createUserProfile, createTalentProfile } from "@/lib/firestore";
+import { ACTIVE_CITIES, ACTIVE_PROVIDER_CATEGORIES } from "@/lib/constants";
 import { EVENT_TYPES } from "@/lib/constants";
 import { UserRole } from "@/types";
 import { FirebaseError } from "firebase/app";
@@ -18,6 +19,7 @@ type RatePer = "Hour" | "Day" | "Project";
 interface TalentFormData {
   fullName: string;
   category: string;
+  city: string;
   experience: ExperienceLevel;
   eventTypes: string[];
   baseRate: string;
@@ -30,13 +32,9 @@ interface TalentFormData {
 
 /* ─────────── Constants ─────────── */
 
-const categories = [
-  "Concert Photographer",
-  "Videographer/Editor",
-  "Lighting Technician",
-  "Sound Engineer",
-  "Event Promoter",
-] as const;
+// The categories and cities open for registration follow the launch scope.
+const categories = ACTIVE_PROVIDER_CATEGORIES;
+const cities = ACTIVE_CITIES;
 
 const experienceLevels: { value: ExperienceLevel; label: string; sub: string }[] = [
   { value: "newcomer", label: "Newcomer", sub: "1-2 yrs" },
@@ -51,7 +49,8 @@ export default function TalentRegistrationPage() {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<TalentFormData>({
     fullName: "",
-    category: "",
+    category: categories.length === 1 ? categories[0] : "",
+    city: cities.length === 1 ? cities[0] : "",
     experience: "pro",
     eventTypes: [],
     baseRate: "",
@@ -86,6 +85,7 @@ export default function TalentRegistrationPage() {
     const newErrors: Partial<Record<keyof TalentFormData, boolean | string>> = {};
     if (!form.fullName.trim()) newErrors.fullName = true;
     if (!form.category) newErrors.category = true;
+    if (!form.city) newErrors.city = true;
     if (!form.baseRate.trim()) newErrors.baseRate = true;
     if (!form.email.trim()) {
       newErrors.email = "Email is required.";
@@ -119,6 +119,7 @@ export default function TalentRegistrationPage() {
       await createTalentProfile(uid, {
         fullName: form.fullName,
         category: form.category,
+        city: form.city,
         experience: form.experience,
         eventTypes: form.eventTypes,
         baseRate: parseFloat(form.baseRate),
@@ -301,6 +302,34 @@ export default function TalentRegistrationPage() {
                 {errors.category && (
                   <p className="mt-1 text-xs text-red-400">Please select a category.</p>
                 )}
+              </div>
+
+              {/* City */}
+              <div>
+                <label htmlFor="talent-city" className="block text-sm font-medium text-slate-300 mb-1.5">
+                  City
+                </label>
+                <div className="relative">
+                  <span className="material-icons absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-lg" aria-hidden="true">
+                    place
+                  </span>
+                  <select
+                    id="talent-city"
+                    value={form.city}
+                    onChange={(e) => handleChange("city", e.target.value)}
+                    className={`w-full pl-10 pr-4 py-3 rounded-lg bg-[#231630] text-white outline-none appearance-none transition-all ${ring("city")} ${!form.city ? "text-slate-600" : ""}`}
+                  >
+                    <option value="" disabled>
+                      Where you work
+                    </option>
+                    {cities.map((city) => (
+                      <option key={city} value={city}>
+                        {city}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {errors.city && <p className="mt-1 text-xs text-red-400">Please select your city.</p>}
               </div>
 
               {/* Experience Level */}

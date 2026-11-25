@@ -190,7 +190,7 @@ export interface EventProduct {
   image: string;
 }
 
-export type TransactionSource = "manual_transfer" | "cash" | "stripe" | "skrill" | "crypto";
+export type TransactionSource = "manual_transfer" | "cash" | "stripe" | "skrill" | "crypto" | "contratacion";
 export type TransactionStatus = "completed" | "processing" | "pending" | "rejected";
 
 export interface Transaction {
@@ -202,6 +202,9 @@ export interface Transaction {
   source: TransactionSource;
   status: TransactionStatus;
   createdAt?: string;
+  // Set on movements that belong to a hiring; `amountCents` is then the value.
+  contratacionId?: string;
+  amountCents?: number;
   // Web3-ready (future)
   txHash?: string;
   chainId?: number;
@@ -231,7 +234,7 @@ export interface Wallet {
 
 // ─── Firestore Collection Types ───────────────────────────────────
 
-export type NotificationType = "contract" | "message" | "payment" | "security" | "draft";
+export type NotificationType = "contract" | "message" | "payment" | "security" | "draft" | "contratacion";
 
 export interface Booking {
   id: string;
@@ -291,6 +294,8 @@ export interface AppNotification {
   title: string;
   description: string;
   isNew: boolean;
+  // Set on notifications about a hiring step; links to that booking.
+  contratacionId?: string;
   actions?: { label: string; primary?: boolean }[];
   createdAt?: string;
 }

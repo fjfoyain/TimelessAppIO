@@ -7,6 +7,7 @@ import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import Footer from "@/components/landing/Footer";
 import TalentCard from "@/components/marketplace/TalentCard";
 import { useMarketplace } from "@/hooks/useFirestore";
+import { inLaunchScope } from "@/lib/constants";
 import { EVENT_TYPES } from "@/lib/constants";
 
 function checkPriceRange(rate: number | undefined, range: string): boolean {
@@ -34,7 +35,10 @@ function MarketplaceContent() {
   const [priceRange, setPriceRange] = useState("");
   const [verifiedOnly, setVerifiedOnly] = useState(false);
 
-  const allTalents = firestoreTalents;
+  const allTalents = useMemo(
+    () => firestoreTalents.filter(({ talent }) => inLaunchScope(talent)),
+    [firestoreTalents]
+  );
 
   // Derive categories/cities from the live talent data
   const categories = useMemo(() => {

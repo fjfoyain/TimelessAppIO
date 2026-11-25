@@ -8,7 +8,7 @@ import Footer from "@/components/landing/Footer";
 import AnimatedBackground from "@/components/landing/AnimatedBackground";
 import {
   EVENT_TYPES,
-  PROVIDER_CATEGORIES,
+  ACTIVE_PROVIDER_CATEGORIES,
   EVENT_TYPE_ICONS,
   PROVIDER_CATEGORY_ICONS,
 } from "@/lib/constants";
@@ -88,7 +88,7 @@ export default function SearchPage() {
           <section>
             <h2 className="text-lg font-bold text-white mb-4">Browse by provider</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-              {PROVIDER_CATEGORIES.map((cat) => (
+              {ACTIVE_PROVIDER_CATEGORIES.map((cat) => (
                 <Link
                   key={cat}
                   href={`/marketplace?category=${encodeURIComponent(cat)}`}

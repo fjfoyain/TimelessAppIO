@@ -9,13 +9,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useConversations, useMessages } from "@/hooks/useFirestore";
 import { maskContactInfo } from "@/lib/chat";
 import ChatDetailsPanel from "@/components/messages/ChatDetailsPanel";
-import {
-  proposeOffer,
-  acceptOffer,
-  getContractById,
-  addTalentReview,
-} from "@/lib/firestore";
-import type { Contract } from "@/types";
 
 function formatTime(dateString?: string): string {
   if (!dateString) return "";
@@ -47,14 +40,6 @@ function MessagesContent() {
   const { messages, loading: msgsLoading, sendMessage } = useMessages(activeConvoId);
   const [newMessage, setNewMessage] = useState("");
   const [contactMasked, setContactMasked] = useState(false);
-  const [offerInput, setOfferInput] = useState("");
-  const [offerBusy, setOfferBusy] = useState(false);
-  const [offerProblem, setOfferProblem] = useState("");
-  const [activeContract, setActiveContract] = useState<Contract | null>(null);
-  const [rating, setRating] = useState(5);
-  const [reviewComment, setReviewComment] = useState("");
-  const [reviewBusy, setReviewBusy] = useState(false);
-  const [reviewSubmitted, setReviewSubmitted] = useState(false);
   const [tab, setTab] = useState<"messages" | "contracts">("messages");
   const [showChat, setShowChat] = useState(false);
 
@@ -86,26 +71,6 @@ function MessagesContent() {
   }, [conversations, convosLoading, activeConvoId, toUserId, convoParam]);
 
   const activeConvo = conversations.find((c) => c.id === activeConvoId);
-
-  useEffect(() => {
-    setOfferProblem("");
-  }, [activeConvoId, offerInput]);
-
-  // Load the contract attached to the active conversation (if any).
-  useEffect(() => {
-    setReviewSubmitted(false);
-    if (!activeConvo?.contractId) {
-      setActiveContract(null);
-      return;
-    }
-    let cancelled = false;
-    getContractById(activeConvo.contractId).then((c) => {
-      if (!cancelled) setActiveContract(c);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [activeConvo?.contractId]);
 
   const getOtherParticipantName = (convo: typeof conversations[number]): string => {
     if (!user?.id || !convo.participantNames) return "Unknown";
@@ -141,69 +106,12 @@ function MessagesContent() {
     setShowChat(true);
   };
 
-  async function handlePropose() {
-    if (!user || !activeConvo) return;
-    setOfferBusy(true);
-    setOfferProblem("");
-    try {
-      await proposeOffer(activeConvo.id, user.id, user.name, parseFloat(offerInput));
-      setOfferInput("");
-    } catch (err) {
-      setOfferProblem(err instanceof Error ? err.message : "The offer could not be sent.");
-    } finally {
-      setOfferBusy(false);
-    }
-  }
-
-  async function handleAcceptOffer() {
-    if (!user || !activeConvo?.negotiation) return;
-    setOfferBusy(true);
-    try {
-      await acceptOffer(activeConvo.id, user.id, user.name, activeConvo.negotiation);
-    } finally {
-      setOfferBusy(false);
-    }
-  }
-
-  async function handleSubmitReview() {
-    if (!user || !activeContract) return;
-    if (rating < 1 || rating > 5) return;
-    if (!reviewComment.trim()) return;
-    setReviewBusy(true);
-    try {
-      await addTalentReview({
-        talentId: activeContract.talentId,
-        clientId: user.id,
-        clientName: user.name,
-        rating,
-        comment: reviewComment.trim(),
-      });
-      setReviewSubmitted(true);
-      setReviewComment("");
-      setRating(5);
-    } finally {
-      setReviewBusy(false);
-    }
-  }
-
+  const otherUserId = activeConvo?.participants.find((p) => p !== user?.id);
   const detailsPanel = (
     <ChatDetailsPanel
-      user={user}
-      activeConvo={activeConvo}
-      offerInput={offerInput}
-      setOfferInput={setOfferInput}
-      offerBusy={offerBusy}
-      offerProblem={offerProblem}
-      onPropose={handlePropose}
-      onAcceptOffer={handleAcceptOffer}
-      activeContract={activeContract}
-      rating={rating}
-      setRating={setRating}
-      reviewComment={reviewComment}
-      setReviewComment={setReviewComment}
-      reviewBusy={reviewBusy}
-      reviewSubmitted={reviewSubmitted}
-      onSubmitReview={handleSubmitReview}
+      userId={user?.id}
+      otherUserId={otherUserId}
+      otherName={activeConvo ? getOtherParticipantName(activeConvo) : "this person"}
     />
   );
 
@@ -311,7 +219,7 @@ function MessagesContent() {
                         : "text-slate-400 hover:text-white"
                     }`}
                   >
-                    {t.charAt(0).toUpperCase() + t.slice(1)}
+                    {t === "contracts" ? "Bookings" : "Messages"}
                   </button>
                 ))}
               </div>

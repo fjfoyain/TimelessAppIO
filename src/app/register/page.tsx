@@ -12,7 +12,7 @@ const roles = [
     label: "Artist",
     icon: "music_note",
     description:
-      "Share your sound with the world. Connect with studios, producers, and venues to elevate your craft and grow your audience.",
+      "A profile for your music and your presence in the community. Artist profiles are not listed for bookings — choose Talent for that.",
     href: "/register/artist",
     borderHover:
       "hover:border-primary/60 hover:shadow-[0_0_32px_-4px_rgba(127,19,236,0.5)]",
@@ -36,7 +36,7 @@ const roles = [
     label: "Talent",
     icon: "stars",
     description:
-      "Showcase your skills as a DJ, engineer, producer, or session musician. Get discovered and booked by top clients.",
+      "For DJs who want to be booked. Your profile and plans are listed in the marketplace and clients send you booking requests.",
     href: "/register/talent",
     borderHover:
       "hover:border-cyan-500/60 hover:shadow-[0_0_32px_-4px_rgba(6,182,212,0.5)]",

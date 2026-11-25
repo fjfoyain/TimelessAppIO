@@ -48,6 +48,7 @@ const roleStats: Record<string, { label: string; value: string; icon: string }[]
 const roleActions: Record<string, { label: string; description: string; icon: string; href: string }[]> = {
   [UserRole.TALENT]: [
     { label: "Browse Marketplace", description: "Discover talent and opportunities", icon: "storefront", href: "/marketplace" },
+    { label: "My Plans", description: "What clients can book, and at what price", icon: "sell", href: "/dashboard/plans" },
     { label: "My Portfolio", description: "Add and manage your work samples", icon: "collections", href: "/dashboard/portfolio" },
     { label: "Payout Methods", description: "Bank account and wallet for payouts", icon: "account_balance", href: "/dashboard/payouts" },
     { label: "Edit Profile", description: "Update your name, bio and rates", icon: "edit", href: "/settings" },
@@ -167,7 +168,7 @@ function DashboardContent() {
             {[
               { label: "Overview", href: "/dashboard", icon: "dashboard" },
               { label: "Events", href: "/dashboard/events", icon: "event" },
-              { label: "Projects", href: "/dashboard/projects", icon: "folder" },
+              { label: "Bookings", href: "/dashboard/projects", icon: "event_available" },
               ...(user.role === UserRole.VENUE || user.isSuperUser ? [{ label: "Venue", href: "/dashboard/venue", icon: "location_on" }] : []),
               ...(user.role === UserRole.ADMIN || user.isSuperUser ? [{ label: "Admin", href: "/admin", icon: "admin_panel_settings" }] : []),
             ].map((nav) => (

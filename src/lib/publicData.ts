@@ -1,3 +1,4 @@
+import { inLaunchScope } from "./constants";
 // Server-side reads of the public Firestore collections, over the REST API.
 //
 // The client SDK in `firestore.ts` runs in the browser; sitemap generation and
@@ -173,7 +174,11 @@ export async function getPublicEvent(id: string): Promise<PublicEvent | null> {
 
 export async function getPublicTalents(): Promise<PublicTalent[]> {
   // Only approved accounts are public listings (mirrors getAllTalents).
-  const docs = (await fetchCollection("talents")).filter((d) => d.isApproved === true);
+  const docs = (await fetchCollection("talents")).filter(
+    (d) =>
+      d.isApproved === true &&
+      inLaunchScope({ category: d.category as string | undefined, city: d.city as string | undefined })
+  );
   return docs.map((d) => ({
     id: d.id,
     name: d.name as string | undefined,

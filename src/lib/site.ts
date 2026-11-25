@@ -16,6 +16,7 @@ export const PRIVATE_ROUTES = [
   "/notifications",
   "/settings",
   "/booking",
+  "/contrataciones",
   "/tickets",
   "/logout",
   "/offline",

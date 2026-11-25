@@ -184,7 +184,7 @@ describe("conversations", () => {
   });
 });
 
-describe("contracts — terms tampering (HIGH 3)", () => {
+describe("contracts — legacy, read-only since the hiring flow", () => {
   beforeEach(async () => {
     await testEnv.withSecurityRulesDisabled(async (ctx) => {
       await setDoc(doc(ctx.firestore(), "contracts", "k1"), {
@@ -218,12 +218,22 @@ describe("contracts — terms tampering (HIGH 3)", () => {
     );
   });
 
+  it("allows a party to still read their legacy contract", async () => {
+    await assertSucceeds(getDoc(doc(db(ALICE), "contracts", "k1")));
+  });
+
+  it("blocks creating a new contract", async () => {
+    await assertFails(
+      setDoc(doc(db(ALICE), "contracts", "k2"), { clientId: BOB, talentId: ALICE, amount: 1 })
+    );
+  });
+
   it("blocks an outsider reading the contract", async () => {
     await assertFails(getDoc(doc(db(ADMIN + "-nobody"), "contracts", "k1")));
   });
 
-  it("allows the talent to sign their own side", async () => {
-    await assertSucceeds(
+  it("blocks signing a legacy contract", async () => {
+    await assertFails(
       updateDoc(doc(db(ALICE), "contracts", "k1"), {
         talentSignedAt: "2026-08-05T00:00:00Z",
         status: "fully_signed",
@@ -231,8 +241,8 @@ describe("contracts — terms tampering (HIGH 3)", () => {
     );
   });
 
-  it("allows the client to record payment", async () => {
-    await assertSucceeds(
+  it("blocks recording a payment on a legacy contract", async () => {
+    await assertFails(
       updateDoc(doc(db(BOB), "contracts", "k1"), {
         paymentStatus: "paid",
         paymentProvider: "skrill",
@@ -273,8 +283,8 @@ describe("reviews — rating manipulation", () => {
     );
   });
 
-  it("allows a valid review", async () => {
-    await assertSucceeds(
+  it("blocks a review that is not tied to a completed hiring", async () => {
+    await assertFails(
       setDoc(doc(db(ALICE), "reviews", "r4"), {
         clientId: ALICE,
         talentId: BOB,
