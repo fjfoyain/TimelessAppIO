@@ -21,7 +21,7 @@ acordado el 8 de octubre está construido todavía.
 ## Lote S — Dependencias y plataforma
 
 - [x] S1d. `npm audit fix` (sin cambios incompatibles): 59 → 24 avisos. Tests, lint y build en verde.
-- [ ] S2d. **Next 14 → 16** (con React 19). Es lo único crítico que queda: la rama 14 ya no recibe parches
+- [x] S2d. (Hecho en `mantenimiento/next-16`, sin desplegar: Next 16.4 + React 19, build, lint, pruebas y páginas clave abiertas en navegador.) **Next 14 → 16** (con React 19). Es lo único crítico que queda: la rama 14 ya no recibe parches
       y el arreglo solo existe en la 16. Cambio mayor, va en rama propia con prueba completa.
 - [x] S3d. Fijar la versión de Node en `package.json` (`engines`) y comprobar la que usa Vercel. → `engines.node >=22` y `.nvmrc` 24. Falta mirar en Vercel qué versión toma.
 - [x] S4d. `firebase-admin` 13 → 14 (solo scripts locales; arrastra los avisos de `@grpc/grpc-js` y `uuid`). → Hecho; los scripts usan la API modular vía `scripts/admin-sdk.js`.
@@ -110,6 +110,10 @@ Decisiones de producto que tomé por defecto (confirmar con David y Alex):
 - [ ] R5. El DJ puede cancelar hasta la hora del evento sin penalización; el cliente recupera todo el anticipo.
 - [ ] R6. Reportar el anticipo detiene el reloj de Aceptada hasta que un admin lo resuelva.
 - [ ] R7. Disputa: ventana de 7 días tras el evento, una por contratación; el admin elige descartar, pagar al DJ o reembolsar al cliente.
+- [ ] R31. El registro de talento dice «+2k Verified talents joined»: cifra sin respaldo, igual que las que ya se quitaron.
+- [ ] R32. Next 16: probar con sesión iniciada antes de darlo por bueno; solo se comprobaron páginas públicas.
+- [ ] R33. Quedan 23 avisos del linter (regla nueva de React 19 sobre efectos) y avisos de dependencias que
+      exigen `firebase` 13 (cambio mayor del SDK de cliente).
 - [ ] R30. La app pide «envía el anticipo a Timeless» pero no muestra a qué cuenta. Falta la cuenta bancaria (pregunta 1 del PDF).
 - [ ] R8. Textos de la app en inglés, como el resto. ¿El piloto en Quito los necesita en español?
 

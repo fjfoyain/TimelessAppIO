@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useContrataciones } from "@/hooks/useFirestore";
 import { ESTADO_LABELS, acciones, dollars, type Estado } from "@/lib/contratacion";
@@ -20,7 +21,8 @@ export default function ChatDetailsPanel({
 }) {
   const { items, loading, waitingDeposit } = useContrataciones(userId);
   const between = items.filter((c) => otherUserId && c.parties.includes(otherUserId));
-  const now = Date.now();
+  // Read once per mount: render must not depend on the clock.
+  const [now] = useState(() => Date.now());
 
   return (
     <>

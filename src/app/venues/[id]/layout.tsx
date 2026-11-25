@@ -4,15 +4,16 @@ import { SITE_URL } from "@/lib/site";
 
 interface Props {
   children: React.ReactNode;
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const venue = await getPublicVenue(params.id);
+  const { id } = await params;
+  const venue = await getPublicVenue(id);
   if (!venue?.venueName) {
     // Unknown or unreadable venue: fall back to the section metadata rather
     // than emitting a title built from a raw document id.
-    return { title: "Venue", alternates: { canonical: `/venues/${params.id}` } };
+    return { title: "Venue", alternates: { canonical: `/venues/${id}` } };
   }
 
   const where = venue.address ? ` in ${venue.address}` : "";
@@ -27,18 +28,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: venue.venueName,
     description,
-    alternates: { canonical: `/venues/${params.id}` },
+    alternates: { canonical: `/venues/${id}` },
     openGraph: {
       type: "website",
       title: `${venue.venueName} | Timeless`,
       description,
-      url: `/venues/${params.id}`,
+      url: `/venues/${id}`,
     },
   };
 }
 
 export default async function VenueLayout({ children, params }: Props) {
-  const venue = await getPublicVenue(params.id);
+  const { id } = await params;
+  const venue = await getPublicVenue(id);
 
   return (
     <>
@@ -50,7 +52,7 @@ export default async function VenueLayout({ children, params }: Props) {
               "@context": "https://schema.org",
               "@type": "EventVenue",
               name: venue.venueName,
-              url: `${SITE_URL}/venues/${params.id}`,
+              url: `${SITE_URL}/venues/${id}`,
               ...(venue.address ? { address: venue.address } : {}),
               ...(venue.capacity
                 ? { maximumAttendeeCapacity: venue.capacity }

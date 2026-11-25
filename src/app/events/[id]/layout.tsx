@@ -4,7 +4,7 @@ import { SITE_URL } from "@/lib/site";
 
 interface Props {
   children: React.ReactNode;
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 function trim(text: string | undefined, max = 155): string | undefined {
@@ -13,9 +13,10 @@ function trim(text: string | undefined, max = 155): string | undefined {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const event = await getPublicEvent(params.id);
+  const { id } = await params;
+  const event = await getPublicEvent(id);
   if (!event?.title) {
-    return { title: "Event", alternates: { canonical: `/events/${params.id}` } };
+    return { title: "Event", alternates: { canonical: `/events/${id}` } };
   }
 
   const where = event.location ? ` at ${event.location}` : "";
@@ -27,19 +28,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: event.title,
     description,
-    alternates: { canonical: `/events/${params.id}` },
+    alternates: { canonical: `/events/${id}` },
     openGraph: {
       type: "website",
       title: `${event.title} | Timeless`,
       description,
-      url: `/events/${params.id}`,
+      url: `/events/${id}`,
       ...(event.image ? { images: [{ url: event.image }] } : {}),
     },
   };
 }
 
 export default async function EventLayout({ children, params }: Props) {
-  const event = await getPublicEvent(params.id);
+  const { id } = await params;
+  const event = await getPublicEvent(id);
 
   return (
     <>
@@ -51,7 +53,7 @@ export default async function EventLayout({ children, params }: Props) {
               "@context": "https://schema.org",
               "@type": "Event",
               name: event.title,
-              url: `${SITE_URL}/events/${params.id}`,
+              url: `${SITE_URL}/events/${id}`,
               ...(event.date ? { startDate: event.date } : {}),
               ...(event.description ? { description: event.description } : {}),
               ...(event.image ? { image: event.image } : {}),

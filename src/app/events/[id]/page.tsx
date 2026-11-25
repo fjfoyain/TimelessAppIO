@@ -19,6 +19,9 @@ function formatDate(date: string): string {
     month: "long",
     day: "numeric",
     year: "numeric",
+    // "2026-12-12" parses as midnight UTC; formatting it in a zone behind UTC
+    // would show the day before.
+    timeZone: "UTC",
   });
 }
 

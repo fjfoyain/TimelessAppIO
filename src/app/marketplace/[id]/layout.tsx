@@ -4,7 +4,7 @@ import { SITE_URL } from "@/lib/site";
 
 interface Props {
   children: React.ReactNode;
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 function trim(text: string | undefined, max = 155): string | undefined {
@@ -13,11 +13,12 @@ function trim(text: string | undefined, max = 155): string | undefined {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const talent = await getPublicTalent(params.id);
+  const { id } = await params;
+  const talent = await getPublicTalent(id);
   if (!talent?.name) {
     return {
       title: "Talent profile",
-      alternates: { canonical: `/marketplace/${params.id}` },
+      alternates: { canonical: `/marketplace/${id}` },
     };
   }
 
@@ -30,18 +31,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${talent.name} — ${role}${where}`,
     description,
-    alternates: { canonical: `/marketplace/${params.id}` },
+    alternates: { canonical: `/marketplace/${id}` },
     openGraph: {
       type: "profile",
       title: `${talent.name} — ${role}${where} | Timeless`,
       description,
-      url: `/marketplace/${params.id}`,
+      url: `/marketplace/${id}`,
     },
   };
 }
 
 export default async function TalentLayout({ children, params }: Props) {
-  const talent = await getPublicTalent(params.id);
+  const { id } = await params;
+  const talent = await getPublicTalent(id);
 
   return (
     <>
@@ -53,7 +55,7 @@ export default async function TalentLayout({ children, params }: Props) {
               "@context": "https://schema.org",
               "@type": "Person",
               name: talent.name,
-              url: `${SITE_URL}/marketplace/${params.id}`,
+              url: `${SITE_URL}/marketplace/${id}`,
               ...(talent.category ? { jobTitle: talent.category } : {}),
               ...(talent.bio ? { description: talent.bio } : {}),
               ...(talent.city

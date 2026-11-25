@@ -46,7 +46,8 @@ export default function BookingsQueue() {
     refresh();
   }, [refresh]);
 
-  const now = Date.now();
+  // Read once per mount: render must not depend on the clock.
+  const [now] = useState(() => Date.now());
   const anticipos = pending.filter((t) => t.type === "payment");
   const pagos = pending.filter((t) => t.type === "payout" || t.type === "refund");
   const disputas = Object.values(hirings).filter((c) => c.status === "confirmada" && c.disputa?.abierta);
