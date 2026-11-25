@@ -139,7 +139,9 @@ service cloud.firestore {
       match /messages/{messageId} {
         allow read: if isAuth() && request.auth.uid in
           get(/databases/$(database)/documents/conversations/$(convoId)).data.participants;
-        allow create: if isAuth() && request.auth.uid in
+        allow create: if isAuth()
+          && request.resource.data.senderId == request.auth.uid
+          && request.auth.uid in
           get(/databases/$(database)/documents/conversations/$(convoId)).data.participants;
       }
     }
@@ -272,17 +274,29 @@ service cloud.firestore {
         && c.status in ['realizada', 'liquidada'];
     }
 
+    function opinionValida(reviewId) {
+      let d = request.resource.data;
+      return d.rating is int && d.rating >= 1 && d.rating <= 5
+        && d.get('comment', '') is string && d.get('comment', '').size() <= 1000
+        && d.clientName == get(cPath(reviewId)).data.clientName;
+    }
+
     match /reviews/{reviewId} {
       allow read: if true;
       allow create: if isAuth()
+                    && request.resource.data.keys().hasOnly(
+                         ['talentId', 'clientId', 'clientName', 'rating', 'comment', 'createdAt'])
                     && request.resource.data.clientId == request.auth.uid
                     && request.resource.data.talentId != request.auth.uid
-                    && request.resource.data.rating is number
-                    && request.resource.data.rating >= 1
-                    && request.resource.data.rating <= 5
+                    && opinionValida(reviewId)
+                    && request.resource.data.createdAt == request.time
                     && resenaDeContratacion(reviewId);
-      allow update, delete: if (isAuth() && resource.data.clientId == request.auth.uid)
-                            || isAdmin();
+      // The author may reword the opinion, never move the review to another
+      // talent or another author.
+      allow update: if isAdmin()
+                    || (isAuth() && resource.data.clientId == request.auth.uid
+                        && changed().hasOnly(['rating', 'comment']) && opinionValida(reviewId));
+      allow delete: if (isAuth() && resource.data.clientId == request.auth.uid) || isAdmin();
     }
 
     // ─── Projects ──────────────────────────────────────────────────
@@ -382,7 +396,12 @@ service cloud.firestore {
       allow create: if isAuth() && (
         (transactionId.matches('.+_anticipo') && esReporteAnticipo(transactionId))
         || (transactionId.matches('.+_(pago_dj|reembolso)') && esMovimientoDeContratacion(transactionId))
-        || (!request.resource.data.keys().hasAny(['contratacionId']) && isOwnRequest())
+        // The ids of a hiring's movements are reserved. Without this, anyone
+        // could plant a plain "deposit" at `{hiring}_pago_dj` and have a step
+        // accept it as the payment it owes.
+        || (!transactionId.matches('.+_(anticipo|pago_dj|reembolso|comision)')
+            && !request.resource.data.keys().hasAny(['contratacionId'])
+            && isOwnRequest())
         || isAdmin());
       allow update: if isAuth() && (
         isAdmin()
@@ -450,8 +469,14 @@ service cloud.firestore {
 
     // When a step owes money, the movement for exactly that amount must exist
     // once the request is applied.
-    function movimiento(txId, cents) {
-      return cents == 0 || getAfter(txPath(txId)).data.amountCents == cents;
+    // "Exists" is not enough: it must be created by this very request (its
+    // createdAt is this request's time) and belong to this hiring, so a
+    // document planted beforehand can never stand in for it.
+    function movimiento(cid, tipo, cents) {
+      let m = getAfter(txPath(cid + '_' + tipo)).data;
+      return cents == 0
+        || (m.amountCents == cents && m.contratacionId == cid
+            && m.createdAt == request.time && m.status == 'processing');
     }
 
     function reparto(cliente, timeless, dj) {
@@ -560,7 +585,7 @@ service cloud.firestore {
         && cambia(['reparto'])
         && request.resource.data.reparto
              == reparto(0, o.desglose.commissionCents, o.desglose.heldCents)
-        && movimiento(cid + '_pago_dj', o.desglose.heldCents);
+        && movimiento(cid, 'pago_dj', o.desglose.heldCents);
     }
 
     function abrirDisputa() {
@@ -599,13 +624,13 @@ service cloud.firestore {
           || (desde('confirmada') && request.time < o.event.at
               && cambia(['cancelacion', 'reparto'])
               && ((soyDJ() && n.reparto == reparto(d.depositCents, 0, 0)
-                     && movimiento(cid + '_reembolso', d.depositCents))
+                     && movimiento(cid, 'reembolso', d.depositCents))
                   || (soyCliente() && masDe7
                      && n.reparto == reparto(d.heldCents, d.commissionCents, 0)
-                     && movimiento(cid + '_reembolso', d.heldCents))
+                     && movimiento(cid, 'reembolso', d.heldCents))
                   || (soyCliente() && !masDe7
                      && n.reparto == reparto(0, d.commissionCents, d.heldCents)
-                     && movimiento(cid + '_pago_dj', d.heldCents)))));
+                     && movimiento(cid, 'pago_dj', d.heldCents)))));
     }
 
     // A reported deposit stops the clock: a client who already paid does not
@@ -637,8 +662,8 @@ service cloud.firestore {
         && r.clienteCents is int && r.timelessCents is int && r.djCents is int
         && r.clienteCents >= 0 && r.timelessCents >= 0 && r.djCents >= 0
         && r.clienteCents + r.timelessCents + r.djCents == deposit
-        && movimiento(cid + '_reembolso', r.clienteCents)
-        && movimiento(cid + '_pago_dj', r.djCents);
+        && movimiento(cid, 'reembolso', r.clienteCents)
+        && movimiento(cid, 'pago_dj', r.djCents);
     }
 
     function transicionDeAdmin(cid) {
@@ -656,20 +681,24 @@ service cloud.firestore {
         // Dispute resolved for the DJ, or completion forced.
         || (hacia('realizada') && desde('confirmada') && cambia(['reparto', 'disputa'])
            && n.reparto == reparto(0, o.desglose.commissionCents, o.desglose.heldCents)
-           && movimiento(cid + '_pago_dj', o.desglose.heldCents))
+           && movimiento(cid, 'pago_dj', o.desglose.heldCents))
         // Held deposit released to the DJ.
         || (hacia('liquidada') && desde('realizada') && cambia([])
            && getAfter(txPath(cid + '_pago_dj')).data.status == 'completed')
         || (hacia('cancelada')
-           && (desde('solicitada') || desde('negociacion') || desde('aceptada'))
+           && (desde('solicitada') || desde('negociacion')
+               || (desde('aceptada') && !anticipoPendiente(cid)))
            && cambia(['cancelacion']) && cancelacionValida('admin'))
         // Dispute resolved with a custom split.
         || (hacia('cancelada') && desde('confirmada')
            && cambia(['cancelacion', 'reparto', 'disputa'])
            && cancelacionValida('admin')
            && repartoLibre(cid, n.reparto, o.desglose.depositCents))
+        // A reported deposit must be resolved first, or real money would be
+        // left with no way back.
         || (hacia('expirada')
-           && (desde('solicitada') || desde('negociacion') || desde('aceptada'))
+           && (desde('solicitada') || desde('negociacion')
+               || (desde('aceptada') && !anticipoPendiente(cid)))
            && cambia([]));
     }
 
@@ -683,8 +712,14 @@ service cloud.firestore {
         && c.updatedAt == request.time
         && seq == string(c.seq) && t.seq == c.seq && t.to == c.status
         && t.by == request.auth.uid && t.at == request.time
-        && t.kind in ['solicitud', 'oferta', 'aceptacion', 'confirmacion', 'disputa',
-                      'realizacion', 'liquidacion', 'cancelacion', 'expiracion']
+        // The kind is what the history shows, so it is tied to the state
+        // reached: a party cannot label a counter-offer "deposit verified".
+        && t.kind in {
+             'solicitada': ['solicitud'], 'negociacion': ['oferta'], 'aceptada': ['aceptacion'],
+             'confirmada': ['confirmacion', 'disputa'], 'realizada': ['realizacion'],
+             'liquidada': ['liquidacion'], 'cancelada': ['cancelacion'], 'expirada': ['expiracion']
+           }[c.status]
+        && (t.kind != 'confirmacion' || t.rol == 'admin')
         && (!('offerCents' in t) || t.offerCents == c.oferta.amountCents)
         && (!('motivo' in t) || (t.motivo is string && t.motivo.size() <= 1000))
         && ((t.rol == 'cliente' && c.clientId == request.auth.uid)

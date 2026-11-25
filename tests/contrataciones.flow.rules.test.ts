@@ -197,7 +197,7 @@ describe("the whole flow, through the app's own code", () => {
 
     as(CLIENT);
     await resenar(await load(cid), CLIENT, 5, "Great night");
-    await expect(resenar(await load(cid), CLIENT, 1, "second review")).resolves.toBeUndefined(); // same doc, an edit
+    await expect(resenar(await load(cid), CLIENT, 1, "second review")).rejects.toThrow(); // one per hiring
     const reviews = await raw(async (fsdb) => (await getDocs(collection(fsdb, "reviews"))).size);
     expect(reviews).toBe(1);
   });

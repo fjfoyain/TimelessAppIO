@@ -14,7 +14,7 @@ export const OFFER_MIN_PCT = 50;
 export const OFFER_MAX_PCT = 200;
 // Refund terms change, and the dispute window closes, this many days around the event.
 export const WINDOW_DAYS = 7;
-export const MAX_ADVANCE_DAYS = 540;
+export const MAX_ADVANCE_DAYS = 539;
 export const MAX_SEQ = 60;
 
 const HOUR = 3_600_000;

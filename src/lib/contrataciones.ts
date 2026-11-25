@@ -26,6 +26,7 @@ import { applyToBalance, auditEntry, createNotification } from "./firestore";
 import {
   COMMISSION_PCT,
   DEPOSIT_PCT,
+  MAX_ADVANCE_DAYS,
   bucketDe,
   dollars,
   estaVencida,
@@ -186,6 +187,10 @@ export async function solicitar(input: {
   const bucket = bucketDe(input.event.sizeKind, input.event.sizeRange);
   if (!bucket) throw new Error("Choose the size of the event.");
   if (input.event.at.getTime() <= Date.now()) throw new Error("The event must be in the future.");
+  if (input.event.at.getTime() > Date.now() + MAX_ADVANCE_DAYS * 86_400_000) {
+    throw new Error(`The event can be at most ${MAX_ADVANCE_DAYS} days ahead.`);
+  }
+  if (input.planIndex < 0) throw new Error("This plan is no longer available. Reload the profile.");
 
   const ref = doc(collection(db, "contrataciones"));
   const batch = writeBatch(db);
@@ -249,6 +254,13 @@ export async function ejecutar(
     const c = toContratacion(snap);
     const rol = rolDe(c, uid);
     if (!rol) throw new Error("You are not part of this booking.");
+    // A reported deposit freezes an agreed booking until an admin resolves it.
+    if (c.status === "aceptada") {
+      const deposit = await tx.get(movRef(cid, "anticipo"));
+      if (deposit.exists() && deposit.data().status === "processing") {
+        throw new Error("The deposit is being verified. This booking cannot change until that is resolved.");
+      }
+    }
 
     const p = paso(c, accion, uid, Date.now(), payload);
     const seq = c.seq + 1;
@@ -411,6 +423,13 @@ export async function liquidarMovimiento(cid: string, tipo: "pago_dj" | "reembol
     const mov = await tx.get(ref);
     if (!mov.exists() || mov.data().status !== "processing") throw new Error("This payment was already settled.");
     const { userId, amountCents } = mov.data() as { userId: string; amountCents: number };
+    // Pay only what this hiring's split says, to whom it says.
+    const expected = tipo === "pago_dj"
+      ? { userId: c.talentId, cents: c.reparto?.djCents }
+      : { userId: c.clientId, cents: c.reparto?.clienteCents };
+    if (mov.data().contratacionId !== cid || userId !== expected.userId || amountCents !== expected.cents) {
+      throw new Error("This movement does not match the booking. Do not pay it; review it by hand.");
+    }
     const walletRef = doc(db, "wallets", userId);
     const walletSnap = await tx.get(walletRef);
     const commissionRef = movRef(cid, "comision");
@@ -506,6 +525,10 @@ export async function expirarComoAdmin(cid: string, actor: AdminActor): Promise<
   await runTransaction(db, async (tx) => {
     const c = await load(tx, cid);
     if (!estaVencida(c, Date.now())) throw new Error("This booking has not reached its deadline.");
+    const deposit = await tx.get(movRef(cid, "anticipo"));
+    if (deposit.exists() && deposit.data().status === "processing") {
+      throw new Error("The client reported a deposit. Verify or reject it first.");
+    }
     adminStep(tx, c, "expirada", "expiracion", actor);
   });
 }

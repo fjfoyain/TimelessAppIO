@@ -122,7 +122,24 @@ Datos de producción:
 Verificación pendiente:
 - [ ] R14. Ninguna pantalla nueva se ha visto en un navegador con sesión: contratación, tablero, planes, cola de admin, billetera.
 - [ ] R15. Recorrido manual completo con las cuentas demo de cliente y DJ más el admin.
-- [ ] R16. Resultado de la revisión adversarial de las reglas del Lote 2 (en curso al escribir esto).
+- [x] R16. Revisión adversarial de las reglas del Lote 2: encontró fallos reales, corregidos el mismo día con sus pruebas
+      (157 de reglas). Lo corregido: ids de movimientos reservados (se podía «plantar» un depósito con el id del pago
+      de una contratación y bloquear o desviar el cobro); el movimiento de un paso debe nacer en ese mismo paso;
+      reseñas que se podían mover a otro DJ; historial con etiquetas falsas; mensajes de chat firmados como la otra
+      persona; el admin ya no puede expirar ni cancelar sobre un anticipo reportado.
+
+Hallazgos de esa revisión que NO se corrigieron (decidir si importan para el piloto):
+- [ ] R20. Abrir una disputa no cuesta nada y congela el cobro del DJ hasta que un admin decida.
+- [ ] R21. Varios estados solo los destraba un admin: anticipo reportado, disputa abierta, Realizada sin liquidar.
+- [ ] R22. No hay tope de solicitudes por cliente: se pueden enviar muchas, cada una notifica al DJ.
+- [ ] R23. El alcance «DJs en Quito» es de interfaz; las reglas no impiden solicitar a un talento aprobado fuera de él.
+- [ ] R24. La hora del evento se toma en la zona horaria del navegador, no en la de Quito.
+- [ ] R25. El tablero puede marcar «Your move» al cliente mientras su anticipo está en verificación.
+- [ ] R26. Una negociación con más de ~55 contraofertas agota la secuencia y ya no se podría confirmar.
+- [ ] R27. Liquidar hace muchas lecturas de reglas en una sola operación; confirmar con una liquidación real en
+      producción que no supera el límite del motor (el emulador no lo garantiza).
+- [ ] R28. Cualquiera puede abrir una conversación con cualquier usuario (ya era así antes).
+- [ ] R29. Un talento sin ciudad no tiene dónde ponerla: ni «Settings» ni «My Plans» la editan.
 - [ ] R17. Páginas de evento en blanco (E3): hoy renderizan bien en producción; no se encontró la causa.
 - [ ] R19. La tarjeta del marketplace muestra «★ 0.0» cuando un DJ no tiene reseñas; mejor ocultarla.
 - [ ] R18. Sin servidor, los plazos no se disparan solos: alguien tiene que abrir la contratación o el admin barrer «Overdue».

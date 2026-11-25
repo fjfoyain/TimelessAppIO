@@ -715,6 +715,56 @@ describe("completing and settling", () => {
 
 // ─── Money and messages outside a step ───────────────────────────
 
+describe("planted movements", () => {
+  const planted = (userId: string, cents: number) => ({
+    userId, type: "deposit", amount: cents / 100, amountCents: cents, source: "cash", status: "processing",
+    description: "x", createdAt: serverTimestamp(),
+  });
+  const after = { event: { ...solicitud().event, at: ago(DAY) } };
+
+  it("blocks a plain deposit request from taking a hiring's reserved id", async () => {
+    await seed("confirmada");
+    for (const tipo of ["pago_dj", "reembolso", "anticipo", "comision"]) {
+      await assertFails(setDoc(doc(db(CLIENT), "transactions", `${CID}_${tipo}`), planted(CLIENT, 3000)));
+      await assertFails(setDoc(doc(db(DJ), "transactions", `${CID}_${tipo}`), planted(DJ, 7500)));
+    }
+  });
+
+  it("blocks completing against a movement that was already there", async () => {
+    const c = await seed("confirmada", after);
+    // Even if such a document existed (written before these rules), a step
+    // cannot lean on it: the movement must be created by the step itself.
+    await seedTx(`${CID}_pago_dj`, { ...planted(CLIENT, 3000), createdAt: ago(HOUR) });
+    await assertFails(
+      step(CLIENT, c, { to: "realizada", kind: "realizacion", rol: "cliente", patch: { reparto: reparto(0, 4500, 3000) } })
+    );
+  });
+
+  it("blocks the DJ cancelling against a refund addressed to themselves", async () => {
+    const c = await seed("confirmada");
+    await seedTx(`${CID}_reembolso`, { ...planted(DJ, 7500), contratacionId: CID, createdAt: ago(HOUR) });
+    await assertFails(step(DJ, c, cancel(DJ, "dj", { reparto: reparto(7500, 0, 0) })));
+  });
+
+  it("blocks a history entry that claims to be something else", async () => {
+    const c = await seed("solicitada", { seq: 1 });
+    const lie = (kind: string) => ({
+      to: "negociacion", kind, rol: "dj",
+      patch: { oferta: { amountCents: 28000, by: DJ } }, transicion: { offerCents: 28000 },
+    });
+    await assertFails(step(DJ, c, lie("confirmacion")));
+    await assertFails(step(DJ, c, lie("liquidacion")));
+    await assertSucceeds(step(DJ, c, lie("oferta")));
+  });
+
+  it("blocks an admin expiring or cancelling over a reported deposit", async () => {
+    const c = await seed("aceptada", { updatedAt: ago(80 * HOUR) });
+    await seedTx(`${CID}_anticipo`, { ...anticipo(), createdAt: ago(79 * HOUR) });
+    await assertFails(step(ADMIN, c, { to: "expirada", kind: "expiracion", rol: "admin" }));
+    await assertFails(step(ADMIN, c, cancel(ADMIN, "admin")));
+  });
+});
+
 describe("movements and notifications outside a real step", () => {
   it("blocks paying yourself without a step", async () => {
     await seed("confirmada", { reparto: reparto(0, 4500, 3000) });
@@ -772,17 +822,37 @@ describe("what the hiring flow replaced", () => {
     await assertSucceeds(updateDoc(doc(db(DJ), "conversations", "c1"), { lastMessage: "hola", lastMessageTime: serverTimestamp() }));
   });
 
+  const review = (over: Record<string, unknown> = {}) => ({
+    clientId: CLIENT, talentId: DJ, clientName: "Ana", rating: 5, comment: "Great", createdAt: serverTimestamp(), ...over,
+  });
+
   it("blocks reviewing a talent without a completed hiring", async () => {
-    const review = { clientId: CLIENT, talentId: DJ, clientName: "Ana", rating: 5, comment: "Great" };
-    await assertFails(setDoc(doc(db(CLIENT), "reviews", "r1"), review));
+    await assertFails(setDoc(doc(db(CLIENT), "reviews", "r1"), review()));
     await seed("confirmada");
-    await assertFails(setDoc(doc(db(CLIENT), "reviews", CID), review));
+    await assertFails(setDoc(doc(db(CLIENT), "reviews", CID), review()));
   });
 
   it("allows one review per completed hiring, by its client", async () => {
     await seed("realizada", { reparto: reparto(0, 4500, 3000) });
-    const review = { clientId: CLIENT, talentId: DJ, clientName: "Ana", rating: 5, comment: "Great" };
-    await assertFails(setDoc(doc(db(STRANGER), "reviews", CID), { ...review, clientId: STRANGER }));
-    await assertSucceeds(setDoc(doc(db(CLIENT), "reviews", CID), review));
+    await assertFails(setDoc(doc(db(STRANGER), "reviews", CID), review({ clientId: STRANGER })));
+    await assertFails(setDoc(doc(db(CLIENT), "reviews", CID), review({ clientName: "Luna's biggest fan" })));
+    await assertFails(setDoc(doc(db(CLIENT), "reviews", CID), review({ rating: 4.9 })));
+    await assertSucceeds(setDoc(doc(db(CLIENT), "reviews", CID), review()));
+  });
+
+  it("blocks moving a review to another talent after writing it", async () => {
+    await seed("realizada", { reparto: reparto(0, 4500, 3000) });
+    await assertSucceeds(setDoc(doc(db(CLIENT), "reviews", CID), review()));
+    await assertFails(updateDoc(doc(db(CLIENT), "reviews", CID), { talentId: STRANGER, rating: 1 }));
+    await assertFails(updateDoc(doc(db(CLIENT), "reviews", CID), { clientName: "Someone else" }));
+    await assertSucceeds(updateDoc(doc(db(CLIENT), "reviews", CID), { rating: 4, comment: "Good, started late" }));
+  });
+
+  it("blocks signing a chat message as the other person", async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), "conversations", "c1"), { participants: [CLIENT, DJ], lastMessage: "" });
+    });
+    await assertFails(setDoc(doc(db(DJ), "conversations", "c1", "messages", "m1"), { senderId: CLIENT, text: "I agree to pay double" }));
+    await assertSucceeds(setDoc(doc(db(DJ), "conversations", "c1", "messages", "m2"), { senderId: DJ, text: "hola" }));
   });
 });
