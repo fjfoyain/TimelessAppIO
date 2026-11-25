@@ -462,6 +462,18 @@ service cloud.firestore {
       }[kind][range];
     }
 
+    // Where the event takes place decides what its clock time means.
+    function zonaDe(place) {
+      return {
+        'EC': 'America/Guayaquil', 'CO': 'America/Bogota', 'US-ET': 'America/New_York',
+        'US-CT': 'America/Chicago', 'US-MT': 'America/Denver', 'US-PT': 'America/Los_Angeles'
+      }[place];
+    }
+
+    function aPath(clientId, talentId) {
+      return /databases/$(database)/documents/solicitudesAbiertas/$(clientId + '_' + talentId);
+    }
+
     function anticipoPendiente(cid) {
       return exists(txPath(cid + '_anticipo'))
         && get(txPath(cid + '_anticipo')).data.status == 'processing';
@@ -534,7 +546,8 @@ service cloud.firestore {
         && n.plan.id == plan.id && n.plan.title == plan.title
         && plan.price is int && n.listCents == plan.price * 100
         && n.commissionPct == 15 && n.depositPct == 25
-        && n.event.keys().hasOnly(['at', 'type', 'sizeKind', 'sizeRange', 'bucket'])
+        && n.event.keys().hasOnly(['at', 'type', 'sizeKind', 'sizeRange', 'bucket', 'place', 'tz'])
+        && n.event.tz == zonaDe(n.event.place)
         && n.event.at is timestamp && n.event.at > request.time
         && n.event.at < request.time + duration.value(540, 'd')
         && n.event.type in ['boda', 'cumpleanos', 'fiesta_privada', 'corporativo',
@@ -543,7 +556,8 @@ service cloud.firestore {
         && n.status == 'solicitada' && n.seq == 1
         && ofertaValida(n.oferta, n.listCents)
         && n.createdAt == request.time && n.updatedAt == request.time
-        && transicionEscrita(cid, n, null);
+        && transicionEscrita(cid, n, null)
+        && getAfter(aPath(n.clientId, n.talentId)).data.cid == cid;
     }
 
     function pasoValido(cid) {
@@ -725,6 +739,32 @@ service cloud.firestore {
         && ((t.rol == 'cliente' && c.clientId == request.auth.uid)
             || (t.rol == 'dj' && c.talentId == request.auth.uid)
             || (t.rol == 'admin' && isAdmin()));
+    }
+
+    // ─── One open request per client and talent ────────────────────
+    //
+    // Rules cannot count documents, so the limit is kept by a pointer: this
+    // document names the latest hiring a client started with a talent. A new
+    // request has to move the pointer in the same batch, and the pointer only
+    // moves once the hiring it names is no longer waiting on anybody. Without
+    // it a client could bury a DJ in requests, each with its notification.
+    function punteroValido(lockId) {
+      let d = request.resource.data;
+      let c = getAfter(cPath(d.cid)).data;
+      return d.keys().hasOnly(['clientId', 'talentId', 'cid', 'updatedAt'])
+        && d.clientId == request.auth.uid
+        && lockId == d.clientId + '_' + d.talentId
+        && d.updatedAt == request.time
+        // It must point at a request created in this very batch, by this client.
+        && c.createdAt == request.time && c.clientId == d.clientId && c.talentId == d.talentId;
+    }
+
+    match /solicitudesAbiertas/{lockId} {
+      allow read: if isAuth() && resource.data.clientId == request.auth.uid;
+      allow create: if isAuth() && punteroValido(lockId);
+      allow update: if isAuth() && punteroValido(lockId)
+                    && !(get(cPath(resource.data.cid)).data.status
+                         in ['solicitada', 'negociacion', 'aceptada']);
     }
 
     match /contrataciones/{cid} {

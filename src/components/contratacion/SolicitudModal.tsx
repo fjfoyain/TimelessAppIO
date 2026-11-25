@@ -3,7 +3,10 @@
 import { useState } from "react";
 import DesgloseCard from "./DesgloseCard";
 import {
+  DEFAULT_PLACE,
   EVENT_KINDS,
+  EVENT_PLACES,
+  zonedToUtc,
   SIZE_KIND_LABELS,
   SIZE_RANGES,
   dollars,
@@ -18,6 +21,7 @@ export interface SolicitudInput {
   eventType: string;
   sizeKind: SizeKind;
   sizeRange: string;
+  place: string;
   offerCents: number;
 }
 
@@ -72,6 +76,7 @@ export default function SolicitudModal({
   const listCents = plan.price * 100;
   const [date, setDate] = useState("");
   const [time, setTime] = useState("20:00");
+  const [place, setPlace] = useState(DEFAULT_PLACE);
   const [eventType, setEventType] = useState("");
   const [sizeKind, setSizeKind] = useState<SizeKind>("personas");
   const [sizeRange, setSizeRange] = useState("");
@@ -86,7 +91,9 @@ export default function SolicitudModal({
   const minDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
   async function handleSubmit() {
-    const eventAt = new Date(`${date}T${time || "20:00"}`);
+    // The time is the time where the event happens, not on this device.
+    const tz = EVENT_PLACES.find((p) => p.value === place)?.tz ?? "";
+    const eventAt = new Date(zonedToUtc(date, time || "20:00", tz));
     if (!date || Number.isNaN(eventAt.getTime())) return setError("Choose the date of the event.");
     if (eventAt.getTime() <= Date.now()) return setError("The event must be in the future.");
     if (!eventType) return setError("Choose the type of event.");
@@ -95,7 +102,7 @@ export default function SolicitudModal({
     setSaving(true);
     setError("");
     try {
-      await onSubmit({ eventAt, eventType, sizeKind, sizeRange, offerCents });
+      await onSubmit({ eventAt, eventType, sizeKind, sizeRange, place, offerCents });
     } catch (err) {
       setError(err instanceof Error ? err.message : "The request could not be sent.");
       setSaving(false);
@@ -139,6 +146,16 @@ export default function SolicitudModal({
               <label htmlFor="sol-time" className="block text-sm font-medium text-slate-400 mb-2">Start time</label>
               <input id="sol-time" type="time" value={time} onChange={(e) => setTime(e.target.value)} className={input} />
             </div>
+          </div>
+
+          <div>
+            <label htmlFor="sol-place" className="block text-sm font-medium text-slate-400 mb-2">Where is the event?</label>
+            <select id="sol-place" value={place} onChange={(e) => setPlace(e.target.value)} className={input}>
+              {EVENT_PLACES.map((p) => (
+                <option key={p.value} value={p.value}>{p.label}</option>
+              ))}
+            </select>
+            <p className="text-[11px] text-slate-500 mt-1.5">The date and time above are local time there.</p>
           </div>
 
           <Chips label="Type of event" options={EVENT_KINDS} value={eventType} onChange={setEventType} />

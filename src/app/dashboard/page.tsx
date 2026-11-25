@@ -48,7 +48,7 @@ const roleStats: Record<string, { label: string; value: string; icon: string }[]
 const roleActions: Record<string, { label: string; description: string; icon: string; href: string }[]> = {
   [UserRole.TALENT]: [
     { label: "Browse Marketplace", description: "Discover talent and opportunities", icon: "storefront", href: "/marketplace" },
-    { label: "My Plans", description: "What clients can book, and at what price", icon: "sell", href: "/dashboard/plans" },
+    { label: "My Listing & Plans", description: "Category, city and what clients can book", icon: "sell", href: "/dashboard/plans" },
     { label: "My Portfolio", description: "Add and manage your work samples", icon: "collections", href: "/dashboard/portfolio" },
     { label: "Payout Methods", description: "Bank account and wallet for payouts", icon: "account_balance", href: "/dashboard/payouts" },
     { label: "Edit Profile", description: "Update your name, bio and rates", icon: "edit", href: "/settings" },

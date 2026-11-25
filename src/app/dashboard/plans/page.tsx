@@ -9,7 +9,8 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import DesgloseCard from "@/components/contratacion/DesgloseCard";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTalentByUserId } from "@/hooks/useFirestore";
-import { updateTalentPlans } from "@/lib/firestore";
+import { updateTalentListing, updateTalentPlans } from "@/lib/firestore";
+import { ACTIVE_CITIES, ACTIVE_PROVIDER_CATEGORIES, inLaunchScope } from "@/lib/constants";
 import { dollars } from "@/lib/contratacion";
 import type { ServicePlan } from "@/types";
 
@@ -25,9 +26,44 @@ function PlansContent() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
+  const [category, setCategory] = useState("");
+  const [city, setCity] = useState("");
+  const [listingSaved, setListingSaved] = useState(false);
+
   useEffect(() => {
-    if (talent) setPlans(talent.servicePlans ?? []);
+    if (!talent) return;
+    setPlans(talent.servicePlans ?? []);
+    setCategory(talent.category ?? "");
+    setCity(talent.city ?? "");
   }, [talent]);
+
+  async function saveListing() {
+    if (!user || !category || !city) return;
+    setBusy(true);
+    setError("");
+    try {
+      await updateTalentListing(user.id, { category, city });
+      setListingSaved(true);
+    } catch {
+      setError("Your listing could not be saved. Try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  // Why a profile is or is not in the marketplace, in the order it gets fixed.
+  const listed = !!talent?.isApproved && inLaunchScope({ category, city }) && plans.length > 0;
+  const missing = !talent
+    ? ""
+    : !inLaunchScope({ category, city })
+    ? "Choose your category and city below."
+    : plans.length === 0
+    ? "Add at least one plan."
+    : !talent.isApproved
+    ? "Your account is waiting for approval."
+    : "";
+  const categoryOptions = Array.from(new Set([...ACTIVE_PROVIDER_CATEGORIES, ...(category ? [category] : [])]));
+  const cityOptions = Array.from(new Set([...ACTIVE_CITIES, ...(city ? [city] : [])]));
 
   const price = Number(form.price);
   const priceOk = Number.isInteger(price) && price >= 1 && price <= 100000;
@@ -83,9 +119,9 @@ function PlansContent() {
           <nav className="flex items-center gap-2 text-sm text-slate-500 mb-6" aria-label="Breadcrumb">
             <Link href="/dashboard" className="hover:text-white transition">Dashboard</Link>
             <span className="material-icons text-sm" aria-hidden="true">chevron_right</span>
-            <span className="text-slate-300">My plans</span>
+            <span className="text-slate-300">My listing &amp; plans</span>
           </nav>
-          <h1 className="text-3xl font-bold text-white">My plans</h1>
+          <h1 className="text-3xl font-bold text-white">My listing &amp; plans</h1>
           <p className="text-slate-500 mt-1 mb-8">
             What clients can book from your profile. A client requests a plan; you accept the price or counter it.
           </p>
@@ -97,6 +133,44 @@ function PlansContent() {
           ) : !talent ? (
             <p className="text-slate-400">Plans are available for talent accounts.</p>
           ) : (
+            <>
+            <section aria-label="Your listing" className="rounded-2xl border border-white/10 bg-surface-dark/50 p-6 mb-8">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+                <h2 className="text-lg font-semibold text-white">Your listing</h2>
+                <span
+                  className={`text-xs font-semibold px-3 py-1 rounded-full border ${
+                    listed ? "text-green-400 border-green-500/30 bg-green-500/10" : "text-amber-400 border-amber-500/30 bg-amber-500/10"
+                  }`}
+                >
+                  {listed ? "Visible in the marketplace" : "Not visible yet"}
+                </span>
+              </div>
+              {missing && <p className="text-sm text-slate-400 mb-4">{missing}</p>}
+              <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-3 items-end">
+                <div>
+                  <label htmlFor="listing-category" className="block text-sm font-medium text-slate-400 mb-2">Category</label>
+                  <select id="listing-category" value={category} onChange={(e) => { setCategory(e.target.value); setListingSaved(false); }} className={field}>
+                    <option value="" disabled>Select</option>
+                    {categoryOptions.map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="listing-city" className="block text-sm font-medium text-slate-400 mb-2">City</label>
+                  <select id="listing-city" value={city} onChange={(e) => { setCity(e.target.value); setListingSaved(false); }} className={field}>
+                    <option value="" disabled>Select</option>
+                    {cityOptions.map((c) => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+                <button
+                  onClick={saveListing}
+                  disabled={busy || !category || !city || listingSaved}
+                  className="px-4 py-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white text-sm font-bold transition disabled:opacity-50"
+                >
+                  {listingSaved ? "Saved" : "Save"}
+                </button>
+              </div>
+            </section>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <section aria-label="Your plans" className="space-y-3">
                 {plans.length === 0 && (
@@ -182,6 +256,7 @@ function PlansContent() {
                 )}
               </section>
             </div>
+            </>
           )}
         </div>
       </main>

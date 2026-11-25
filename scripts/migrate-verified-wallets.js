@@ -25,15 +25,9 @@
  * Requires scripts/serviceAccountKey.json (gitignored — never commit it).
  */
 
-const path = require("path");
-const admin = require("firebase-admin");
+const { db, FieldValue } = require("./admin-sdk");
 
 const APPLY = process.argv.includes("--apply");
-
-admin.initializeApp({
-  credential: admin.credential.cert(require(path.join(__dirname, "serviceAccountKey.json"))),
-});
-const db = admin.firestore();
 
 const cents = (n) => Math.round(n * 100) / 100;
 
@@ -91,7 +85,7 @@ async function main() {
     }
     if (current !== next) {
       console.log(`   ${nameOf[w.id] || w.id}: $${current} → $${next}`);
-      writes.push(() => w.ref.update({ balance: next, updatedAt: admin.firestore.FieldValue.serverTimestamp() }));
+      writes.push(() => w.ref.update({ balance: next, updatedAt: FieldValue.serverTimestamp() }));
     }
   }
 

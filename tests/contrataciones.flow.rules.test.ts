@@ -89,7 +89,7 @@ async function request(offerCents = 30000): Promise<string> {
     talent: { id: DJ, name: "Luna" },
     plan: PLAN,
     planIndex: 0,
-    event: { at: new Date(Date.now() + 30 * DAY), type: "boda", sizeKind: "personas", sizeRange: "hasta100" },
+    event: { at: new Date(Date.now() + 30 * DAY), type: "boda", sizeKind: "personas", sizeRange: "hasta100", place: "EC" },
     offerCents,
     conversationId: null,
   });
@@ -308,6 +308,16 @@ describe("the whole flow, through the app's own code", () => {
     as(ADMIN);
     await expirarComoAdmin(cid, actor);
     expect((await hiring(cid)).status).toBe("expirada");
+  });
+
+  it("one open request per client and DJ; a new one once it closes", async () => {
+    const cid = await request();
+    await expect(request()).rejects.toThrow(/already have an open request/);
+    as(CLIENT);
+    await ejecutar(cid, "cancelar", CLIENT);
+    const second = await request();
+    expect(second).not.toBe(cid);
+    expect((await hiring(second)).event).toMatchObject({ place: "EC", tz: "America/Guayaquil" });
   });
 
   it("a party cannot do the other party's part", async () => {

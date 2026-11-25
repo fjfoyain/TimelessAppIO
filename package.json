@@ -12,6 +12,9 @@
     "test:rules": "firebase emulators:exec --only firestore,storage --project timeless-rules-test \"vitest run --config vitest.rules.config.ts\"",
     "deploy:rules": "firebase deploy --only firestore:rules,storage"
   },
+  "engines": {
+    "node": ">=22"
+  },
   "dependencies": {
     "firebase": "^12.9.0",
     "next": "14.2.35",
@@ -26,7 +29,7 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.35",
-    "firebase-admin": "^13.7.0",
+    "firebase-admin": "^14.5.1",
     "firebase-tools": "^15.26.0",
     "postcss": "^8",
     "sharp": "^0.34.5",

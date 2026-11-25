@@ -138,7 +138,13 @@ export default function TalentProfilePage() {
       talent: { id: talent.userId, name: user.name },
       plan: requesting,
       planIndex: talent.servicePlans.findIndex((p) => p.id === requesting.id),
-      event: { at: input.eventAt, type: input.eventType, sizeKind: input.sizeKind, sizeRange: input.sizeRange },
+      event: {
+        at: input.eventAt,
+        type: input.eventType,
+        sizeKind: input.sizeKind,
+        sizeRange: input.sizeRange,
+        place: input.place,
+      },
       offerCents: input.offerCents,
       conversationId,
     });

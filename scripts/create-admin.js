@@ -18,27 +18,6 @@
  * never commit it.
  */
 
-const path = require("path");
-
-let admin;
-try {
-  admin = require("firebase-admin");
-} catch {
-  console.error("\n  ❌  firebase-admin is not installed. Run: npm install\n");
-  process.exit(1);
-}
-
-let serviceAccount;
-try {
-  serviceAccount = require(path.join(__dirname, "serviceAccountKey.json"));
-} catch {
-  console.error(
-    "\n  ❌  Service account key not found at scripts/serviceAccountKey.json\n" +
-      "     Download it from Firebase Console → Project Settings → Service Accounts.\n"
-  );
-  process.exit(1);
-}
-
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
@@ -47,10 +26,7 @@ if (!ADMIN_EMAIL) {
   process.exit(1);
 }
 
-admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
-
-const auth = admin.auth();
-const db = admin.firestore();
+const { auth, db } = require("./admin-sdk");
 
 async function main() {
   let uid;

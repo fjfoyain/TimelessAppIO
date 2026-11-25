@@ -1184,6 +1184,11 @@ export async function updateTalentPortfolio(
   await updateDoc(doc(db, "talents", uid), { portfolio });
 }
 
+// What decides whether, and where, a talent is listed in the marketplace.
+export async function updateTalentListing(uid: string, data: { category: string; city: string }): Promise<void> {
+  await updateDoc(doc(db, "talents", uid), data);
+}
+
 // The plans a client can request from the talent's profile. Prices are whole
 // dollars: the hiring flow's split depends on it and the rules check it.
 export async function updateTalentPlans(uid: string, servicePlans: ServicePlan[]): Promise<void> {

@@ -4,6 +4,7 @@ import { describe, it, expect } from "vitest";
 import {
   COMMISSION_PCT,
   DEPOSIT_PCT,
+  EVENT_PLACES,
   PLAZO_HORAS,
   SIZE_RANGES,
   acciones,
@@ -15,6 +16,8 @@ import {
   paso,
   repartoCancelacion,
   venceEn,
+  zonedToUtc,
+  formatEventTime,
   type Contratacion,
 } from "../contratacion";
 
@@ -37,7 +40,10 @@ function hiring(over: Partial<Contratacion> = {}): Contratacion {
     listCents: 30000,
     commissionPct: 15,
     depositPct: 25,
-    event: { at: NOW + 30 * DAY, type: "boda", sizeKind: "personas", sizeRange: "hasta100", bucket: "chico" },
+    event: {
+      at: NOW + 30 * DAY, type: "boda", sizeKind: "personas", sizeRange: "hasta100", bucket: "chico",
+      place: "EC", tz: "America/Guayaquil",
+    },
     status: "solicitada",
     seq: 1,
     oferta: { amountCents: 30000, by: CLIENT },
@@ -104,6 +110,31 @@ describe("event size", () => {
     expect(bucketDe("m2", "hasta150")).toBe("chico");
     expect(bucketDe("tickets", "mas300")).toBe("grande");
     expect(bucketDe("personas", "nope")).toBeNull();
+  });
+});
+
+describe("event time is the time where the event happens", () => {
+  it("8 pm in Quito is 01:00 UTC the next day, whatever device types it", () => {
+    expect(zonedToUtc("2026-12-12", "20:00", "America/Guayaquil")).toBe(Date.UTC(2026, 11, 13, 1, 0));
+    expect(zonedToUtc("2026-12-12", "20:00", "America/Bogota")).toBe(Date.UTC(2026, 11, 13, 1, 0));
+  });
+
+  it("follows daylight saving in the United States", () => {
+    // New York is UTC-5 in December and UTC-4 in July.
+    expect(zonedToUtc("2026-12-12", "20:00", "America/New_York")).toBe(Date.UTC(2026, 11, 13, 1, 0));
+    expect(zonedToUtc("2026-07-04", "20:00", "America/New_York")).toBe(Date.UTC(2026, 6, 5, 0, 0));
+    expect(zonedToUtc("2026-07-04", "20:00", "America/Los_Angeles")).toBe(Date.UTC(2026, 6, 5, 3, 0));
+  });
+
+  it("rejects malformed input instead of guessing", () => {
+    expect(zonedToUtc("12/12/2026", "20:00", "America/Guayaquil")).toBeNaN();
+    expect(zonedToUtc("2026-12-12", "8pm", "America/Guayaquil")).toBeNaN();
+  });
+
+  it("is written back in the event's own zone", () => {
+    const at = zonedToUtc("2026-12-12", "20:00", "America/Guayaquil");
+    expect(formatEventTime(at, "America/Guayaquil")).toMatch(/Dec 12, 2026.*8:00/);
+    expect(formatEventTime(at, "America/Los_Angeles")).toMatch(/Dec 12, 2026.*5:00/);
   });
 });
 
@@ -259,6 +290,10 @@ describe("parity with firestore.rules", () => {
       const line = new RegExp(`'${status}':\\s*\\{'chico': ${byBucket.chico},\\s*'grande': ${byBucket.grande}\\}`);
       expect(rules).toMatch(line);
     }
+  });
+
+  it("uses the same places and time zones", () => {
+    for (const p of EVENT_PLACES) expect(rules).toContain(`'${p.value}': '${p.tz}'`);
   });
 
   it("uses the same size ranges and buckets", () => {

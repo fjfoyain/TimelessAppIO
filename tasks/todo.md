@@ -1,7 +1,8 @@
 # Piloto Quito — plan a partir de los documentos de Alex
 
 Fuentes: «Lo que se implementa ahora» (oct 2026) y «Revisión de la app» (13 nov 2026).
-Estado: Lotes 0, 1, 2 y 3 en producción — 2026-11-24. Queda la lista «Por revisar».
+Estado: Lotes 0–3 y la corrección de seguridad en producción — 2026-11-24.
+Ajustes posteriores (rama `piloto/ajustes`) escritos y probados, SIN desplegar: requieren publicar reglas y app juntas.
 
 Contexto que condiciona todo: lo desplegado es el código de agosto. Nada de lo
 acordado el 8 de octubre está construido todavía.
@@ -15,15 +16,15 @@ acordado el 8 de octubre está construido todavía.
       Su ficha sigue visible en el marketplace hasta M1.
 - [x] O5. Contraseñas fuera de los scripts y del README; `create-demo-user.js` → `create-admin.js`.
       Rotadas también las otras 6 cuentas de muestra, que compartían la contraseña publicada.
-- [ ] O6. Decidir si David también es admin.
+- [x] O6. Decidir si David también es admin. → Hecho 2026-11-24: `dchavezromo@gmail.com` es admin.
 
 ## Lote S — Dependencias y plataforma
 
 - [x] S1d. `npm audit fix` (sin cambios incompatibles): 59 → 24 avisos. Tests, lint y build en verde.
 - [ ] S2d. **Next 14 → 16** (con React 19). Es lo único crítico que queda: la rama 14 ya no recibe parches
       y el arreglo solo existe en la 16. Cambio mayor, va en rama propia con prueba completa.
-- [ ] S3d. Fijar la versión de Node en `package.json` (`engines`) y comprobar la que usa Vercel.
-- [ ] S4d. `firebase-admin` 13 → 14 (solo scripts locales; arrastra los avisos de `@grpc/grpc-js` y `uuid`).
+- [x] S3d. Fijar la versión de Node en `package.json` (`engines`) y comprobar la que usa Vercel. → `engines.node >=22` y `.nvmrc` 24. Falta mirar en Vercel qué versión toma.
+- [x] S4d. `firebase-admin` 13 → 14 (solo scripts locales; arrastra los avisos de `@grpc/grpc-js` y `uuid`). → Hecho; los scripts usan la API modular vía `scripts/admin-sdk.js`.
 - [ ] S5d. Cloudflare: los registros hacia Vercel están con proxy activo; HANDOVER.md pide «DNS only».
 - [ ] S6d. Rotar la clave de servicio de Firebase (`scripts/serviceAccountKey.json`) si se compartió alguna vez.
 
@@ -112,7 +113,7 @@ Decisiones de producto que tomé por defecto (confirmar con David y Alex):
 - [ ] R8. Textos de la app en inglés, como el resto. ¿El piloto en Quito los necesita en español?
 
 Datos de producción:
-- [ ] R9. Con el alcance activo el marketplace solo muestra a «Luna Vega» (demo). Felipe Ponce, David Chávez y
+- [ ] R9. (Ahora cada talento puede corregirlo en «My Listing & Plans».) Con el alcance activo el marketplace solo muestra a «Luna Vega» (demo). Felipe Ponce, David Chávez y
       Pancho están como Event Promoter / Videographer y sin ciudad: quedan fuera hasta corregir categoría y ciudad.
 - [ ] R10. DJ Pancho, Nebulossa, LYVAR y Dj Chavezura se registraron como Artist: no aparecen ni son contratables.
 - [ ] R11. Ningún DJ real tiene planes; cada uno debe crearlos en «My Plans».
@@ -131,17 +132,17 @@ Verificación pendiente:
 Hallazgos de esa revisión que NO se corrigieron (decidir si importan para el piloto):
 - [ ] R20. Abrir una disputa no cuesta nada y congela el cobro del DJ hasta que un admin decida.
 - [ ] R21. Varios estados solo los destraba un admin: anticipo reportado, disputa abierta, Realizada sin liquidar.
-- [ ] R22. No hay tope de solicitudes por cliente: se pueden enviar muchas, cada una notifica al DJ.
+- [x] R22. No hay tope de solicitudes por cliente: se pueden enviar muchas, cada una notifica al DJ. → Hecho en reglas: una solicitud abierta por cliente y DJ (`solicitudesAbiertas`).
 - [ ] R23. El alcance «DJs en Quito» es de interfaz; las reglas no impiden solicitar a un talento aprobado fuera de él.
-- [ ] R24. La hora del evento se toma en la zona horaria del navegador, no en la de Quito.
-- [ ] R25. El tablero puede marcar «Your move» al cliente mientras su anticipo está en verificación.
+- [x] R24. La hora del evento se toma en la zona horaria del navegador, no en la de Quito. → Hecho distinto a lo propuesto: el cliente elige dónde es el evento (Ecuador, Colombia, USA por zona) y la hora es la de allí.
+- [x] R25. El tablero puede marcar «Your move» al cliente mientras su anticipo está en verificación. → Hecho para el cliente. El DJ no puede leer el anticipo del cliente desde el tablero; sí lo ve dentro de la contratación.
 - [ ] R26. Una negociación con más de ~55 contraofertas agota la secuencia y ya no se podría confirmar.
 - [ ] R27. Liquidar hace muchas lecturas de reglas en una sola operación; confirmar con una liquidación real en
       producción que no supera el límite del motor (el emulador no lo garantiza).
 - [ ] R28. Cualquiera puede abrir una conversación con cualquier usuario (ya era así antes).
-- [ ] R29. Un talento sin ciudad no tiene dónde ponerla: ni «Settings» ni «My Plans» la editan.
+- [x] R29. Un talento sin ciudad no tiene dónde ponerla: ni «Settings» ni «My Plans» la editan. → Hecho: «My Listing & Plans» edita categoría y ciudad y dice por qué un perfil no es visible.
 - [ ] R17. Páginas de evento en blanco (E3): hoy renderizan bien en producción; no se encontró la causa.
-- [ ] R19. La tarjeta del marketplace muestra «★ 0.0» cuando un DJ no tiene reseñas; mejor ocultarla.
+- [x] R19. La tarjeta del marketplace muestra «★ 0.0» cuando un DJ no tiene reseñas; mejor ocultarla. → Hecho: sin reseñas no se muestra puntuación.
 - [ ] R18. Sin servidor, los plazos no se disparan solos: alguien tiene que abrir la contratación o el admin barrer «Overdue».
 
 ## Fuera de alcance: Studio es una página aparte que no gestionamos

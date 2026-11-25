@@ -54,10 +54,12 @@ export default function TalentCard({ talent, user }: TalentWithUser) {
             <h3 className="text-lg font-semibold text-white group-hover:text-primary-light transition-colors truncate">
               {user.name}
             </h3>
-            <div className="flex items-center gap-1 flex-shrink-0 ml-2">
-              <span className="material-icons text-yellow-400 text-sm">star</span>
-              <span className="text-sm font-semibold text-white">{avgRating.toFixed(1)}</span>
-            </div>
+            {talent.reviews.length > 0 && (
+              <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                <span className="material-icons text-yellow-400 text-sm" aria-hidden="true">star</span>
+                <span className="text-sm font-semibold text-white">{avgRating.toFixed(1)}</span>
+              </div>
+            )}
           </div>
 
           <p className="text-sm text-primary-light font-medium">{talent.category}</p>

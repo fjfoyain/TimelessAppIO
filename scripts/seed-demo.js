@@ -29,35 +29,8 @@
  * SEED_PASSWORD environment variable. Existing accounts keep their password.
  */
 
-const path = require("path");
-
-let admin;
-try {
-  admin = require("firebase-admin");
-} catch {
-  console.error(
-    "\n  ❌  firebase-admin is not installed.\n" +
-      "     Run:  npm install firebase-admin --save-dev\n"
-  );
-  process.exit(1);
-}
-
-let serviceAccount;
-try {
-  serviceAccount = require(path.join(__dirname, "serviceAccountKey.json"));
-} catch {
-  console.error(
-    "\n  ❌  Service account key not found at scripts/serviceAccountKey.json\n" +
-      "     Download it from Firebase Console → Project Settings → Service Accounts.\n"
-  );
-  process.exit(1);
-}
-
-admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
-
-const auth = admin.auth();
-const db = admin.firestore();
-const now = () => admin.firestore.FieldValue.serverTimestamp();
+const { auth, db, FieldValue } = require("./admin-sdk");
+const now = () => FieldValue.serverTimestamp();
 
 const DEFAULT_PASSWORD = process.env.SEED_PASSWORD;
 

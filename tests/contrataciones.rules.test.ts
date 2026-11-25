@@ -97,7 +97,10 @@ function solicitud(over: Record<string, unknown> = {}) {
     listCents: 30000,
     commissionPct: 15,
     depositPct: 25,
-    event: { at: ahead(30 * DAY), type: "boda", sizeKind: "personas", sizeRange: "hasta100", bucket: "chico" },
+    event: {
+      at: ahead(30 * DAY), type: "boda", sizeKind: "personas", sizeRange: "hasta100", bucket: "chico",
+      place: "EC", tz: "America/Guayaquil",
+    },
     status: "solicitada",
     seq: 1,
     oferta: { amountCents: 30000, by: CLIENT },
@@ -107,11 +110,22 @@ function solicitud(over: Record<string, unknown> = {}) {
   };
 }
 
-function crear(uid: string, data: Record<string, unknown>, transicion: Record<string, unknown> = {}) {
+function crear(
+  uid: string,
+  data: Record<string, unknown>,
+  transicion: Record<string, unknown> = {},
+  cid: string = CID,
+  puntero: boolean = true
+) {
   const fsdb = db(uid);
   const batch = writeBatch(fsdb);
-  batch.set(doc(fsdb, "contrataciones", CID), data);
-  batch.set(doc(fsdb, "contrataciones", CID, "transiciones", "1"), {
+  batch.set(doc(fsdb, "contrataciones", cid), data);
+  if (puntero) {
+    batch.set(doc(fsdb, "solicitudesAbiertas", `${data.clientId}_${data.talentId}`), {
+      clientId: data.clientId, talentId: data.talentId, cid, updatedAt: serverTimestamp(),
+    });
+  }
+  batch.set(doc(fsdb, "contrataciones", cid, "transiciones", "1"), {
     seq: 1,
     from: null,
     to: "solicitada",
@@ -247,6 +261,9 @@ describe("requesting a hiring", () => {
     batch.set(doc(fsdb, "contrataciones", CID, "transiciones", "1"), {
       seq: 1, from: null, to: "solicitada", kind: "solicitud", by: CLIENT, rol: "cliente", at: serverTimestamp(),
     });
+    batch.set(doc(fsdb, "solicitudesAbiertas", `${CLIENT}_${DJ}`), {
+      clientId: CLIENT, talentId: DJ, cid: CID, updatedAt: serverTimestamp(),
+    });
     batch.set(doc(fsdb, "notifications", `${CID}_1_${DJ}`), {
       userId: DJ, type: "contratacion", contratacionId: CID, seq: 1,
       title: "New booking request", description: "Ana requested Full Experience.",
@@ -300,6 +317,38 @@ describe("requesting a hiring", () => {
       await updateDoc(doc(ctx.firestore(), "talents", DJ), { isApproved: false });
     });
     await assertFails(crear(CLIENT, solicitud()));
+  });
+
+  it("blocks an event time zone that does not match the place", async () => {
+    await assertFails(crear(CLIENT, solicitud({ event: { ...solicitud().event, place: "US-PT" } })));
+    await assertFails(crear(CLIENT, solicitud({ event: { ...solicitud().event, place: "MX", tz: "America/Mexico_City" } })));
+    await assertSucceeds(
+      crear(CLIENT, solicitud({ event: { ...solicitud().event, place: "US-PT", tz: "America/Los_Angeles" } }))
+    );
+  });
+
+  it("blocks a second request to the same DJ while one is open", async () => {
+    await assertSucceeds(crear(CLIENT, solicitud()));
+    await assertFails(crear(CLIENT, solicitud(), {}, "h2"));
+    // …and it cannot be sidestepped by leaving the pointer out.
+    await assertFails(crear(CLIENT, solicitud(), {}, "h3", false));
+  });
+
+  it("allows a new request once the previous one is closed", async () => {
+    await assertSucceeds(crear(CLIENT, solicitud()));
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await updateDoc(doc(ctx.firestore(), "contrataciones", CID), { status: "expirada" });
+    });
+    await assertSucceeds(crear(CLIENT, solicitud(), {}, "h2"));
+  });
+
+  it("blocks pointing the limit at somebody else's request", async () => {
+    await assertSucceeds(crear(CLIENT, solicitud()));
+    await assertFails(
+      setDoc(doc(db(STRANGER), "solicitudesAbiertas", `${STRANGER}_${DJ}`), {
+        clientId: STRANGER, talentId: DJ, cid: CID, updatedAt: serverTimestamp(),
+      })
+    );
   });
 
   it("blocks a request without its history entry", async () => {

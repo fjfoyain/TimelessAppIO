@@ -78,6 +78,62 @@ export const EVENT_KINDS: { value: string; label: string }[] = [
   { value: "otro", label: "Other" },
 ];
 
+// Where the event takes place. An event's time means the time THERE, not on
+// the device of whoever fills in the form: "8 pm in Quito" must be the same
+// instant for a client typing it in Miami. The United States spans several
+// time zones, so it is listed by zone.
+export const EVENT_PLACES: { value: string; label: string; tz: string }[] = [
+  { value: "EC", label: "Ecuador", tz: "America/Guayaquil" },
+  { value: "CO", label: "Colombia", tz: "America/Bogota" },
+  { value: "US-ET", label: "USA — Eastern", tz: "America/New_York" },
+  { value: "US-CT", label: "USA — Central", tz: "America/Chicago" },
+  { value: "US-MT", label: "USA — Mountain", tz: "America/Denver" },
+  { value: "US-PT", label: "USA — Pacific", tz: "America/Los_Angeles" },
+];
+export const DEFAULT_PLACE = "EC";
+
+// Minutes that `tz` is ahead of UTC at the instant `utcMs`.
+function offsetMinutes(utcMs: number, tz: string): number {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: tz,
+    hourCycle: "h23",
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  }).formatToParts(new Date(utcMs));
+  const n = (type: string) => Number(parts.find((p) => p.type === type)?.value);
+  const asUtc = Date.UTC(n("year"), n("month") - 1, n("day"), n("hour"), n("minute"));
+  return Math.round((asUtc - utcMs) / 60_000);
+}
+
+// The instant at which the wall clock in `tz` reads `date` ("YYYY-MM-DD") and
+// `time` ("HH:mm"). Returns NaN for malformed input.
+export function zonedToUtc(date: string, time: string, tz: string): number {
+  const d = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
+  const t = /^(\d{2}):(\d{2})$/.exec(time);
+  if (!d || !t) return NaN;
+  const wall = Date.UTC(+d[1], +d[2] - 1, +d[3], +t[1], +t[2]);
+  // The offset depends on the instant, which is what we are solving for; a
+  // second pass settles it when the first guess lands across a clock change.
+  const first = wall - offsetMinutes(wall, tz) * 60_000;
+  return wall - offsetMinutes(first, tz) * 60_000;
+}
+
+// An instant written out as the clock reads where the event is.
+export function formatEventTime(ms: number, tz?: string): string {
+  return new Date(ms).toLocaleString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    ...(tz ? { timeZone: tz, timeZoneName: "short" } : {}),
+  });
+}
+
 export const ESTADO_LABELS: Record<Estado, string> = {
   solicitada: "Requested",
   negociacion: "Negotiating",
@@ -123,7 +179,15 @@ export interface Contratacion {
   listCents: number;
   commissionPct: number;
   depositPct: number;
-  event: { at: number; type: string; sizeKind: SizeKind; sizeRange: string; bucket: Bucket };
+  event: {
+    at: number;
+    type: string;
+    sizeKind: SizeKind;
+    sizeRange: string;
+    bucket: Bucket;
+    place: string;
+    tz: string;
+  };
   status: Estado;
   seq: number;
   oferta: Oferta;

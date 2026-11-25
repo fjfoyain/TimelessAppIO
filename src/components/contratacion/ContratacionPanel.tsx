@@ -6,11 +6,13 @@ import DesgloseCard from "./DesgloseCard";
 import {
   ESTADO_LABELS,
   EVENT_KINDS,
+  EVENT_PLACES,
   PASOS,
   SIZE_KIND_LABELS,
   SIZE_RANGES,
   acciones,
   dollars,
+  formatEventTime,
   ofertaError,
   offerBounds,
   repartoCancelacion,
@@ -23,17 +25,6 @@ import {
 import { ejecutar, hasReview, reportarAnticipo, resenar, type Movimiento, type MovimientoTipo } from "@/lib/contrataciones";
 
 const ended: Estado[] = ["cancelada", "expirada"];
-
-function when(ms: number): string {
-  return new Date(ms).toLocaleString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
-}
 
 function remaining(ms: number): string {
   if (ms <= 0) return "now";
@@ -188,7 +179,7 @@ function Historial({ c, items }: { c: Contratacion; items: Transicion[] }) {
               <span className="font-semibold text-white">{who(t)}</span> {what(t)}
             </p>
             {t.motivo && <p className="text-xs text-slate-400 mt-0.5">“{t.motivo}”</p>}
-            <p className="text-[11px] text-slate-600 mt-0.5 tabular-nums">{t.at ? when(t.at) : "just now"}</p>
+            <p className="text-[11px] text-slate-600 mt-0.5 tabular-nums">{t.at ? formatEventTime(t.at) : "just now"}</p>
           </li>
         ))}
       </ol>
@@ -501,7 +492,8 @@ export default function ContratacionPanel({
         <section className="rounded-2xl border border-white/10 bg-surface-dark/50 backdrop-blur-xl p-5 space-y-3">
           <h2 className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Event</h2>
           <dl className="space-y-2 text-sm">
-            <div className="flex justify-between gap-3"><dt className="text-slate-500">When</dt><dd className="text-white text-right">{when(c.event.at)}</dd></div>
+            <div className="flex justify-between gap-3"><dt className="text-slate-500">When</dt><dd className="text-white text-right">{formatEventTime(c.event.at, c.event.tz)}</dd></div>
+            <div className="flex justify-between gap-3"><dt className="text-slate-500">Where</dt><dd className="text-white">{EVENT_PLACES.find((p) => p.value === c.event.place)?.label ?? "—"}</dd></div>
             <div className="flex justify-between gap-3"><dt className="text-slate-500">Type</dt><dd className="text-white">{eventType}</dd></div>
             <div className="flex justify-between gap-3"><dt className="text-slate-500">{SIZE_KIND_LABELS[c.event.sizeKind]}</dt><dd className="text-white">{size}</dd></div>
           </dl>

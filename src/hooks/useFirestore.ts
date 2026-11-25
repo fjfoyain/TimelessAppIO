@@ -630,16 +630,31 @@ export function useProjects(userId: string | undefined) {
 export function useContrataciones(userId: string | undefined) {
   const [items, setItems] = useState<Contratacion[]>([]);
   const [loading, setLoading] = useState(true);
+  // Hirings whose deposit this user reported and an admin has not resolved.
+  const [waitingDeposit, setWaitingDeposit] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (!userId) return;
-    return subscribeContrataciones(userId, (data) => {
-      setItems(data);
-      setLoading(false);
-    });
+    setLoading(true);
+    const unsubs = [
+      subscribeContrataciones(userId, (data) => {
+        setItems(data);
+        setLoading(false);
+      }),
+      subscribeToTransactions(userId, (txs) => {
+        setWaitingDeposit(
+          new Set(
+            txs
+              .filter((t) => t.type === "payment" && t.status === "processing" && t.contratacionId)
+              .map((t) => t.contratacionId as string)
+          )
+        );
+      }),
+    ];
+    return () => unsubs.forEach((u) => u());
   }, [userId]);
 
-  return { items, loading };
+  return { items, loading, waitingDeposit };
 }
 
 // One hiring with its history and money movements, all live.

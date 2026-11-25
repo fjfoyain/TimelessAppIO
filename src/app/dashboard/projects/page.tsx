@@ -32,11 +32,11 @@ function eventDate(ms: number): string {
   return new Date(ms).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
-function Card({ c, uid, now }: { c: Contratacion; uid: string; now: number }) {
+function Card({ c, uid, now, anticipoPendiente }: { c: Contratacion; uid: string; now: number; anticipoPendiente: boolean }) {
   const rol = rolDe(c, uid);
   const other = rol === "cliente" ? c.talentName : c.clientName;
   // "Your move" = there is something to do besides walking away.
-  const myMove = acciones(c, uid, now).some((a) => a !== "cancelar");
+  const myMove = acciones(c, uid, now, { anticipoPendiente }).some((a) => a !== "cancelar");
   const deadline = venceEn(c);
   const hoursLeft = deadline === null ? null : Math.floor((deadline - now) / 3_600_000);
 
@@ -72,7 +72,7 @@ function Card({ c, uid, now }: { c: Contratacion; uid: string; now: number }) {
 
 function Content() {
   const { user } = useAuth();
-  const { items, loading } = useContrataciones(user?.id);
+  const { items, loading, waitingDeposit } = useContrataciones(user?.id);
   const [showClosed, setShowClosed] = useState(false);
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
@@ -131,7 +131,7 @@ function Content() {
                         {cards.length === 0 ? (
                           <p className="text-xs text-slate-600 py-6 text-center border border-dashed border-white/5 rounded-xl">Nothing here</p>
                         ) : (
-                          cards.map((c) => <Card key={c.id} c={c} uid={uid} now={now} />)
+                          cards.map((c) => <Card key={c.id} c={c} uid={uid} now={now} anticipoPendiente={waitingDeposit.has(c.id)} />)
                         )}
                       </div>
                     </section>
@@ -151,7 +151,7 @@ function Content() {
                   </button>
                   {showClosed && (
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3 mt-3">
-                      {closed.map((c) => <Card key={c.id} c={c} uid={uid} now={now} />)}
+                      {closed.map((c) => <Card key={c.id} c={c} uid={uid} now={now} anticipoPendiente={false} />)}
                     </div>
                   )}
                 </div>

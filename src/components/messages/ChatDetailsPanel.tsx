@@ -18,7 +18,7 @@ export default function ChatDetailsPanel({
   otherUserId?: string;
   otherName: string;
 }) {
-  const { items, loading } = useContrataciones(userId);
+  const { items, loading, waitingDeposit } = useContrataciones(userId);
   const between = items.filter((c) => otherUserId && c.parties.includes(otherUserId));
   const now = Date.now();
 
@@ -41,7 +41,7 @@ export default function ChatDetailsPanel({
       ) : (
         <ul className="space-y-3">
           {between.map((c) => {
-            const myMove = userId ? acciones(c, userId, now).some((a) => a !== "cancelar") : false;
+            const myMove = userId ? acciones(c, userId, now, { anticipoPendiente: waitingDeposit.has(c.id) }).some((a) => a !== "cancelar") : false;
             return (
               <li key={c.id}>
                 <Link

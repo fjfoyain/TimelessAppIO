@@ -26,6 +26,7 @@ import { applyToBalance, auditEntry, createNotification } from "./firestore";
 import {
   COMMISSION_PCT,
   DEPOSIT_PCT,
+  EVENT_PLACES,
   MAX_ADVANCE_DAYS,
   bucketDe,
   dollars,
@@ -177,7 +178,7 @@ export async function solicitar(input: {
   talent: { id: string; name: string };
   plan: ServicePlan;
   planIndex: number;
-  event: { at: Date; type: string; sizeKind: SizeKind; sizeRange: string };
+  event: { at: Date; type: string; sizeKind: SizeKind; sizeRange: string; place: string };
   offerCents: number;
   conversationId: string | null;
 }): Promise<string> {
@@ -186,6 +187,8 @@ export async function solicitar(input: {
   if (problem) throw new Error(problem);
   const bucket = bucketDe(input.event.sizeKind, input.event.sizeRange);
   if (!bucket) throw new Error("Choose the size of the event.");
+  const tz = EVENT_PLACES.find((p) => p.value === input.event.place)?.tz;
+  if (!tz) throw new Error("Choose where the event takes place.");
   if (input.event.at.getTime() <= Date.now()) throw new Error("The event must be in the future.");
   if (input.event.at.getTime() > Date.now() + MAX_ADVANCE_DAYS * 86_400_000) {
     throw new Error(`The event can be at most ${MAX_ADVANCE_DAYS} days ahead.`);
@@ -211,6 +214,8 @@ export async function solicitar(input: {
       sizeKind: input.event.sizeKind,
       sizeRange: input.event.sizeRange,
       bucket,
+      place: input.event.place,
+      tz,
     },
     status: "solicitada",
     seq: 1,
@@ -236,7 +241,21 @@ export async function solicitar(input: {
     `${input.client.name} requested ${input.plan.title} at ${dollars(input.offerCents)}.`
   );
   batch.set(n.ref, n.data);
-  await batch.commit();
+  // One open request per client and talent (see solicitudesAbiertas in the rules).
+  batch.set(doc(db, "solicitudesAbiertas", `${input.client.id}_${input.talent.id}`), {
+    clientId: input.client.id,
+    talentId: input.talent.id,
+    cid: ref.id,
+    updatedAt: serverTimestamp(),
+  });
+  try {
+    await batch.commit();
+  } catch (err) {
+    if ((err as { code?: string }).code === "permission-denied") {
+      throw new Error("You already have an open request with this DJ. Finish or cancel it before sending another.");
+    }
+    throw err;
+  }
   return ref.id;
 }
 
