@@ -110,6 +110,7 @@ Decisiones de producto que tomé por defecto (confirmar con David y Alex):
 - [ ] R5. El DJ puede cancelar hasta la hora del evento sin penalización; el cliente recupera todo el anticipo.
 - [ ] R6. Reportar el anticipo detiene el reloj de Aceptada hasta que un admin lo resuelva.
 - [ ] R7. Disputa: ventana de 7 días tras el evento, una por contratación; el admin elige descartar, pagar al DJ o reembolsar al cliente.
+- [ ] R30. La app pide «envía el anticipo a Timeless» pero no muestra a qué cuenta. Falta la cuenta bancaria (pregunta 1 del PDF).
 - [ ] R8. Textos de la app en inglés, como el resto. ¿El piloto en Quito los necesita en español?
 
 Datos de producción:
